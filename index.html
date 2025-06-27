@@ -53,11 +53,26 @@
     
     <button class="btn" onclick="testFunction()">🎲 Test Button</button>
     <br>
-    <button class="btn" onclick="startGame()">🎮 Start Game</button>
+    <button class="btn" onclick="simulateQRScan()">🎮 Start Know-It-All Game</button>
     
     <div id="screen1" class="screen">
-        <h2>Game Started!</h2>
-        <p id="gameStatus">Game is running...</p>
+        <h2>Blocker Setup</h2>
+        <div id="gameStatus">Game is running...</div>
+        <br>
+        <label>Bidder: How many cards will you rank? (1-5)</label><br>
+        <input type="number" id="bidAmount" min="1" max="5" style="padding: 10px; margin: 10px; width: 100px;">
+        <br>
+        <button class="btn" onclick="continueToReveal()">▶️ Continue to Reveal</button>
+        <br>
+        <button class="btn" onclick="goHome()">🏠 Back to Home</button>
+    </div>
+
+    <div id="screen2" class="screen">
+        <h2>Reveal Phase</h2>
+        <div id="revealStatus">Ready to reveal...</div>
+        <div id="revealCards" style="margin: 20px 0;"></div>
+        <button id="revealBtn" class="btn" onclick="revealNext()">▶️ Reveal Next Card</button>
+        <br>
         <button class="btn" onclick="goHome()">🏠 Back to Home</button>
     </div>
 
@@ -96,7 +111,7 @@
             alert("Test function works!");
         }
         
-        function startGame() {
+        function simulateQRScan() {
             console.log("Starting Know-It-All game...");
             
             try {
@@ -111,7 +126,7 @@
                 
                 // Show success
                 var status = "Game Started Successfully!<br><br>";
-                status += "Challenge: " + prompt.label + "<br>";
+                status += "<strong>Challenge: " + prompt.label + "</strong><br><br>";
                 status += "Cards drawn: " + drawnCards.map(function(id) {
                     return SAMPLE_DATA.countries[id].name;
                 }).join(', ');
@@ -127,9 +142,131 @@
             }
         }
         
+        function continueToReveal() {
+            try {
+                var bidAmountEl = document.getElementById('bidAmount');
+                var bid = parseInt(bidAmountEl.value);
+                
+                if (!bid || bid < 1 || bid > 5) {
+                    alert('Please enter a bid amount between 1 and 5');
+                    return;
+                }
+                
+                bidAmount = bid;
+                
+                // Simulate scanning random cards in random order
+                var shuffled = drawnCards.sort(function() { return Math.random() - 0.5; });
+                scannedAnswers = shuffled.slice(0, bidAmount);
+                revealIndex = 0;
+                
+                // Set up reveal screen
+                var status = "<strong>" + prompt.label + "</strong><br><br>";
+                status += "Bid: " + bidAmount + " cards<br>";
+                status += "Ready to reveal your ranking...";
+                
+                document.getElementById('revealStatus').innerHTML = status;
+                document.getElementById('revealCards').innerHTML = '';
+                
+                // Show reveal screen
+                document.getElementById('screen1').classList.remove('active');
+                document.getElementById('screen2').classList.add('active');
+                
+                console.log("Moving to reveal phase");
+                
+            } catch (error) {
+                console.error("Error continuing to reveal:", error);
+                alert("Error: " + error.message);
+            }
+        }
+        
+        function revealNext() {
+            try {
+                if (revealIndex >= scannedAnswers.length) {
+                    alert("All cards revealed! Bidder wins!");
+                    return;
+                }
+                
+                var currentCard = scannedAnswers[revealIndex];
+                var currentCountry = SAMPLE_DATA.countries[currentCard];
+                
+                // CRITICAL: First card cannot be wrong
+                if (revealIndex === 0) {
+                    // First card always passes
+                    showRevealedCard(currentCard, revealIndex, true, "First card - always safe!");
+                    revealIndex++;
+                    return;
+                }
+                
+                // Check ordering for subsequent cards
+                var previousCard = scannedAnswers[revealIndex - 1];
+                var previousCountry = SAMPLE_DATA.countries[previousCard];
+                
+                var metric = prompt.challenge;
+                var currentValue = currentCountry[metric];
+                var previousValue = previousCountry[metric];
+                
+                var isCorrect = currentValue <= previousValue; // Should be descending
+                
+                showRevealedCard(currentCard, revealIndex, isCorrect, 
+                    isCorrect ? "Correct order!" : "Wrong order - Game Over!");
+                
+                if (!isCorrect) {
+                    document.getElementById('revealBtn').style.display = 'none';
+                    setTimeout(function() {
+                        alert("Blockers win! Wrong order detected.");
+                    }, 1000);
+                    return;
+                }
+                
+                revealIndex++;
+                
+                // Check if all cards revealed
+                if (revealIndex >= scannedAnswers.length) {
+                    document.getElementById('revealBtn').textContent = "🎉 Bidder Wins!";
+                    setTimeout(function() {
+                        alert("Congratulations! Perfect ranking - Bidder wins!");
+                    }, 500);
+                }
+                
+            } catch (error) {
+                console.error("Error revealing card:", error);
+                alert("Error revealing card: " + error.message);
+            }
+        }
+        
+        function showRevealedCard(cardId, position, isCorrect, message) {
+            var country = SAMPLE_DATA.countries[cardId];
+            var metric = prompt.challenge;
+            var value = country[metric];
+            
+            var cardHtml = '<div style="background: ' + (isCorrect ? '#dcfce7' : '#fee2e2') + 
+                          '; border: 2px solid ' + (isCorrect ? '#16a34a' : '#dc2626') + 
+                          '; padding: 15px; margin: 10px 0; border-radius: 8px;">';
+            cardHtml += '<strong>Position ' + (position + 1) + ': ' + cardId + ' - ' + country.name + '</strong><br>';
+            cardHtml += metric.toUpperCase() + ': ' + value.toLocaleString() + '<br>';
+            cardHtml += '<em>' + message + '</em>';
+            cardHtml += '</div>';
+            
+            document.getElementById('revealCards').innerHTML += cardHtml;
+        }
+        
         function goHome() {
             console.log("Going home...");
             document.getElementById('screen1').classList.remove('active');
+            document.getElementById('screen2').classList.remove('active');
+            
+            // Reset game state
+            currentScreen = 1;
+            prompt = null;
+            drawnCards = [];
+            bidAmount = 0;
+            scannedAnswers = [];
+            revealIndex = 0;
+            
+            // Reset UI
+            document.getElementById('bidAmount').value = '';
+            document.getElementById('revealBtn').style.display = 'block';
+            document.getElementById('revealBtn').textContent = '▶️ Reveal Next Card';
         }
         
         console.log("Script loaded successfully!");
