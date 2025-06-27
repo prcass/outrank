@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Know-It-All Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qr-scanner/1.4.2/qr-scanner.umd.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,265 +12,136 @@
             min-height: 100vh;
             color: white;
             padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        .card {
+            background: white;
+            color: black;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
             text-align: center;
+            margin-bottom: 2rem;
+        }
+        .camera-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 2rem;
         }
         .btn {
-            background: #ea580c;
+            background: #2563eb;
             color: white;
             border: none;
             padding: 15px 30px;
             border-radius: 8px;
             font-size: 1.1rem;
             cursor: pointer;
-            margin: 10px;
-            width: 300px;
+            width: 100%;
+            margin-bottom: 10px;
         }
-        .btn:hover {
-            background: #c2410c;
+        .btn-orange { background: #ea580c; }
+        .btn-green { background: #059669; }
+        .btn-red { background: #dc2626; }
+        .reveal-card {
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            margin-bottom: 15px;
         }
-        .screen {
-            display: none;
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            color: black;
-            padding: 30px;
-            border-radius: 12px;
-            margin-top: 20px;
+        .reveal-card.revealed-correct {
+            background: #dcfce7;
+            border-color: #16a34a;
         }
-        .screen.active {
-            display: block;
+        .reveal-card.revealed-blocked {
+            background: #fee2e2;
+            border-color: #dc2626;
         }
-        .title {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
+        .reveal-card.unrevealed {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+        .input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        .text-center { text-align: center; }
+        .font-bold { font-weight: bold; }
+        .info-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <h1 class="title">Know-It-All</h1>
-    <div style="font-size: 4rem; margin: 20px;">📷</div>
-    <p style="font-size: 1.2rem; margin-bottom: 30px;">Scan a prompt card to begin</p>
-    
-    <button class="btn" onclick="testFunction()">🎲 Test Button</button>
-    <br>
-    <button class="btn" onclick="simulateQRScan()">🎮 Start Know-It-All Game</button>
-    
-    <div id="screen1" class="screen">
-        <h2>Blocker Setup</h2>
-        <div id="gameStatus">Game is running...</div>
-        <br>
-        <label>Bidder: How many cards will you rank? (1-5)</label><br>
-        <input type="number" id="bidAmount" min="1" max="5" style="padding: 10px; margin: 10px; width: 100px;">
-        <br>
-        <button class="btn" onclick="continueToReveal()">▶️ Continue to Reveal</button>
-        <br>
-        <button class="btn" onclick="goHome()">🏠 Back to Home</button>
-    </div>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="screen1" class="screen active">
+            <div class="text-center">
+                <h1 class="title">Know-It-All</h1>
+                <div class="camera-icon">📷</div>
+                <p style="font-size: 1.25rem; margin-bottom: 2rem;">Scan a prompt card to begin</p>
+                <button class="btn btn-orange" onclick="startGame()">🎲 Simulate QR Scan</button>
+            </div>
+        </div>
 
-    <div id="screen2" class="screen">
-        <h2>Reveal Phase</h2>
-        <div id="revealStatus">Ready to reveal...</div>
-        <div id="revealCards" style="margin: 20px 0;"></div>
-        <button id="revealBtn" class="btn" onclick="revealNext()">▶️ Reveal Next Card</button>
-        <br>
-        <button class="btn" onclick="goHome()">🏠 Back to Home</button>
-    </div>
+        <!-- Blocker Setup -->
+        <div id="screen2" class="screen">
+            <div class="card">
+                <h2 class="text-center font-bold" style="font-size: 1.5rem; margin-bottom: 1rem;">Blocker Setup</h2>
+                <div class="text-center" style="margin-bottom: 1.5rem;">
+                    <div id="promptLabel" class="font-bold" style="color: #7c3aed; font-size: 1.25rem;"></div>
+                    <div style="font-size: 0.875rem; color: #6b7280;">10 mini cards have been drawn</div>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label class="font-bold" style="display: block; font-size: 1.1rem; margin-bottom: 1rem;">
+                        Bidder: How many cards will you rank?
+                    </label>
+                    <input type="number" id="bidAmount" min="1" max="10" class="input" placeholder="Enter bid amount (1-10)">
+                </div>
 
-    <script>
-        console.log("Script loading...");
-        
-        // Game state
-        var currentScreen = 1;
-        var prompt = null;
-        var drawnCards = [];
-        var bidAmount = 0;
-        var blocks = [];
-        var scannedAnswers = [];
-        var revealIndex = 0;
-        var gameResult = null;
-        var failureReason = '';
+                <div class="text-center">
+                    <button class="btn" onclick="proceedToScanning()">Continue to Card Scanning</button>
+                </div>
+            </div>
+        </div>
 
-        // Sample data
-        var SAMPLE_DATA = {
-            prompts: {
-                gdp: { challenge: 'gdp', label: 'Rank by GDP (Highest to Lowest)', order: 'desc' },
-                population: { challenge: 'population', label: 'Rank by Population (Highest to Lowest)', order: 'desc' },
-                area: { challenge: 'area', label: 'Rank by Area (Largest to Smallest)', order: 'desc' }
-            },
-            countries: {
-                '001': { id: '001', name: 'United States', gdp: 21427700, population: 331002651, area: 9833517 },
-                '002': { id: '002', name: 'China', gdp: 14342300, population: 1439323776, area: 9596961 },
-                '003': { id: '003', name: 'Japan', gdp: 4937422, population: 126476461, area: 377975 },
-                '004': { id: '004', name: 'Germany', gdp: 3846414, population: 83783942, area: 357114 },
-                '005': { id: '005', name: 'India', gdp: 2875142, population: 1380004385, area: 3287263 }
-            }
-        };
-        
-        function testFunction() {
-            console.log("Test function called!");
-            alert("Test function works!");
-        }
-        
-        function simulateQRScan() {
-            console.log("Starting Know-It-All game...");
-            
-            try {
-                // Simulate QR scan
-                var prompts = ['gdp', 'population', 'area'];
-                var selectedPrompt = prompts[Math.floor(Math.random() * prompts.length)];
-                prompt = SAMPLE_DATA.prompts[selectedPrompt];
+        <!-- Answer Scanning -->
+        <div id="screen3" class="screen">
+            <div class="card">
+                <h2 class="text-center font-bold" style="font-size: 1.5rem; margin-bottom: 1rem;">Scan Your Answer Cards</h2>
+                <div class="text-center" style="margin-bottom: 1.5rem;">
+                    <div id="scanPromptLabel" class="font-bold" style="color: #7c3aed; font-size: 1.1rem;"></div>
+                    <div id="scanBidInfo" style="font-size: 0.875rem;"></div>
+                </div>
                 
-                // Auto-draw 5 cards for simplicity
-                var allCardIds = Object.keys(SAMPLE_DATA.countries);
-                drawnCards = allCardIds.slice(0, 5);
-                
-                // Show success
-                var status = "Game Started Successfully!<br><br>";
-                status += "<strong>Challenge: " + prompt.label + "</strong><br><br>";
-                status += "Cards drawn: " + drawnCards.map(function(id) {
-                    return SAMPLE_DATA.countries[id].name;
-                }).join(', ');
-                
-                document.getElementById('gameStatus').innerHTML = status;
-                document.getElementById('screen1').classList.add('active');
-                
-                console.log("Game started successfully!");
-                
-            } catch (error) {
-                console.error("Error starting game:", error);
-                alert("Error starting game: " + error.message);
-            }
-        }
-        
-        function continueToReveal() {
-            try {
-                var bidAmountEl = document.getElementById('bidAmount');
-                var bid = parseInt(bidAmountEl.value);
-                
-                if (!bid || bid < 1 || bid > 5) {
-                    alert('Please enter a bid amount between 1 and 5');
-                    return;
-                }
-                
-                bidAmount = bid;
-                
-                // Simulate scanning random cards in random order
-                var shuffled = drawnCards.sort(function() { return Math.random() - 0.5; });
-                scannedAnswers = shuffled.slice(0, bidAmount);
-                revealIndex = 0;
-                
-                // Set up reveal screen
-                var status = "<strong>" + prompt.label + "</strong><br><br>";
-                status += "Bid: " + bidAmount + " cards<br>";
-                status += "Ready to reveal your ranking...";
-                
-                document.getElementById('revealStatus').innerHTML = status;
-                document.getElementById('revealCards').innerHTML = '';
-                
-                // Show reveal screen
-                document.getElementById('screen1').classList.remove('active');
-                document.getElementById('screen2').classList.add('active');
-                
-                console.log("Moving to reveal phase");
-                
-            } catch (error) {
-                console.error("Error continuing to reveal:", error);
-                alert("Error: " + error.message);
-            }
-        }
-        
-        function revealNext() {
-            try {
-                if (revealIndex >= scannedAnswers.length) {
-                    alert("All cards revealed! Bidder wins!");
-                    return;
-                }
-                
-                var currentCard = scannedAnswers[revealIndex];
-                var currentCountry = SAMPLE_DATA.countries[currentCard];
-                
-                // CRITICAL: First card cannot be wrong
-                if (revealIndex === 0) {
-                    // First card always passes
-                    showRevealedCard(currentCard, revealIndex, true, "First card - always safe!");
-                    revealIndex++;
-                    return;
-                }
-                
-                // Check ordering for subsequent cards
-                var previousCard = scannedAnswers[revealIndex - 1];
-                var previousCountry = SAMPLE_DATA.countries[previousCard];
-                
-                var metric = prompt.challenge;
-                var currentValue = currentCountry[metric];
-                var previousValue = previousCountry[metric];
-                
-                var isCorrect = currentValue <= previousValue; // Should be descending
-                
-                showRevealedCard(currentCard, revealIndex, isCorrect, 
-                    isCorrect ? "Correct order!" : "Wrong order - Game Over!");
-                
-                if (!isCorrect) {
-                    document.getElementById('revealBtn').style.display = 'none';
-                    setTimeout(function() {
-                        alert("Blockers win! Wrong order detected.");
-                    }, 1000);
-                    return;
-                }
-                
-                revealIndex++;
-                
-                // Check if all cards revealed
-                if (revealIndex >= scannedAnswers.length) {
-                    document.getElementById('revealBtn').textContent = "🎉 Bidder Wins!";
-                    setTimeout(function() {
-                        alert("Congratulations! Perfect ranking - Bidder wins!");
-                    }, 500);
-                }
-                
-            } catch (error) {
-                console.error("Error revealing card:", error);
-                alert("Error revealing card: " + error.message);
-            }
-        }
-        
-        function showRevealedCard(cardId, position, isCorrect, message) {
-            var country = SAMPLE_DATA.countries[cardId];
-            var metric = prompt.challenge;
-            var value = country[metric];
-            
-            var cardHtml = '<div style="background: ' + (isCorrect ? '#dcfce7' : '#fee2e2') + 
-                          '; border: 2px solid ' + (isCorrect ? '#16a34a' : '#dc2626') + 
-                          '; padding: 15px; margin: 10px 0; border-radius: 8px;">';
-            cardHtml += '<strong>Position ' + (position + 1) + ': ' + cardId + ' - ' + country.name + '</strong><br>';
-            cardHtml += metric.toUpperCase() + ': ' + value.toLocaleString() + '<br>';
-            cardHtml += '<em>' + message + '</em>';
-            cardHtml += '</div>';
-            
-            document.getElementById('revealCards').innerHTML += cardHtml;
-        }
-        
-        function goHome() {
-            console.log("Going home...");
-            document.getElementById('screen1').classList.remove('active');
-            document.getElementById('screen2').classList.remove('active');
-            
-            // Reset game state
-            currentScreen = 1;
-            prompt = null;
-            drawnCards = [];
-            bidAmount = 0;
-            scannedAnswers = [];
-            revealIndex = 0;
-            
-            // Reset UI
-            document.getElementById('bidAmount').value = '';
-            document.getElementById('revealBtn').style.display = 'block';
-            document.getElementById('revealBtn').textContent = '▶️ Reveal Next Card';
-        }
-        
-        console.log("Script loaded successfully!");
-    </script>
-</body>
-</html>
+                <div class="info-box">
+                    <h3 class="font-bold" style="margin-bottom: 1rem;">Instructions:</h3>
+                    <div
