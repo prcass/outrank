@@ -186,7 +186,7 @@ function RevealNext() {
         if (isWrongOrder(currentCard, previousCard)) {
             // Wrong order detected - game over
             gameOver = true;
-            updateRevealButton(); // Hide the reveal button immediately
+       document.getElementById('revealBtn').style.display = 'none'; // Hide the reveal button immediately
             
             setTimeout(function() {
                 gameState = 'complete';
