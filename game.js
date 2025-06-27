@@ -159,40 +159,50 @@ function updateRevealScreen() {
     }
 }
 
-function revealNext() {
-    revealIndex++;
-    updateRevealScreen();
-    
-    if (revealIndex === 1) {
-        return;
-    }
-    
-    var currentCard = scannedAnswers[revealIndex - 1];
-    var prevCard = scannedAnswers[revealIndex - 2];
-    var currentCountry = SAMPLE_DATA.countries[currentCard];
-    var prevCountry = SAMPLE_DATA.countries[prevCard];
-    var metric = prompt.challenge;
-    
-    if (currentCountry[metric] > prevCountry[metric]) {
-        document.getElementById('revealBtn').style.display = 'none';
-        
-        setTimeout(function() {
-            document.getElementById('resultTitle').textContent = 'Blockers Win!';
-            document.getElementById('resultMessage').textContent = 'Wrong order! ' + currentCountry.name + ' (' + currentCountry[metric].toLocaleString() + ') has higher ' + metric + ' than ' + prevCountry.name + ' (' + prevCountry[metric].toLocaleString() + ')';
-            showScreen('resultScreen');
-        }, 1500);
-        return;
-    }
-    
+
+function RevealNext() {
     if (revealIndex >= scannedAnswers.length) {
-        document.getElementById('revealBtn').style.display = 'none';
-        
+        // All cards revealed successfully
         setTimeout(function() {
-            document.getElementById('resultTitle').textContent = 'Bidder Wins!';
-            document.getElementById('resultMessage').textContent = 'Perfect ranking! You got them all in the correct order.';
-            showScreen('resultScreen');
+            gameState = 'complete';
+            bidderWins = true;
+            updateResultsScreen();
+            showScreen(6);
         }, 1000);
+        return;
     }
+
+    // Check if this card breaks the ordering (except first card)
+    if (revealIndex > 0) {
+        var currentCard = scannedAnswers[revealIndex];
+        var previousCard = scannedAnswers[revealIndex - 1];
+        
+        if (isWrongOrder(currentCard, previousCard)) {
+            // Wrong order detected - show the red card and end game
+            updateRevealScreen(); // Show the failing card as red
+            gameOver = true;
+            updateRevealButton(); // Hide the reveal button immediately
+            
+            setTimeout(function() {
+                gameState = 'complete';
+                bidderWins = false;
+                var currentCountry = SAMPLE_DATA.countries[currentCard];
+                var previousCountry = SAMPLE_DATA.countries[previousCard];
+                var currentValue = getStatValue(currentCountry, currentPrompt.challenge);
+                var previousValue = getStatValue(previousCountry, currentPrompt.challenge);
+                
+                gameOverReason = 'Wrong order! ' + currentCountry.name + ' (' + currentValue + ') has higher ' + currentPrompt.challenge + ' than ' + previousCountry.name + ' (' + previousValue + ').';
+                updateResultsScreen();
+                showScreen(6);
+            }, 1500);
+            return;
+        }
+    }
+    
+    // Card is correct - show it and move to next
+    updateRevealScreen();
+    revealIndex++;
+    updateRevealButton();
 }
 
 function showScreen(screenId) {
