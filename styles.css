@@ -1,70 +1,119 @@
 body {
-    font-family: Arial, sans-serif;
     background: linear-gradient(to bottom, #2563eb, #7c3aed);
-    min-height: 100vh;
     color: white;
-    padding: 20px;
-    text-align: center;
+    font-family: Arial, sans-serif;
     margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.screen {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #fbbf24;
+}
+
+.camera-icon {
+    font-size: 4rem;
+    margin: 20px 0;
 }
 
 .btn {
-    background: #ea580c;
+    background: #059669;
     color: white;
     border: none;
     padding: 15px 30px;
     border-radius: 8px;
     font-size: 1.1rem;
-    cursor: pointer;
     margin: 10px;
-    width: 300px;
+    cursor: pointer;
     transition: background 0.3s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .btn:hover {
-    background: #c2410c;
+    background: #047857;
 }
 
-.screen {
-    display: none;
-    max-width: 600px;
-    margin: 0 auto;
-    background: white;
-    color: black;
-    padding: 30px;
+.btn:active {
+    transform: translateY(2px);
+}
+
+.card {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.3);
     border-radius: 12px;
-    margin-top: 20px;
-}
-
-.screen.active {
-    display: block;
-}
-
-.title {
-    font-size: 2.5rem;
-    margin-bottom: 30px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.reveal-card {
     padding: 15px;
-    margin: 10px 0;
+    margin: 10px;
+    display: inline-block;
+    min-width: 120px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s;
+}
+
+.card.revealed {
+    background: rgba(34, 197, 94, 0.3);
+    border-color: #22c55e;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+}
+
+.card.blocked {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: #ef4444;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+.card.wrong {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: #ef4444;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+    animation: pulse 0.5s;
+}
+
+.card.current {
+    background: rgba(251, 191, 36, 0.3);
+    border-color: #fbbf24;
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.blocker-item {
+    background: rgba(255,255,255,0.1);
     border-radius: 8px;
-    border: 2px solid #ccc;
-    transition: all 0.5s;
+    padding: 10px;
+    margin: 5px;
+    display: inline-block;
 }
 
-.reveal-card.green {
-    background: #dcfce7;
-    border-color: #16a34a;
+input {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin: 5px;
 }
 
-.reveal-card.red {
-    background: #fee2e2;
-    border-color: #dc2626;
-}
-
-.reveal-card.gray {
-    background: #f3f4f6;
-    border-color: #d1d5db;
+select {
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin: 5px;
 }
