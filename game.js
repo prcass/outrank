@@ -272,21 +272,20 @@ function updateRevealScreen() {
     scannedAnswers.forEach(function(cardId, index) {
         var country = SAMPLE_DATA.countries[cardId];
         var cardClass = 'card';
-        var cardContent = '???';
+        var cardContent = (index + 1) + '. ???';
         
         if (index < revealIndex) {
-            // Previously revealed cards or current failing card
-            if (index === revealIndex - 1 && gameOver && !bidderWins) {
-                // This is the failing card - show as wrong/red
+            // This card has been revealed
+            cardContent = (index + 1) + '. ' + country.name + '<br>' + getStatDisplay(country, currentPrompt.challenge);
+            
+            // Check if this is the failing card
+            if (gameOver && !bidderWins && index === revealIndex - 1) {
+                // This is the last revealed card and the game is over due to wrong order
                 cardClass += ' wrong';
             } else {
-                // Normal revealed card - show as green
+                // Normal revealed card
                 cardClass += ' revealed';
             }
-            cardContent = (index + 1) + '. ' + country.name + '<br>' + getStatDisplay(country, currentPrompt.challenge);
-        } else {
-            // Future unrevealed cards
-            cardContent = (index + 1) + '. ???';
         }
         
         cardsHtml += '<div class="' + cardClass + '">' + cardContent + '</div>';
@@ -310,42 +309,44 @@ function revealNext() {
     }
     
     var currentCard = scannedAnswers[revealIndex];
-    var isWrongCard = false;
     
-    // Check ordering BEFORE revealing (except for first card)
+    // Check if this card is in wrong order (except first card)
     if (revealIndex > 0) {
         var previousCard = scannedAnswers[revealIndex - 1];
         
         if (isWrongOrder(currentCard, previousCard)) {
-            isWrongCard = true;
+            // Wrong order - reveal as red and end game
             gameOver = true;
+            bidderWins = false;
+            revealIndex++; // Show the failing card
+            
+            // Hide button immediately
+            document.getElementById('revealBtn').style.display = 'none';
+            
+            // Update screen to show the red card
+            updateRevealScreen();
+            
+            // Show results after delay
+            setTimeout(function() {
+                gameState = 'complete';
+                var currentCountry = SAMPLE_DATA.countries[currentCard];
+                var previousCountry = SAMPLE_DATA.countries[previousCard];
+                var currentValue = getStatValue(currentCountry, currentPrompt.challenge);
+                var previousValue = getStatValue(previousCountry, currentPrompt.challenge);
+                
+                gameOverReason = 'Wrong order! ' + currentCountry.name + ' (' + currentValue + ') has higher ' + currentPrompt.challenge + ' than ' + previousCountry.name + ' (' + previousValue + '). Blockers win!';
+                updateResultsScreen();
+                showScreen(4);
+            }, 1500);
+            return;
         }
     }
     
-    // Reveal the card (will show as red if isWrongCard is true)
+    // Card is correct - reveal as green
     revealIndex++;
     updateRevealScreen();
     
-    // If wrong card, end the game
-    if (isWrongCard) {
-        document.getElementById('revealBtn').style.display = 'none';
-        
-        setTimeout(function() {
-            gameState = 'complete';
-            bidderWins = false;
-            var currentCountry = SAMPLE_DATA.countries[currentCard];
-            var previousCountry = SAMPLE_DATA.countries[previousCard];
-            var currentValue = getStatValue(currentCountry, currentPrompt.challenge);
-            var previousValue = getStatValue(previousCountry, currentPrompt.challenge);
-            
-            gameOverReason = 'Wrong order! ' + currentCountry.name + ' (' + currentValue + ') has higher ' + currentPrompt.challenge + ' than ' + previousCountry.name + ' (' + previousValue + '). Blockers win!';
-            updateResultsScreen();
-            showScreen(4);
-        }, 1500);
-        return;
-    }
-    
-    // Check if all cards revealed successfully
+    // Check if all cards revealed
     if (revealIndex >= scannedAnswers.length) {
         document.getElementById('revealBtn').style.display = 'none';
         setTimeout(function() {
