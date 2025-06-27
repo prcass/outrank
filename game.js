@@ -1,230 +1,421 @@
-// Game state variables
-var prompt = null;
-var bidAmount = 0;
+// Game State Variables
+var currentPrompt = null;
+var drawnCards = [];
+var blocks = [];
+var bidAmount = 3;
 var scannedAnswers = [];
 var revealIndex = 0;
+var gameOver = false;
+var gameState = 'title';
+var bidderWins = false;
+var gameOverReason = '';
 
-// Sample data
+// Sample Data
 var SAMPLE_DATA = {
-    prompts: {
-        gdp: { challenge: 'gdp', label: 'Rank by GDP (Highest to Lowest)' },
-        population: { challenge: 'population', label: 'Rank by Population (Highest to Lowest)' },
-        area: { challenge: 'area', label: 'Rank by Area (Largest to Smallest)' }
-    },
+    prompts: [
+        { challenge: 'gdp', label: 'Rank these countries by GDP (highest to lowest)' },
+        { challenge: 'population', label: 'Rank these countries by population (highest to lowest)' },
+        { challenge: 'area', label: 'Rank these countries by area (largest to smallest)' }
+    ],
     countries: {
-        '001': { id: '001', name: 'United States', gdp: 21427700, population: 331002651, area: 9833517 },
-        '002': { id: '002', name: 'China', gdp: 14342300, population: 1439323776, area: 9596961 },
-        '003': { id: '003', name: 'Japan', gdp: 4937422, population: 126476461, area: 377975 },
-        '004': { id: '004', name: 'Germany', gdp: 3846414, population: 83783942, area: 357114 },
-        '005': { id: '005', name: 'India', gdp: 2875142, population: 1380004385, area: 3287263 },
-        '006': { id: '006', name: 'United Kingdom', gdp: 2829108, population: 67886011, area: 242495 },
-        '007': { id: '007', name: 'France', gdp: 2715518, population: 65273511, area: 551695 },
-        '008': { id: '008', name: 'Italy', gdp: 2001244, population: 60461826, area: 301340 },
-        '009': { id: '009', name: 'Brazil', gdp: 1839758, population: 212559417, area: 8515767 },
-        '010': { id: '010', name: 'Canada', gdp: 1736426, population: 37742154, area: 9984670 }
+        '001': { name: 'USA', gdp: 21427700, population: 331002651, area: 9833517 },
+        '002': { name: 'China', gdp: 14342300, population: 1439323776, area: 9596961 },
+        '003': { name: 'Japan', gdp: 5081770, population: 125836021, area: 377975 },
+        '004': { name: 'Germany', gdp: 3845630, population: 83783942, area: 357114 },
+        '005': { name: 'India', gdp: 2875140, population: 1380004385, area: 3287263 },
+        '006': { name: 'UK', gdp: 2829110, population: 67886011, area: 242495 },
+        '007': { name: 'France', gdp: 2715520, population: 65273511, area: 551695 },
+        '008': { name: 'Italy', gdp: 2001244, population: 60461826, area: 301340 },
+        '009': { name: 'Brazil', gdp: 1839758, population: 212559417, area: 8515767 },
+        '010': { name: 'Canada', gdp: 1736426, population: 37742154, area: 9984670 }
     }
 };
 
-// Main game functions
-function simulateQRScan() {
-    var prompts = ['gdp', 'population', 'area'];
-    var selectedPrompt = prompts[Math.floor(Math.random() * prompts.length)];
-    prompt = SAMPLE_DATA.prompts[selectedPrompt];
-    
-    document.getElementById('promptLabel').textContent = prompt.label;
-    showScreen('blockerScreen');
+// Utility Functions
+function showScreen(screenNumber) {
+    var screens = ['titleScreen', 'blockerScreen', 'scanScreen', 'revealScreen', 'resultsScreen'];
+    screens.forEach(function(screen, index) {
+        document.getElementById(screen).style.display = (index === screenNumber) ? 'block' : 'none';
+    });
 }
 
-function proceedToScanning() {
-    var bid = parseInt(document.getElementById('bidAmount').value);
-    if (!bid || bid < 1 || bid > 10) {
-        alert('Please enter a bid amount between 1 and 10');
+function getStatValue(country, challenge) {
+    if (challenge === 'gdp') {
+        return country.gdp.toLocaleString();
+    } else if (challenge === 'population') {
+        return country.population.toLocaleString();
+    } else if (challenge === 'area') {
+        return country.area.toLocaleString();
+    }
+    return 'Unknown';
+}
+
+function getStatDisplay(country, challenge) {
+    if (challenge === 'gdp') {
+        return 'GDP: $' + country.gdp.toLocaleString() + 'M';
+    } else if (challenge === 'population') {
+        return 'Pop: ' + country.population.toLocaleString();
+    } else if (challenge === 'area') {
+        return 'Area: ' + country.area.toLocaleString() + ' km²';
+    }
+    return 'Unknown';
+}
+
+function isWrongOrder(currentCardId, previousCardId) {
+    var currentCountry = SAMPLE_DATA.countries[currentCardId];
+    var previousCountry = SAMPLE_DATA.countries[previousCardId];
+    var challenge = currentPrompt.challenge;
+    
+    if (challenge === 'gdp') {
+        return currentCountry.gdp > previousCountry.gdp;
+    } else if (challenge === 'population') {
+        return currentCountry.population > previousCountry.population;
+    } else if (challenge === 'area') {
+        return currentCountry.area > previousCountry.area;
+    }
+    return false;
+}
+
+// Game Flow Functions
+function simulateQRScan() {
+    // Pick random challenge
+    currentPrompt = SAMPLE_DATA.prompts[Math.floor(Math.random() * SAMPLE_DATA.prompts.length)];
+    
+    // Draw 10 random cards
+    var allCardIds = Object.keys(SAMPLE_DATA.countries);
+    drawnCards = [];
+    while (drawnCards.length < 10) {
+        var randomCard = allCardIds[Math.floor(Math.random() * allCardIds.length)];
+        if (drawnCards.indexOf(randomCard) === -1) {
+            drawnCards.push(randomCard);
+        }
+    }
+    
+    // Reset game state
+    blocks = [];
+    scannedAnswers = [];
+    revealIndex = 0;
+    gameOver = false;
+    gameState = 'blocker';
+    
+    updateBlockerScreen();
+    showScreen(1);
+}
+
+function startRealQRScan() {
+    alert('Real QR scanning coming soon! Use simulation for now.');
+}
+
+function updateBlockerScreen() {
+    document.getElementById('promptInfo').innerHTML = 
+        '<h3>' + currentPrompt.label + '</h3>';
+    
+    var cardsHtml = '<h4>Cards Drawn:</h4>';
+    drawnCards.forEach(function(cardId) {
+        var country = SAMPLE_DATA.countries[cardId];
+        cardsHtml += '<span class="card">' + cardId + ' - ' + country.name + '</span>';
+    });
+    document.getElementById('drawnCardsInfo').innerHTML = cardsHtml;
+    
+    var blockerHtml = '<h4>Add Blocks (Optional):</h4>';
+    blockerHtml += '<div>Select cards to block:</div>';
+    drawnCards.forEach(function(cardId) {
+        var country = SAMPLE_DATA.countries[cardId];
+        blockerHtml += '<div class="blocker-item">';
+        blockerHtml += '<input type="checkbox" id="block_' + cardId + '" onchange="toggleBlock(\'' + cardId + '\')">';
+        blockerHtml += '<label for="block_' + cardId + '">' + cardId + ' - ' + country.name + '</label>';
+        blockerHtml += '<select id="mult_' + cardId + '" style="margin-left: 10px;">';
+        blockerHtml += '<option value="1">1×</option><option value="2">2×</option><option value="3">3×</option><option value="4">4×</option>';
+        blockerHtml += '</select>';
+        blockerHtml += '</div>';
+    });
+    document.getElementById('blockerSetup').innerHTML = blockerHtml;
+}
+
+function toggleBlock(cardId) {
+    var checkbox = document.getElementById('block_' + cardId);
+    var multiplier = parseInt(document.getElementById('mult_' + cardId).value);
+    
+    if (checkbox.checked) {
+        blocks.push({ cardId: cardId, multiplier: multiplier });
+    } else {
+        blocks = blocks.filter(function(block) {
+            return block.cardId !== cardId;
+        });
+    }
+}
+
+function continueToScanning() {
+    bidAmount = parseInt(document.getElementById('bidAmount').value);
+    if (bidAmount < 1 || bidAmount > 10) {
+        alert('Bid amount must be between 1 and 10');
         return;
     }
-    bidAmount = bid;
-    scannedAnswers = [];
     
-    document.getElementById('scanInfo').textContent = prompt.label + ' - Bid: ' + bid + ' cards';
+    gameState = 'scanning';
     updateScanScreen();
-    showScreen('scanScreen');
+    showScreen(2);
+}
+
+function updateScanScreen() {
+    var scanInfo = '<h3>Scan Your Cards in Ranking Order</h3>';
+    scanInfo += '<p>Challenge: ' + currentPrompt.label + '</p>';
+    scanInfo += '<p>Bid Amount: ' + bidAmount + ' cards</p>';
+    scanInfo += '<p>Cards needed: ' + (bidAmount - scannedAnswers.length) + '</p>';
+    
+    if (blocks.length > 0) {
+        scanInfo += '<p style="color: #ef4444;">⚠️ Blocked cards: ';
+        blocks.forEach(function(block, index) {
+            if (index > 0) scanInfo += ', ';
+            scanInfo += block.cardId + ' (' + block.multiplier + '×)';
+        });
+        scanInfo += '</p>';
+    }
+    
+    document.getElementById('scanInfo').innerHTML = scanInfo;
+    
+    var cardsList = '<h4>Scanned Cards (' + scannedAnswers.length + '/' + bidAmount + '):</h4>';
+    scannedAnswers.forEach(function(cardId, index) {
+        var country = SAMPLE_DATA.countries[cardId];
+        cardsList += '<div class="card revealed">';
+        cardsList += (index + 1) + '. ' + cardId + ' - ' + country.name;
+        cardsList += '</div>';
+    });
+    document.getElementById('scannedCards').innerHTML = cardsList;
+    
+    // Show finish button when enough cards scanned
+    document.getElementById('finishBtn').style.display = 
+        (scannedAnswers.length >= bidAmount) ? 'inline-block' : 'none';
 }
 
 function scanCard() {
-    var cardId = document.getElementById('cardInput').value.trim().toUpperCase();
+    var input = document.getElementById('cardInput');
+    var cardId = input.value.trim();
+    
+    // Auto-format to 3 digits
     if (cardId.length === 1) cardId = '00' + cardId;
     if (cardId.length === 2) cardId = '0' + cardId;
     
     if (!SAMPLE_DATA.countries[cardId]) {
-        alert('Please enter a valid card ID (001-010)');
+        alert('Invalid card ID: ' + cardId);
+        return;
+    }
+    
+    if (drawnCards.indexOf(cardId) === -1) {
+        alert('Card ' + cardId + ' was not in the drawn cards!');
+        return;
+    }
+    
+    // Check if card is blocked
+    var isBlocked = blocks.some(function(block) {
+        return block.cardId === cardId;
+    });
+    
+    if (isBlocked) {
+        alert('Card ' + cardId + ' is blocked and cannot be chosen!');
         return;
     }
     
     if (scannedAnswers.indexOf(cardId) !== -1) {
-        alert('Card already scanned!');
+        alert('Card ' + cardId + ' already scanned!');
         return;
     }
     
     if (scannedAnswers.length >= bidAmount) {
-        alert('Already scanned enough cards!');
+        alert('You have already scanned ' + bidAmount + ' cards!');
         return;
     }
     
     scannedAnswers.push(cardId);
-    document.getElementById('cardInput').value = '';
+    input.value = '';
     updateScanScreen();
 }
 
 function simulateAllCards() {
-    var allCards = ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010'];
-    var remaining = bidAmount - scannedAnswers.length;
-    var available = allCards.filter(function(id) {
-        return scannedAnswers.indexOf(id) === -1;
+    // Get unblocked cards that haven't been scanned
+    var unblocked = drawnCards.filter(function(cardId) {
+        return !blocks.some(function(block) {
+            return block.cardId === cardId;
+        }) && scannedAnswers.indexOf(cardId) === -1;
     });
     
-    var shuffled = available.sort(function() { return Math.random() - 0.5; });
-    var selected = shuffled.slice(0, remaining);
-    scannedAnswers = scannedAnswers.concat(selected);
+    // Fill remaining slots with random unblocked cards
+    while (scannedAnswers.length < bidAmount && unblocked.length > 0) {
+        var randomIndex = Math.floor(Math.random() * unblocked.length);
+        var randomCard = unblocked[randomIndex];
+        scannedAnswers.push(randomCard);
+        unblocked.splice(randomIndex, 1);
+    }
+    
     updateScanScreen();
 }
 
-function updateScanScreen() {
-    var list = scannedAnswers.map(function(cardId, index) {
-        var country = SAMPLE_DATA.countries[cardId];
-        return (index + 1) + '. ' + cardId + ' - ' + country.name;
-    }).join('<br>');
-    
-    document.getElementById('scannedList').innerHTML = 'Scanned: ' + scannedAnswers.length + '/' + bidAmount + '<br>' + list;
-    
-    if (scannedAnswers.length >= bidAmount) {
-        document.getElementById('finishBtn').style.display = 'block';
-    }
-}
-
 function finishScanning() {
+    if (scannedAnswers.length < bidAmount) {
+        alert('Please scan ' + bidAmount + ' cards first!');
+        return;
+    }
+    
     revealIndex = 0;
-    document.getElementById('revealInfo').textContent = prompt.label + ' - Revealing your ranking...';
+    gameOver = false;
+    gameState = 'reveal';
     updateRevealScreen();
-    showScreen('revealScreen');
+    showScreen(3);
 }
 
 function updateRevealScreen() {
-    var cards = '';
-    for (var i = 0; i < scannedAnswers.length; i++) {
-        var cardId = scannedAnswers[i];
+    var revealInfo = '<h3>' + currentPrompt.label + '</h3>';
+    revealInfo += '<p>Revealing: ' + (revealIndex + 1) + ' of ' + scannedAnswers.length + '</p>';
+    document.getElementById('revealInfo').innerHTML = revealInfo;
+    
+    var cardsHtml = '';
+    scannedAnswers.forEach(function(cardId, index) {
         var country = SAMPLE_DATA.countries[cardId];
-        var isRevealed = i < revealIndex;
-        var isCurrently = i === revealIndex;
+        var cardClass = 'card';
+        var cardContent = '???';
         
-        var className = 'gray';
-        var content = 'Position ' + (i + 1) + ': ???';
-        
-        if (isRevealed || isCurrently) {
-            var metric = prompt.challenge;
-            var value = country[metric];
-            var formattedValue = '';
-            
-            if (metric === 'gdp') {
-                formattedValue = 'GDP: $' + value.toLocaleString() + 'M';
-            } else if (metric === 'population') {
-                formattedValue = 'Pop: ' + value.toLocaleString();
-            } else if (metric === 'area') {
-                formattedValue = 'Area: ' + value.toLocaleString() + ' km²';
+        if (index < revealIndex) {
+            // Previously revealed cards
+            cardClass += ' revealed';
+            cardContent = (index + 1) + '. ' + country.name + '<br>' + getStatDisplay(country, currentPrompt.challenge);
+        } else if (index === revealIndex) {
+            // Current card being revealed
+            if (gameOver) {
+                // Show as wrong if game is over
+                cardClass += ' wrong';
+                cardContent = (index + 1) + '. ' + country.name + '<br>' + getStatDisplay(country, currentPrompt.challenge);
+            } else {
+                // Show as revealed if not game over
+                cardClass += ' revealed';
+                cardContent = (index + 1) + '. ' + country.name + '<br>' + getStatDisplay(country, currentPrompt.challenge);
             }
-            
-            content = 'Position ' + (i + 1) + ': ' + cardId + ' - ' + country.name + '<br>' + formattedValue;
-            
-            if (i === 0) {
-                className = 'green';
-            } else if (isRevealed || isCurrently) {
-                var prevCard = scannedAnswers[i - 1];
-                var prevCountry = SAMPLE_DATA.countries[prevCard];
-                
-                if (country[metric] > prevCountry[metric]) {
-                    className = 'red';
-                } else {
-                    className = 'green';
-                }
-            }
+        } else {
+            // Future cards
+            cardContent = (index + 1) + '. ???';
         }
         
-        cards += '<div class="reveal-card ' + className + '">' + content + '</div>';
-    }
+        cardsHtml += '<div class="' + cardClass + '">' + cardContent + '</div>';
+    });
     
-    document.getElementById('revealCards').innerHTML = cards;
+    document.getElementById('revealCards').innerHTML = cardsHtml;
     
-    if (revealIndex >= scannedAnswers.length) {
-        document.getElementById('revealBtn').style.display = 'none';
+    // Update reveal button
+    var revealBtn = document.getElementById('revealBtn');
+    if (gameOver || revealIndex >= scannedAnswers.length) {
+        revealBtn.style.display = 'none';
     } else {
-        document.getElementById('revealBtn').textContent = '▶️ Reveal Next Card (' + (revealIndex + 1) + '/' + scannedAnswers.length + ')';
+        revealBtn.style.display = 'inline-block';
+        revealBtn.textContent = '▶️ Reveal Next Card (' + (revealIndex + 1) + '/' + scannedAnswers.length + ')';
     }
 }
 
-
-function RevealNext() {
+function revealNext() {
+    if (gameOver || revealIndex >= scannedAnswers.length) {
+        return;
+    }
+    
+    // Check if current card hits a block
+    var currentCard = scannedAnswers[revealIndex];
+    var hitBlock = blocks.find(function(block) {
+        return block.cardId === currentCard;
+    });
+    
+    if (hitBlock) {
+        // Hit a block - bidder loses immediately
+        gameOver = true;
+        revealIndex++; // Show the blocked card
+        updateRevealScreen();
+        
+        setTimeout(function() {
+            gameState = 'complete';
+            bidderWins = false;
+            var country = SAMPLE_DATA.countries[currentCard];
+            gameOverReason = 'Hit a block! ' + country.name + ' (' + currentCard + ') was blocked with ' + hitBlock.multiplier + '× multiplier. Blockers win!';
+            updateResultsScreen();
+            showScreen(4);
+        }, 1500);
+        return;
+    }
+    
+    // Check ordering (except for first card)
+    if (revealIndex > 0) {
+        var previousCard = scannedAnswers[revealIndex - 1];
+        
+        if (isWrongOrder(currentCard, previousCard)) {
+            // Wrong order - bidder loses
+            gameOver = true;
+            revealIndex++; // Show the wrong card
+            updateRevealScreen();
+            
+            setTimeout(function() {
+                gameState = 'complete';
+                bidderWins = false;
+                var currentCountry = SAMPLE_DATA.countries[currentCard];
+                var previousCountry = SAMPLE_DATA.countries[previousCard];
+                var currentValue = getStatValue(currentCountry, currentPrompt.challenge);
+                var previousValue = getStatValue(previousCountry, currentPrompt.challenge);
+                
+                gameOverReason = 'Wrong order! ' + currentCountry.name + ' (' + currentValue + ') has higher ' + currentPrompt.challenge + ' than ' + previousCountry.name + ' (' + previousValue + '). Blockers win!';
+                updateResultsScreen();
+                showScreen(4);
+            }, 1500);
+            return;
+        }
+    }
+    
+    // Card is correct - move to next
+    revealIndex++;
+    
+    // Check if all cards revealed successfully
     if (revealIndex >= scannedAnswers.length) {
-        // All cards revealed successfully
+        updateRevealScreen();
         setTimeout(function() {
             gameState = 'complete';
             bidderWins = true;
+            gameOverReason = 'Perfect ranking! All cards in correct order. Bidder wins!';
             updateResultsScreen();
-            showScreen(6);
+            showScreen(4);
         }, 1000);
         return;
     }
-
-    // Increment to show current card
-    revealIndex++;
     
-    // Show the current card
+    // Continue to next card
     updateRevealScreen();
-    
-    // Check if this card breaks the ordering (except first card)
-    if (revealIndex > 1) { // Changed from > 0 to > 1 since we already incremented
-        var currentCard = scannedAnswers[revealIndex - 1]; // Current card
-        var previousCard = scannedAnswers[revealIndex - 2]; // Previous card
-        
-      if (isWrongOrder(currentCard, previousCard)) {
-    // Wrong order detected - game over
-    gameOver = true;
-    document.getElementById('revealBtn').style.display = 'none';
-    
-    setTimeout(function() {
-        gameState = 'complete';
-        bidderWins = false;
-        var currentCountry = SAMPLE_DATA.countries[currentCard];
-        var previousCountry = SAMPLE_DATA.countries[previousCard];
-        var currentValue = getStatValue(currentCountry, currentPrompt.challenge);
-        var previousValue = getStatValue(previousCountry, currentPrompt.challenge);
-        
-        gameOverReason = 'Wrong order! ' + currentCountry.name + ' (' + currentValue + ') has higher ' + currentPrompt.challenge + ' than ' + previousCountry.name + ' (' + previousValue + ').';
-        updateResultsScreen();
-        showScreen(6);
-    }, 1500);
-    return;
-}
-    }
-    
-    // Update button for next reveal
-    updateRevealButton();
 }
 
-function showScreen(screenId) {
-    document.querySelectorAll('.screen').forEach(function(screen) {
-        screen.classList.remove('active');
+function updateResultsScreen() {
+    var title = bidderWins ? '🎉 Bidder Wins!' : '🚫 Blockers Win!';
+    document.getElementById('resultsTitle').textContent = title;
+    
+    var content = '<p>' + gameOverReason + '</p>';
+    content += '<h4>Final Ranking:</h4>';
+    
+    scannedAnswers.forEach(function(cardId, index) {
+        var country = SAMPLE_DATA.countries[cardId];
+        var statDisplay = getStatDisplay(country, currentPrompt.challenge);
+        var isRevealed = index < revealIndex;
+        var cardClass = isRevealed ? (index === revealIndex - 1 && !bidderWins ? 'wrong' : 'revealed') : '';
+        
+        content += '<div class="card ' + cardClass + '">';
+        content += (index + 1) + '. ' + country.name + '<br>' + statDisplay;
+        if (!isRevealed) content += ' (Not revealed)';
+        content += '</div>';
     });
-    document.getElementById(screenId).classList.add('active');
+    
+    document.getElementById('resultsContent').innerHTML = content;
 }
 
 function resetGame() {
-    document.querySelectorAll('.screen').forEach(function(screen) {
-        screen.classList.remove('active');
-    });
-    prompt = null;
-    bidAmount = 0;
+    currentPrompt = null;
+    drawnCards = [];
+    blocks = [];
+    bidAmount = 3;
     scannedAnswers = [];
     revealIndex = 0;
-    document.getElementById('bidAmount').value = '';
-    document.getElementById('cardInput').value = '';
-    document.getElementById('finishBtn').style.display = 'none';
-    document.getElementById('revealBtn').style.display = 'block';
+    gameOver = false;
+    gameState = 'title';
+    bidderWins = false;
+    gameOverReason = '';
+    
+    showScreen(0);
 }
