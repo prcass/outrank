@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know-It-All Game App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a, #7c3aed);
+            min-height: 100vh;
+            padding: 1rem;
+            color: white;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            color: #1f2937;
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .button {
+            background: #3b82f6;
+            color: white;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin: 0.5rem 0;
+            transition: background-color 0.2s;
+        }
+        
+        .button:hover {
+            background: #2563eb;
+        }
+        
+        .button:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        .button-secondary {
+            background: #6b7280;
+        }
+        
+        .button-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .button-success {
+            background: #10b981;
+        }
+        
+        .button-success:hover {
+            background: #059669;
+        }
+        
+        .button-danger {
+            background: #ef4444;
+        }
+        
+        .button-danger:hover {
+            background: #dc2626;
+        }
+        
+        .input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin: 0.25rem 0;
+        }
+        
+        .scanner-area {
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .camera-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .reveal-item {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            border: 2px solid #d1d5db;
+        }
+        
+        .current {
+            border-color: #f59e0b;
+            background: #fef3c7;
+        }
+        
+        .correct {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+        
+        .wrong {
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+        
+        .score-box {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .bidder-score {
+            background: #dbeafe;
+        }
+        
+        .blocker-score {
+            background: #fecaca;
+        }
+        
+        .big-score {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .bidder-color {
+            color: #2563eb;
+        }
+        
+        .blocker-color {
+            color: #dc2626;
+        }
+        
+        .block-item {
+            display: flex;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+            align-items: center;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #f9fafb;
+        }
+        
+        .flex {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .flex-1 {
+            flex: 1;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+        
+        .mt-4 {
+            margin-top: 1rem;
+        }
+        
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        
+        .text-gray-600 {
+            color: #4b5563;
+        }
+        
+        .font-medium {
+            font-weight: 500;
+        }
+        
+        .font-bold {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Screen 1: QR Scanner -->
+            <div id="screen1">
+                <h1 class="title">📱 Know-It-All</h1>
+                <div class="scanner-area">
+                    <div class="camera-icon">📷</div>
+                    <p class="text-gray-600 mb-4">Scan QR code on prompt card</p>
+                    <button class="button" onclick="startGame()">Simulate QR Scan</button>
+                </div>
+                <button class="button button-secondary" onclick="showManualMode()">Manual Selection</button>
+            </div>
+
+            <!-- Screen 2: Setup -->
+            <div id="screen2" class="hidden">
+                <h2 class="title">Game Setup</h2>
+                <div class="mb-4">
+                    <p class="text-sm text-gray-600 mb-4">Prompt: Rank by GDP (Highest to Lowest)</p>
+                    <p class="text-sm text-gray-600 mb-4">Cards drawn: 001, 002, 003, 004, 005</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="font-medium">Bid Amount:</label>
+                    <input type="number" id="bidAmount" class="input" placeholder="How many cards will you rank?" min="1" max="5">
+                </div>
+
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium">Blocks</span>
+                        <button class="button button-success" onclick="addBlock()" style="width: auto; padding: 0.5rem 1rem;">Add Block</button>
+                    </div>
+                    <div id="blocksContainer"></div>
+                </div>
+
+                <button class="button" onclick="continueToScanning()">Continue to Scanning</button>
+            </div>
+
+            <!-- Screen 3: Scan Answer Cards -->
+            <div id="screen3" class="hidden">
+                <h2 class="title">Scan Answer Cards</h2>
+                <p class="text-sm text-gray-600 mb-4" id="scanInstructions">Scan your cards in ranking order</p>
+                
+                <div class="scanner-area">
+                    <div class="camera-icon" id="scanningIcon">📷</div>
+                    <p class="text-gray-600 mb-4" id="scanStatus">Ready to scan</p>
+                    <button class="button" id="scanButton" onclick="scanAnswerCards()">📷 Scan Answer Cards</button>
+                </div>
+            </div>
+
+            <!-- Screen 4: Reveal -->
+            <div id="screen4" class="hidden">
+                <h2 class="title">Reveal Phase</h2>
+                <div id="revealResults" class="mb-4"></div>
+                <button class="button" id="revealButton" onclick="revealNext()">Reveal Next</button>
+            </div>
+
+            <!-- Screen 5: Results -->
+            <div id="screen5" class="hidden">
+                <div class="text-center mb-4">
+                    <div style="font-size: 4rem;">🏆</div>
+                    <h2 class="title" id="resultTitle">Game Complete!</h2>
+                </div>
+                
+                <div class="score-box bidder-score">
+                    <span class="font-medium">Bidder Points:</span>
+                    <span id="bidderPoints" class="big-score bidder-color">0</span>
+                </div>
+                
+                <div class="score-box blocker-score">
+                    <span class="font-medium">Blocker Points:</span>
+                    <span id="blockerPoints" class="big-score blocker-color">0</span>
+                </div>
+                
+                <button class="button button-success" onclick="newGame()">New Game</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let currentScreen = 1;
+        let bidAmount = 0;
+        let blocks = [];
+        let scannedAnswers = [];
+        let revealIndex = 0;
+        let gameResult = null;
+        let blockCount = 0;
+
+        const countries = {
+            '001': 'United States',
+            '002': 'China',
+            '003': 'Japan',
+            '004': 'Germany',
+            '005': 'India'
+        };
+
+        const correctOrder = ['001', '002', '003', '004', '005'];
+
+        function showScreen(screenNum) {
+            // Hide all screens
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById('screen' + i).classList.add('hidden');
+            }
+            // Show target screen
+            document.getElementById('screen' + screenNum).classList.remove('hidden');
+            currentScreen = screenNum;
+        }
+
+        function startGame() {
+            showScreen(2);
+        }
+
+        function showManualMode() {
+            alert('Manual mode: Select your drawn cards from the physical deck, then continue with setup.');
+            showScreen(2);
+        }
+
+        function addBlock() {
+            blockCount++;
+            const container = document.getElementById('blocksContainer');
+            const blockDiv = document.createElement('div');
+            blockDiv.className = 'block-item';
+            blockDiv.id = 'block' + blockCount;
+            
+            blockDiv.innerHTML = 
+                '<select class="input flex-1" onchange="updateBlocks()">' +
+                '<option value="">Select Card to Block</option>' +
+                '<option value="001">001 - United States</option>' +
+                '<option value="002">002 - China</option>' +
+                '<option value="003">003 - Japan</option>' +
+                '<option value="004">004 - Germany</option>' +
+                '<option value="005">005 - India</option>' +
+                '</select>' +
+                '<select class="input" style="width: 80px;" onchange="updateBlocks()">' +
+                '<option value="1">1×</option><option value="2">2×</option><option value="3">3×</option><option value="4">4×</option>' +
+                '</select>' +
+                '<button class="button button-danger" style="width: 40px; padding: 0.5rem;" onclick="removeBlock(' + blockCount + ')">×</button>';
+            
+            container.appendChild(blockDiv);
+        }
+
+        function removeBlock(id) {
+            const elem = document.getElementById('block' + id);
+            if (elem) {
+                elem.remove();
+                updateBlocks();
+            }
+        }
+
+        function updateBlocks() {
+            blocks = [];
+            const blockDivs = document.querySelectorAll('.block-item');
+            blockDivs.forEach(div => {
+                const selects = div.querySelectorAll('select');
+                if (selects[0].value) {
+                    blocks.push({
+                        cardId: selects[0].value,
+                        multiplier: parseInt(selects[1].value)
+                    });
+                }
+            });
+        }
+
+        function continueToScanning() {
+            const bidAmountInput = document.getElementById('bidAmount');
+            bidAmount = parseInt(bidAmountInput.value);
+            
+            if (!bidAmount || bidAmount < 1 || bidAmount > 5) {
+                alert('Please enter a valid bid amount (1-5)');
+                return;
+            }
+
+            updateBlocks();
+            const blockedCards = blocks.map(b => b.cardId);
+            const availableCards = ['001', '002', '003', '004', '005'].filter(card => !blockedCards.includes(card));
+            
+            if (availableCards.length < bidAmount) {
+                alert('Not enough unblocked cards for your bid amount!');
+                return;
+            }
+
+            document.getElementById('scanInstructions').textContent = 
+                `Scan ${bidAmount} cards in ranking order (highest GDP to lowest GDP)`;
+            
+            showScreen(3);
+        }
+
+        function scanAnswerCards() {
+            const scanButton = document.getElementById('scanButton');
+            const scanStatus = document.getElementById('scanStatus');
+            const scanningIcon = document.getElementById('scanningIcon');
+            
+            scanButton.disabled = true;
+            scanButton.textContent = 'Scanning...';
+            scanStatus.textContent = 'Scanning your cards...';
+            scanningIcon.textContent = '📡';
+            
+            setTimeout(() => {
+                // Simulate scanning - generate random ranking
+                const availableCards = ['001', '002', '003', '004', '005'].filter(card => 
+                    !blocks.some(block => block.cardId === card)
+                );
+                
+                // Shuffle and take bidAmount cards
+                const shuffled = availableCards.sort(() => Math.random() - 0.5);
+                scannedAnswers = shuffled.slice(0, bidAmount);
+                
+                revealIndex = 0;
+                showScreen(4);
+                updateRevealDisplay();
+            }, 2000);
+        }
+
+        function updateRevealDisplay() {
+            const container = document.getElementById('revealResults');
+            container.innerHTML = '';
+            
+            scannedAnswers.forEach((cardId, index) => {
+                const div = document.createElement('div');
+                div.className = 'reveal-item';
+                
+                if (index === revealIndex) {
+                    div.classList.add('current');
+                } else if (index < revealIndex) {
+                    const correctCard = correctOrder[index];
+                    const isCorrect = cardId === correctCard;
+                    div.classList.add(isCorrect ? 'correct' : 'wrong');
+                }
+                
+                div.innerHTML = 
+                    '<div class="font-medium">Position ' + (index + 1) + '</div>' +
+                    '<div class="text-sm">Scanned: ' + countries[cardId] + '</div>' +
+                    (index < revealIndex ? 
+                        '<div class="text-sm text-gray-600">' + 
+                        (cardId === correctOrder[index] ? '✅ Correct' : '❌ Wrong (Correct: ' + countries[correctOrder[index]] + ')') +
+                        '</div>' : '');
+                
+                container.appendChild(div);
+            });
+            
+            if (revealIndex >= scannedAnswers.length) {
+                document.getElementById('revealButton').style.display = 'none';
+            }
+        }
+
+        function revealNext() {
+            if (revealIndex < scannedAnswers.length) {
+                const userCard = scannedAnswers[revealIndex];
+                
+                // Check if blocked
+                const blockedCard = blocks.find(block => block.cardId === userCard);
+                if (blockedCard) {
+                    const totalBlockerPoints = blocks.reduce((sum, block) => 
+                        sum + (bidAmount * block.multiplier), 0);
+                    
+                    gameResult = {
+                        success: false,
+                        message: `Hit a block at position ${revealIndex + 1}!`,
+                        bidderScore: 0,
+                        blockerScore: totalBlockerPoints
+                    };
+                    showResults();
+                    return;
+                }
+                
+                // Check ordering (for position 2+)
+                if (revealIndex > 0) {
+                    const previousCard = scannedAnswers[revealIndex - 1];
+                    const currentCardIndex = correctOrder.indexOf(userCard);
+                    const previousCardIndex = correctOrder.indexOf(previousCard);
+                    
+                    if (currentCardIndex < previousCardIndex) {
+                        const totalBlockerPoints = blocks.reduce((sum, block) => 
+                            sum + (bidAmount * block.multiplier), 0);
+                        
+                        gameResult = {
+                            success: false,
+                            message: `Wrong order at position ${revealIndex + 1}!`,
+                            bidderScore: 0,
+                            blockerScore: totalBlockerPoints
+                        };
+                        showResults();
+                        return;
+                    }
+                }
+                
+                revealIndex++;
+                updateRevealDisplay();
+                
+                if (revealIndex >= scannedAnswers.length) {
+                    // All correct!
+                    const successfulBlocks = blocks.filter(block => 
+                        !scannedAnswers.includes(block.cardId));
+                    const blockBonuses = successfulBlocks.reduce((sum, block) => sum + block.multiplier, 0);
+                    
+                    gameResult = {
+                        success: true,
+                        message: 'Perfect! All cards correct!',
+                        bidderScore: bidAmount + blockBonuses,
+                        blockerScore: 0
+                    };
+                    showResults();
+                }
+            }
+        }
+
+        function showResults() {
+            document.getElementById('resultTitle').textContent = 
+                gameResult.success ? '🎉 Success!' : '💥 Failed!';
+            document.getElementById('bidderPoints').textContent = gameResult.bidderScore;
+            document.getElementById('blockerPoints').textContent = gameResult.blockerScore;
+            showScreen(5);
+        }
+
+        function newGame() {
+            currentScreen = 1;
+            bidAmount = 0;
+            blocks = [];
+            scannedAnswers = [];
+            revealIndex = 0;
+            gameResult = null;
+            blockCount = 0;
+            
+            document.getElementById('bidAmount').value = '';
+            document.getElementById('blocksContainer').innerHTML = '';
+            document.getElementById('revealButton').style.display = 'block';
+            
+            showScreen(1);
+        }
+    </script>
+</body>
+</html>
