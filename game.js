@@ -304,30 +304,43 @@ function updateRevealScreen() {
 }
 
 function revealNext() {
+    console.log("=== REVEAL NEXT CALLED ===");
+    console.log("gameOver:", gameOver);
+    console.log("revealIndex:", revealIndex);
+    console.log("scannedAnswers.length:", scannedAnswers.length);
+    
     if (gameOver || revealIndex >= scannedAnswers.length) {
+        console.log("Exiting early - game over or no more cards");
         return;
     }
     
     var currentCard = scannedAnswers[revealIndex];
+    console.log("About to reveal card at index", revealIndex, ":", currentCard);
     
     // Check if this card is in wrong order (except first card)
     if (revealIndex > 0) {
         var previousCard = scannedAnswers[revealIndex - 1];
+        console.log("Checking order - current:", currentCard, "vs previous:", previousCard);
         
         if (isWrongOrder(currentCard, previousCard)) {
+            console.log("WRONG ORDER DETECTED!");
             // Wrong order - reveal as red and end game
             gameOver = true;
             bidderWins = false;
             revealIndex++; // Show the failing card
+            console.log("Set gameOver=true, bidderWins=false, revealIndex now:", revealIndex);
             
             // Hide button immediately
             document.getElementById('revealBtn').style.display = 'none';
+            console.log("Button hidden");
             
             // Update screen to show the red card
             updateRevealScreen();
+            console.log("Screen updated - should show red card");
             
             // Show results after delay
             setTimeout(function() {
+                console.log("Showing results screen");
                 gameState = 'complete';
                 var currentCountry = SAMPLE_DATA.countries[currentCard];
                 var previousCountry = SAMPLE_DATA.countries[previousCard];
@@ -339,15 +352,21 @@ function revealNext() {
                 showScreen(4);
             }, 1500);
             return;
+        } else {
+            console.log("Order is correct");
         }
+    } else {
+        console.log("First card - skipping order check");
     }
     
     // Card is correct - reveal as green
     revealIndex++;
+    console.log("Correct card - revealIndex now:", revealIndex);
     updateRevealScreen();
     
     // Check if all cards revealed
     if (revealIndex >= scannedAnswers.length) {
+        console.log("All cards revealed - bidder wins!");
         document.getElementById('revealBtn').style.display = 'none';
         setTimeout(function() {
             gameState = 'complete';
