@@ -265,7 +265,7 @@ function finishScanning() {
 
 function updateRevealScreen() {
     var revealInfo = '<h3>' + currentPrompt.label + '</h3>';
-    revealInfo += '<p>Revealing: ' + (revealIndex + 1) + ' of ' + scannedAnswers.length + '</p>';
+    revealInfo += '<p>Revealing: ' + revealIndex + ' of ' + scannedAnswers.length + '</p>';
     document.getElementById('revealInfo').innerHTML = revealInfo;
     
     var cardsHtml = '';
@@ -275,22 +275,17 @@ function updateRevealScreen() {
         var cardContent = '???';
         
         if (index < revealIndex) {
-            // Previously revealed cards
-            cardClass += ' revealed';
-            cardContent = (index + 1) + '. ' + country.name + '<br>' + getStatDisplay(country, currentPrompt.challenge);
-        } else if (index === revealIndex) {
-            // Current card being revealed
-            if (gameOver) {
-                // Show as wrong if game is over
+            // Previously revealed cards or current failing card
+            if (index === revealIndex - 1 && gameOver && !bidderWins) {
+                // This is the failing card - show as wrong/red
                 cardClass += ' wrong';
-                cardContent = (index + 1) + '. ' + country.name + '<br>' + getStatDisplay(country, currentPrompt.challenge);
             } else {
-                // Show as revealed if not game over
+                // Normal revealed card - show as green
                 cardClass += ' revealed';
-                cardContent = (index + 1) + '. ' + country.name + '<br>' + getStatDisplay(country, currentPrompt.challenge);
             }
+            cardContent = (index + 1) + '. ' + country.name + '<br>' + getStatDisplay(country, currentPrompt.challenge);
         } else {
-            // Future cards
+            // Future unrevealed cards
             cardContent = (index + 1) + '. ???';
         }
         
@@ -316,18 +311,16 @@ function revealNext() {
     
     var currentCard = scannedAnswers[revealIndex];
     
-    // Increment first to show the current card
-    revealIndex++;
-    
-    // Check ordering (except for first card)
-    if (revealIndex > 1) {
-        var previousCard = scannedAnswers[revealIndex - 2];
+    // Check ordering BEFORE revealing (except for first card)
+    if (revealIndex > 0) {
+        var previousCard = scannedAnswers[revealIndex - 1];
         
         if (isWrongOrder(currentCard, previousCard)) {
-            // Wrong order - game over immediately
+            // Wrong order detected - show red card and end game
             gameOver = true;
+            revealIndex++; // Increment to show the failing card
             document.getElementById('revealBtn').style.display = 'none';
-            updateRevealScreen();
+            updateRevealScreen(); // This will show the card as red because gameOver = true
             
             setTimeout(function() {
                 gameState = 'complete';
@@ -341,11 +334,12 @@ function revealNext() {
                 updateResultsScreen();
                 showScreen(4);
             }, 1500);
-            return;
+            return; // Exit immediately - no more processing
         }
     }
     
-    // Card is correct - update screen
+    // Card is correct - reveal it
+    revealIndex++;
     updateRevealScreen();
     
     // Check if all cards revealed successfully
