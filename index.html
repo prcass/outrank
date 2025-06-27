@@ -7,44 +7,57 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1 class="title">Know-It-All</h1>
-    <div style="font-size: 4rem; margin: 20px;">📷</div>
-    <p style="font-size: 1.2rem; margin-bottom: 30px;">Scan a prompt card to begin</p>
-    
-    <button class="btn" onclick="simulateQRScan()">🎲 Simulate QR Scan</button>
-    
-    <div id="blockerScreen" class="screen">
+    <!-- Title Screen -->
+    <div id="titleScreen" class="screen">
+        <h1>🧠 Know-It-All</h1>
+        <div class="camera-icon">📷</div>
+        <p>Scan a prompt card to begin</p>
+        <button class="btn" onclick="simulateQRScan()">🎲 Simulate QR Scan</button>
+        <button class="btn" onclick="startRealQRScan()">📷 Scan Prompt Card</button>
+    </div>
+
+    <!-- Blocker Setup Screen -->
+    <div id="blockerScreen" class="screen" style="display: none;">
         <h2>Blocker Setup</h2>
-        <div id="promptLabel" style="color: #7c3aed; font-size: 1.25rem; margin-bottom: 20px;"></div>
-        <label style="display: block; margin-bottom: 10px;">Bidder: How many cards will you rank?</label>
-        <input type="number" id="bidAmount" min="1" max="10" style="padding: 10px; margin-bottom: 20px; width: 100px;">
-        <button class="btn" onclick="proceedToScanning()">Continue to Card Scanning</button>
-        <button class="btn" onclick="resetGame()">🏠 Back to Home</button>
+        <div id="promptInfo" style="margin-bottom: 20px;"></div>
+        <div id="drawnCardsInfo" style="margin-bottom: 20px;"></div>
+        
+        <div style="margin: 20px 0;">
+            <label>Bid Amount (1-10 cards): </label>
+            <input type="number" id="bidAmount" min="1" max="10" value="3" style="width: 60px; padding: 5px;">
+        </div>
+        
+        <div id="blockerSetup" style="margin: 20px 0;"></div>
+        <button class="btn" onclick="continueToScanning()">▶️ Continue to Scanning</button>
     </div>
 
-    <div id="scanScreen" class="screen">
-        <h2>Scan Your Answer Cards</h2>
+    <!-- Card Scanning Screen -->
+    <div id="scanScreen" class="screen" style="display: none;">
+        <h2>Card Scanning</h2>
         <div id="scanInfo" style="margin-bottom: 20px;"></div>
-        <input type="text" id="cardInput" placeholder="Enter card ID (001-010)" style="padding: 10px; margin-bottom: 10px; width: 150px;">
-        <button class="btn" onclick="scanCard()">📷 Scan Card</button>
+        <div id="scannedCards" style="margin: 20px 0;"></div>
+        <div style="margin: 20px 0;">
+            <input type="text" id="cardInput" placeholder="Enter card number (e.g., 001)" style="padding: 10px; width: 200px;">
+            <button class="btn" onclick="scanCard()">📱 Scan Card</button>
+        </div>
         <button class="btn" onclick="simulateAllCards()">🎲 Simulate All Cards</button>
-        <button id="finishBtn" class="btn" onclick="finishScanning()" style="display: none;">✅ Finish Scanning</button>
-        <div id="scannedList" style="margin: 20px 0;"></div>
-        <button class="btn" onclick="resetGame()">🏠 Back to Home</button>
+        <button class="btn" onclick="finishScanning()" id="finishBtn" style="display: none;">▶️ Start Reveal</button>
     </div>
 
-    <div id="revealScreen" class="screen">
+    <!-- Reveal Screen -->
+    <div id="revealScreen" class="screen" style="display: none;">
         <h2>Reveal Phase</h2>
         <div id="revealInfo" style="margin-bottom: 20px;"></div>
         <div id="revealCards" style="margin: 20px 0;"></div>
-        <button id="revealBtn" class="btn" onclick="RevealNext()">▶️ Reveal Next Card</button>
+        <button id="revealBtn" class="btn" onclick="revealNext()">▶️ Reveal Next Card</button>
         <button class="btn" onclick="resetGame()">🏠 Back to Home</button>
     </div>
 
-    <div id="resultScreen" class="screen">
-        <h2 id="resultTitle"></h2>
-        <div id="resultMessage" style="margin: 20px 0;"></div>
-        <button class="btn" onclick="resetGame()">🔄 New Game</button>
+    <!-- Results Screen -->
+    <div id="resultsScreen" class="screen" style="display: none;">
+        <h2 id="resultsTitle">Game Results</h2>
+        <div id="resultsContent" style="margin: 20px 0;"></div>
+        <button class="btn" onclick="resetGame()">🎮 Play Again</button>
     </div>
 
     <script src="game.js"></script>
