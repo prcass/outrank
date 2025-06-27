@@ -314,37 +314,19 @@ function revealNext() {
         return;
     }
     
-    // Check if current card hits a block
     var currentCard = scannedAnswers[revealIndex];
-    var hitBlock = blocks.find(function(block) {
-        return block.cardId === currentCard;
-    });
     
-    if (hitBlock) {
-        // Hit a block - bidder loses immediately
-        gameOver = true;
-        revealIndex++; // Show the blocked card
-        updateRevealScreen();
-        
-        setTimeout(function() {
-            gameState = 'complete';
-            bidderWins = false;
-            var country = SAMPLE_DATA.countries[currentCard];
-            gameOverReason = 'Hit a block! ' + country.name + ' (' + currentCard + ') was blocked with ' + hitBlock.multiplier + '× multiplier. Blockers win!';
-            updateResultsScreen();
-            showScreen(4);
-        }, 1500);
-        return;
-    }
+    // Increment first to show the current card
+    revealIndex++;
     
     // Check ordering (except for first card)
-    if (revealIndex > 0) {
-        var previousCard = scannedAnswers[revealIndex - 1];
+    if (revealIndex > 1) {
+        var previousCard = scannedAnswers[revealIndex - 2];
         
         if (isWrongOrder(currentCard, previousCard)) {
-            // Wrong order - bidder loses
+            // Wrong order - game over immediately
             gameOver = true;
-            revealIndex++; // Show the wrong card
+            document.getElementById('revealBtn').style.display = 'none';
             updateRevealScreen();
             
             setTimeout(function() {
@@ -363,12 +345,12 @@ function revealNext() {
         }
     }
     
-    // Card is correct - move to next
-    revealIndex++;
+    // Card is correct - update screen
+    updateRevealScreen();
     
     // Check if all cards revealed successfully
     if (revealIndex >= scannedAnswers.length) {
-        updateRevealScreen();
+        document.getElementById('revealBtn').style.display = 'none';
         setTimeout(function() {
             gameState = 'complete';
             bidderWins = true;
@@ -376,11 +358,7 @@ function revealNext() {
             updateResultsScreen();
             showScreen(4);
         }, 1000);
-        return;
     }
-    
-    // Continue to next card
-    updateRevealScreen();
 }
 
 function updateResultsScreen() {
