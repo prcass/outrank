@@ -183,25 +183,25 @@ function RevealNext() {
         var currentCard = scannedAnswers[revealIndex - 1]; // Current card
         var previousCard = scannedAnswers[revealIndex - 2]; // Previous card
         
-        if (isWrongOrder(currentCard, previousCard)) {
-            // Wrong order detected - game over
-            gameOver = true;
-       document.getElementById('revealBtn').style.display = 'none'; // Hide the reveal button immediately
-            
-            setTimeout(function() {
-                gameState = 'complete';
-                bidderWins = false;
-                var currentCountry = SAMPLE_DATA.countries[currentCard];
-                var previousCountry = SAMPLE_DATA.countries[previousCard];
-                var currentValue = getStatValue(currentCountry, currentPrompt.challenge);
-                var previousValue = getStatValue(previousCountry, currentPrompt.challenge);
-                
-                gameOverReason = 'Wrong order! ' + currentCountry.name + ' (' + currentValue + ') has higher ' + currentPrompt.challenge + ' than ' + previousCountry.name + ' (' + previousValue + ').';
-                updateResultsScreen();
-                showScreen(6);
-            }, 1500);
-            return;
-        }
+      if (isWrongOrder(currentCard, previousCard)) {
+    // Wrong order detected - game over
+    gameOver = true;
+    document.getElementById('revealBtn').style.display = 'none';
+    
+    setTimeout(function() {
+        gameState = 'complete';
+        bidderWins = false;
+        var currentCountry = SAMPLE_DATA.countries[currentCard];
+        var previousCountry = SAMPLE_DATA.countries[previousCard];
+        var currentValue = getStatValue(currentCountry, currentPrompt.challenge);
+        var previousValue = getStatValue(previousCountry, currentPrompt.challenge);
+        
+        gameOverReason = 'Wrong order! ' + currentCountry.name + ' (' + currentValue + ') has higher ' + currentPrompt.challenge + ' than ' + previousCountry.name + ' (' + previousValue + ').';
+        updateResultsScreen();
+        showScreen(6);
+    }, 1500);
+    return;
+}
     }
     
     // Update button for next reveal
