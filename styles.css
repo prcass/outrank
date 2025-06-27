@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #2563eb, #7c3aed);
+    min-height: 100vh;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin: 0;
+}
+
+.btn {
+    background: #ea580c;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin: 10px;
+    width: 300px;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background: #c2410c;
+}
+
+.screen {
+    display: none;
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    color: black;
+    padding: 30px;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.screen.active {
+    display: block;
+}
+
+.title {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.reveal-card {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    transition: all 0.5s;
+}
+
+.reveal-card.green {
+    background: #dcfce7;
+    border-color: #16a34a;
+}
+
+.reveal-card.red {
+    background: #fee2e2;
+    border-color: #dc2626;
+}
+
+.reveal-card.gray {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
