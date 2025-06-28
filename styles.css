@@ -46,6 +46,7 @@ body {
         padding: 8px;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         position: relative;
+        pointer-events: none; /* Fix: Allow clicks to pass through */
     }
     
     /* iPhone notch for desktop */
@@ -60,12 +61,14 @@ body {
         background: #1a1a1a;
         border-radius: 0 0 20px 20px;
         z-index: 10;
+        pointer-events: none; /* Fix: Allow clicks to pass through */
     }
     
     .screen {
         height: 796px;
         border-radius: 32px;
         overflow: hidden;
+        pointer-events: auto; /* Fix: Re-enable clicks on the actual screen */
     }
 }
 
