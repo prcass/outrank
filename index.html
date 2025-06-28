@@ -9,6 +9,60 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
+    <!-- Player Setup Screen -->
+    <div id="playerScreen" class="screen">
+        <div class="status-bar">
+            <span class="time">9:41</span>
+            <div class="indicators">
+                <span>📶</span>
+                <span>🔋</span>
+            </div>
+        </div>
+
+        <div class="app-header">
+            <div class="header-icon">👥</div>
+            <h2>Player Setup</h2>
+            <p>Enter all player names and select the bidder</p>
+        </div>
+
+        <div class="content">
+            <div class="action-card">
+                <div class="card-icon">👥</div>
+                <div class="card-title">Add All Players</div>
+                <div class="card-description">Enter the names of everyone who will be playing</div>
+                <div id="allPlayers">
+                    <div class="form-group">
+                        <label>Player 1:</label>
+                        <input type="text" id="player1" placeholder="Enter player name">
+                    </div>
+                </div>
+                <button class="btn" onclick="addPlayer()" style="margin-bottom: 16px;">➕ Add Another Player</button>
+            </div>
+
+            <div class="action-card">
+                <div class="card-icon">🎯</div>
+                <div class="card-title">Select Bidder for This Round</div>
+                <div class="card-description">Choose who will be the bidder for this round</div>
+                <div class="form-group">
+                    <label>Bidder:</label>
+                    <select id="bidderSelect">
+                        <option value="">Select the bidder...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="action-card">
+                <div class="card-title">Round Summary</div>
+                <div id="roundSummary" class="card-description">
+                    Add players and select a bidder to see the round setup
+                </div>
+            </div>
+
+            <button class="btn" onclick="startRoundWithBidder()">🎮 Start Round</button>
+            <button class="btn" onclick="showScreen('titleScreen')" style="background: var(--outline); color: var(--on-surface-variant);">← Back</button>
+        </div>
+    </div>
+
     <!-- Title Screen -->
     <div id="titleScreen" class="screen active">
         <div class="status-bar">
@@ -32,6 +86,7 @@
                 <div class="card-description">Scan a prompt card to begin your ranking challenge</div>
             </div>
 
+            <button class="btn" onclick="showScreen('playerScreen')">👥 Setup Players</button>
             <button class="btn" onclick="simulateQRScan()">🎲 Start Demo Game</button>
             <button class="btn" onclick="startRealQRScan()">📷 Scan QR Code</button>
         </div>
@@ -57,13 +112,6 @@
             <div class="action-card">
                 <div id="promptInfo"></div>
             </div>
-
-            <div class="section-header">
-                <div class="section-icon">🃏</div>
-                <div class="section-title">Cards Drawn</div>
-            </div>
-            
-            <div id="drawnCardsInfo"></div>
             
             <div class="form-group">
                 <label>Bid Amount (1-10 cards):</label>
