@@ -35,6 +35,13 @@
                     </div>
                     
                     <div class="action-card">
+                        <div class="card-icon">🏆</div>
+                        <div class="card-title">View Scores</div>
+                        <div class="card-description">See current tournament standings</div>
+                        <button class="btn secondary" onclick="showScreen('scoresScreen')">🏆 View Scores</button>
+                    </div>
+                    
+                    <div class="action-card">
                         <div class="card-icon">🎲</div>
                         <div class="card-title">Quick Demo</div>
                         <div class="card-description">Try the game with sample data</div>
@@ -251,7 +258,55 @@
                     
                     <div class="button-group">
                         <button class="btn primary" onclick="nextRound()">🔄 Next Round</button>
+                        <button class="btn secondary" onclick="showScreen('scoresScreen')">🏆 View Scores</button>
                         <button class="btn secondary" onclick="newGame()">🏠 New Game</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Scores Screen -->
+            <div id="scoresScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Tournament Scores</h2>
+                    <p class="screen-subtitle">Current standings and statistics</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">🏆</div>
+                            <div class="section-title">Leaderboard</div>
+                        </div>
+                        <div id="leaderboard">
+                            <!-- Leaderboard will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">📊</div>
+                            <div class="section-title">Player Statistics</div>
+                        </div>
+                        <div id="playerStats">
+                            <!-- Player stats will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">💎</div>
+                            <div class="section-title">Chip Inventory</div>
+                        </div>
+                        <div id="chipInventory">
+                            <!-- Chip inventory will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="showScreen('playerScreen')">🎮 Play Round</button>
+                        <button class="btn secondary" onclick="clearScores()">🗑️ Clear Scores</button>
+                        <button class="btn secondary" onclick="showScreen('titleScreen')">🏠 Back to Home</button>
                     </div>
                 </div>
             </div>
