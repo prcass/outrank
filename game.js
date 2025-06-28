@@ -1,10 +1,7 @@
-// Test function - add this to the very top of game.js
+// Working Know-It-All Game Logic
 console.log("JavaScript file loaded successfully!");
 
-function testButton() {
-    alert("JavaScript is working!");
-}
-// Complete Know-It-All Game Logic with Chip System
+// Game State Variables
 var currentPrompt = null;
 var drawnCards = [];
 var blocks = [];
@@ -19,8 +16,8 @@ var gameOverReason = '';
 // Player management with chip system
 var players = {
     bidder: '',
-    allPlayers: [], // All players in the game
-    chips: {} // Track each player's chips: {playerName: {3: true, 5: true, 7: true}}
+    allPlayers: [],
+    chips: {}
 };
 var playerCount = 1;
 var currentRound = 1;
@@ -46,18 +43,6 @@ var SAMPLE_DATA = {
     }
 };
 
-// Initialize chips for all players
-function initializePlayerChips() {
-    players.chips = {};
-    players.allPlayers.forEach(function(playerName) {
-        players.chips[playerName] = {
-            3: true,  // Has 3-point chip
-            5: true,  // Has 5-point chip  
-            7: true   // Has 7-point chip
-        };
-    });
-}
-
 // Utility Functions
 function showScreen(screenId) {
     console.log("Switching to screen:", screenId);
@@ -72,7 +57,7 @@ function showScreen(screenId) {
     var targetScreen = document.getElementById(screenId);
     if (targetScreen) {
         targetScreen.classList.add('active');
-        console.log("Screen switched successfully");
+        console.log("Screen switched successfully to:", screenId);
     } else {
         console.error("Screen not found:", screenId);
     }
@@ -115,6 +100,20 @@ function isWrongOrder(currentCardId, previousCardId) {
     return false;
 }
 
+// Initialize chips for all players
+function initializePlayerChips() {
+    players.chips = {};
+    players.allPlayers.forEach(function(playerName) {
+        players.chips[playerName] = {
+            3: true,
+            5: true,
+            7: true,
+            score: 0,
+            extra: {}
+        };
+    });
+}
+
 // Main Game Functions
 function simulateQRScan() {
     console.log("Starting QR scan simulation...");
@@ -150,13 +149,19 @@ function startRealQRScan() {
 // Player Management Functions
 function addPlayer() {
     playerCount++;
+    var allPlayersElement = document.getElementById('allPlayers');
+    if (!allPlayersElement) {
+        console.error('allPlayers element not found');
+        return;
+    }
+    
     var playerHtml = '<div class="form-group" id="playerGroup' + playerCount + '">' +
         '<label>Player ' + playerCount + ':</label>' +
         '<input type="text" id="player' + playerCount + '" placeholder="Enter player name">' +
         '<button onclick="removePlayer(' + playerCount + ')" style="background: var(--error); color: white; border: none; padding: 8px 12px; border-radius: 6px; margin-left: 10px; cursor: pointer;">Remove</button>' +
         '</div>';
     
-    document.getElementById('allPlayers').insertAdjacentHTML('beforeend', playerHtml);
+    allPlayersElement.insertAdjacentHTML('beforeend', playerHtml);
     
     // Add event listener to the new input
     setTimeout(function() {
@@ -284,22 +289,24 @@ function startRoundWithBidder() {
     simulateQRScan();
 }
 
-// Chip Blocking System
+// Blocker Screen
 function updateBlockerScreen() {
     var promptInfo = document.getElementById('promptInfo');
-    if (!promptInfo) {
-        console.error('promptInfo element not found');
+    var drawnCardsInfo = document.getElementById('drawnCardsInfo');
+    var blockerSetup = document.getElementById('blockerSetup');
+    
+    if (!promptInfo || !drawnCardsInfo || !blockerSetup) {
+        console.error('Required elements not found for blocker screen');
         return;
     }
     
-    promptInfo.innerHTML = 'your content here';
-     // Update prompt info
-    document.getElementById('promptInfo').innerHTML = 
+    // Update prompt info
+    promptInfo.innerHTML = 
         '<div class="card-title">' + currentPrompt.label + '</div>' +
         '<div class="card-description">Challenge: ' + currentPrompt.challenge.toUpperCase() + '</div>';
     
-    // Hide the drawn cards display
-    document.getElementById('drawnCardsInfo').innerHTML = '';
+    // Hide drawn cards
+    drawnCardsInfo.innerHTML = '';
     
     // Update blocker setup with chip system
     var blockerHtml = '<div class="section-header">' +
@@ -360,12 +367,14 @@ function updateBlockerScreen() {
         '<div id="blocksList">No blocks placed yet</div>' +
         '</div>';
     
-    document.getElementById('blockerSetup').innerHTML = blockerHtml;
+    blockerSetup.innerHTML = blockerHtml;
     updateBlocksList();
 }
 
 function placeChipBlock(playerName, points) {
     var cardSelect = document.getElementById(playerName + '_' + points + '_card');
+    if (!cardSelect) return;
+    
     var cardId = cardSelect.value;
     
     if (!cardId) {
@@ -402,12 +411,13 @@ function placeChipBlock(playerName, points) {
     // Reset select
     cardSelect.value = '';
     
-    // Refresh the blocker screen to update available chips
+    // Refresh the blocker screen
     updateBlockerScreen();
 }
 
 function updateBlocksList() {
     var blocksList = document.getElementById('blocksList');
+    if (!blocksList) return;
     
     if (blocks.length === 0) {
         blocksList.innerHTML = '<p style="color: var(--on-surface-variant); text-align: center;">No blocks placed yet</p>';
@@ -417,7 +427,7 @@ function updateBlocksList() {
     var blocksHtml = '';
     blocks.forEach(function(block, index) {
         var country = SAMPLE_DATA.countries[block.cardId];
-        blocksHtml += '<div class="blocker-item" style="display: flex; justify-content: space-between; align-items: center;">' +
+        blocksHtml += '<div class="blocker-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 12px; border: 1px solid var(--outline); border-radius: 8px;">' +
             '<div>' +
             '<strong>' + block.cardId + ' - ' + country.name + '</strong>' +
             '<div style="font-size: 14px; color: var(--on-surface-variant);">' + block.playerName + ' placed ' + block.points + ' points</div>' +
@@ -445,7 +455,13 @@ function removeChipBlock(index) {
 }
 
 function continueToScanning() {
-    bidAmount = parseInt(document.getElementById('bidAmount').value);
+    var bidAmountInput = document.getElementById('bidAmount');
+    if (!bidAmountInput) {
+        console.error('bidAmount input not found');
+        return;
+    }
+    
+    bidAmount = parseInt(bidAmountInput.value);
     if (bidAmount < 1 || bidAmount > 10) {
         alert('Bid amount must be between 1 and 10');
         return;
@@ -457,21 +473,30 @@ function continueToScanning() {
 }
 
 function updateScanScreen() {
-    var scanInfo = '<div class="card-title">Scan Your Cards</div>' +
+    var scanInfo = document.getElementById('scanInfo');
+    var scannedCards = document.getElementById('scannedCards');
+    var finishBtn = document.getElementById('finishBtn');
+    
+    if (!scanInfo || !scannedCards || !finishBtn) {
+        console.error('Required elements not found for scan screen');
+        return;
+    }
+    
+    var scanInfoContent = '<div class="card-title">Scan Your Cards</div>' +
         '<div class="card-description">' + currentPrompt.label + '</div>' +
         '<p style="margin-top: 12px; text-align: center;">Bid Amount: ' + bidAmount + ' cards</p>' +
         '<p style="text-align: center;">Cards needed: ' + (bidAmount - scannedAnswers.length) + '</p>';
     
     if (blocks.length > 0) {
-        scanInfo += '<p style="color: var(--error); margin-top: 8px; text-align: center;">⚠️ Blocked cards: ';
+        scanInfoContent += '<p style="color: var(--error); margin-top: 8px; text-align: center;">⚠️ Blocked cards: ';
         blocks.forEach(function(block, index) {
-            if (index > 0) scanInfo += ', ';
-            scanInfo += block.cardId + ' (' + block.points + 'pts)';
+            if (index > 0) scanInfoContent += ', ';
+            scanInfoContent += block.cardId + ' (' + block.points + 'pts)';
         });
-        scanInfo += '</p>';
+        scanInfoContent += '</p>';
     }
     
-    document.getElementById('scanInfo').innerHTML = scanInfo;
+    scanInfo.innerHTML = scanInfoContent;
     
     var cardsList = '';
     scannedAnswers.forEach(function(cardId, index) {
@@ -480,15 +505,16 @@ function updateScanScreen() {
         cardsList += (index + 1) + '. ' + cardId + ' - ' + country.name;
         cardsList += '</div>';
     });
-    document.getElementById('scannedCards').innerHTML = cardsList;
+    scannedCards.innerHTML = cardsList;
     
     // Show finish button when enough cards scanned
-    document.getElementById('finishBtn').style.display = 
-        (scannedAnswers.length >= bidAmount) ? 'block' : 'none';
+    finishBtn.style.display = (scannedAnswers.length >= bidAmount) ? 'block' : 'none';
 }
 
 function scanCard() {
     var input = document.getElementById('cardInput');
+    if (!input) return;
+    
     var cardId = input.value.trim();
     
     // Auto-format to 3 digits
@@ -505,7 +531,7 @@ function scanCard() {
         return;
     }
     
-    // Check if card is blocked - BLOCKED CARDS CANNOT BE CHOSEN
+    // Check if card is blocked
     var isBlocked = blocks.some(function(block) {
         return block.cardId === cardId;
     });
@@ -531,7 +557,7 @@ function scanCard() {
 }
 
 function simulateAllCards() {
-    // Get unblocked cards that haven't been scanned - BLOCKED CARDS EXCLUDED
+    // Get unblocked cards that haven't been scanned
     var unblocked = drawnCards.filter(function(cardId) {
         return !blocks.some(function(block) {
             return block.cardId === cardId;
@@ -563,14 +589,24 @@ function finishScanning() {
 }
 
 function updateRevealScreen() {
-    var revealInfo = '<div class="card-title">' + currentPrompt.label + '</div>' +
+    var revealInfo = document.getElementById('revealInfo');
+    var revealProgress = document.getElementById('revealProgress');
+    var revealProgressBar = document.getElementById('revealProgressBar');
+    var revealCards = document.getElementById('revealCards');
+    var revealBtn = document.getElementById('revealBtn');
+    
+    if (!revealInfo || !revealProgress || !revealProgressBar || !revealCards || !revealBtn) {
+        console.error('Required elements not found for reveal screen');
+        return;
+    }
+    
+    revealInfo.innerHTML = '<div class="card-title">' + currentPrompt.label + '</div>' +
         '<div class="card-description">Revealing your ranking step by step</div>';
-    document.getElementById('revealInfo').innerHTML = revealInfo;
     
     // Update progress
     var progressPercent = Math.round((revealIndex / scannedAnswers.length) * 100);
-    document.getElementById('revealProgress').textContent = revealIndex + ' of ' + scannedAnswers.length;
-    document.getElementById('revealProgressBar').style.width = progressPercent + '%';
+    revealProgress.textContent = revealIndex + ' of ' + scannedAnswers.length;
+    revealProgressBar.style.width = progressPercent + '%';
     
     var cardsHtml = '';
     scannedAnswers.forEach(function(cardId, index) {
@@ -579,10 +615,8 @@ function updateRevealScreen() {
         var cardContent = (index + 1) + '. ???';
         
         if (index < revealIndex) {
-            // This card has been revealed
             cardContent = (index + 1) + '. ' + country.name + '<br>' + getStatDisplay(country, currentPrompt.challenge);
             
-            // Check if this is the failing card
             if (gameOver && !bidderWins && index === revealIndex - 1) {
                 cardClass += ' wrong';
             } else {
@@ -593,10 +627,9 @@ function updateRevealScreen() {
         cardsHtml += '<div class="' + cardClass + '" style="margin: 8px; display: inline-block;">' + cardContent + '</div>';
     });
     
-    document.getElementById('revealCards').innerHTML = cardsHtml;
+    revealCards.innerHTML = cardsHtml;
     
     // Update reveal button
-    var revealBtn = document.getElementById('revealBtn');
     if (gameOver || revealIndex >= scannedAnswers.length) {
         revealBtn.style.display = 'none';
     } else {
@@ -612,7 +645,7 @@ function revealNext() {
     
     var currentCard = scannedAnswers[revealIndex];
     
-    // Check ordering (except for first card) - NO BLOCK CHECKING HERE
+    // Check ordering (except for first card)
     if (revealIndex > 0) {
         var previousCard = scannedAnswers[revealIndex - 1];
         
@@ -633,13 +666,9 @@ function revealNext() {
                 
                 gameOverReason = 'Wrong order! ' + currentCountry.name + ' (' + currentValue + ') has higher ' + currentPrompt.challenge + ' than ' + previousCountry.name + ' (' + previousValue + ').';
                 
-                // BIDDER FAILED: All blockers get their chips back + points
+                // Bidder failed: All blockers get their chips back + points
                 blocks.forEach(function(block) {
                     players.chips[block.playerName][block.points] = true;
-                    // Award points for successful block
-                    if (!players.chips[block.playerName].score) {
-                        players.chips[block.playerName].score = 0;
-                    }
                     players.chips[block.playerName].score += block.points;
                 });
                 
@@ -650,7 +679,7 @@ function revealNext() {
         }
     }
     
-    // Card is correct - reveal as green
+    // Card is correct
     revealIndex++;
     
     // Check if all cards revealed successfully
@@ -661,26 +690,14 @@ function revealNext() {
             bidderWins = true;
             gameOverReason = 'Perfect ranking! All cards in correct order.';
             
-            // BIDDER SUCCEEDED: Bidder gets all the blocked chips, blockers get zero
+            // Bidder succeeded: Bidder gets all the blocked chips
             var chipsWon = [];
             blocks.forEach(function(block) {
-                // Initialize bidder's chip inventory if needed
-                if (!players.chips[players.bidder]) {
-                    players.chips[players.bidder] = {3: true, 5: true, 7: true};
-                }
-                
-                // Give the chip to the bidder (they might get multiple of same value)
-                if (!players.chips[players.bidder].extra) {
-                    players.chips[players.bidder].extra = {};
-                }
                 if (!players.chips[players.bidder].extra[block.points]) {
                     players.chips[players.bidder].extra[block.points] = 0;
                 }
                 players.chips[players.bidder].extra[block.points]++;
-                
                 chipsWon.push(block.points + '-point chip from ' + block.playerName);
-                
-                // Blockers lose their chips (already removed when placed, so they get nothing back)
             });
             
             if (chipsWon.length > 0) {
@@ -693,73 +710,34 @@ function revealNext() {
         return;
     }
     
-    // Continue to next card
     updateRevealScreen();
 }
 
 function updateResultsScreen() {
-    var title = bidderWins ? '🎉 ' + players.bidder + ' Wins!' : '😞 ' + players.bidder + ' Loses!';
-    document.getElementById('resultsTitle').textContent = title;
+    var resultsTitle = document.getElementById('resultsTitle');
+    var resultsHeader = document.getElementById('resultsHeader');
+    var resultsContent = document.getElementById('resultsContent');
+    var finalRanking = document.getElementById('finalRanking');
     
-    // Update header color based on result
-    var header = document.getElementById('resultsHeader');
+    if (!resultsTitle || !resultsHeader || !resultsContent || !finalRanking) {
+        console.error('Required elements not found for results screen');
+        return;
+    }
+    
+    var title = bidderWins ? '🎉 ' + players.bidder + ' Wins!' : '😞 ' + players.bidder + ' Loses!';
+    resultsTitle.textContent = title;
+    
+    // Update header color
     if (bidderWins) {
-        header.style.background = 'linear-gradient(135deg, var(--accent) 0%, #059669 100%)';
+        resultsHeader.style.background = 'linear-gradient(135deg, var(--accent) 0%, #059669 100%)';
     } else {
-        header.style.background = 'linear-gradient(135deg, var(--error) 0%, #dc2626 100%)';
+        resultsHeader.style.background = 'linear-gradient(135deg, var(--error) 0%, #dc2626 100%)';
     }
     
     var content = '<div class="card-title">Round ' + currentRound + ' Results</div>' +
         '<div class="card-description">' + gameOverReason + '</div>';
     
-    // Add player-specific results
-    if (bidderWins) {
-        content += '<div style="margin-top: 16px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
-            '<div style="font-weight: 600; color: var(--accent);">🏆 ' + players.bidder + ' succeeded!</div>' +
-            '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">Perfect ranking! All cards were ordered correctly.</div>' +
-            '</div>';
-        
-        // Show other players
-        var otherPlayers = players.allPlayers.filter(function(name) {
-            return name !== players.bidder;
-        });
-        
-        if (otherPlayers.length > 0) {
-            content += '<div style="margin-top: 12px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
-                '<div style="font-weight: 600; color: var(--on-surface-variant);">Other players: ' + otherPlayers.join(', ') + '</div>' +
-                '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">' + players.bidder + ' got through all blocks and won their chips!</div>' +
-                '</div>';
-        }
-    } else {
-        content += '<div style="margin-top: 16px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
-            '<div style="font-weight: 600; color: var(--error);">😞 ' + players.bidder + ' failed</div>' +
-            '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">The ranking was incorrect.</div>' +
-            '</div>';
-        
-        // Show other players and their chip rewards
-        var otherPlayers = players.allPlayers.filter(function(name) {
-            return name !== players.bidder;
-        });
-        
-        if (otherPlayers.length > 0 && blocks.length > 0) {
-            var blockRewards = [];
-            blocks.forEach(function(block) {
-                blockRewards.push(block.playerName + ' gets ' + block.points + ' points');
-            });
-            
-            content += '<div style="margin-top: 12px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
-                '<div style="font-weight: 600; color: var(--accent);">🎯 Block rewards: ' + blockRewards.join(', ') + '</div>' +
-                '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">Blockers get their chips back plus points!</div>' +
-                '</div>';
-        } else if (otherPlayers.length > 0) {
-            content += '<div style="margin-top: 12px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
-                '<div style="font-weight: 600; color: var(--on-surface-variant);">Other players: ' + otherPlayers.join(', ') + '</div>' +
-                '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">' + players.bidder + ' made a ranking error.</div>' +
-                '</div>';
-        }
-    }
-    
-    document.getElementById('resultsContent').innerHTML = content;
+    resultsContent.innerHTML = content;
     
     var rankingHtml = '';
     scannedAnswers.forEach(function(cardId, index) {
@@ -782,10 +760,11 @@ function updateResultsScreen() {
         rankingHtml += '</div>';
     });
     
-    document.getElementById('finalRanking').innerHTML = rankingHtml;
+    finalRanking.innerHTML = rankingHtml;
 }
 
 function resetGame() {
+    // Reset basic game state
     currentPrompt = null;
     drawnCards = [];
     blocks = [];
@@ -797,54 +776,88 @@ function resetGame() {
     bidderWins = false;
     gameOverReason = '';
     
-    // Go back to player selection for next round
+    // Ask if they want to start a new round or change players
     if (players.allPlayers && players.allPlayers.length > 0) {
-        currentRound++;
+        var nextRound = confirm('Start Round ' + (currentRound + 1) + ' with the same players?\n\nClick OK to keep same players\nClick Cancel to change players');
         
-        // Update the bidder dropdown to current players
-        var bidderSelect = document.getElementById('bidderSelect');
-        if (bidderSelect) {
-            bidderSelect.innerHTML = '<option value="">Select the bidder...</option>';
-            
-            players.allPlayers.forEach(function(name) {
-                var option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                bidderSelect.appendChild(option);
-            });
+        if (nextRound) {
+            // Start next round with same players
+            currentRound++;
+            showScreen('playerScreen');
+        } else {
+            // Reset everything and go to title
+            currentRound = 1;
+            players = {
+                bidder: '',
+                allPlayers: [],
+                chips: {}
+            };
+            playerCount = 1;
+            showScreen('titleScreen');
         }
-        
-        updateRoundSummary();
-        showScreen('playerScreen');
     } else {
-        // No players set up, go back to title
+        // No players set, go to title
         showScreen('titleScreen');
     }
 }
 
-// Initialize when DOM is loaded
+function nextRound() {
+    // Start next round with same players
+    currentRound++;
+    resetGame();
+    showScreen('playerScreen');
+}
+
+function newGame() {
+    // Reset everything including players
+    currentRound = 1;
+    players = {
+        bidder: '',
+        allPlayers: [],
+        chips: {}
+    };
+    playerCount = 1;
+    resetGame();
+    showScreen('titleScreen');
+}
+
+// Test function for debugging
+function testButton() {
+    alert("JavaScript is working!");
+}
+
+// Initialize event listeners when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM loaded, initializing...");
+    console.log("DOM loaded, setting up event listeners...");
     
-    // Set up initial event listeners
-    setTimeout(function() {
-        var player1Input = document.getElementById('player1');
-        var bidderSelect = document.getElementById('bidderSelect');
-        
-        if (player1Input) {
-            player1Input.addEventListener('input', function() {
-                updateBidderDropdown();
-                updateRoundSummary();
-            });
-        }
-        
-        if (bidderSelect) {
-            bidderSelect.addEventListener('change', updateRoundSummary);
-        }
-        
-        updateBidderDropdown();
-        updateRoundSummary();
-        
-        console.log("Initialization complete");
-    }, 500);
+    // Add event listeners for existing elements
+    var bidderSelect = document.getElementById('bidderSelect');
+    if (bidderSelect) {
+        bidderSelect.addEventListener('change', updateRoundSummary);
+    }
+    
+    var cardInput = document.getElementById('cardInput');
+    if (cardInput) {
+        cardInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                scanCard();
+            }
+        });
+    }
+    
+    var bidAmountInput = document.getElementById('bidAmount');
+    if (bidAmountInput) {
+        bidAmountInput.value = bidAmount;
+    }
+    
+    // Initialize first player input event listener
+    var player1Input = document.getElementById('player1');
+    if (player1Input) {
+        player1Input.addEventListener('input', function() {
+            updateBidderDropdown();
+            updateRoundSummary();
+        });
+    }
+    
+    console.log("Event listeners setup complete");
 });
