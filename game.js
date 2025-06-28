@@ -286,7 +286,14 @@ function startRoundWithBidder() {
 
 // Chip Blocking System
 function updateBlockerScreen() {
-    // Update prompt info
+    var promptInfo = document.getElementById('promptInfo');
+    if (!promptInfo) {
+        console.error('promptInfo element not found');
+        return;
+    }
+    
+    promptInfo.innerHTML = 'your content here';
+     // Update prompt info
     document.getElementById('promptInfo').innerHTML = 
         '<div class="card-title">' + currentPrompt.label + '</div>' +
         '<div class="card-description">Challenge: ' + currentPrompt.challenge.toUpperCase() + '</div>';
