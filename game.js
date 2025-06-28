@@ -1,3 +1,9 @@
+// Test function - add this to the very top of game.js
+console.log("JavaScript file loaded successfully!");
+
+function testButton() {
+    alert("JavaScript is working!");
+}
 // Complete Know-It-All Game Logic with Chip System
 var currentPrompt = null;
 var drawnCards = [];
