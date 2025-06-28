@@ -10,6 +10,14 @@ var gameState = 'title';
 var bidderWins = false;
 var gameOverReason = '';
 
+// Player management
+var players = {
+    bidder: '',
+    allPlayers: [] // All players in the game
+};
+var playerCount = 1;
+var currentRound = 1;
+
 // Sample Data
 var SAMPLE_DATA = {
     prompts: [
@@ -83,7 +91,137 @@ function isWrongOrder(currentCardId, previousCardId) {
     return false;
 }
 
-// Main Game Functions
+// Player Management Functions
+function addBlockerPlayer() {
+    blockerPlayerCount++;
+    var blockerHtml = '<div class="form-group" id="blockerGroup' + blockerPlayerCount + '">' +
+        '<label>Blocker ' + blockerPlayerCount + ' Name:</label>' +
+        '<input type="text" id="blocker' + blockerPlayerCount + '" placeholder="Enter blocker\'s name">' +
+        '<button onclick="removeBlockerPlayer(' + blockerPlayerCount + ')" style="background: var(--error); color: white; border: none; padding: 8px 12px; border-radius: 6px; margin-left: 10px; cursor: pointer;">Remove</button>' +
+        '</div>';
+    
+    document.getElementById('blockerPlayers').insertAdjacentHTML('beforeend', blockerHtml);
+    updatePlayerSummary();
+}
+
+function removeBlockerPlayer(playerNum) {
+    var group = document.getElementById('blockerGroup' + playerNum);
+    if (group) {
+        group.remove();
+    }
+    updatePlayerSummary();
+}
+
+function updatePlayerSummary() {
+    var bidderName = document.getElementById('bidderName').value || 'Not set';
+    var blockerNames = [];
+    
+    // Collect all blocker names
+    for (var i = 1; i <= blockerPlayerCount; i++) {
+        var blockerInput = document.getElementById('blocker' + i);
+        if (blockerInput && blockerInput.value.trim()) {
+            blockerNames.push(blockerInput.value.trim());
+        }
+    }
+    
+    var summary = '<strong>Bidder:</strong> ' + bidderName;
+    if (blockerNames.length > 0) {
+        summary += '<br><strong>Blockers:</strong> ' + blockerNames.join(', ');
+    } else {
+        summary += '<br><strong>Blockers:</strong> None added yet';
+    }
+    
+    document.getElementById('playerSummary').innerHTML = summary;
+    
+    // Auto-update as users type
+    setTimeout(function() {
+        var bidderInput = document.getElementById('bidderName');
+        if (bidderInput) {
+            bidderInput.removeEventListener('input', updatePlayerSummary);
+            bidderInput.addEventListener('input', updatePlayerSummary);
+        }
+        
+        for (var i = 1; i <= blockerPlayerCount; i++) {
+            var blockerInput = document.getElementById('blocker' + i);
+            if (blockerInput) {
+                blockerInput.removeEventListener('input', updatePlayerSummary);
+                blockerInput.addEventListener('input', updatePlayerSummary);
+            }
+        }
+    }, 100);
+}
+
+function startGameWithPlayers() {
+    // Collect player names
+    var bidderName = document.getElementById('bidderName').value.trim();
+    if (!bidderName) {
+        alert('Please enter the bidder\'s name');
+        return;
+    }
+    
+    var blockerNames = [];
+    for (var i = 1; i <= blockerPlayerCount; i++) {
+        var blockerInput = document.getElementById('blocker' + i);
+        if (blockerInput && blockerInput.value.trim()) {
+            blockerNames.push(blockerInput.value.trim());
+        }
+    }
+    
+    if (blockerNames.length === 0) {
+        alert('Please add at least one blocker');
+        return;
+    }
+    
+    // Store player information for this round
+    players.bidder = bidderName;
+    players.blockers = blockerNames;
+    players.allPlayers = [bidderName].concat(blockerNames);
+    
+    // Start the game
+    simulateQRScan();
+}
+
+function rotateRoles() {
+    if (players.allPlayers.length < 2) return;
+    
+    // Move current bidder to end of array and make next player the bidder
+    var allPlayers = players.allPlayers.slice(); // Copy array
+    var currentBidder = allPlayers.shift(); // Remove first player
+    allPlayers.push(currentBidder); // Add to end
+    
+    players.allPlayers = allPlayers;
+    players.bidder = allPlayers[0];
+    players.blockers = allPlayers.slice(1);
+    currentRound++;
+    
+    updatePlayerSetupScreen();
+}
+
+function updatePlayerSetupScreen() {
+    // Update the player setup screen to show the rotation
+    document.getElementById('bidderName').value = players.bidder;
+    
+    // Clear existing blocker inputs
+    var blockerContainer = document.getElementById('blockerPlayers');
+    blockerContainer.innerHTML = '';
+    
+    // Add blocker inputs for current round
+    players.blockers.forEach(function(name, index) {
+        var blockerHtml = '<div class="form-group" id="blockerGroup' + (index + 1) + '">' +
+            '<label>Blocker ' + (index + 1) + ' Name:</label>' +
+            '<input type="text" id="blocker' + (index + 1) + '" value="' + name + '">' +
+            '</div>';
+        blockerContainer.insertAdjacentHTML('beforeend', blockerHtml);
+    });
+    
+    blockerPlayerCount = players.blockers.length;
+    updatePlayerSummary();
+}
+
+// Initialize player summary when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(updatePlayerSummary, 500);
+});
 function simulateQRScan() {
     console.log("Starting QR scan simulation...");
     
@@ -121,46 +259,168 @@ function updateBlockerScreen() {
         '<div class="card-title">' + currentPrompt.label + '</div>' +
         '<div class="card-description">Challenge: ' + currentPrompt.challenge.toUpperCase() + '</div>';
     
-    // Update drawn cards display
-    var cardsHtml = '';
-    drawnCards.forEach(function(cardId) {
-        var country = SAMPLE_DATA.countries[cardId];
-        cardsHtml += '<span class="card" style="margin: 4px; display: inline-block;">' + cardId + ' - ' + country.name + '</span>';
-    });
-    document.getElementById('drawnCardsInfo').innerHTML = cardsHtml;
+    // Hide the drawn cards display - remove this section completely
+    document.getElementById('drawnCardsInfo').innerHTML = '';
     
-    // Update blocker setup
+    // Update blocker setup with dropdown and scanning options
     var blockerHtml = '<div class="section-header">' +
         '<div class="section-icon">🚫</div>' +
         '<div class="section-title">Add Blocks (Optional)</div>' +
         '</div>';
     
+    // Add dropdown method
+    blockerHtml += '<div class="action-card" style="margin-bottom: 16px;">' +
+        '<div class="card-title">Method 1: Select from Menu</div>' +
+        '<div class="card-description">Choose cards to block from the dropdown</div>' +
+        '<div style="margin-top: 16px;">' +
+        '<select id="blockCardSelect" style="width: 60%; margin-right: 10px;">' +
+        '<option value="">Select card to block...</option>';
+    
     drawnCards.forEach(function(cardId) {
         var country = SAMPLE_DATA.countries[cardId];
-        blockerHtml += '<div class="blocker-item">';
-        blockerHtml += '<input type="checkbox" id="block_' + cardId + '" onchange="toggleBlock(\'' + cardId + '\')">';
-        blockerHtml += '<label for="block_' + cardId + '" style="display: inline; margin-right: 10px;">' + cardId + ' - ' + country.name + '</label>';
-        blockerHtml += '<select id="mult_' + cardId + '">';
-        blockerHtml += '<option value="1">1×</option><option value="2">2×</option><option value="3">3×</option><option value="4">4×</option>';
-        blockerHtml += '</select>';
-        blockerHtml += '</div>';
+        blockerHtml += '<option value="' + cardId + '">' + cardId + ' - ' + country.name + '</option>';
     });
     
+    blockerHtml += '</select>' +
+        '<select id="blockMultSelect" style="width: 25%; margin-right: 10px;">' +
+        '<option value="1">1×</option>' +
+        '<option value="2">2×</option>' +
+        '<option value="3">3×</option>' +
+        '<option value="4">4×</option>' +
+        '</select>' +
+        '<button class="btn" onclick="addBlockFromDropdown()" style="width: auto; padding: 12px 20px; margin: 0;">Add Block</button>' +
+        '</div>' +
+        '</div>';
+    
+    // Add scanning method
+    blockerHtml += '<div class="action-card" style="margin-bottom: 16px;">' +
+        '<div class="card-title">Method 2: Scan Card</div>' +
+        '<div class="card-description">Scan a card to add it as a block</div>' +
+        '<div style="margin-top: 16px;">' +
+        '<input type="text" id="blockCardInput" placeholder="Enter card number (e.g., 001)" style="width: 60%; margin-right: 10px;">' +
+        '<select id="blockScanMultSelect" style="width: 25%; margin-right: 10px;">' +
+        '<option value="1">1×</option>' +
+        '<option value="2">2×</option>' +
+        '<option value="3">3×</option>' +
+        '<option value="4">4×</option>' +
+        '</select>' +
+        '<button class="btn" onclick="addBlockFromScan()" style="width: auto; padding: 12px 20px; margin: 0;">📱 Scan Block</button>' +
+        '</div>' +
+        '</div>';
+    
+    // Show current blocks
+    blockerHtml += '<div id="currentBlocks">' +
+        '<div class="section-header">' +
+        '<div class="section-icon">📋</div>' +
+        '<div class="section-title">Current Blocks</div>' +
+        '</div>' +
+        '<div id="blocksList">No blocks added yet</div>' +
+        '</div>';
+    
     document.getElementById('blockerSetup').innerHTML = blockerHtml;
+    updateBlocksList();
 }
 
-function toggleBlock(cardId) {
-    var checkbox = document.getElementById('block_' + cardId);
-    var multiplier = parseInt(document.getElementById('mult_' + cardId).value);
+function addBlockFromDropdown() {
+    var cardSelect = document.getElementById('blockCardSelect');
+    var multSelect = document.getElementById('blockMultSelect');
+    var cardId = cardSelect.value;
+    var multiplier = parseInt(multSelect.value);
     
-    if (checkbox.checked) {
-        blocks.push({ cardId: cardId, multiplier: multiplier });
-    } else {
-        blocks = blocks.filter(function(block) {
-            return block.cardId !== cardId;
-        });
+    if (!cardId) {
+        alert('Please select a card to block');
+        return;
     }
+    
+    // Check if already blocked
+    var existingBlock = blocks.find(function(block) {
+        return block.cardId === cardId;
+    });
+    
+    if (existingBlock) {
+        alert('Card ' + cardId + ' is already blocked');
+        return;
+    }
+    
+    // Add the block
+    blocks.push({ cardId: cardId, multiplier: multiplier });
+    
+    // Reset selects
+    cardSelect.value = '';
+    multSelect.value = '1';
+    
+    updateBlocksList();
 }
+
+function addBlockFromScan() {
+    var input = document.getElementById('blockCardInput');
+    var multSelect = document.getElementById('blockScanMultSelect');
+    var cardId = input.value.trim();
+    var multiplier = parseInt(multSelect.value);
+    
+    // Auto-format to 3 digits
+    if (cardId.length === 1) cardId = '00' + cardId;
+    if (cardId.length === 2) cardId = '0' + cardId;
+    
+    if (!SAMPLE_DATA.countries[cardId]) {
+        alert('Invalid card ID: ' + cardId);
+        return;
+    }
+    
+    if (drawnCards.indexOf(cardId) === -1) {
+        alert('Card ' + cardId + ' was not in the drawn cards!');
+        return;
+    }
+    
+    // Check if already blocked
+    var existingBlock = blocks.find(function(block) {
+        return block.cardId === cardId;
+    });
+    
+    if (existingBlock) {
+        alert('Card ' + cardId + ' is already blocked');
+        return;
+    }
+    
+    // Add the block
+    blocks.push({ cardId: cardId, multiplier: multiplier });
+    
+    // Reset inputs
+    input.value = '';
+    multSelect.value = '1';
+    
+    updateBlocksList();
+}
+
+function updateBlocksList() {
+    var blocksList = document.getElementById('blocksList');
+    
+    if (blocks.length === 0) {
+        blocksList.innerHTML = '<p style="color: var(--on-surface-variant); text-align: center;">No blocks added yet</p>';
+        return;
+    }
+    
+    var blocksHtml = '';
+    blocks.forEach(function(block, index) {
+        var country = SAMPLE_DATA.countries[block.cardId];
+        blocksHtml += '<div class="blocker-item" style="display: flex; justify-content: space-between; align-items: center;">' +
+            '<div>' +
+            '<strong>' + block.cardId + ' - ' + country.name + '</strong>' +
+            '<div style="font-size: 14px; color: var(--on-surface-variant);">Multiplier: ' + block.multiplier + '×</div>' +
+            '</div>' +
+            '<button onclick="removeBlock(' + index + ')" style="background: var(--error); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;">Remove</button>' +
+            '</div>';
+    });
+    
+    blocksList.innerHTML = blocksHtml;
+}
+
+function removeBlock(index) {
+    blocks.splice(index, 1);
+    updateBlocksList();
+}
+
+// Remove the old toggleBlock function since we're not using checkboxes anymore
 
 function continueToScanning() {
     bidAmount = parseInt(document.getElementById('bidAmount').value);
@@ -378,7 +638,7 @@ function revealNext() {
 }
 
 function updateResultsScreen() {
-    var title = bidderWins ? '🎉 Bidder Wins!' : '🚫 Blockers Win!';
+    var title = bidderWins ? '🎉 ' + players.bidder + ' Wins!' : '😞 ' + players.bidder + ' Loses!';
     document.getElementById('resultsTitle').textContent = title;
     
     // Update header color based on result
@@ -389,8 +649,63 @@ function updateResultsScreen() {
         header.style.background = 'linear-gradient(135deg, var(--error) 0%, #dc2626 100%)';
     }
     
-    var content = '<div class="card-title">Final Results</div>' +
+    var content = '<div class="card-title">Round ' + currentRound + ' Results</div>' +
         '<div class="card-description">' + gameOverReason + '</div>';
+    
+    // Add player-specific results
+    if (bidderWins) {
+        content += '<div style="margin-top: 16px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
+            '<div style="font-weight: 600; color: var(--accent);">🏆 ' + players.bidder + ' succeeded!</div>' +
+            '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">Perfect ranking! All cards were ordered correctly.</div>' +
+            '</div>';
+        
+        // Show other players
+        var otherPlayers = players.allPlayers.filter(function(name) {
+            return name !== players.bidder;
+        });
+        
+        if (otherPlayers.length > 0) {
+            content += '<div style="margin-top: 12px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
+                '<div style="font-weight: 600; color: var(--on-surface-variant);">Other players: ' + otherPlayers.join(', ') + '</div>' +
+                '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">' + players.bidder + ' got through all the blocks and challenges!</div>' +
+                '</div>';
+        }
+    } else {
+        content += '<div style="margin-top: 16px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
+            '<div style="font-weight: 600; color: var(--error);">😞 ' + players.bidder + ' failed</div>' +
+            '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">The ranking was incorrect or a block was hit.</div>' +
+            '</div>';
+        
+        // Show other players and whether blocks contributed
+        var otherPlayers = players.allPlayers.filter(function(name) {
+            return name !== players.bidder;
+        });
+        
+        if (otherPlayers.length > 0) {
+            // Check if any blocks were actually hit
+            var blockWasHit = false;
+            scannedAnswers.forEach(function(cardId) {
+                blocks.forEach(function(block) {
+                    if (cardId === block.cardId) {
+                        blockWasHit = true;
+                    }
+                });
+            });
+            
+            if (blocks.length > 0 && blockWasHit) {
+                content += '<div style="margin-top: 12px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
+                    '<div style="font-weight: 600; color: var(--accent);">📌 Other players: ' + otherPlayers.join(', ') + '</div>' +
+                    '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">The blocks you placed helped stop the bidder!</div>' +
+                    '</div>';
+            } else {
+                content += '<div style="margin-top: 12px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
+                    '<div style="font-weight: 600; color: var(--on-surface-variant);">Other players: ' + otherPlayers.join(', ') + '</div>' +
+                    '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">' + players.bidder + ' made a ranking error.</div>' +
+                    '</div>';
+            }
+        }
+    }
+    
     document.getElementById('resultsContent').innerHTML = content;
     
     var rankingHtml = '';
@@ -428,6 +743,36 @@ function resetGame() {
     gameState = 'title';
     bidderWins = false;
     gameOverReason = '';
+    
+    // Go back to player selection for next round
+    if (players.allPlayers && players.allPlayers.length > 0) {
+        currentRound++;
+        
+        // Update the bidder dropdown to current players
+        var bidderSelect = document.getElementById('bidderSelect');
+        bidderSelect.innerHTML = '<option value="">Select the bidder...</option>';
+        
+        players.allPlayers.forEach(function(name) {
+            var option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            bidderSelect.appendChild(option);
+        });
+        
+        updateRoundSummary();
+        showScreen('playerScreen');
+    } else {
+        // No players set up, go back to title
+        showScreen('titleScreen');
+    }
+}
+                '</div>';
+            
+            showScreen('playerScreen');
+            return;
+        }
+        // If choice is '1' or anything else, continue with same roles
+    }
     
     showScreen('titleScreen');
 }
