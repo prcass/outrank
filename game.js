@@ -1,4 +1,4 @@
-// Complete Know-It-All Game Logic
+// Complete Know-It-All Game Logic with Chip System
 var currentPrompt = null;
 var drawnCards = [];
 var blocks = [];
@@ -18,18 +18,6 @@ var players = {
 };
 var playerCount = 1;
 var currentRound = 1;
-
-// Initialize chips for all players
-function initializePlayerChips() {
-    players.chips = {};
-    players.allPlayers.forEach(function(playerName) {
-        players.chips[playerName] = {
-            3: true,  // Has 3-point chip
-            5: true,  // Has 5-point chip  
-            7: true   // Has 7-point chip
-        };
-    });
-}
 
 // Sample Data
 var SAMPLE_DATA = {
@@ -52,8 +40,22 @@ var SAMPLE_DATA = {
     }
 };
 
+// Initialize chips for all players
+function initializePlayerChips() {
+    players.chips = {};
+    players.allPlayers.forEach(function(playerName) {
+        players.chips[playerName] = {
+            3: true,  // Has 3-point chip
+            5: true,  // Has 5-point chip  
+            7: true   // Has 7-point chip
+        };
+    });
+}
+
 // Utility Functions
 function showScreen(screenId) {
+    console.log("Switching to screen:", screenId);
+    
     // Hide all screens
     var screens = document.querySelectorAll('.screen');
     screens.forEach(function(screen) {
@@ -64,6 +66,9 @@ function showScreen(screenId) {
     var targetScreen = document.getElementById(screenId);
     if (targetScreen) {
         targetScreen.classList.add('active');
+        console.log("Screen switched successfully");
+    } else {
+        console.error("Screen not found:", screenId);
     }
 }
 
@@ -104,137 +109,7 @@ function isWrongOrder(currentCardId, previousCardId) {
     return false;
 }
 
-// Player Management Functions
-function addBlockerPlayer() {
-    blockerPlayerCount++;
-    var blockerHtml = '<div class="form-group" id="blockerGroup' + blockerPlayerCount + '">' +
-        '<label>Blocker ' + blockerPlayerCount + ' Name:</label>' +
-        '<input type="text" id="blocker' + blockerPlayerCount + '" placeholder="Enter blocker\'s name">' +
-        '<button onclick="removeBlockerPlayer(' + blockerPlayerCount + ')" style="background: var(--error); color: white; border: none; padding: 8px 12px; border-radius: 6px; margin-left: 10px; cursor: pointer;">Remove</button>' +
-        '</div>';
-    
-    document.getElementById('blockerPlayers').insertAdjacentHTML('beforeend', blockerHtml);
-    updatePlayerSummary();
-}
-
-function removeBlockerPlayer(playerNum) {
-    var group = document.getElementById('blockerGroup' + playerNum);
-    if (group) {
-        group.remove();
-    }
-    updatePlayerSummary();
-}
-
-function updatePlayerSummary() {
-    var bidderName = document.getElementById('bidderName').value || 'Not set';
-    var blockerNames = [];
-    
-    // Collect all blocker names
-    for (var i = 1; i <= blockerPlayerCount; i++) {
-        var blockerInput = document.getElementById('blocker' + i);
-        if (blockerInput && blockerInput.value.trim()) {
-            blockerNames.push(blockerInput.value.trim());
-        }
-    }
-    
-    var summary = '<strong>Bidder:</strong> ' + bidderName;
-    if (blockerNames.length > 0) {
-        summary += '<br><strong>Blockers:</strong> ' + blockerNames.join(', ');
-    } else {
-        summary += '<br><strong>Blockers:</strong> None added yet';
-    }
-    
-    document.getElementById('playerSummary').innerHTML = summary;
-    
-    // Auto-update as users type
-    setTimeout(function() {
-        var bidderInput = document.getElementById('bidderName');
-        if (bidderInput) {
-            bidderInput.removeEventListener('input', updatePlayerSummary);
-            bidderInput.addEventListener('input', updatePlayerSummary);
-        }
-        
-        for (var i = 1; i <= blockerPlayerCount; i++) {
-            var blockerInput = document.getElementById('blocker' + i);
-            if (blockerInput) {
-                blockerInput.removeEventListener('input', updatePlayerSummary);
-                blockerInput.addEventListener('input', updatePlayerSummary);
-            }
-        }
-    }, 100);
-}
-
-function startGameWithPlayers() {
-    // Collect player names
-    var bidderName = document.getElementById('bidderName').value.trim();
-    if (!bidderName) {
-        alert('Please enter the bidder\'s name');
-        return;
-    }
-    
-    var blockerNames = [];
-    for (var i = 1; i <= blockerPlayerCount; i++) {
-        var blockerInput = document.getElementById('blocker' + i);
-        if (blockerInput && blockerInput.value.trim()) {
-            blockerNames.push(blockerInput.value.trim());
-        }
-    }
-    
-    if (blockerNames.length === 0) {
-        alert('Please add at least one blocker');
-        return;
-    }
-    
-    // Store player information for this round
-    players.bidder = bidderName;
-    players.blockers = blockerNames;
-    players.allPlayers = [bidderName].concat(blockerNames);
-    
-    // Start the game
-    simulateQRScan();
-}
-
-function rotateRoles() {
-    if (players.allPlayers.length < 2) return;
-    
-    // Move current bidder to end of array and make next player the bidder
-    var allPlayers = players.allPlayers.slice(); // Copy array
-    var currentBidder = allPlayers.shift(); // Remove first player
-    allPlayers.push(currentBidder); // Add to end
-    
-    players.allPlayers = allPlayers;
-    players.bidder = allPlayers[0];
-    players.blockers = allPlayers.slice(1);
-    currentRound++;
-    
-    updatePlayerSetupScreen();
-}
-
-function updatePlayerSetupScreen() {
-    // Update the player setup screen to show the rotation
-    document.getElementById('bidderName').value = players.bidder;
-    
-    // Clear existing blocker inputs
-    var blockerContainer = document.getElementById('blockerPlayers');
-    blockerContainer.innerHTML = '';
-    
-    // Add blocker inputs for current round
-    players.blockers.forEach(function(name, index) {
-        var blockerHtml = '<div class="form-group" id="blockerGroup' + (index + 1) + '">' +
-            '<label>Blocker ' + (index + 1) + ' Name:</label>' +
-            '<input type="text" id="blocker' + (index + 1) + '" value="' + name + '">' +
-            '</div>';
-        blockerContainer.insertAdjacentHTML('beforeend', blockerHtml);
-    });
-    
-    blockerPlayerCount = players.blockers.length;
-    updatePlayerSummary();
-}
-
-// Initialize player summary when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(updatePlayerSummary, 500);
-});
+// Main Game Functions
 function simulateQRScan() {
     console.log("Starting QR scan simulation...");
     
@@ -266,13 +141,151 @@ function startRealQRScan() {
     alert('Real QR scanning coming soon! Use demo mode for now.');
 }
 
+// Player Management Functions
+function addPlayer() {
+    playerCount++;
+    var playerHtml = '<div class="form-group" id="playerGroup' + playerCount + '">' +
+        '<label>Player ' + playerCount + ':</label>' +
+        '<input type="text" id="player' + playerCount + '" placeholder="Enter player name">' +
+        '<button onclick="removePlayer(' + playerCount + ')" style="background: var(--error); color: white; border: none; padding: 8px 12px; border-radius: 6px; margin-left: 10px; cursor: pointer;">Remove</button>' +
+        '</div>';
+    
+    document.getElementById('allPlayers').insertAdjacentHTML('beforeend', playerHtml);
+    
+    // Add event listener to the new input
+    setTimeout(function() {
+        var newInput = document.getElementById('player' + playerCount);
+        if (newInput) {
+            newInput.addEventListener('input', function() {
+                updateBidderDropdown();
+                updateRoundSummary();
+            });
+        }
+    }, 100);
+    
+    updateBidderDropdown();
+    updateRoundSummary();
+}
+
+function removePlayer(playerNum) {
+    var group = document.getElementById('playerGroup' + playerNum);
+    if (group) {
+        group.remove();
+        updateBidderDropdown();
+        updateRoundSummary();
+    }
+}
+
+function updateBidderDropdown() {
+    var bidderSelect = document.getElementById('bidderSelect');
+    if (!bidderSelect) return;
+    
+    var currentSelection = bidderSelect.value;
+    
+    // Clear dropdown
+    bidderSelect.innerHTML = '<option value="">Select the bidder...</option>';
+    
+    // Collect all player names
+    var allPlayerNames = [];
+    for (var i = 1; i <= playerCount; i++) {
+        var playerInput = document.getElementById('player' + i);
+        if (playerInput && playerInput.value.trim()) {
+            allPlayerNames.push(playerInput.value.trim());
+        }
+    }
+    
+    // Add options to dropdown
+    allPlayerNames.forEach(function(name) {
+        var option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        if (name === currentSelection) {
+            option.selected = true;
+        }
+        bidderSelect.appendChild(option);
+    });
+}
+
+function updateRoundSummary() {
+    var bidderSelect = document.getElementById('bidderSelect');
+    var summaryDiv = document.getElementById('roundSummary');
+    
+    if (!bidderSelect || !summaryDiv) return;
+    
+    var bidderName = bidderSelect.value || 'Not selected';
+    var allPlayerNames = [];
+    
+    // Collect all player names
+    for (var i = 1; i <= playerCount; i++) {
+        var playerInput = document.getElementById('player' + i);
+        if (playerInput && playerInput.value.trim()) {
+            allPlayerNames.push(playerInput.value.trim());
+        }
+    }
+    
+    var summary = '<strong>Round ' + currentRound + '</strong><br>';
+    summary += '<strong>Bidder:</strong> ' + bidderName + '<br>';
+    
+    if (allPlayerNames.length > 1) {
+        var otherPlayers = allPlayerNames.filter(function(name) {
+            return name !== bidderName;
+        });
+        if (otherPlayers.length > 0) {
+            summary += '<strong>Other players:</strong> ' + otherPlayers.join(', ');
+        }
+    } else if (allPlayerNames.length === 1) {
+        summary += '<strong>Other players:</strong> None (single player mode)';
+    } else {
+        summary += '<strong>Other players:</strong> Add more players above';
+    }
+    
+    summaryDiv.innerHTML = summary;
+}
+
+function startRoundWithBidder() {
+    // Collect all player names
+    var allPlayerNames = [];
+    for (var i = 1; i <= playerCount; i++) {
+        var playerInput = document.getElementById('player' + i);
+        if (playerInput && playerInput.value.trim()) {
+            allPlayerNames.push(playerInput.value.trim());
+        }
+    }
+    
+    if (allPlayerNames.length === 0) {
+        alert('Please add at least one player');
+        return;
+    }
+    
+    var bidderSelect = document.getElementById('bidderSelect');
+    var bidderName = bidderSelect ? bidderSelect.value : '';
+    
+    if (!bidderName) {
+        alert('Please select who will be the bidder for this round');
+        return;
+    }
+    
+    // Store player information for this round
+    players.bidder = bidderName;
+    players.allPlayers = allPlayerNames;
+    
+    // Initialize chips if not already done
+    if (!players.chips || Object.keys(players.chips).length === 0) {
+        initializePlayerChips();
+    }
+    
+    // Start the game
+    simulateQRScan();
+}
+
+// Chip Blocking System
 function updateBlockerScreen() {
     // Update prompt info
     document.getElementById('promptInfo').innerHTML = 
         '<div class="card-title">' + currentPrompt.label + '</div>' +
         '<div class="card-description">Challenge: ' + currentPrompt.challenge.toUpperCase() + '</div>';
     
-    // Hide the drawn cards display - remove this section completely
+    // Hide the drawn cards display
     document.getElementById('drawnCardsInfo').innerHTML = '';
     
     // Update blocker setup with chip system
@@ -313,7 +326,6 @@ function updateBlockerScreen() {
                         '<select id="' + playerName + '_' + points + '_card" style="width: 100px; margin-right: 5px;">' +
                         '<option value="">Card...</option>' : '') +
                         (isAvailable ? drawnCards.map(function(cardId) {
-                            var country = SAMPLE_DATA.countries[cardId];
                             return '<option value="' + cardId + '">' + cardId + '</option>';
                         }).join('') : '') +
                         (isAvailable ? '</select>' +
@@ -419,8 +431,6 @@ function removeChipBlock(index) {
     updateBlockerScreen();
 }
 
-// Remove the old toggleBlock function since we're not using checkboxes anymore
-
 function continueToScanning() {
     bidAmount = parseInt(document.getElementById('bidAmount').value);
     if (bidAmount < 1 || bidAmount > 10) {
@@ -443,7 +453,7 @@ function updateScanScreen() {
         scanInfo += '<p style="color: var(--error); margin-top: 8px; text-align: center;">⚠️ Blocked cards: ';
         blocks.forEach(function(block, index) {
             if (index > 0) scanInfo += ', ';
-            scanInfo += block.cardId + ' (' + block.multiplier + '×)';
+            scanInfo += block.cardId + ' (' + block.points + 'pts)';
         });
         scanInfo += '</p>';
     }
@@ -482,7 +492,7 @@ function scanCard() {
         return;
     }
     
-    // Check if card is blocked
+    // Check if card is blocked - BLOCKED CARDS CANNOT BE CHOSEN
     var isBlocked = blocks.some(function(block) {
         return block.cardId === cardId;
     });
@@ -508,7 +518,7 @@ function scanCard() {
 }
 
 function simulateAllCards() {
-    // Get unblocked cards that haven't been scanned
+    // Get unblocked cards that haven't been scanned - BLOCKED CARDS EXCLUDED
     var unblocked = drawnCards.filter(function(cardId) {
         return !blocks.some(function(block) {
             return block.cardId === cardId;
@@ -589,12 +599,12 @@ function revealNext() {
     
     var currentCard = scannedAnswers[revealIndex];
     
-    // Check if this card is in wrong order (except first card)
+    // Check ordering (except for first card) - NO BLOCK CHECKING HERE
     if (revealIndex > 0) {
         var previousCard = scannedAnswers[revealIndex - 1];
         
         if (isWrongOrder(currentCard, previousCard)) {
-            // Wrong order - reveal as red and end game
+            // Wrong order - bidder loses
             gameOver = true;
             bidderWins = false;
             revealIndex++;
@@ -608,7 +618,18 @@ function revealNext() {
                 var currentValue = getStatValue(currentCountry, currentPrompt.challenge);
                 var previousValue = getStatValue(previousCountry, currentPrompt.challenge);
                 
-                gameOverReason = 'Wrong order! ' + currentCountry.name + ' (' + currentValue + ') has higher ' + currentPrompt.challenge + ' than ' + previousCountry.name + ' (' + previousValue + '). Blockers win!';
+                gameOverReason = 'Wrong order! ' + currentCountry.name + ' (' + currentValue + ') has higher ' + currentPrompt.challenge + ' than ' + previousCountry.name + ' (' + previousValue + ').';
+                
+                // BIDDER FAILED: All blockers get their chips back + points
+                blocks.forEach(function(block) {
+                    players.chips[block.playerName][block.points] = true;
+                    // Award points for successful block
+                    if (!players.chips[block.playerName].score) {
+                        players.chips[block.playerName].score = 0;
+                    }
+                    players.chips[block.playerName].score += block.points;
+                });
+                
                 updateResultsScreen();
                 showScreen('resultsScreen');
             }, 1500);
@@ -619,13 +640,40 @@ function revealNext() {
     // Card is correct - reveal as green
     revealIndex++;
     
-    // Check if all cards revealed
+    // Check if all cards revealed successfully
     if (revealIndex >= scannedAnswers.length) {
         updateRevealScreen();
         setTimeout(function() {
             gameState = 'complete';
             bidderWins = true;
-            gameOverReason = 'Perfect ranking! All cards in correct order. Bidder wins!';
+            gameOverReason = 'Perfect ranking! All cards in correct order.';
+            
+            // BIDDER SUCCEEDED: Bidder gets all the blocked chips, blockers get zero
+            var chipsWon = [];
+            blocks.forEach(function(block) {
+                // Initialize bidder's chip inventory if needed
+                if (!players.chips[players.bidder]) {
+                    players.chips[players.bidder] = {3: true, 5: true, 7: true};
+                }
+                
+                // Give the chip to the bidder (they might get multiple of same value)
+                if (!players.chips[players.bidder].extra) {
+                    players.chips[players.bidder].extra = {};
+                }
+                if (!players.chips[players.bidder].extra[block.points]) {
+                    players.chips[players.bidder].extra[block.points] = 0;
+                }
+                players.chips[players.bidder].extra[block.points]++;
+                
+                chipsWon.push(block.points + '-point chip from ' + block.playerName);
+                
+                // Blockers lose their chips (already removed when placed, so they get nothing back)
+            });
+            
+            if (chipsWon.length > 0) {
+                gameOverReason += ' ' + players.bidder + ' wins: ' + chipsWon.join(', ') + '!';
+            }
+            
             updateResultsScreen();
             showScreen('resultsScreen');
         }, 1000);
@@ -666,42 +714,35 @@ function updateResultsScreen() {
         if (otherPlayers.length > 0) {
             content += '<div style="margin-top: 12px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
                 '<div style="font-weight: 600; color: var(--on-surface-variant);">Other players: ' + otherPlayers.join(', ') + '</div>' +
-                '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">' + players.bidder + ' got through all the blocks and challenges!</div>' +
+                '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">' + players.bidder + ' got through all blocks and won their chips!</div>' +
                 '</div>';
         }
     } else {
         content += '<div style="margin-top: 16px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
             '<div style="font-weight: 600; color: var(--error);">😞 ' + players.bidder + ' failed</div>' +
-            '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">The ranking was incorrect or a block was hit.</div>' +
+            '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">The ranking was incorrect.</div>' +
             '</div>';
         
-        // Show other players and whether blocks contributed
+        // Show other players and their chip rewards
         var otherPlayers = players.allPlayers.filter(function(name) {
             return name !== players.bidder;
         });
         
-        if (otherPlayers.length > 0) {
-            // Check if any blocks were actually hit
-            var blockWasHit = false;
-            scannedAnswers.forEach(function(cardId) {
-                blocks.forEach(function(block) {
-                    if (cardId === block.cardId) {
-                        blockWasHit = true;
-                    }
-                });
+        if (otherPlayers.length > 0 && blocks.length > 0) {
+            var blockRewards = [];
+            blocks.forEach(function(block) {
+                blockRewards.push(block.playerName + ' gets ' + block.points + ' points');
             });
             
-            if (blocks.length > 0 && blockWasHit) {
-                content += '<div style="margin-top: 12px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
-                    '<div style="font-weight: 600; color: var(--accent);">📌 Other players: ' + otherPlayers.join(', ') + '</div>' +
-                    '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">The blocks you placed helped stop the bidder!</div>' +
-                    '</div>';
-            } else {
-                content += '<div style="margin-top: 12px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
-                    '<div style="font-weight: 600; color: var(--on-surface-variant);">Other players: ' + otherPlayers.join(', ') + '</div>' +
-                    '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">' + players.bidder + ' made a ranking error.</div>' +
-                    '</div>';
-            }
+            content += '<div style="margin-top: 12px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
+                '<div style="font-weight: 600; color: var(--accent);">🎯 Block rewards: ' + blockRewards.join(', ') + '</div>' +
+                '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">Blockers get their chips back plus points!</div>' +
+                '</div>';
+        } else if (otherPlayers.length > 0) {
+            content += '<div style="margin-top: 12px; padding: 16px; background: var(--surface-elevated); border-radius: 12px;">' +
+                '<div style="font-weight: 600; color: var(--on-surface-variant);">Other players: ' + otherPlayers.join(', ') + '</div>' +
+                '<div style="font-size: 14px; color: var(--on-surface-variant); margin-top: 4px;">' + players.bidder + ' made a ranking error.</div>' +
+                '</div>';
         }
     }
     
@@ -749,14 +790,16 @@ function resetGame() {
         
         // Update the bidder dropdown to current players
         var bidderSelect = document.getElementById('bidderSelect');
-        bidderSelect.innerHTML = '<option value="">Select the bidder...</option>';
-        
-        players.allPlayers.forEach(function(name) {
-            var option = document.createElement('option');
-            option.value = name;
-            option.textContent = name;
-            bidderSelect.appendChild(option);
-        });
+        if (bidderSelect) {
+            bidderSelect.innerHTML = '<option value="">Select the bidder...</option>';
+            
+            players.allPlayers.forEach(function(name) {
+                var option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                bidderSelect.appendChild(option);
+            });
+        }
         
         updateRoundSummary();
         showScreen('playerScreen');
@@ -765,13 +808,30 @@ function resetGame() {
         showScreen('titleScreen');
     }
 }
-                '</div>';
-            
-            showScreen('playerScreen');
-            return;
-        }
-        // If choice is '1' or anything else, continue with same roles
-    }
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM loaded, initializing...");
     
-    showScreen('titleScreen');
-}
+    // Set up initial event listeners
+    setTimeout(function() {
+        var player1Input = document.getElementById('player1');
+        var bidderSelect = document.getElementById('bidderSelect');
+        
+        if (player1Input) {
+            player1Input.addEventListener('input', function() {
+                updateBidderDropdown();
+                updateRoundSummary();
+            });
+        }
+        
+        if (bidderSelect) {
+            bidderSelect.addEventListener('change', updateRoundSummary);
+        }
+        
+        updateBidderDropdown();
+        updateRoundSummary();
+        
+        console.log("Initialization complete");
+    }, 500);
+});
