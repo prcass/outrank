@@ -234,8 +234,25 @@
 
     <script src="game.js"></script>
     <script>
-function testButton() {
-    alert("JavaScript is working!");
+<script>
+function showScreen(screenId) {
+    console.log("Switching to screen:", screenId);
+    var screens = document.querySelectorAll('.screen');
+    screens.forEach(function(screen) {
+        screen.classList.remove('active');
+    });
+    var targetScreen = document.getElementById(screenId);
+    if (targetScreen) {
+        targetScreen.classList.add('active');
+    }
+}
+
+function simulateQRScan() {
+    alert("Demo game starting soon!");
+}
+
+function startRealQRScan() {
+    alert('Real QR scanning coming soon! Use demo mode for now.');
 }
 </script>
 </body>
