@@ -1,119 +1,460 @@
-body {
-    background: linear-gradient(to bottom, #2563eb, #7c3aed);
-    color: white;
-    font-family: Arial, sans-serif;
+/* Premium Know-It-All Mobile App Design */
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #ec4899;
+    --accent: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --surface: #ffffff;
+    --surface-elevated: #f8fafc;
+    --surface-variant: #f1f5f9;
+    --on-surface: #0f172a;
+    --on-surface-variant: #475569;
+    --outline: #cbd5e1;
+    --outline-variant: #e2e8f0;
+}
+
+* {
     margin: 0;
-    padding: 20px;
-    min-height: 100vh;
-    text-align: center;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    background: var(--surface-variant);
+    color: var(--on-surface);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mobile-first container */
 .screen {
-    max-width: 500px;
+    max-width: 390px;
     margin: 0 auto;
-    padding: 20px;
+    background: var(--surface);
+    min-height: 100vh;
+    position: relative;
+    box-shadow: 0 0 0 1px var(--outline-variant);
+    display: none;
 }
 
-h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+.screen.active {
+    display: block;
 }
 
-h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #fbbf24;
+/* Status bar */
+.status-bar {
+    background: var(--surface);
+    height: 44px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--on-surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--outline-variant);
 }
 
-.camera-icon {
-    font-size: 4rem;
-    margin: 20px 0;
+.status-bar .time { 
+    font-weight: 700; 
 }
 
+.status-bar .indicators { 
+    display: flex; 
+    gap: 6px; 
+    align-items: center;
+}
+
+/* Header with gradient */
+.app-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    padding: 32px 24px 48px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.app-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: rotate(45deg);
+}
+
+.app-header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+    position: relative;
+    z-index: 2;
+}
+
+.app-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 2;
+}
+
+.app-header p {
+    font-size: 16px;
+    opacity: 0.9;
+    position: relative;
+    z-index: 2;
+}
+
+.header-icon {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-size: 48px;
+    opacity: 0.3;
+    z-index: 1;
+}
+
+/* Content area */
+.content {
+    padding: 24px;
+    flex: 1;
+    min-height: calc(100vh - 200px);
+}
+
+/* Modern card design */
+.action-card {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--outline-variant);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.action-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.card-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 16px;
+    color: white;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--on-surface);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+}
+
+.card-description {
+    font-size: 14px;
+    color: var(--on-surface-variant);
+    line-height: 1.5;
+}
+
+/* Premium buttons */
 .btn {
-    background: #059669;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
     border: none;
-    padding: 15px 30px;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    margin: 10px;
+    border-radius: 16px;
+    padding: 18px 24px;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    margin: 8px 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.3);
+    text-align: center;
+    display: block;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
 }
 
 .btn:hover {
-    background: #047857;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px 0 rgba(99, 102, 241, 0.4);
 }
 
-.btn:active {
-    transform: translateY(2px);
+.btn:disabled {
+    background: var(--outline);
+    color: var(--on-surface-variant);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
+/* Game cards */
 .card {
-    background: rgba(255,255,255,0.1);
-    border: 2px solid rgba(255,255,255,0.3);
-    border-radius: 12px;
-    padding: 15px;
-    margin: 10px;
+    background: var(--surface);
+    border: 2px solid var(--outline-variant);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 8px;
     display: inline-block;
-    min-width: 120px;
-    backdrop-filter: blur(10px);
-    transition: all 0.3s;
+    min-width: 160px;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    font-weight: 500;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--outline-variant);
+    transition: background 0.3s;
 }
 
 .card.revealed {
-    background: rgba(34, 197, 94, 0.3);
-    border-color: #22c55e;
-    box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-color: var(--accent);
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
 }
 
-.card.blocked {
-    background: rgba(239, 68, 68, 0.3);
-    border-color: #ef4444;
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+.card.revealed::before {
+    background: var(--accent);
 }
 
 .card.wrong {
-    background: rgba(239, 68, 68, 0.3);
-    border-color: #ef4444;
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
-    animation: pulse 0.5s;
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border-color: var(--error);
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.15);
+    animation: errorShake 0.5s ease-in-out;
 }
 
-.card.current {
-    background: rgba(251, 191, 36, 0.3);
-    border-color: #fbbf24;
-    box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+.card.wrong::before {
+    background: var(--error);
 }
 
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+@keyframes errorShake {
+    0%, 100% { transform: scale(1.02) translateX(0); }
+    25% { transform: scale(1.02) translateX(-4px); }
+    75% { transform: scale(1.02) translateX(4px); }
 }
 
-.blocker-item {
-    background: rgba(255,255,255,0.1);
-    border-radius: 8px;
-    padding: 10px;
-    margin: 5px;
-    display: inline-block;
+/* Form inputs */
+input[type="text"], 
+input[type="number"] {
+    background: var(--surface);
+    border: 2px solid var(--outline-variant);
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 16px;
+    width: 100%;
+    margin: 8px 0;
+    transition: all 0.3s ease;
+    color: var(--on-surface);
 }
 
-input {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    margin: 5px;
+input[type="text"]:focus, 
+input[type="number"]:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+/* Checkbox and select styling */
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    accent-color: var(--primary);
 }
 
 select {
-    padding: 8px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    margin: 5px;
+    background: var(--surface);
+    border: 2px solid var(--outline-variant);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    margin: 4px;
+    cursor: pointer;
+    color: var(--on-surface);
+}
+
+/* Section headers */
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: 12px;
+    font-size: 16px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--on-surface);
+}
+
+/* Blocker items */
+.blocker-item {
+    background: var(--surface-elevated);
+    border: 1px solid var(--outline-variant);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 8px 0;
+    display: block;
+    transition: all 0.2s ease;
+}
+
+.blocker-item:hover {
+    border-color: var(--primary);
+    background: var(--surface);
+}
+
+/* Progress indicators */
+.progress-indicator {
+    margin: 20px 0;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--on-surface);
+}
+
+.progress-bar {
+    background: var(--outline-variant);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Typography helpers */
+h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--on-surface);
+    text-align: center;
+    margin: 16px 0 12px 0;
+}
+
+h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--on-surface);
+    margin: 16px 0 8px 0;
+}
+
+p {
+    font-size: 16px;
+    color: var(--on-surface-variant);
+    text-align: center;
+    margin: 8px 0 20px 0;
+}
+
+/* Labels */
+label {
+    font-weight: 600;
+    color: var(--on-surface);
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .content { 
+        padding: 16px; 
+    }
+    
+    .app-header h1 { 
+        font-size: 28px; 
+    }
+    
+    .app-header h2 { 
+        font-size: 20px; 
+    }
+    
+    .card { 
+        min-width: 140px; 
+        font-size: 14px; 
+        padding: 16px;
+    }
+    
+    .action-card {
+        padding: 20px;
+    }
 }
