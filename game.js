@@ -297,6 +297,12 @@ function updateBlockerScreen() {
     
     if (!promptInfo || !drawnCardsInfo || !blockerSetup) {
         console.error('Required elements not found for blocker screen');
+        console.error('Missing elements:', {
+            promptInfo: !promptInfo,
+            drawnCardsInfo: !drawnCardsInfo,
+            blockerSetup: !blockerSetup
+        });
+        alert('Blocker screen elements missing. Please check HTML structure.');
         return;
     }
     
