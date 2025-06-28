@@ -10,13 +10,26 @@ var gameState = 'title';
 var bidderWins = false;
 var gameOverReason = '';
 
-// Player management
+// Player management with chip system
 var players = {
     bidder: '',
-    allPlayers: [] // All players in the game
+    allPlayers: [], // All players in the game
+    chips: {} // Track each player's chips: {playerName: {3: true, 5: true, 7: true}}
 };
 var playerCount = 1;
 var currentRound = 1;
+
+// Initialize chips for all players
+function initializePlayerChips() {
+    players.chips = {};
+    players.allPlayers.forEach(function(playerName) {
+        players.chips[playerName] = {
+            3: true,  // Has 3-point chip
+            5: true,  // Has 5-point chip  
+            7: true   // Has 7-point chip
+        };
+    });
+}
 
 // Sample Data
 var SAMPLE_DATA = {
@@ -262,141 +275,117 @@ function updateBlockerScreen() {
     // Hide the drawn cards display - remove this section completely
     document.getElementById('drawnCardsInfo').innerHTML = '';
     
-    // Update blocker setup with dropdown and scanning options
+    // Update blocker setup with chip system
     var blockerHtml = '<div class="section-header">' +
-        '<div class="section-icon">🚫</div>' +
-        '<div class="section-title">Add Blocks (Optional)</div>' +
+        '<div class="section-icon">🎯</div>' +
+        '<div class="section-title">Place Chip Blocks</div>' +
         '</div>';
     
-    // Add dropdown method
-    blockerHtml += '<div class="action-card" style="margin-bottom: 16px;">' +
-        '<div class="card-title">Method 1: Select from Menu</div>' +
-        '<div class="card-description">Choose cards to block from the dropdown</div>' +
-        '<div style="margin-top: 16px;">' +
-        '<select id="blockCardSelect" style="width: 60%; margin-right: 10px;">' +
-        '<option value="">Select card to block...</option>';
-    
-    drawnCards.forEach(function(cardId) {
-        var country = SAMPLE_DATA.countries[cardId];
-        blockerHtml += '<option value="' + cardId + '">' + cardId + ' - ' + country.name + '</option>';
+    // Show each player's available chips (excluding current bidder)
+    var otherPlayers = players.allPlayers.filter(function(name) {
+        return name !== players.bidder;
     });
     
-    blockerHtml += '</select>' +
-        '<select id="blockMultSelect" style="width: 25%; margin-right: 10px;">' +
-        '<option value="1">1×</option>' +
-        '<option value="2">2×</option>' +
-        '<option value="3">3×</option>' +
-        '<option value="4">4×</option>' +
-        '</select>' +
-        '<button class="btn" onclick="addBlockFromDropdown()" style="width: auto; padding: 12px 20px; margin: 0;">Add Block</button>' +
-        '</div>' +
-        '</div>';
-    
-    // Add scanning method
-    blockerHtml += '<div class="action-card" style="margin-bottom: 16px;">' +
-        '<div class="card-title">Method 2: Scan Card</div>' +
-        '<div class="card-description">Scan a card to add it as a block</div>' +
-        '<div style="margin-top: 16px;">' +
-        '<input type="text" id="blockCardInput" placeholder="Enter card number (e.g., 001)" style="width: 60%; margin-right: 10px;">' +
-        '<select id="blockScanMultSelect" style="width: 25%; margin-right: 10px;">' +
-        '<option value="1">1×</option>' +
-        '<option value="2">2×</option>' +
-        '<option value="3">3×</option>' +
-        '<option value="4">4×</option>' +
-        '</select>' +
-        '<button class="btn" onclick="addBlockFromScan()" style="width: auto; padding: 12px 20px; margin: 0;">📱 Scan Block</button>' +
-        '</div>' +
-        '</div>';
+    if (otherPlayers.length === 0) {
+        blockerHtml += '<div class="action-card">' +
+            '<div class="card-description">Single player mode - no blocks available</div>' +
+            '</div>';
+    } else {
+        otherPlayers.forEach(function(playerName) {
+            blockerHtml += '<div class="action-card" style="margin-bottom: 16px;">' +
+                '<div class="card-title">' + playerName + '\'s Chips</div>' +
+                '<div class="card-description">Place chips on cards to block the bidder</div>' +
+                '<div style="margin-top: 16px;">';
+            
+            // Show available chips
+            [3, 5, 7].forEach(function(points) {
+                var isAvailable = players.chips[playerName] && players.chips[playerName][points];
+                var chipStyle = isAvailable ? 
+                    'background: var(--accent); color: white; cursor: pointer;' : 
+                    'background: var(--outline); color: var(--on-surface-variant); cursor: not-allowed; opacity: 0.5;';
+                
+                blockerHtml += '<div style="display: inline-block; margin: 8px;">' +
+                    '<div style="' + chipStyle + ' padding: 12px 16px; border-radius: 12px; text-align: center; font-weight: 600; min-width: 60px;">' +
+                    points + ' pts' +
+                    '</div>' +
+                    (isAvailable ? 
+                        '<div style="margin-top: 8px;">' +
+                        '<select id="' + playerName + '_' + points + '_card" style="width: 100px; margin-right: 5px;">' +
+                        '<option value="">Card...</option>' : '') +
+                        (isAvailable ? drawnCards.map(function(cardId) {
+                            var country = SAMPLE_DATA.countries[cardId];
+                            return '<option value="' + cardId + '">' + cardId + '</option>';
+                        }).join('') : '') +
+                        (isAvailable ? '</select>' +
+                        '<button onclick="placeChipBlock(\'' + playerName + '\', ' + points + ')" style="background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">Place</button>' +
+                        '</div>' : '') +
+                    '</div>';
+            });
+            
+            blockerHtml += '</div></div>';
+        });
+    }
     
     // Show current blocks
     blockerHtml += '<div id="currentBlocks">' +
         '<div class="section-header">' +
         '<div class="section-icon">📋</div>' +
-        '<div class="section-title">Current Blocks</div>' +
+        '<div class="section-title">Placed Blocks</div>' +
         '</div>' +
-        '<div id="blocksList">No blocks added yet</div>' +
+        '<div id="blocksList">No blocks placed yet</div>' +
         '</div>';
     
     document.getElementById('blockerSetup').innerHTML = blockerHtml;
     updateBlocksList();
 }
 
-function addBlockFromDropdown() {
-    var cardSelect = document.getElementById('blockCardSelect');
-    var multSelect = document.getElementById('blockMultSelect');
+function placeChipBlock(playerName, points) {
+    var cardSelect = document.getElementById(playerName + '_' + points + '_card');
     var cardId = cardSelect.value;
-    var multiplier = parseInt(multSelect.value);
     
     if (!cardId) {
         alert('Please select a card to block');
         return;
     }
     
-    // Check if already blocked
+    // Check if card is already blocked
     var existingBlock = blocks.find(function(block) {
         return block.cardId === cardId;
     });
     
     if (existingBlock) {
-        alert('Card ' + cardId + ' is already blocked');
+        alert('Card ' + cardId + ' is already blocked by ' + existingBlock.playerName);
         return;
     }
     
-    // Add the block
-    blocks.push({ cardId: cardId, multiplier: multiplier });
+    // Check if player has this chip
+    if (!players.chips[playerName] || !players.chips[playerName][points]) {
+        alert(playerName + ' has already used their ' + points + '-point chip');
+        return;
+    }
     
-    // Reset selects
+    // Place the block
+    blocks.push({ 
+        cardId: cardId, 
+        points: points, 
+        playerName: playerName 
+    });
+    
+    // Remove the chip from player's inventory
+    players.chips[playerName][points] = false;
+    
+    // Reset select
     cardSelect.value = '';
-    multSelect.value = '1';
     
-    updateBlocksList();
-}
-
-function addBlockFromScan() {
-    var input = document.getElementById('blockCardInput');
-    var multSelect = document.getElementById('blockScanMultSelect');
-    var cardId = input.value.trim();
-    var multiplier = parseInt(multSelect.value);
-    
-    // Auto-format to 3 digits
-    if (cardId.length === 1) cardId = '00' + cardId;
-    if (cardId.length === 2) cardId = '0' + cardId;
-    
-    if (!SAMPLE_DATA.countries[cardId]) {
-        alert('Invalid card ID: ' + cardId);
-        return;
-    }
-    
-    if (drawnCards.indexOf(cardId) === -1) {
-        alert('Card ' + cardId + ' was not in the drawn cards!');
-        return;
-    }
-    
-    // Check if already blocked
-    var existingBlock = blocks.find(function(block) {
-        return block.cardId === cardId;
-    });
-    
-    if (existingBlock) {
-        alert('Card ' + cardId + ' is already blocked');
-        return;
-    }
-    
-    // Add the block
-    blocks.push({ cardId: cardId, multiplier: multiplier });
-    
-    // Reset inputs
-    input.value = '';
-    multSelect.value = '1';
-    
-    updateBlocksList();
+    // Refresh the blocker screen to update available chips
+    updateBlockerScreen();
 }
 
 function updateBlocksList() {
     var blocksList = document.getElementById('blocksList');
     
     if (blocks.length === 0) {
-        blocksList.innerHTML = '<p style="color: var(--on-surface-variant); text-align: center;">No blocks added yet</p>';
+        blocksList.innerHTML = '<p style="color: var(--on-surface-variant); text-align: center;">No blocks placed yet</p>';
         return;
     }
     
@@ -406,18 +395,28 @@ function updateBlocksList() {
         blocksHtml += '<div class="blocker-item" style="display: flex; justify-content: space-between; align-items: center;">' +
             '<div>' +
             '<strong>' + block.cardId + ' - ' + country.name + '</strong>' +
-            '<div style="font-size: 14px; color: var(--on-surface-variant);">Multiplier: ' + block.multiplier + '×</div>' +
+            '<div style="font-size: 14px; color: var(--on-surface-variant);">' + block.playerName + ' placed ' + block.points + ' points</div>' +
             '</div>' +
-            '<button onclick="removeBlock(' + index + ')" style="background: var(--error); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;">Remove</button>' +
+            '<button onclick="removeChipBlock(' + index + ')" style="background: var(--error); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;">Remove</button>' +
             '</div>';
     });
     
     blocksList.innerHTML = blocksHtml;
 }
 
-function removeBlock(index) {
+function removeChipBlock(index) {
+    var block = blocks[index];
+    
+    // Return the chip to the player
+    if (players.chips[block.playerName]) {
+        players.chips[block.playerName][block.points] = true;
+    }
+    
+    // Remove the block
     blocks.splice(index, 1);
-    updateBlocksList();
+    
+    // Refresh the blocker screen
+    updateBlockerScreen();
 }
 
 // Remove the old toggleBlock function since we're not using checkboxes anymore
