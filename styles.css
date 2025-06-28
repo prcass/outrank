@@ -383,6 +383,120 @@ body {
     color: #dc2626;
 }
 
+/* Scores and leaderboard */
+.scores-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+.scores-table th,
+.scores-table td {
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--outline);
+}
+
+.scores-table th {
+    background: var(--background);
+    font-weight: 600;
+    color: var(--on-surface);
+    font-size: 14px;
+}
+
+.scores-table td {
+    color: var(--on-surface-variant);
+    font-size: 14px;
+}
+
+.scores-table .rank {
+    text-align: center;
+    font-weight: 600;
+    width: 50px;
+}
+
+.scores-table .rank.first {
+    color: #fbbf24;
+}
+
+.scores-table .rank.second {
+    color: #9ca3af;
+}
+
+.scores-table .rank.third {
+    color: #f59e0b;
+}
+
+.player-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--outline);
+}
+
+.player-stat-item:last-child {
+    border-bottom: none;
+}
+
+.player-stat-name {
+    font-weight: 600;
+    color: var(--on-surface);
+}
+
+.player-stat-value {
+    color: var(--on-surface-variant);
+    font-size: 14px;
+}
+
+.chip-inventory-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    margin: 8px 0;
+    background: var(--background);
+    border-radius: 8px;
+    border: 1px solid var(--outline);
+}
+
+.chip-inventory-player {
+    font-weight: 600;
+    color: var(--on-surface);
+}
+
+.chip-inventory-chips {
+    display: flex;
+    gap: 8px;
+}
+
+.chip-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+}
+
+.chip-badge.points-3 {
+    background: #059669;
+}
+
+.chip-badge.points-5 {
+    background: #dc2626;
+}
+
+.chip-badge.points-7 {
+    background: #7c3aed;
+}
+
+.no-scores-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--on-surface-variant);
+    font-style: italic;
+}
+
 /* Responsive design */
 @media (max-width: 480px) {
     body {
