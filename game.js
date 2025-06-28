@@ -13,11 +13,13 @@ var gameState = 'title';
 var bidderWins = false;
 var gameOverReason = '';
 
-// Player management with chip system
+// Player management with chip system and persistent scoring
 var players = {
     bidder: '',
     allPlayers: [],
-    chips: {}
+    chips: {},
+    scores: {}, // Persistent scores across rounds
+    stats: {}   // Win/loss statistics
 };
 var playerCount = 1;
 var currentRound = 1;
@@ -100,17 +102,37 @@ function isWrongOrder(currentCardId, previousCardId) {
     return false;
 }
 
-// Initialize chips for all players
+// Initialize chips and scoring for all players
 function initializePlayerChips() {
     players.chips = {};
     players.allPlayers.forEach(function(playerName) {
-        players.chips[playerName] = {
-            3: true,
-            5: true,
-            7: true,
-            score: 0,
-            extra: {}
-        };
+        if (!players.chips[playerName]) {
+            players.chips[playerName] = {
+                3: true,
+                5: true,
+                7: true,
+                extra: {}
+            };
+        }
+        
+        // Initialize scores if not exist
+        if (!players.scores[playerName]) {
+            players.scores[playerName] = 0;
+        }
+        
+        // Initialize stats if not exist
+        if (!players.stats[playerName]) {
+            players.stats[playerName] = {
+                gamesPlayed: 0,
+                gamesWon: 0,
+                roundsAsBidder: 0,
+                successfulBids: 0,
+                roundsAsBlocker: 0,
+                successfulBlocks: 0,
+                pointsFromBlocking: 0,
+                chipsWon: 0
+            };
+        }
     });
 }
 
@@ -347,12 +369,18 @@ function updateBlockerScreen() {
                     '<div style="' + chipStyle + ' padding: 12px 16px; border-radius: 12px; text-align: center; font-weight: 600; min-width: 60px;">' +
                     points + ' pts' +
                     '</div>' +
-                    (isAvailable ? 
+                                            (isAvailable ? 
                         '<div style="margin-top: 8px;">' +
                         '<select id="' + playerName + '_' + points + '_card" style="width: 100px; margin-right: 5px;">' +
                         '<option value="">Card...</option>' : '') +
-                        (isAvailable ? drawnCards.map(function(cardId) {
-                            return '<option value="' + cardId + '">' + cardId + '</option>';
+                        (isAvailable ? drawnCards.filter(function(cardId) {
+                            // Only show cards that aren't already blocked by someone else
+                            return !blocks.some(function(block) {
+                                return block.cardId === cardId;
+                            });
+                        }).map(function(cardId) {
+                            var country = SAMPLE_DATA.countries[cardId];
+                            return '<option value="' + cardId + '">' + cardId + ' - ' + country.name + '</option>';
                         }).join('') : '') +
                         (isAvailable ? '</select>' +
                         '<button onclick="placeChipBlock(\'' + playerName + '\', ' + points + ')" style="background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">Place</button>' +
@@ -388,13 +416,24 @@ function placeChipBlock(playerName, points) {
         return;
     }
     
-    // Check if card is already blocked
-    var existingBlock = blocks.find(function(block) {
+    // Check if card is already blocked by anyone
+    var existingCardBlock = blocks.find(function(block) {
         return block.cardId === cardId;
     });
     
-    if (existingBlock) {
-        alert('Card ' + cardId + ' is already blocked by ' + existingBlock.playerName);
+    if (existingCardBlock) {
+        var country = SAMPLE_DATA.countries[cardId];
+        alert(country.name + ' is already blocked by ' + existingCardBlock.playerName + '!');
+        return;
+    }
+    
+    // Check if this chip value is already on the table by anyone
+    var existingChipBlock = blocks.find(function(block) {
+        return block.points === points;
+    });
+    
+    if (existingChipBlock) {
+        alert('A ' + points + '-point chip is already on the table (used by ' + existingChipBlock.playerName + ')!');
         return;
     }
     
@@ -417,7 +456,7 @@ function placeChipBlock(playerName, points) {
     // Reset select
     cardSelect.value = '';
     
-    // Refresh the blocker screen
+    // Refresh the blocker screen to update all dropdowns and chip availability
     updateBlockerScreen();
 }
 
@@ -497,7 +536,8 @@ function updateScanScreen() {
         scanInfoContent += '<p style="color: var(--error); margin-top: 8px; text-align: center;">⚠️ Blocked cards: ';
         blocks.forEach(function(block, index) {
             if (index > 0) scanInfoContent += ', ';
-            scanInfoContent += block.cardId + ' (' + block.points + 'pts)';
+            var country = SAMPLE_DATA.countries[block.cardId];
+            scanInfoContent += country.name + ' (' + block.points + 'pts)';
         });
         scanInfoContent += '</p>';
     }
@@ -675,7 +715,19 @@ function revealNext() {
                 // Bidder failed: All blockers get their chips back + points
                 blocks.forEach(function(block) {
                     players.chips[block.playerName][block.points] = true;
-                    players.chips[block.playerName].score += block.points;
+                    players.scores[block.playerName] += block.points;
+                    players.stats[block.playerName].pointsFromBlocking += block.points;
+                    players.stats[block.playerName].successfulBlocks++;
+                });
+                
+                // Update bidder stats
+                players.stats[players.bidder].gamesPlayed++;
+                players.stats[players.bidder].roundsAsBidder++;
+                
+                // Update blocker stats
+                blocks.forEach(function(block) {
+                    players.stats[block.playerName].gamesPlayed++;
+                    players.stats[block.playerName].roundsAsBlocker++;
                 });
                 
                 updateResultsScreen();
@@ -704,10 +756,25 @@ function revealNext() {
                 }
                 players.chips[players.bidder].extra[block.points]++;
                 chipsWon.push(block.points + '-point chip from ' + block.playerName);
+                players.stats[block.playerName].gamesPlayed++;
+                players.stats[block.playerName].roundsAsBlocker++;
             });
             
+            // Award points for successful bidding - just the bid amount
+            var biddingPoints = bidAmount;
+            players.scores[players.bidder] += biddingPoints;
+            
+            // Update bidder stats
+            players.stats[players.bidder].gamesPlayed++;
+            players.stats[players.bidder].roundsAsBidder++;
+            players.stats[players.bidder].successfulBids++;
+            players.stats[players.bidder].gamesWon++;
+            players.stats[players.bidder].chipsWon += blocks.length;
+            
             if (chipsWon.length > 0) {
-                gameOverReason += ' ' + players.bidder + ' wins: ' + chipsWon.join(', ') + '!';
+                gameOverReason += ' ' + players.bidder + ' wins ' + biddingPoints + ' points and keeps ' + chipsWon.length + ' chips!';
+            } else {
+                gameOverReason += ' ' + players.bidder + ' wins ' + biddingPoints + ' points!';
             }
             
             updateResultsScreen();
@@ -832,6 +899,148 @@ function testButton() {
     alert("JavaScript is working!");
 }
 
+// Scoring and statistics functions
+function updateScoresScreen() {
+    updateLeaderboard();
+    updatePlayerStats();
+    updateChipInventory();
+}
+
+function updateLeaderboard() {
+    var leaderboard = document.getElementById('leaderboard');
+    if (!leaderboard) return;
+    
+    if (Object.keys(players.scores).length === 0) {
+        leaderboard.innerHTML = '<div class="no-scores-message">No games played yet!<br>Play some rounds to see the leaderboard.</div>';
+        return;
+    }
+    
+    // Sort players by score
+    var sortedPlayers = Object.keys(players.scores).sort(function(a, b) {
+        return players.scores[b] - players.scores[a];
+    });
+    
+    var tableHtml = '<table class="scores-table">' +
+        '<thead>' +
+        '<tr>' +
+        '<th class="rank">#</th>' +
+        '<th>Player</th>' +
+        '<th>Score</th>' +
+        '<th>Win Rate</th>' +
+        '</tr>' +
+        '</thead>' +
+        '<tbody>';
+    
+    sortedPlayers.forEach(function(playerName, index) {
+        var rank = index + 1;
+        var rankClass = '';
+        if (rank === 1) rankClass = 'first';
+        else if (rank === 2) rankClass = 'second';
+        else if (rank === 3) rankClass = 'third';
+        
+        var gamesPlayed = players.stats[playerName] ? players.stats[playerName].gamesPlayed : 0;
+        var gamesWon = players.stats[playerName] ? players.stats[playerName].gamesWon : 0;
+        var winRate = gamesPlayed > 0 ? Math.round((gamesWon / gamesPlayed) * 100) : 0;
+        
+        tableHtml += '<tr>' +
+            '<td class="rank ' + rankClass + '">' + rank + '</td>' +
+            '<td><strong>' + playerName + '</strong></td>' +
+            '<td>' + players.scores[playerName] + ' pts</td>' +
+            '<td>' + winRate + '%</td>' +
+            '</tr>';
+    });
+    
+    tableHtml += '</tbody></table>';
+    leaderboard.innerHTML = tableHtml;
+}
+
+function updatePlayerStats() {
+    var playerStats = document.getElementById('playerStats');
+    if (!playerStats) return;
+    
+    if (Object.keys(players.stats).length === 0) {
+        playerStats.innerHTML = '<div class="no-scores-message">No statistics available yet!</div>';
+        return;
+    }
+    
+    var statsHtml = '';
+    Object.keys(players.stats).forEach(function(playerName) {
+        var stats = players.stats[playerName];
+        var bidSuccessRate = stats.roundsAsBidder > 0 ? Math.round((stats.successfulBids / stats.roundsAsBidder) * 100) : 0;
+        var blockSuccessRate = stats.roundsAsBlocker > 0 ? Math.round((stats.successfulBlocks / stats.roundsAsBlocker) * 100) : 0;
+        
+        statsHtml += '<div class="player-stat-item">' +
+            '<div class="player-stat-name">' + playerName + '</div>' +
+            '<div class="player-stat-value">' +
+            'Games: ' + stats.gamesPlayed + ' | ' +
+            'Bid Success: ' + bidSuccessRate + '% | ' +
+            'Block Success: ' + blockSuccessRate + '%' +
+            '</div>' +
+            '</div>';
+    });
+    
+    playerStats.innerHTML = statsHtml;
+}
+
+function updateChipInventory() {
+    var chipInventory = document.getElementById('chipInventory');
+    if (!chipInventory) return;
+    
+    if (Object.keys(players.chips).length === 0) {
+        chipInventory.innerHTML = '<div class="no-scores-message">No chip data available!</div>';
+        return;
+    }
+    
+    var inventoryHtml = '';
+    Object.keys(players.chips).forEach(function(playerName) {
+        var chips = players.chips[playerName];
+        
+        inventoryHtml += '<div class="chip-inventory-item">' +
+            '<div class="chip-inventory-player">' + playerName + '</div>' +
+            '<div class="chip-inventory-chips">';
+        
+        // Show base chips
+        [3, 5, 7].forEach(function(points) {
+            if (chips[points]) {
+                inventoryHtml += '<span class="chip-badge points-' + points + '">' + points + 'pt</span>';
+            }
+        });
+        
+        // Show extra chips
+        if (chips.extra) {
+            Object.keys(chips.extra).forEach(function(points) {
+                var count = chips.extra[points];
+                if (count > 0) {
+                    inventoryHtml += '<span class="chip-badge points-' + points + '">+' + count + ' × ' + points + 'pt</span>';
+                }
+            });
+        }
+        
+        inventoryHtml += '</div></div>';
+    });
+    
+    chipInventory.innerHTML = inventoryHtml;
+}
+
+function clearScores() {
+    var confirmed = confirm('Are you sure you want to clear all scores and statistics?\n\nThis cannot be undone!');
+    if (confirmed) {
+        // Reset all scoring data
+        players.scores = {};
+        players.stats = {};
+        
+        // Reset chips to defaults for current players
+        if (players.allPlayers.length > 0) {
+            initializePlayerChips();
+        }
+        
+        // Update the scores screen
+        updateScoresScreen();
+        
+        alert('All scores and statistics have been cleared!');
+    }
+}
+
 // Initialize event listeners when page loads
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM loaded, setting up event listeners...");
@@ -863,6 +1072,12 @@ document.addEventListener('DOMContentLoaded', function() {
             updateBidderDropdown();
             updateRoundSummary();
         });
+    }
+    
+    // Update scores screen if it's active
+    var scoresScreen = document.getElementById('scoresScreen');
+    if (scoresScreen && scoresScreen.classList.contains('active')) {
+        updateScoresScreen();
     }
     
     console.log("Event listeners setup complete");
