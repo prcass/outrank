@@ -46,29 +46,26 @@ body {
         padding: 8px;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         position: relative;
-        pointer-events: none; /* Fix: Allow clicks to pass through */
     }
     
-    /* iPhone notch for desktop */
+    /* Remove the notch for now to eliminate potential conflicts */
     .phone-container::before {
-        content: '';
-        position: absolute;
-        top: 8px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 134px;
-        height: 30px;
-        background: #1a1a1a;
-        border-radius: 0 0 20px 20px;
-        z-index: 10;
-        pointer-events: none; /* Fix: Allow clicks to pass through */
+        display: none;
     }
     
     .screen {
         height: 796px;
         border-radius: 32px;
         overflow: hidden;
-        pointer-events: auto; /* Fix: Re-enable clicks on the actual screen */
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Ensure all interactive elements work on desktop */
+    .btn, button, input, select {
+        position: relative;
+        z-index: 10;
+        pointer-events: auto;
     }
 }
 
