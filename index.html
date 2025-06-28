@@ -5,256 +5,259 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Know-It-All</title>
     <link rel="stylesheet" href="styles.css">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
-    <!-- Player Setup Screen -->
-    <div id="playerScreen" class="screen">
-        <div class="status-bar">
-            <span class="time">9:41</span>
-            <div class="indicators">
-                <span>📶</span>
-                <span>🔋</span>
+    <div class="phone-container">
+        <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="status-bar">
+                <span class="status-time">9:41</span>
+                <div class="status-icons">
+                    <span class="status-signal">●●●</span>
+                    <span class="status-battery">100%</span>
+                </div>
             </div>
-        </div>
-
-        <div class="app-header">
-            <div class="header-icon">👥</div>
-            <h2>Player Setup</h2>
-            <p>Enter all player names and select the bidder</p>
-        </div>
-
-        <div class="content">
-            <div class="action-card">
-                <div class="card-icon">👥</div>
-                <div class="card-title">Add All Players</div>
-                <div class="card-description">Enter the names of everyone who will be playing</div>
-                <div id="allPlayers">
-                    <div class="form-group">
-                        <label>Player 1:</label>
-                        <input type="text" id="player1" placeholder="Enter player name">
+            
+            <!-- Title Screen -->
+            <div id="titleScreen" class="screen active">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h1 class="app-title">Know-It-All</h1>
+                    <p class="app-subtitle">Trivia Ranking Game</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="action-card">
+                        <div class="card-icon">👥</div>
+                        <div class="card-title">Setup Game</div>
+                        <div class="card-description">Add players and start a new game</div>
+                        <button class="btn primary" onclick="showScreen('playerScreen')">👥 Setup Players</button>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="card-icon">🎲</div>
+                        <div class="card-title">Quick Demo</div>
+                        <div class="card-description">Try the game with sample data</div>
+                        <button class="btn primary" onclick="simulateQRScan()">🎲 Start Demo Game</button>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="card-icon">📷</div>
+                        <div class="card-title">QR Scanner</div>
+                        <div class="card-description">Scan QR codes for real gameplay</div>
+                        <button class="btn secondary" onclick="startRealQRScan()">📷 Scan QR Code</button>
                     </div>
                 </div>
-                <button class="btn" onclick="addPlayer()" style="margin-bottom: 16px;">➕ Add Another Player</button>
             </div>
-
-            <div class="action-card">
-                <div class="card-icon">🎯</div>
-                <div class="card-title">Select Bidder for This Round</div>
-                <div class="card-description">Choose who will be the bidder for this round</div>
-                <div class="form-group">
-                    <label>Bidder:</label>
-                    <select id="bidderSelect">
-                        <option value="">Select the bidder...</option>
-                    </select>
+            
+            <!-- Player Setup Screen -->
+            <div id="playerScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Setup Players</h2>
+                    <p class="screen-subtitle">Add players and select bidder</p>
                 </div>
-            </div>
-
-            <div class="action-card">
-                <div class="card-title">Round Summary</div>
-                <div id="roundSummary" class="card-description">
-                    Add players and select a bidder to see the round setup
-                </div>
-            </div>
-
-            <button class="btn" onclick="startRoundWithBidder()">🎮 Start Round</button>
-            <button class="btn" onclick="showScreen('titleScreen')" style="background: var(--outline); color: var(--on-surface-variant);">← Back</button>
-        </div>
-    </div>
-
-    <!-- Title Screen -->
-    <div id="titleScreen" class="screen active">
-        <div class="status-bar">
-            <span class="time">9:41</span>
-            <div class="indicators">
-                <span>📶</span>
-                <span>🔋</span>
-            </div>
-        </div>
-
-        <div class="app-header">
-            <div class="header-icon">🧠</div>
-            <h1>Know-It-All</h1>
-            <p>Professional trivia ranking game</p>
-        </div>
-
-        <div class="content">
-            <div class="action-card">
-                <div class="card-icon">📷</div>
-                <div class="card-title">Quick Start</div>
-                <div class="card-description">Scan a prompt card to begin your ranking challenge</div>
-            </div>
-
-            <button class="btn" onclick="showScreen('playerScreen')">👥 Setup Players</button>
-            <button class="btn" onclick="simulateQRScan()">🎲 Start Demo Game</button>
-            <button class="btn" onclick="startRealQRScan()">📷 Scan QR Code</button>
-            <button class="btn" onclick="testButton()">🔧 Test JavaScript</button>
-        </div>
-    </div>
-
-    <!-- Blocker Setup Screen -->
-    <div id="blockerScreen" class="screen">
-        <div class="status-bar">
-            <span class="time">9:41</span>
-            <div class="indicators">
-                <span>📶</span>
-                <span>🔋</span>
-            </div>
-        </div>
-
-        <div class="app-header">
-            <div class="header-icon">⚙️</div>
-            <h2>Setup Game</h2>
-            <p>Configure your ranking challenge</p>
-        </div>
-
-        <div class="content">
-            <div class="action-card">
-                <div id="promptInfo"></div>
-            </div>
-            
-            <div class="form-group">
-                <label>Bid Amount (1-10 cards):</label>
-                <input type="number" id="bidAmount" min="1" max="10" value="3">
-            </div>
-            
-            <div id="blockerSetup"></div>
-            <button class="btn" onclick="continueToScanning()">▶️ Continue to Scanning</button>
-        </div>
-    </div>
-
-    <!-- Card Scanning Screen -->
-    <div id="scanScreen" class="screen">
-        <div class="status-bar">
-            <span class="time">9:41</span>
-            <div class="indicators">
-                <span>📶</span>
-                <span>🔋</span>
-            </div>
-        </div>
-
-        <div class="app-header">
-            <div class="header-icon">📱</div>
-            <h2>Card Scanning</h2>
-            <p>Scan cards in ranking order</p>
-        </div>
-
-        <div class="content">
-            <div class="action-card">
-                <div id="scanInfo"></div>
-            </div>
-            
-            <div class="section-header">
-                <div class="section-icon">📋</div>
-                <div class="section-title">Scanned Cards</div>
-            </div>
-            
-            <div id="scannedCards"></div>
-            
-            <div class="form-group">
-                <input type="text" id="cardInput" placeholder="Enter card number (e.g., 001)">
-                <button class="btn" onclick="scanCard()">📱 Scan Card</button>
-            </div>
-            
-            <button class="btn" onclick="simulateAllCards()">🎲 Simulate All Cards</button>
-            <button class="btn" onclick="finishScanning()" id="finishBtn" style="display: none;">▶️ Start Reveal</button>
-        </div>
-    </div>
-
-    <!-- Reveal Screen -->
-    <div id="revealScreen" class="screen">
-        <div class="status-bar">
-            <span class="time">9:41</span>
-            <div class="indicators">
-                <span>📶</span>
-                <span>🔋</span>
-            </div>
-        </div>
-
-        <div class="app-header">
-            <div class="header-icon">👁️</div>
-            <h2>Reveal Phase</h2>
-            <p>Watch your ranking unfold</p>
-        </div>
-
-        <div class="content">
-            <div class="action-card">
-                <div id="revealInfo"></div>
-            </div>
-
-            <div class="progress-indicator">
-                <div class="progress-label">
-                    <span>Progress</span>
-                    <span id="revealProgress">0 of 0</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="revealProgressBar" style="width: 0%;"></div>
+                
+                <div class="screen-content">
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">👥</div>
+                            <div class="section-title">Add Players</div>
+                        </div>
+                        
+                        <div id="allPlayers">
+                            <div class="form-group" id="playerGroup1">
+                                <label>Player 1:</label>
+                                <input type="text" id="player1" placeholder="Enter player name">
+                            </div>
+                        </div>
+                        
+                        <button class="btn secondary" onclick="addPlayer()">➕ Add Another Player</button>
+                    </div>
+                    
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">🎯</div>
+                            <div class="section-title">Select Bidder</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Who will be the bidder for this round?</label>
+                            <select id="bidderSelect" onchange="updateRoundSummary()">
+                                <option value="">Select the bidder...</option>
+                            </select>
+                        </div>
+                        
+                        <div id="roundSummary" class="round-summary">
+                            <strong>Round 1</strong><br>
+                            <strong>Bidder:</strong> Not selected<br>
+                            <strong>Other players:</strong> Add more players above
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="startRoundWithBidder()">🚀 Start Round</button>
+                        <button class="btn secondary" onclick="showScreen('titleScreen')">🏠 Back to Home</button>
+                    </div>
                 </div>
             </div>
             
-            <div id="revealCards"></div>
+            <!-- Blocker Setup Screen -->
+            <div id="blockerScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Setup Blocks</h2>
+                    <p class="screen-subtitle">Place your chip blocks strategically</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div id="promptInfo">
+                            <div class="card-title">Challenge Loading...</div>
+                            <div class="card-description">Setting up the game...</div>
+                        </div>
+                    </div>
+                    
+                    <div id="drawnCardsInfo">
+                        <!-- Cards drawn info goes here -->
+                    </div>
+                    
+                    <div id="blockerSetup">
+                        <!-- Blocker setup content goes here -->
+                    </div>
+                    
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">💰</div>
+                            <div class="section-title">Bid Amount</div>
+                        </div>
+                        <div class="form-group">
+                            <label>How many cards will you rank?</label>
+                            <input type="number" id="bidAmount" min="1" max="10" value="3">
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="continueToScanning()">➡️ Continue to Scanning</button>
+                        <button class="btn secondary" onclick="showScreen('playerScreen')">⬅️ Back to Players</button>
+                    </div>
+                </div>
+            </div>
             
-            <button id="revealBtn" class="btn" onclick="revealNext()">▶️ Reveal Next Card</button>
-            <button class="btn" onclick="resetGame()">🏠 Back to Home</button>
+            <!-- Card Scanning Screen -->
+            <div id="scanScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Scan Cards</h2>
+                    <p class="screen-subtitle">Build your ranking</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div id="scanInfo">
+                            <div class="card-title">Scan Your Cards</div>
+                            <div class="card-description">Enter card numbers in your desired order</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">📱</div>
+                            <div class="section-title">Card Entry</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Enter card number (1-10):</label>
+                            <input type="text" id="cardInput" placeholder="Enter card number...">
+                            <button class="btn primary" onclick="scanCard()">📱 Add Card</button>
+                        </div>
+                        <button class="btn secondary" onclick="simulateAllCards()">🎲 Fill Remaining Cards</button>
+                    </div>
+                    
+                    <div class="cards-container">
+                        <h3>Your Ranking:</h3>
+                        <div id="scannedCards">
+                            <!-- Scanned cards will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="finishBtn" class="btn primary" onclick="finishScanning()" style="display: none;">✅ Finish Scanning</button>
+                        <button class="btn secondary" onclick="showScreen('blockerScreen')">⬅️ Back to Blocks</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reveal Screen -->
+            <div id="revealScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Reveal Phase</h2>
+                    <p class="screen-subtitle">See if your ranking is correct</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div id="revealInfo">
+                            <div class="card-title">Revealing Cards</div>
+                            <div class="card-description">Click to reveal each card</div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-card">
+                        <div class="progress-header">
+                            <span>Progress:</span>
+                            <span id="revealProgress">0 of 0</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="revealProgressBar" class="progress-fill"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="cards-container">
+                        <div id="revealCards">
+                            <!-- Reveal cards will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="revealBtn" class="btn primary" onclick="revealNext()">▶️ Reveal Next Card</button>
+                        <button class="btn secondary" onclick="resetGame()">🏠 Back to Home</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Screen -->
+            <div id="resultsScreen" class="screen">
+                <div id="resultsHeader" class="app-header">
+                    <div class="header-background"></div>
+                    <h2 id="resultsTitle" class="screen-title">Game Results</h2>
+                    <p class="screen-subtitle">How did you do?</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div id="resultsContent">
+                            <div class="card-title">Round Results</div>
+                            <div class="card-description">Game completed</div>
+                        </div>
+                    </div>
+                    
+                    <div class="cards-container">
+                        <h3>Final Ranking:</h3>
+                        <div id="finalRanking">
+                            <!-- Final ranking will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="nextRound()">🔄 Next Round</button>
+                        <button class="btn secondary" onclick="newGame()">🏠 New Game</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <!-- Results Screen -->
-    <div id="resultsScreen" class="screen">
-        <div class="status-bar">
-            <span class="time">9:41</span>
-            <div class="indicators">
-                <span>📶</span>
-                <span>🔋</span>
-            </div>
-        </div>
-
-        <div class="app-header" id="resultsHeader">
-            <div class="header-icon">📊</div>
-            <h2 id="resultsTitle">Game Results</h2>
-            <p>See how you performed</p>
-        </div>
-
-        <div class="content">
-            <div class="action-card">
-                <div id="resultsContent"></div>
-            </div>
-
-            <div class="section-header">
-                <div class="section-icon">📋</div>
-                <div class="section-title">Final Ranking</div>
-            </div>
-            
-            <div id="finalRanking"></div>
-            
-            <button class="btn" onclick="resetGame()">🎮 Play Again</button>
-        </div>
-    </div>
-
+    
     <script src="game.js"></script>
-    <script>
-<script>
-function showScreen(screenId) {
-    console.log("Switching to screen:", screenId);
-    var screens = document.querySelectorAll('.screen');
-    screens.forEach(function(screen) {
-        screen.classList.remove('active');
-    });
-    var targetScreen = document.getElementById(screenId);
-    if (targetScreen) {
-        targetScreen.classList.add('active');
-    }
-}
-
-function simulateQRScan() {
-    alert("Demo game starting soon!");
-}
-
-function startRealQRScan() {
-    alert('Real QR scanning coming soon! Use demo mode for now.');
-}
-</script>
-</body>
 </body>
 </html>
