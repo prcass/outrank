@@ -1,4 +1,4 @@
-// SUPER MINIMAL TEST - Your exact original code
+// Fixed Visual Version - Focus on DOM and Screen Switching
 console.log("JavaScript file loaded successfully!");
 
 // Game State Variables
@@ -24,7 +24,7 @@ var players = {
 var playerCount = 1;
 var currentRound = 1;
 
-// Sample Data - EXACTLY as you had it originally
+// Sample Data
 var SAMPLE_DATA = {
     prompts: [
         { challenge: 'gdp', label: 'Rank these countries by GDP (highest to lowest)' },
@@ -45,94 +45,197 @@ var SAMPLE_DATA = {
     }
 };
 
-// Test function - ADD THIS to test if JS is working
-function testButton() {
-    alert("JavaScript is working! Original code restored.");
+// Debug function to check DOM elements
+function debugDOM() {
+    console.log("=== DOM DEBUG ===");
+    console.log("titleScreen:", document.getElementById('titleScreen'));
+    console.log("playerScreen:", document.getElementById('playerScreen'));
+    console.log("All screens:", document.querySelectorAll('.screen'));
+    console.log("All buttons:", document.querySelectorAll('button'));
 }
 
-// All your original functions exactly as they were...
+// Core function to show screens
 function showScreen(screenId) {
-    console.log("Switching to screen:", screenId);
+    console.log("showScreen called with:", screenId);
     
-    var screens = document.querySelectorAll('.screen');
-    screens.forEach(function(screen) {
+    // Debug: Check if elements exist
+    var allScreens = document.querySelectorAll('.screen');
+    var targetScreen = document.getElementById(screenId);
+    
+    console.log("Found " + allScreens.length + " screens");
+    console.log("Target screen (" + screenId + "):", targetScreen);
+    
+    if (allScreens.length === 0) {
+        console.error("ERROR: No screens found! Check HTML structure.");
+        return;
+    }
+    
+    if (!targetScreen) {
+        console.error("ERROR: Target screen '" + screenId + "' not found!");
+        return;
+    }
+    
+    // Hide all screens
+    allScreens.forEach(function(screen, index) {
+        console.log("Hiding screen " + index + ":", screen.id);
         screen.classList.remove('active');
     });
     
-    var targetScreen = document.getElementById(screenId);
-    if (targetScreen) {
-        targetScreen.classList.add('active');
-        console.log("Screen switched successfully to:", screenId);
-    } else {
-        console.error("Screen not found:", screenId);
-    }
-}
-
-function getStatValue(country, challenge) {
-    if (challenge === 'gdp') {
-        return country.gdp.toLocaleString();
-    } else if (challenge === 'population') {
-        return country.population.toLocaleString();
-    } else if (challenge === 'area') {
-        return country.area.toLocaleString();
-    }
-    return 'Unknown';
-}
-
-function getStatDisplay(country, challenge) {
-    if (challenge === 'gdp') {
-        return 'GDP: $' + country.gdp.toLocaleString() + 'M';
-    } else if (challenge === 'population') {
-        return 'Pop: ' + country.population.toLocaleString();
-    } else if (challenge === 'area') {
-        return 'Area: ' + country.area.toLocaleString() + ' km²';
-    }
-    return 'Unknown';
-}
-
-function isWrongOrder(currentCardId, previousCardId) {
-    var currentCountry = SAMPLE_DATA.countries[currentCardId];
-    var previousCountry = SAMPLE_DATA.countries[previousCardId];
-    var challenge = currentPrompt.challenge;
+    // Show target screen
+    targetScreen.classList.add('active');
+    console.log("Activated screen:", screenId);
     
-    if (challenge === 'gdp') {
-        return currentCountry.gdp > previousCountry.gdp;
-    } else if (challenge === 'population') {
-        return currentCountry.population > previousCountry.population;
-    } else if (challenge === 'area') {
-        return currentCountry.area > previousCountry.area;
-    }
-    return false;
+    // Double-check it worked
+    setTimeout(function() {
+        var isVisible = targetScreen.classList.contains('active');
+        console.log("Screen " + screenId + " is now active:", isVisible);
+    }, 100);
 }
 
+// Test functions that should work with buttons
 function simulateQRScan() {
-    console.log("Starting QR scan simulation...");
-    currentPrompt = SAMPLE_DATA.prompts[Math.floor(Math.random() * SAMPLE_DATA.prompts.length)];
+    console.log("simulateQRScan called!");
+    alert("Demo game starting! (This proves the button click works)");
     
-    var allCardIds = Object.keys(SAMPLE_DATA.countries);
-    drawnCards = [];
-    while (drawnCards.length < 10) {
-        var randomCard = allCardIds[Math.floor(Math.random() * allCardIds.length)];
-        if (drawnCards.indexOf(randomCard) === -1) {
-            drawnCards.push(randomCard);
+    // Pick random challenge
+    currentPrompt = SAMPLE_DATA.prompts[Math.floor(Math.random() * SAMPLE_DATA.prompts.length)];
+    console.log("Selected challenge:", currentPrompt.label);
+    
+    // For now, just alert instead of full game logic
+    alert("Challenge: " + currentPrompt.label);
+}
+
+function startRealQRScan() {
+    console.log("startRealQRScan called!");
+    alert('Real QR scanning coming soon! Use demo mode for now.');
+}
+
+// Navigation functions
+function goToPlayerScreen() {
+    console.log("goToPlayerScreen called!");
+    showScreen('playerScreen');
+}
+
+function goToScoresScreen() {
+    console.log("goToScoresScreen called!");
+    showScreen('scoresScreen');
+}
+
+function goToTitleScreen() {
+    console.log("goToTitleScreen called!");
+    showScreen('titleScreen');
+}
+
+// Simple player management for testing
+function addPlayer() {
+    console.log("addPlayer called!");
+    alert("Add player function works!");
+}
+
+function removePlayer(num) {
+    console.log("removePlayer called for player:", num);
+    alert("Remove player " + num + " function works!");
+}
+
+// Test all screen switches
+function testAllScreens() {
+    console.log("Testing all screen switches...");
+    
+    var screens = ['titleScreen', 'playerScreen', 'blockerScreen', 'scanScreen', 'revealScreen', 'resultsScreen', 'scoresScreen'];
+    var currentIndex = 0;
+    
+    function switchToNext() {
+        if (currentIndex < screens.length) {
+            var screenId = screens[currentIndex];
+            console.log("Testing screen:", screenId);
+            showScreen(screenId);
+            currentIndex++;
+            setTimeout(switchToNext, 1000);
+        } else {
+            console.log("All screens tested, returning to title");
+            showScreen('titleScreen');
         }
     }
     
-    blocks = [];
-    scannedAnswers = [];
-    revealIndex = 0;
-    gameOver = false;
-    gameState = 'blocker';
-    
-    alert("Demo starting with challenge: " + currentPrompt.label);
-    // For now, just show an alert instead of complex screen switching
+    switchToNext();
 }
 
-// Minimal event setup
+// Initialize the page properly
+function initializePage() {
+    console.log("=== INITIALIZING PAGE ===");
+    
+    // Debug DOM first
+    debugDOM();
+    
+    // Make sure title screen is visible
+    var titleScreen = document.getElementById('titleScreen');
+    if (titleScreen) {
+        console.log("Found title screen, making it active");
+        showScreen('titleScreen');
+    } else {
+        console.error("CRITICAL: Title screen not found!");
+        // Try to find any screen
+        var anyScreen = document.querySelector('.screen');
+        if (anyScreen) {
+            console.log("Found a screen:", anyScreen.id);
+            showScreen(anyScreen.id);
+        } else {
+            console.error("CRITICAL: No screens found at all!");
+        }
+    }
+    
+    // Test if we can find and interact with buttons
+    var buttons = document.querySelectorAll('button');
+    console.log("Found " + buttons.length + " buttons");
+    
+    // Add click listeners to buttons manually if needed
+    buttons.forEach(function(button, index) {
+        console.log("Button " + index + ":", button.textContent);
+        
+        // Add test click listener
+        if (button.textContent.includes("Start Demo")) {
+            button.addEventListener('click', simulateQRScan);
+            console.log("Added demo listener to button");
+        }
+    });
+}
+
+// Make functions globally available for onclick handlers
+window.showScreen = showScreen;
+window.simulateQRScan = simulateQRScan;
+window.startRealQRScan = startRealQRScan;
+window.addPlayer = addPlayer;
+window.removePlayer = removePlayer;
+window.testAllScreens = testAllScreens;
+window.debugDOM = debugDOM;
+
+// Event listener for page load
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM loaded - minimal setup");
-    alert("Page loaded! Try clicking 'Quick Demo' button.");
+    console.log("DOM loaded - starting initialization");
+    
+    // Wait a moment for everything to settle
+    setTimeout(function() {
+        initializePage();
+    }, 100);
+    
+    // Also try immediate initialization
+    initializePage();
 });
 
-// Just put a minimal console log to test
-console.log("=== SUPER MINIMAL TEST LOADED ===");
+// Also try initialization when window loads
+window.addEventListener('load', function() {
+    console.log("Window loaded - trying initialization again");
+    initializePage();
+});
+
+console.log("=== FIXED VISUAL VERSION LOADED ===");
+
+// Test function accessible from console
+function testEverything() {
+    console.log("=== TESTING EVERYTHING ===");
+    debugDOM();
+    showScreen('titleScreen');
+    alert("Test complete! Check console for details.");
+}
+
+window.testEverything = testEverything;
