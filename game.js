@@ -1,3 +1,14 @@
+// Temporary data until data.js works
+window.GAME_DATA = {
+    prompts: [
+        { challenge: 'gdp', label: 'Rank these countries by GDP (highest to lowest)' },
+        { challenge: 'coffee_consumption', label: 'Rank these countries by coffee consumption (highest to lowest)' }
+    ],
+    countries: {
+        '001': { name: 'USA', gdp: 21427700, coffee_consumption: 4.7 },
+        '002': { name: 'China', gdp: 14342300, coffee_consumption: 0.05 }
+    }
+};
 // game.js - Game logic using separated data
 console.log("Loading game logic...");
 
