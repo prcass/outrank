@@ -1,4 +1,4 @@
-// Complete Know-It-All Game Logic with Full New Dataset (All 33 Categories)
+// Complete Know-It-All Game Logic with Full Dataset (All 33 Categories) - FIXED
 console.log("JavaScript file loaded successfully!");
 
 // Game State Variables
@@ -174,56 +174,6 @@ var SAMPLE_DATA = {
             nobel_prizes_per_capita: 7.1, olympic_medals_per_capita: 75, unesco_sites: 21,
             population_density: 4, average_temperature: -5.4, land_area: 9093510, water_area_percent: 11.76, agricultural_land: 6.9, forest_coverage: 38.7, average_rainfall: 537, recycling_rate: 26.8,
             literacy_rate: 99, birth_rate: 9.9, urban_population: 81.6, life_expectancy: 82.3
-        },
-        '011': { 
-            name: 'Australia',
-            coffee_consumption: 3, chocolate_consumption: 4.8, wine_consumption: 22.8, mcdonalds_per_capita: 37.5,
-            sleep_hours: 7.4, happiness_ranking: 10, vacation_days: 20, retirement_age: 67, working_hours: 42.1,
-            internet_penetration: 93.2, daily_internet_usage: 5.9, social_media_usage: 80, digital_payment_adoption: 77, ev_adoption: 7.2, mobile_subscriptions: 104,
-            cost_of_living: 60.9, big_mac_price: 6.45, minimum_wage: 21.38,
-            nobel_prizes_per_capita: 6.8, olympic_medals_per_capita: 233.4, unesco_sites: 20,
-            population_density: 3, average_temperature: 21.9, land_area: 7682300, water_area_percent: 1.79, agricultural_land: 52.9, forest_coverage: 16.2, average_rainfall: 534, recycling_rate: 37.0,
-            literacy_rate: 99, birth_rate: 11.9, urban_population: 86.6, life_expectancy: 83.2
-        },
-        '012': { 
-            name: 'Netherlands',
-            coffee_consumption: 8.4, chocolate_consumption: 6.7, wine_consumption: 19, mcdonalds_per_capita: 11.6,
-            sleep_hours: 7.7, happiness_ranking: 6, vacation_days: 25, retirement_age: 66.7, working_hours: 32.4,
-            internet_penetration: 99, daily_internet_usage: 5.58, social_media_usage: 90, digital_payment_adoption: 85, ev_adoption: 30, mobile_subscriptions: 123,
-            cost_of_living: 60.5, big_mac_price: 5.95, minimum_wage: 12.78,
-            nobel_prizes_per_capita: 8.9, olympic_medals_per_capita: 157, unesco_sites: 12,
-            population_density: 521, average_temperature: 10.4, land_area: 33720, water_area_percent: 18.41, agricultural_land: 55, forest_coverage: 10.8, average_rainfall: 778, recycling_rate: 54.2,
-            literacy_rate: 99, birth_rate: 8.9, urban_population: 92.2, life_expectancy: 82.1
-        },
-        '013': { 
-            name: 'Finland',
-            coffee_consumption: 12, chocolate_consumption: 7, wine_consumption: 13, mcdonalds_per_capita: 3.6,
-            sleep_hours: 7.4, happiness_ranking: 1, vacation_days: 30, retirement_age: 65, working_hours: 36.3,
-            internet_penetration: 97, daily_internet_usage: 6.2, social_media_usage: 89, digital_payment_adoption: 88, ev_adoption: 18, mobile_subscriptions: 128,
-            cost_of_living: 58.7, big_mac_price: 6.15, minimum_wage: 9.25,
-            nobel_prizes_per_capita: 9.1, olympic_medals_per_capita: 551.4, unesco_sites: 7,
-            population_density: 18, average_temperature: 1.7, land_area: 303890, water_area_percent: 10.21, agricultural_land: 7.5, forest_coverage: 73.1, average_rainfall: 536, recycling_rate: 42.8,
-            literacy_rate: 100, birth_rate: 8.6, urban_population: 85.5, life_expectancy: 81.7
-        },
-        '014': { 
-            name: 'Denmark',
-            coffee_consumption: 8.7, chocolate_consumption: 7.3, wine_consumption: 16, mcdonalds_per_capita: 6.9,
-            sleep_hours: 7.3, happiness_ranking: 2, vacation_days: 25, retirement_age: 67, working_hours: 33.2,
-            internet_penetration: 99, daily_internet_usage: 5.55, social_media_usage: 86, digital_payment_adoption: 84, ev_adoption: 42, mobile_subscriptions: 129,
-            cost_of_living: 66.9, big_mac_price: 6.98, minimum_wage: 18.27,
-            nobel_prizes_per_capita: 17.2, olympic_medals_per_capita: 200, unesco_sites: 8,
-            population_density: 137, average_temperature: 8.7, land_area: 42430, water_area_percent: 7.07, agricultural_land: 61.8, forest_coverage: 15.3, average_rainfall: 712, recycling_rate: 50.0,
-            literacy_rate: 99, birth_rate: 10.1, urban_population: 88.1, life_expectancy: 81
-        },
-        '015': { 
-            name: 'Norway',
-            coffee_consumption: 9.9, chocolate_consumption: 7.4, wine_consumption: 10, mcdonalds_per_capita: 7.8,
-            sleep_hours: 7.2, happiness_ranking: 7, vacation_days: 30, retirement_age: 67, working_hours: 34.1,
-            internet_penetration: 99, daily_internet_usage: 5.5, social_media_usage: 90, digital_payment_adoption: 86, ev_adoption: 82, mobile_subscriptions: 108,
-            cost_of_living: 69, big_mac_price: 7.82, minimum_wage: 19.63,
-            nobel_prizes_per_capita: 11.8, olympic_medals_per_capita: 450, unesco_sites: 8,
-            population_density: 15, average_temperature: 1.5, land_area: 365268, water_area_percent: 5.74, agricultural_land: 3.3, forest_coverage: 27.8, average_rainfall: 1414, recycling_rate: 42.0,
-            literacy_rate: 99, birth_rate: 9.2, urban_population: 83.2, life_expectancy: 82.2
         }
     }
 };
@@ -385,9 +335,6 @@ function initializePlayerChips() {
         }
     });
 }
-
-// Rest of the game functions remain the same as before...
-// [Continue with all the existing game logic functions]
 
 // Main Game Functions
 function simulateQRScan() {
@@ -1325,3 +1272,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log("Event listeners setup complete");
 });
+
+// Test function for debugging
+function testButton() {
+    alert("JavaScript is working!");
+}
