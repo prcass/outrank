@@ -54,6 +54,14 @@
                         <div class="card-description">Scan QR codes for real gameplay</div>
                         <button class="btn secondary" onclick="startRealQRScan()">📷 Scan QR Code</button>
                     </div>
+                    
+                    <!-- Debug buttons for testing -->
+                    <div class="action-card" style="margin-top: 20px; background: #f0f0f0;">
+                        <div class="card-title">🔧 Debug Tests</div>
+                        <div class="card-description">Test functions while rebuilding</div>
+                        <button class="btn secondary" onclick="test()" style="margin: 5px;">Test Basic JS</button>
+                        <button class="btn secondary" onclick="checkData()" style="margin: 5px;">Check Data</button>
+                    </div>
                 </div>
             </div>
             
@@ -90,7 +98,7 @@
                         
                         <div class="form-group">
                             <label>Who will be the bidder for this round?</label>
-                            <select id="bidderSelect" onchange="updateRoundSummary()">
+                            <select id="bidderSelect">
                                 <option value="">Select the bidder...</option>
                             </select>
                         </div>
@@ -177,7 +185,6 @@
                             <input type="text" id="cardInput" placeholder="Enter card number...">
                             <button class="btn primary" onclick="scanCard()">📱 Add Card</button>
                         </div>
-                        <button class="btn secondary" onclick="simulateAllCards()">🎲 Fill Remaining Cards</button>
                     </div>
                     
                     <div class="cards-container">
@@ -228,7 +235,7 @@
                     
                     <div class="button-group">
                         <button id="revealBtn" class="btn primary" onclick="revealNext()">▶️ Reveal Next Card</button>
-                        <button class="btn secondary" onclick="resetGame()">🏠 Back to Home</button>
+                        <button class="btn secondary" onclick="newGame()">🏠 Back to Home</button>
                     </div>
                 </div>
             </div>
@@ -279,7 +286,7 @@
                             <div class="section-title">Leaderboard</div>
                         </div>
                         <div id="leaderboard">
-                            <!-- Leaderboard will appear here -->
+                            <div class="no-scores-message">No games played yet!<br>Play some rounds to see the leaderboard.</div>
                         </div>
                     </div>
                     
@@ -289,7 +296,7 @@
                             <div class="section-title">Player Statistics</div>
                         </div>
                         <div id="playerStats">
-                            <!-- Player stats will appear here -->
+                            <div class="no-scores-message">No statistics available yet!</div>
                         </div>
                     </div>
                     
@@ -299,7 +306,7 @@
                             <div class="section-title">Chip Inventory</div>
                         </div>
                         <div id="chipInventory">
-                            <!-- Chip inventory will appear here -->
+                            <div class="no-scores-message">No chip data available!</div>
                         </div>
                     </div>
                     
@@ -313,6 +320,8 @@
         </div>
     </div>
     
+    <!-- IMPORTANT: Load data.js FIRST, then game.js -->
+    <script src="data.js"></script>
     <script src="game.js"></script>
 </body>
 </html>
