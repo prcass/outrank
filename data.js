@@ -309,7 +309,49 @@ window.GAME_DATA = {
         
         return selected;
     }
-};
+
+ // ... existing country data ...
+    },
+    
+    // Add these functions here, BEFORE the closing };
+    getRandomChallenge: function() {
+        var randomIndex = Math.floor(Math.random() * this.prompts.length);
+        return this.prompts[randomIndex];
+    },
+    
+    getRandomCountries: function(count) {
+        var allIds = Object.keys(this.countries);
+        var selected = [];
+        
+        while (selected.length < count && allIds.length > 0) {
+            var randomIndex = Math.floor(Math.random() * allIds.length);
+            var randomId = allIds[randomIndex];
+            selected.push(randomId);
+            allIds.splice(randomIndex, 1);
+        }
+        
+        return selected;
+    },
+    
+    getStatDisplay: function(country, challenge) {
+        var value = country[challenge];
+        if (typeof value === 'undefined') return 'Unknown';
+        
+        switch (challenge) {
+            case 'gdp': return 'GDP: $' + value.toLocaleString() + 'M';
+            case 'population': return 'Pop: ' + value.toLocaleString();
+            case 'area': return 'Area: ' + value.toLocaleString() + ' km²';
+            case 'coffee_consumption': return 'Coffee: ' + value + ' kg/year';
+            case 'chocolate_consumption': return 'Chocolate: ' + value + ' kg/year';
+            case 'happiness_ranking': return 'Happiness Rank: #' + value;
+            case 'life_expectancy': return 'Life Exp: ' + value + ' years';
+            case 'internet_penetration': return 'Internet: ' + value + '%';
+            case 'recycling_rate': return 'Recycling: ' + value + '%';
+            default: return challenge + ': ' + value;
+        }
+    }
+};  // This closing brace should be at the very end   
+
 
 console.log("Complete game data loaded successfully!");
 console.log("Available challenges:", window.GAME_DATA.prompts.length);
