@@ -1,241 +1,142 @@
-// Fixed Visual Version - Focus on DOM and Screen Switching
-console.log("JavaScript file loaded successfully!");
+// ULTRA SIMPLE TEST - Just make the page work
+console.log("=== ULTRA SIMPLE TEST STARTING ===");
 
-// Game State Variables
-var currentPrompt = null;
-var drawnCards = [];
-var blocks = [];
-var bidAmount = 3;
-var scannedAnswers = [];
-var revealIndex = 0;
-var gameOver = false;
-var gameState = 'title';
-var bidderWins = false;
-var gameOverReason = '';
-
-// Player management with chip system and persistent scoring
-var players = {
-    bidder: '',
-    allPlayers: [],
-    chips: {},
-    scores: {}, // Persistent scores across rounds
-    stats: {}   // Win/loss statistics
-};
-var playerCount = 1;
-var currentRound = 1;
-
-// Sample Data
-var SAMPLE_DATA = {
-    prompts: [
-        { challenge: 'gdp', label: 'Rank these countries by GDP (highest to lowest)' },
-        { challenge: 'population', label: 'Rank these countries by population (highest to lowest)' },
-        { challenge: 'area', label: 'Rank these countries by area (largest to smallest)' }
-    ],
-    countries: {
-        '001': { name: 'USA', gdp: 21427700, population: 331002651, area: 9833517 },
-        '002': { name: 'China', gdp: 14342300, population: 1439323776, area: 9596961 },
-        '003': { name: 'Japan', gdp: 5081770, population: 125836021, area: 377975 },
-        '004': { name: 'Germany', gdp: 3845630, population: 83783942, area: 357114 },
-        '005': { name: 'India', gdp: 2875140, population: 1380004385, area: 3287263 },
-        '006': { name: 'UK', gdp: 2829110, population: 67886011, area: 242495 },
-        '007': { name: 'France', gdp: 2715520, population: 65273511, area: 551695 },
-        '008': { name: 'Italy', gdp: 2001244, population: 60461826, area: 301340 },
-        '009': { name: 'Brazil', gdp: 1839758, population: 212559417, area: 8515767 },
-        '010': { name: 'Canada', gdp: 1736426, population: 37742154, area: 9984670 }
-    }
+// Make a simple global test function immediately
+window.testBasic = function() {
+    alert("Basic function works!");
+    console.log("testBasic called successfully");
 };
 
-// Debug function to check DOM elements
-function debugDOM() {
-    console.log("=== DOM DEBUG ===");
-    console.log("titleScreen:", document.getElementById('titleScreen'));
-    console.log("playerScreen:", document.getElementById('playerScreen'));
-    console.log("All screens:", document.querySelectorAll('.screen'));
-    console.log("All buttons:", document.querySelectorAll('button'));
-}
+console.log("testBasic function defined");
 
-// Core function to show screens
-function showScreen(screenId) {
-    console.log("showScreen called with:", screenId);
-    
-    // Debug: Check if elements exist
+// Make sure we can access DOM elements
+window.checkDOM = function() {
+    var titleScreen = document.getElementById('titleScreen');
     var allScreens = document.querySelectorAll('.screen');
-    var targetScreen = document.getElementById(screenId);
     
-    console.log("Found " + allScreens.length + " screens");
-    console.log("Target screen (" + screenId + "):", targetScreen);
+    console.log("titleScreen found:", !!titleScreen);
+    console.log("Number of screens found:", allScreens.length);
     
-    if (allScreens.length === 0) {
-        console.error("ERROR: No screens found! Check HTML structure.");
-        return;
+    if (titleScreen) {
+        alert("DOM elements found! titleScreen exists.");
+    } else {
+        alert("PROBLEM: titleScreen not found!");
     }
-    
-    if (!targetScreen) {
-        console.error("ERROR: Target screen '" + screenId + "' not found!");
-        return;
-    }
-    
-    // Hide all screens
-    allScreens.forEach(function(screen, index) {
-        console.log("Hiding screen " + index + ":", screen.id);
-        screen.classList.remove('active');
-    });
-    
-    // Show target screen
-    targetScreen.classList.add('active');
-    console.log("Activated screen:", screenId);
-    
-    // Double-check it worked
-    setTimeout(function() {
-        var isVisible = targetScreen.classList.contains('active');
-        console.log("Screen " + screenId + " is now active:", isVisible);
-    }, 100);
-}
+};
 
-// Test functions that should work with buttons
-function simulateQRScan() {
-    console.log("simulateQRScan called!");
-    alert("Demo game starting! (This proves the button click works)");
+console.log("checkDOM function defined");
+
+// Simple screen switching
+window.showScreen = function(screenId) {
+    console.log("showScreen called for:", screenId);
     
-    // Pick random challenge
-    currentPrompt = SAMPLE_DATA.prompts[Math.floor(Math.random() * SAMPLE_DATA.prompts.length)];
-    console.log("Selected challenge:", currentPrompt.label);
-    
-    // For now, just alert instead of full game logic
-    alert("Challenge: " + currentPrompt.label);
-}
-
-function startRealQRScan() {
-    console.log("startRealQRScan called!");
-    alert('Real QR scanning coming soon! Use demo mode for now.');
-}
-
-// Navigation functions
-function goToPlayerScreen() {
-    console.log("goToPlayerScreen called!");
-    showScreen('playerScreen');
-}
-
-function goToScoresScreen() {
-    console.log("goToScoresScreen called!");
-    showScreen('scoresScreen');
-}
-
-function goToTitleScreen() {
-    console.log("goToTitleScreen called!");
-    showScreen('titleScreen');
-}
-
-// Simple player management for testing
-function addPlayer() {
-    console.log("addPlayer called!");
-    alert("Add player function works!");
-}
-
-function removePlayer(num) {
-    console.log("removePlayer called for player:", num);
-    alert("Remove player " + num + " function works!");
-}
-
-// Test all screen switches
-function testAllScreens() {
-    console.log("Testing all screen switches...");
-    
-    var screens = ['titleScreen', 'playerScreen', 'blockerScreen', 'scanScreen', 'revealScreen', 'resultsScreen', 'scoresScreen'];
-    var currentIndex = 0;
-    
-    function switchToNext() {
-        if (currentIndex < screens.length) {
-            var screenId = screens[currentIndex];
-            console.log("Testing screen:", screenId);
-            showScreen(screenId);
-            currentIndex++;
-            setTimeout(switchToNext, 1000);
+    try {
+        // Hide all screens
+        var screens = document.querySelectorAll('.screen');
+        screens.forEach(function(screen) {
+            screen.classList.remove('active');
+        });
+        
+        // Show target screen
+        var target = document.getElementById(screenId);
+        if (target) {
+            target.classList.add('active');
+            console.log("Successfully switched to:", screenId);
+            alert("Switched to " + screenId);
         } else {
-            console.log("All screens tested, returning to title");
-            showScreen('titleScreen');
+            console.error("Screen not found:", screenId);
+            alert("ERROR: Screen " + screenId + " not found!");
         }
+    } catch (error) {
+        console.error("showScreen error:", error);
+        alert("ERROR in showScreen: " + error.message);
     }
-    
-    switchToNext();
-}
+};
 
-// Initialize the page properly
-function initializePage() {
+console.log("showScreen function defined");
+
+// Simple game functions that match your HTML buttons
+window.simulateQRScan = function() {
+    console.log("simulateQRScan called");
+    alert("Demo game function works!");
+};
+
+window.startRealQRScan = function() {
+    console.log("startRealQRScan called");
+    alert("QR scan function works!");
+};
+
+window.addPlayer = function() {
+    console.log("addPlayer called");
+    alert("Add player function works!");
+};
+
+console.log("Game functions defined");
+
+// Initialize when page loads
+function initPage() {
     console.log("=== INITIALIZING PAGE ===");
     
-    // Debug DOM first
-    debugDOM();
-    
-    // Make sure title screen is visible
-    var titleScreen = document.getElementById('titleScreen');
-    if (titleScreen) {
-        console.log("Found title screen, making it active");
-        showScreen('titleScreen');
-    } else {
-        console.error("CRITICAL: Title screen not found!");
-        // Try to find any screen
-        var anyScreen = document.querySelector('.screen');
-        if (anyScreen) {
-            console.log("Found a screen:", anyScreen.id);
-            showScreen(anyScreen.id);
-        } else {
-            console.error("CRITICAL: No screens found at all!");
-        }
-    }
-    
-    // Test if we can find and interact with buttons
-    var buttons = document.querySelectorAll('button');
-    console.log("Found " + buttons.length + " buttons");
-    
-    // Add click listeners to buttons manually if needed
-    buttons.forEach(function(button, index) {
-        console.log("Button " + index + ":", button.textContent);
+    try {
+        // Check what we can find
+        var titleScreen = document.getElementById('titleScreen');
+        var allScreens = document.querySelectorAll('.screen');
+        var allButtons = document.querySelectorAll('button');
         
-        // Add test click listener
-        if (button.textContent.includes("Start Demo")) {
-            button.addEventListener('click', simulateQRScan);
-            console.log("Added demo listener to button");
+        console.log("Found titleScreen:", !!titleScreen);
+        console.log("Found screens:", allScreens.length);
+        console.log("Found buttons:", allButtons.length);
+        
+        // Try to show title screen
+        if (titleScreen) {
+            // Hide all screens first
+            allScreens.forEach(function(screen) {
+                screen.classList.remove('active');
+            });
+            
+            // Show title screen
+            titleScreen.classList.add('active');
+            console.log("Title screen should now be visible");
+        } else {
+            console.error("Cannot find title screen!");
         }
-    });
+        
+        // List all screens found
+        allScreens.forEach(function(screen, index) {
+            console.log("Screen " + index + ":", screen.id, "active:", screen.classList.contains('active'));
+        });
+        
+    } catch (error) {
+        console.error("Initialization error:", error);
+    }
 }
 
-// Make functions globally available for onclick handlers
-window.showScreen = showScreen;
-window.simulateQRScan = simulateQRScan;
-window.startRealQRScan = startRealQRScan;
-window.addPlayer = addPlayer;
-window.removePlayer = removePlayer;
-window.testAllScreens = testAllScreens;
-window.debugDOM = debugDOM;
-
-// Event listener for page load
+// Try multiple ways to initialize
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM loaded - starting initialization");
-    
-    // Wait a moment for everything to settle
-    setTimeout(function() {
-        initializePage();
-    }, 100);
-    
-    // Also try immediate initialization
-    initializePage();
+    console.log("DOMContentLoaded - initializing");
+    setTimeout(initPage, 100);
 });
 
-// Also try initialization when window loads
 window.addEventListener('load', function() {
-    console.log("Window loaded - trying initialization again");
-    initializePage();
+    console.log("Window load - initializing");
+    setTimeout(initPage, 100);
 });
 
-console.log("=== FIXED VISUAL VERSION LOADED ===");
-
-// Test function accessible from console
-function testEverything() {
-    console.log("=== TESTING EVERYTHING ===");
-    debugDOM();
-    showScreen('titleScreen');
-    alert("Test complete! Check console for details.");
+// Also try immediate initialization if DOM is already ready
+if (document.readyState === 'loading') {
+    console.log("Document still loading, waiting...");
+} else {
+    console.log("Document already loaded, initializing immediately");
+    setTimeout(initPage, 100);
 }
 
-window.testEverything = testEverything;
+console.log("=== ULTRA SIMPLE TEST LOADED ===");
+
+// Test that functions are really defined
+setTimeout(function() {
+    console.log("Testing function definitions:");
+    console.log("window.testBasic exists:", typeof window.testBasic);
+    console.log("window.checkDOM exists:", typeof window.checkDOM);
+    console.log("window.showScreen exists:", typeof window.showScreen);
+    console.log("window.simulateQRScan exists:", typeof window.simulateQRScan);
+}, 500);
