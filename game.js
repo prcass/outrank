@@ -697,6 +697,13 @@ window.selectCardForRanking = function(cardId) {
     
     // Update visual selection
     updateCardSelectionDisplay();
+    
+    // If we have the right number of cards, show ranking interface
+    if (selectedCardsForRanking.length === currentBid) {
+        setTimeout(function() {
+            showRankingInterface();
+        }, 1000);
+    }
 };
 
 function updateCardSelectionDisplay() {
@@ -715,6 +722,371 @@ function updateCardSelectionDisplay() {
     if (selectionInfo) {
         selectionInfo.textContent = 'Selected ' + selectedCardsForRanking.length + '/' + currentBid + ' cards. Click cards to select/deselect.';
     }
+}
+
+// Ranking Phase Functions
+var finalRanking = [];
+
+function showRankingInterface() {
+    // Update scan info for ranking phase
+    var scanInfo = document.getElementById('scanInfo');
+    if (scanInfo) {
+        scanInfo.innerHTML = '<div class="card-title">' + currentPrompt.label + '</div>' +
+                           '<div class="card-description">Drag cards to rank them from highest to lowest</div>';
+    }
+    
+    // Hide card selection interface
+    var container = document.getElementById('availableCardsForSelection');
+    if (container) {
+        container.style.display = 'none';
+    }
+    
+    // Show ranking interface
+    updateRankingInterface();
+}
+
+function updateRankingInterface() {
+    // Create or update ranking container
+    var rankingContainer = document.getElementById('rankingContainer');
+    if (!rankingContainer) {
+        var scanContent = document.querySelector('#scanScreen .screen-content');
+        rankingContainer = document.createElement('div');
+        rankingContainer.id = 'rankingContainer';
+        scanContent.appendChild(rankingContainer);
+    }
+    
+    var html = '<div class="form-card">' +
+              '<div class="section-header">' +
+              '<div class="section-icon">📊</div>' +
+              '<div class="section-title">Rank Your Cards</div>' +
+              '</div>' +
+              '<div class="ranking-instructions">Drag cards to reorder them. Top = Highest value for this category.</div>' +
+              '<div id="rankingArea" class="ranking-area">';
+    
+    // Show cards in current ranking order (or selection order if not yet ranked)
+    var cardsToRank = finalRanking.length > 0 ? finalRanking : selectedCardsForRanking.slice();
+    
+    cardsToRank.forEach(function(cardId, index) {
+        var country = window.GAME_DATA.countries[cardId];
+        html += '<div class="ranking-card" data-card-id="' + cardId + '" draggable="true">' +
+               '<span class="rank-number">' + (index + 1) + '</span>' +
+               '<span class="country-name">' + country.name + '</span>' +
+               '<span class="drag-handle">⋮⋮</span>' +
+               '</div>';
+    });
+    
+    html += '</div>' +
+           '<div class="ranking-actions">' +
+           '<button class="btn primary" onclick="submitRanking()">✅ Submit Ranking</button>' +
+           '<button class="btn secondary" onclick="resetRanking()">🔄 Reset Order</button>' +
+           '</div>' +
+           '</div>';
+    
+    rankingContainer.innerHTML = html;
+    
+    // Add drag and drop functionality
+    setupDragAndDrop();
+}
+
+function setupDragAndDrop() {
+    var rankingCards = document.querySelectorAll('.ranking-card');
+    var rankingArea = document.getElementById('rankingArea');
+    
+    rankingCards.forEach(function(card) {
+        card.addEventListener('dragstart', function(e) {
+            e.dataTransfer.setData('text/plain', this.getAttribute('data-card-id'));
+            this.classList.add('dragging');
+        });
+        
+        card.addEventListener('dragend', function(e) {
+            this.classList.remove('dragging');
+        });
+    });
+    
+    rankingArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        var dragging = document.querySelector('.dragging');
+        var afterElement = getDragAfterElement(rankingArea, e.clientY);
+        
+        if (afterElement == null) {
+            rankingArea.appendChild(dragging);
+        } else {
+            rankingArea.insertBefore(dragging, afterElement);
+        }
+    });
+    
+    rankingArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        updateRankingOrder();
+    });
+}
+
+function getDragAfterElement(container, y) {
+    var draggableElements = Array.from(container.querySelectorAll('.ranking-card:not(.dragging)'));
+    
+    return draggableElements.reduce(function(closest, child) {
+        var box = child.getBoundingClientRect();
+        var offset = y - box.top - box.height / 2;
+        
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function updateRankingOrder() {
+    var cards = document.querySelectorAll('.ranking-card');
+    finalRanking = [];
+    
+    cards.forEach(function(card, index) {
+        var cardId = card.getAttribute('data-card-id');
+        finalRanking.push(cardId);
+        
+        // Update rank number
+        var rankNumber = card.querySelector('.rank-number');
+        if (rankNumber) {
+            rankNumber.textContent = (index + 1);
+        }
+    });
+}
+
+window.submitRanking = function() {
+    if (finalRanking.length === 0) {
+        // Use current order if no dragging happened
+        updateRankingOrder();
+    }
+    
+    if (finalRanking.length !== currentBid) {
+        alert('Error: Ranking is incomplete!');
+        return;
+    }
+    
+    // Show confirmation
+    var confirmMsg = 'Submit this ranking?\n\n';
+    finalRanking.forEach(function(cardId, index) {
+        var country = window.GAME_DATA.countries[cardId];
+        confirmMsg += (index + 1) + '. ' + country.name + '\n';
+    });
+    
+    if (confirm(confirmMsg)) {
+        showRevealPhase();
+    }
+};
+
+window.resetRanking = function() {
+    finalRanking = selectedCardsForRanking.slice(); // Reset to selection order
+    updateRankingInterface();
+};
+
+// Reveal Phase Functions
+var correctRanking = [];
+var currentRevealIndex = 0;
+var bidderSuccess = false;
+
+function showRevealPhase() {
+    // Calculate the correct ranking for the selected cards
+    correctRanking = calculateCorrectRanking(finalRanking, currentPrompt.challenge);
+    currentRevealIndex = 0;
+    bidderSuccess = false;
+    
+    // Update reveal screen
+    var revealInfo = document.getElementById('revealInfo');
+    if (revealInfo) {
+        revealInfo.innerHTML = '<div class="card-title">' + currentPrompt.label + '</div>' +
+                             '<div class="card-description">' + highestBidder + ' bid ' + currentBid + ' cards. Let\'s see if they got it right!</div>';
+    }
+    
+    // Initialize reveal interface
+    setupRevealInterface();
+    
+    showScreen('revealScreen');
+}
+
+function calculateCorrectRanking(cardIds, challenge) {
+    return cardIds.slice().sort(function(a, b) {
+        var valueA = window.GAME_DATA.countries[a][challenge];
+        var valueB = window.GAME_DATA.countries[b][challenge];
+        
+        // Sort from highest to lowest (descending order)
+        return valueB - valueA;
+    });
+}
+
+function setupRevealInterface() {
+    var revealCards = document.getElementById('revealCards');
+    if (!revealCards) return;
+    
+    var html = '<div class="reveal-container">' +
+              '<h4>' + highestBidder + '\'s Ranking</h4>' +
+              '<div class="ranking-list" id="bidderRankingList"></div>' +
+              '</div>';
+    
+    revealCards.innerHTML = html;
+    
+    // Show bidder's ranking
+    updateBidderRankingDisplay();
+    
+    // Update progress
+    updateRevealProgress();
+}
+
+function updateBidderRankingDisplay() {
+    var container = document.getElementById('bidderRankingList');
+    if (!container) return;
+    
+    var html = '';
+    var sequenceBroken = false;
+    
+    finalRanking.forEach(function(cardId, index) {
+        var country = window.GAME_DATA.countries[cardId];
+        var value = country[currentPrompt.challenge];
+        var isRevealed = index < currentRevealIndex;
+        
+        var statusClass = '';
+        var statusIcon = '';
+        
+        if (!isRevealed) {
+            statusClass = 'hidden';
+        } else {
+            // Check if this card maintains the sequence
+            if (index === 0) {
+                // First card is always correct
+                statusClass = 'revealed correct';
+                statusIcon = ' ✓';
+            } else {
+                // Check against previous card
+                var prevCard = finalRanking[index - 1];
+                var prevValue = window.GAME_DATA.countries[prevCard][currentPrompt.challenge];
+                
+                if (value > prevValue) {
+                    // This card breaks the sequence
+                    statusClass = 'revealed wrong';
+                    statusIcon = ' ✗';
+                    sequenceBroken = true;
+                } else if (!sequenceBroken) {
+                    // Still in correct sequence
+                    statusClass = 'revealed correct';
+                    statusIcon = ' ✓';
+                } else {
+                    // After sequence is broken, just show as revealed
+                    statusClass = 'revealed';
+                }
+            }
+        }
+        
+        html += '<div class="reveal-card bidder-card ' + statusClass + '">' +
+               '<span class="rank-number">' + (index + 1) + '</span>' +
+               '<span class="country-info">' +
+               '<span class="country-name">' + country.name + '</span>' +
+               '<span class="country-value">' + (isRevealed ? formatValue(value, currentPrompt.challenge) : '???') + '</span>' +
+               '</span>' +
+               '<span class="status-icon">' + statusIcon + '</span>' +
+               '</div>';
+    });
+    
+    container.innerHTML = html;
+}
+
+
+function formatValue(value, challenge) {
+    // Format the value based on the challenge type
+    if (challenge.includes('consumption') || challenge.includes('price')) {
+        return value.toFixed(1);
+    } else if (challenge.includes('percentage') || challenge.includes('rate')) {
+        return value.toFixed(1) + '%';
+    } else if (challenge.includes('area') || challenge.includes('population')) {
+        return value.toLocaleString();
+    } else {
+        return value.toString();
+    }
+}
+
+function updateRevealProgress() {
+    var progressElement = document.getElementById('revealProgress');
+    if (progressElement) {
+        progressElement.textContent = currentRevealIndex + ' of ' + correctRanking.length;
+    }
+    
+    var progressBar = document.getElementById('revealProgressBar');
+    if (progressBar) {
+        var percentage = (currentRevealIndex / correctRanking.length) * 100;
+        progressBar.style.width = percentage + '%';
+    }
+}
+
+// Override the existing revealNext function
+window.revealNext = function() {
+    if (currentRevealIndex >= finalRanking.length) {
+        // All cards revealed, show final results
+        showFinalResults();
+        return;
+    }
+    
+    // Reveal the next card
+    currentRevealIndex++;
+    updateBidderRankingDisplay();
+    updateRevealProgress();
+    
+    // If we've revealed at least 2 cards, check if current card is lower than previous
+    if (currentRevealIndex >= 2) {
+        var prevCard = finalRanking[currentRevealIndex - 2];
+        var currentCard = finalRanking[currentRevealIndex - 1];
+        
+        var prevValue = window.GAME_DATA.countries[prevCard][currentPrompt.challenge];
+        var currentValue = window.GAME_DATA.countries[currentCard][currentPrompt.challenge];
+        
+        // Check if current value is lower than previous (should be descending)
+        if (currentValue > prevValue) {
+            // Sequence broken! Current card has higher value than previous
+            bidderSuccess = false;
+            var prevCountry = window.GAME_DATA.countries[prevCard];
+            var currentCountry = window.GAME_DATA.countries[currentCard];
+            
+            // Delay failure message so players can see the problematic card first
+            setTimeout(function() {
+                alert('SEQUENCE BROKEN!\n\n' + 
+                      prevCountry.name + ': ' + formatValue(prevValue, currentPrompt.challenge) + '\n' +
+                      currentCountry.name + ': ' + formatValue(currentValue, currentPrompt.challenge) + '\n\n' +
+                      currentCountry.name + ' has a higher value than ' + prevCountry.name + '!\n' +
+                      highestBidder + ' fails!');
+                
+                // Reveal all remaining cards
+                currentRevealIndex = finalRanking.length;
+                updateBidderRankingDisplay();
+                updateRevealProgress();
+                
+                setTimeout(function() {
+                    showFinalResults();
+                }, 1500);
+            }, 1000); // Wait 1 second to see the card that broke the sequence
+            return;
+        }
+    }
+    
+    // If this was the last card and we haven't failed, bidder succeeds
+    if (currentRevealIndex >= finalRanking.length) {
+        bidderSuccess = true;
+        // Delay success message so players can see the final card first
+        setTimeout(function() {
+            alert('SUCCESS! ' + highestBidder + ' ranked all ' + currentBid + ' cards correctly!');
+            setTimeout(function() {
+                showFinalResults();
+            }, 1000);
+        }, 1500); // Wait 1.5 seconds for celebration moment
+    }
+};
+
+function showFinalResults() {
+    // This will be implemented with the scoring system
+    alert('Final Results:\n' + 
+          'Bidder: ' + highestBidder + '\n' +
+          'Bid: ' + currentBid + ' cards\n' +
+          'Result: ' + (bidderSuccess ? 'SUCCESS!' : 'FAILED') + '\n\n' +
+          'Scoring and token transfers coming next...');
+    
+    showScreen('resultsScreen');
 }
 
 // Set up page when DOM loads
