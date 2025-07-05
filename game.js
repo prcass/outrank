@@ -1,16 +1,4 @@
-// Temporary data until data.js works
-window.GAME_DATA = {
-    prompts: [
-        { challenge: 'gdp', label: 'Rank these countries by GDP (highest to lowest)' },
-        { challenge: 'coffee_consumption', label: 'Rank these countries by coffee consumption (highest to lowest)' }
-    ],
-    countries: {
-        '001': { name: 'USA', gdp: 21427700, coffee_consumption: 4.7 },
-        '002': { name: 'China', gdp: 14342300, coffee_consumption: 0.05 }
-    }
-};
 // game.js - Game logic using separated data
-console.log("Loading game logic...");
 
 // Game state variables
 var currentPrompt = null;
@@ -35,10 +23,6 @@ var players = {
 var playerCount = 1;
 var currentRound = 1;
 
-// Test function that we know works
-window.test = function() {
-    alert("Game logic loaded!");
-};
 
 // Check if data is available
 window.checkData = function() {
@@ -53,7 +37,6 @@ window.checkData = function() {
 
 // Screen switching function
 window.showScreen = function(screenId) {
-    console.log("Switching to:", screenId);
     
     // Hide all screens
     var screens = document.querySelectorAll('.screen');
@@ -65,15 +48,13 @@ window.showScreen = function(screenId) {
     var target = document.getElementById(screenId);
     if (target) {
         target.classList.add('active');
-        console.log("Switched to:", screenId);
     } else {
-        console.log("Screen not found:", screenId);
+        // Screen not found
     }
 };
 
 // Simple demo game using the data
 window.simulateQRScan = function() {
-    console.log("Starting demo game...");
     
     // Check if data is available
     if (!window.GAME_DATA) {
@@ -84,11 +65,9 @@ window.simulateQRScan = function() {
     try {
         // Pick random challenge
         currentPrompt = window.GAME_DATA.getRandomChallenge();
-        console.log("Selected challenge:", currentPrompt.label);
         
         // Draw random countries
         drawnCards = window.GAME_DATA.getRandomCountries(5);
-        console.log("Drew countries:", drawnCards);
         
         // Show what we got
         var message = "Demo Game Started!\n\n";
@@ -104,7 +83,6 @@ window.simulateQRScan = function() {
         alert(message);
         
     } catch (error) {
-        console.error("Demo error:", error);
         alert("Demo error: " + error.message);
     }
 };
@@ -117,7 +95,6 @@ window.startRealQRScan = function() {
 // Player management functions
 window.addPlayer = function() {
     playerCount++;
-    console.log("Adding player", playerCount);
     
     var allPlayersElement = document.getElementById('allPlayers');
     if (allPlayersElement) {
@@ -133,7 +110,6 @@ window.addPlayer = function() {
 };
 
 window.removePlayer = function(num) {
-    console.log("Removing player", num);
     var group = document.getElementById('playerGroup' + num);
     if (group) {
         group.remove();
@@ -189,25 +165,19 @@ window.clearScores = function() {
 
 // Initialize the page
 function initPage() {
-    console.log("Initializing page...");
     
     // Wait a moment for data.js to load
     setTimeout(function() {
         // Check if data loaded
-        if (window.GAME_DATA) {
-            console.log("Game data available!");
-        } else {
-            console.error("Game data not available!");
+        if (!window.GAME_DATA) {
+            alert("ERROR: Game data not available!");
         }
         
         // Show title screen
         showScreen('titleScreen');
-        console.log("Page initialized");
     }, 200);
 }
 
 // Set up page when DOM loads
 document.addEventListener('DOMContentLoaded', initPage);
 window.addEventListener('load', initPage);
-
-console.log("Game logic loaded successfully!");
