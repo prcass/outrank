@@ -59,7 +59,6 @@
                     <div class="action-card" style="margin-top: 20px; background: #f0f0f0;">
                         <div class="card-title">🔧 Debug Tests</div>
                         <div class="card-description">Test functions while rebuilding</div>
-                        <button class="btn secondary" onclick="test()" style="margin: 5px;">Test Basic JS</button>
                         <button class="btn secondary" onclick="checkData()" style="margin: 5px;">Check Data</button>
                     </div>
                 </div>
@@ -83,7 +82,7 @@
                         <div id="allPlayers">
                             <div class="form-group" id="playerGroup1">
                                 <label>Player 1:</label>
-                                <input type="text" id="player1" placeholder="Enter player name">
+                                <input type="text" id="player1" placeholder="Enter player name" oninput="updatePlayerCount()">
                             </div>
                         </div>
                         
@@ -93,20 +92,13 @@
                     <div class="form-card">
                         <div class="section-header">
                             <div class="section-icon">🎯</div>
-                            <div class="section-title">Select Bidder</div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Who will be the bidder for this round?</label>
-                            <select id="bidderSelect">
-                                <option value="">Select the bidder...</option>
-                            </select>
+                            <div class="section-title">Ready to Start</div>
                         </div>
                         
                         <div id="roundSummary" class="round-summary">
                             <strong>Round 1</strong><br>
-                            <strong>Bidder:</strong> Not selected<br>
-                            <strong>Other players:</strong> Add more players above
+                            <strong>Players:</strong> <span id="playerCount">Add players above</span><br>
+                            <strong>Next:</strong> Draw challenge and start bidding
                         </div>
                     </div>
                     
@@ -117,12 +109,12 @@
                 </div>
             </div>
             
-            <!-- Blocker Setup Screen -->
-            <div id="blockerScreen" class="screen">
+            <!-- Bidding Screen -->
+            <div id="biddingScreen" class="screen">
                 <div class="app-header">
                     <div class="header-background"></div>
-                    <h2 class="screen-title">Setup Blocks</h2>
-                    <p class="screen-subtitle">Place your chip blocks strategically</p>
+                    <h2 class="screen-title">Bidding Phase</h2>
+                    <p class="screen-subtitle">How many cards can you rank correctly?</p>
                 </div>
                 
                 <div class="screen-content">
@@ -137,24 +129,61 @@
                         <!-- Cards drawn info goes here -->
                     </div>
                     
-                    <div id="blockerSetup">
-                        <!-- Blocker setup content goes here -->
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">👑</div>
+                            <div class="section-title">Current High Bidder</div>
+                        </div>
+                        <div id="highBidderDisplay" class="high-bidder-display">
+                            <div class="high-bid-amount">No bids yet</div>
+                            <div class="high-bid-player">Waiting for first bid...</div>
+                        </div>
                     </div>
                     
                     <div class="form-card">
                         <div class="section-header">
                             <div class="section-icon">💰</div>
-                            <div class="section-title">Bid Amount</div>
+                            <div class="section-title">Player Bidding</div>
                         </div>
-                        <div class="form-group">
-                            <label>How many cards will you rank?</label>
-                            <input type="number" id="bidAmount" min="1" max="10" value="3">
+                        <div id="playerBidding">
+                            <!-- Player bidding interfaces will be generated here -->
                         </div>
                     </div>
                     
                     <div class="button-group">
-                        <button class="btn primary" onclick="continueToScanning()">➡️ Continue to Scanning</button>
+                        <button class="btn primary" onclick="finishBidding()">✅ Finish Bidding</button>
                         <button class="btn secondary" onclick="showScreen('playerScreen')">⬅️ Back to Players</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Blocking Screen -->
+            <div id="blockingScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Blocking Phase</h2>
+                    <p class="screen-subtitle">Place blocking tokens to challenge the bidder</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div id="blockingInfo">
+                            <div class="card-title">Blocking Phase</div>
+                            <div class="card-description">Players can block cards from the bidder</div>
+                        </div>
+                    </div>
+                    
+                    <div id="availableCards">
+                        <!-- Available cards for blocking -->
+                    </div>
+                    
+                    <div id="blockingTokens">
+                        <!-- Blocking tokens interface -->
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="finishBlocking()">✅ Finish Blocking</button>
+                        <button class="btn secondary" onclick="skipBlocking()">⏭️ Skip Blocking</button>
                     </div>
                 </div>
             </div>
@@ -173,6 +202,10 @@
                             <div class="card-title">Scan Your Cards</div>
                             <div class="card-description">Enter card numbers in your desired order</div>
                         </div>
+                    </div>
+                    
+                    <div id="availableCardsForSelection">
+                        <!-- Available cards will be displayed here -->
                     </div>
                     
                     <div class="form-card">
