@@ -1,0 +1,1148 @@
+/* Fixed Know-It-All Styles - Simple Layout */
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* Main container - simple centered layout */
+.phone-container {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+.phone-frame {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    width: 100%;
+}
+
+/* Remove phone-specific styling */
+.phone-notch,
+.status-bar {
+    display: none;
+}
+
+/* Screen management */
+.screen {
+    display: none;
+    width: 100%;
+}
+
+.screen.active {
+    display: block;
+}
+
+/* Header styling */
+.app-header {
+    background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.app-title,
+.screen-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.app-subtitle,
+.screen-subtitle {
+    margin: 0;
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* Content areas */
+.screen-content {
+    padding: 30px 20px;
+}
+
+/* Card styling */
+.action-card,
+.form-card,
+.info-card {
+    background: #f8f9fa;
+    padding: 20px;
+    margin: 0 0 20px 0;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.card-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.card-title {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.card-description {
+    margin: 0 0 15px 0;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Section headers */
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.section-icon {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+/* Button styling */
+.btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+    margin: 8px 0 0 0;
+    display: block;
+    text-decoration: none;
+}
+
+.btn.primary {
+    background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(26, 115, 232, 0.3);
+}
+
+.btn.primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.4);
+}
+
+.btn.secondary {
+    background: white;
+    color: #1a73e8;
+    border: 2px solid #e5e7eb;
+}
+
+.btn.secondary:hover {
+    background: #f8f9fa;
+    border-color: #1a73e8;
+    transform: translateY(-1px);
+}
+
+/* Form styling */
+.form-group {
+    margin: 15px 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+}
+
+/* Button groups */
+.button-group {
+    margin-top: 20px;
+}
+
+.button-group .btn {
+    margin: 8px 0;
+}
+
+/* Progress bars */
+.progress-card {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 16px 0;
+    border: 1px solid #e9ecef;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #333;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+/* Cards container */
+.cards-container {
+    margin: 20px 0;
+}
+
+.cards-container h3 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Game cards */
+.card {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.card.revealed {
+    background: #dcfce7;
+    border-color: #16a34a;
+    color: #15803d;
+}
+
+.card.wrong {
+    background: #fef2f2;
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+/* Round summary */
+.round-summary {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Scores and stats */
+.scores-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    table-layout: fixed;
+}
+
+.scores-table th,
+.scores-table td {
+    padding: 12px 8px;
+    border-bottom: 1px solid #e9ecef;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.scores-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.scores-table td {
+    color: #666;
+    font-size: 14px;
+}
+
+.scores-table th:nth-child(1),
+.scores-table td:nth-child(1) {
+    width: 60px;
+    text-align: center;
+}
+
+.scores-table th:nth-child(2),
+.scores-table td:nth-child(2) {
+    width: auto;
+    text-align: left;
+}
+
+.scores-table th:nth-child(3),
+.scores-table td:nth-child(3) {
+    width: 80px;
+    text-align: right;
+}
+
+.scores-table .rank {
+    text-align: center;
+    font-weight: 600;
+}
+
+.scores-table .rank.first {
+    color: #fbbf24;
+}
+
+.scores-table .rank.second {
+    color: #9ca3af;
+}
+
+.scores-table .rank.third {
+    color: #f59e0b;
+}
+
+.player-stat-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.player-stat-item:last-child {
+    border-bottom: none;
+}
+
+.player-stat-name {
+    font-weight: 600;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.player-stat-value {
+    color: #666;
+    font-size: 14px;
+    text-align: right;
+    min-width: 80px;
+}
+
+.no-scores-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Chip inventory */
+.chip-inventory-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 16px;
+    margin: 8px 0;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.chip-inventory-player {
+    font-weight: 600;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chip-inventory-chips {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    min-width: 120px;
+}
+
+.chip-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+}
+
+.chip-badge.points-3 {
+    background: #059669;
+}
+
+.chip-badge.points-5 {
+    background: #dc2626;
+}
+
+.chip-badge.points-7 {
+    background: #7c3aed;
+}
+
+/* Bidding interface styles */
+.high-bidder-display {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.high-bid-amount {
+    font-size: 24px;
+    font-weight: bold;
+    color: #8b4513;
+    margin-bottom: 5px;
+}
+
+.high-bid-player {
+    font-size: 16px;
+    color: #654321;
+}
+
+.player-bid-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    margin: 10px 0;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.player-active {
+    background: #f8f9ff;
+    border-color: #4facfe;
+}
+
+.high-bidder-row {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7) !important;
+    border-color: #ffc107 !important;
+    border-width: 3px !important;
+}
+
+.player-passed {
+    background: #f5f5f5;
+    border-color: #ccc;
+    opacity: 0.7;
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Allow text truncation if needed */
+}
+
+.player-name {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-status {
+    font-size: 12px;
+    font-weight: normal;
+    color: #666;
+}
+
+.current-bid-display {
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    min-width: 80px;
+    padding: 4px 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.bid-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+    justify-content: flex-end;
+}
+
+.bid-input {
+    width: 50px;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.btn.small {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-width: 50px;
+    white-space: nowrap;
+}
+
+.passed-text {
+    color: #999;
+    font-style: italic;
+    text-align: center;
+    min-width: 120px;
+}
+
+/* Blocking phase styles */
+.turn-indicator {
+    background: #e3f2fd;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    text-align: center;
+    font-weight: bold;
+    color: #1976d2;
+}
+
+.token-selected {
+    background: #4caf50 !important;
+    border-color: #2e7d32 !important;
+    color: white !important;
+    transform: scale(1.05);
+}
+
+.blocking-actions {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.token-2 {
+    border-color: #2196f3;
+    color: #1976d2;
+}
+
+.token-4 {
+    border-color: #ff9800;
+    color: #f57c00;
+}
+
+.token-6 {
+    border-color: #f44336;
+    color: #d32f2f;
+}
+
+/* Card selection styles */
+.card-selectable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.card-selectable:hover {
+    background: #e3f2fd;
+    border-color: #2196f3;
+    transform: translateY(-2px);
+}
+
+.card-selected {
+    background: #4caf50 !important;
+    border-color: #2e7d32 !important;
+    color: white !important;
+    transform: scale(1.02);
+}
+
+.selection-info {
+    text-align: center;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.btn.disabled {
+    background: #ccc !important;
+    border-color: #999 !important;
+    color: #666 !important;
+    cursor: not-allowed !important;
+}
+
+/* Ranking interface styles */
+.ranking-instructions {
+    text-align: center;
+    padding: 10px;
+    background: #e3f2fd;
+    border-radius: 5px;
+    margin: 10px 0;
+    font-size: 14px;
+    color: #1976d2;
+}
+
+.ranking-area {
+    min-height: 200px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background: #fafafa;
+}
+
+.ranking-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+    margin: 8px 0;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: move;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.ranking-card:hover {
+    border-color: #4caf50;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.ranking-card.dragging {
+    opacity: 0.5;
+    transform: rotate(5deg);
+}
+
+.rank-number {
+    background: #4caf50;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+    font-size: 14px;
+}
+
+.country-name {
+    font-weight: bold;
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.drag-handle {
+    color: #999;
+    font-size: 18px;
+    cursor: grab;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.ranking-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Reveal phase styles */
+.reveal-container {
+    max-width: 500px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.reveal-container h4 {
+    color: #2196f3;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.reveal-card {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    margin: 6px 0;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.reveal-card .rank-number {
+    background: #666;
+    color: white;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 12px;
+    font-size: 12px;
+}
+
+.country-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.country-name {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.country-value {
+    font-size: 12px;
+    color: #666;
+}
+
+.status-icon {
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.reveal-card.correct {
+    border-color: #4caf50;
+    background: #e8f5e8;
+}
+
+.reveal-card.correct .rank-number {
+    background: #4caf50;
+}
+
+.reveal-card.correct .status-icon {
+    color: #4caf50;
+}
+
+.reveal-card.wrong {
+    border-color: #f44336;
+    background: #ffebee;
+}
+
+.reveal-card.wrong .rank-number {
+    background: #f44336;
+}
+
+.reveal-card.wrong .status-icon {
+    color: #f44336;
+}
+
+.reveal-card.hidden {
+    opacity: 0.5;
+    background: #f5f5f5;
+}
+
+.reveal-card.hidden .country-name,
+.reveal-card.hidden .country-value {
+    color: #999;
+    font-style: italic;
+}
+
+.reveal-card.revealed {
+    animation: revealCard 0.5s ease-in-out;
+}
+
+@keyframes revealCard {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .reveal-comparison {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}
+
+/* Game-specific styles */
+.cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.card-item {
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-size: 14px;
+}
+
+.card-item:hover {
+    border-color: #4facfe;
+    background: #f8f9ff;
+}
+
+.card-available {
+    background: #fff;
+    border-color: #4facfe;
+}
+
+.card-blocked {
+    background: #ffebee;
+    border-color: #f44336;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.tokens-grid {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+    justify-content: center;
+}
+
+.token-item {
+    padding: 15px 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-weight: bold;
+    min-width: 80px;
+}
+
+.token-item:hover {
+    border-color: #4facfe;
+    background: #f8f9ff;
+}
+
+.token-available {
+    background: #fff;
+    border-color: #4caf50;
+    color: #2e7d32;
+}
+
+.token-used {
+    background: #f5f5f5;
+    border-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Interim screen styles */
+.round-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.summary-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    line-height: 1.6;
+}
+
+.summary-item strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.chip-2 {
+    background: #059669;
+    color: white;
+}
+
+.chip-4 {
+    background: #dc2626;
+    color: white;
+}
+
+.chip-6 {
+    background: #7c3aed;
+    color: white;
+}
+
+.chip-empty {
+    background: #e5e7eb;
+    color: #9ca3af;
+    border: 1px solid #d1d5db;
+}
+
+/* Results display styles */
+.final-ranking-display {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+.final-ranking-display h4 {
+    color: #2196f3;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 8px;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    margin: 4px 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background: #fafafa;
+}
+
+.ranking-item.correct-ranking {
+    background: #e8f5e9;
+    border-color: #4caf50;
+}
+
+.ranking-item .rank-number {
+    background: #666;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 12px;
+    font-size: 11px;
+}
+
+.ranking-item.correct-ranking .rank-number {
+    background: #4caf50;
+}
+
+.ranking-item .country-name {
+    flex: 1;
+    font-weight: bold;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.ranking-item .country-value {
+    font-size: 12px;
+    color: #666;
+    font-weight: normal;
+}
+
+/* Console output styles */
+.console-output {
+    background: #1a1a1a;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #333;
+    margin-top: 10px;
+}
+
+.console-message {
+    margin: 2px 0;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.console-message.error {
+    color: #ff6b6b;
+}
+
+.console-message.warning {
+    color: #ffd93d;
+}
+
+.console-message.success {
+    color: #6bcf7f;
+}
+
+.console-message.info {
+    color: #74c0fc;
+}
+
+.console-output::-webkit-scrollbar {
+    width: 8px;
+}
+
+.console-output::-webkit-scrollbar-track {
+    background: #2a2a2a;
+}
+
+.console-output::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.console-output::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* Player detailed statistics styles */
+.player-detailed-stats {
+    margin-top: 10px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.player-stats-header {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 4px;
+}
+
+.player-stats-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 0;
+}
+
+.stat-row .stat-label {
+    color: #666;
+    font-weight: normal;
+}
+
+.stat-row .stat-value {
+    color: #333;
+    font-weight: 600;
+}
+
+.stat-row.success-rate .stat-value {
+    color: #059669;
+}
+
+.stat-row.tokens-gained .stat-value {
+    color: #059669;
+}
+
+.stat-row.tokens-lost .stat-value {
+    color: #dc2626;
+}
+
+@media (max-width: 480px) {
+    .player-stats-details {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+    .phone-container {
+        margin: 20px auto;
+        padding: 0 10px;
+    }
+    
+    .app-header {
+        padding: 20px 15px;
+    }
+    
+    .screen-content {
+        padding: 20px 15px;
+    }
+    
+    .app-title,
+    .screen-title {
+        font-size: 24px;
+    }
+    
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tokens-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .console-output {
+        height: 200px;
+        font-size: 11px;
+    }
+}

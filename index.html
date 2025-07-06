@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know-It-All - Updated v2</title>
+    <!-- FORCE DEPLOY: July 6, 2025 - 12:58 AM -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="phone-container">
+        <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="status-bar">
+                <span class="status-time">9:41</span>
+                <div class="status-icons">
+                    <span class="status-signal">●●●</span>
+                    <span class="status-battery">100%</span>
+                </div>
+            </div>
+            
+            <!-- Title Screen -->
+            <div id="titleScreen" class="screen active">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h1 class="app-title">Know-It-All</h1>
+                    <p class="app-subtitle">Trivia Ranking Game</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="action-card">
+                        <div class="card-icon">👥</div>
+                        <div class="card-title">Setup Game</div>
+                        <div class="card-description">Add players and start a new game</div>
+                        <button class="btn primary" onclick="showScreen('playerScreen')">👥 Setup Players</button>
+                        <button class="btn secondary" onclick="quickSetup4Players()" style="margin-top: 8px;">⚡ Quick 4-Player Setup</button>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="card-icon">🏆</div>
+                        <div class="card-title">View Scores</div>
+                        <div class="card-description">See current tournament standings</div>
+                        <button class="btn secondary" onclick="showScreen('scoresScreen')">🏆 View Scores</button>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="card-icon">🎲</div>
+                        <div class="card-title">Quick Demo</div>
+                        <div class="card-description">Try the game with sample data</div>
+                        <button class="btn primary" onclick="simulateQRScan()">🎲 Start Demo Game</button>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="card-icon">📷</div>
+                        <div class="card-title">QR Scanner</div>
+                        <div class="card-description">Scan QR codes for real gameplay</div>
+                        <button class="btn secondary" onclick="startRealQRScan()">📷 Scan QR Code</button>
+                    </div>
+                    
+                    <!-- Debug buttons for testing -->
+                    <div class="action-card" style="margin-top: 20px; background: #f0f0f0;">
+                        <div class="card-title">🔧 Debug Tests</div>
+                        <div class="card-description">Test functions while rebuilding</div>
+                        <button class="btn secondary" onclick="checkData()" style="margin: 5px;">Check Data</button>
+                        <button class="btn secondary" onclick="testFunction()" style="margin: 5px;">Test Function</button>
+                        <button class="btn secondary" onclick="testVisualConsole()" style="margin: 5px;">🖥️ Test Visual Console</button>
+                        <button class="btn secondary" onclick="runAutomatedTest()" style="margin: 5px;">🤖 Run Automated Test</button>
+                        <button class="btn secondary" onclick="viewTestResults()" style="margin: 5px;">📊 View Test Results</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Player Setup Screen -->
+            <div id="playerScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Setup Players</h2>
+                    <p class="screen-subtitle">Add players and select bidder</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">👥</div>
+                            <div class="section-title">Add Players</div>
+                        </div>
+                        
+                        <div id="allPlayers">
+                            <div class="form-group" id="playerGroup1">
+                                <label>Player 1:</label>
+                                <input type="text" id="player1" placeholder="Enter player name" oninput="updatePlayerCount()">
+                            </div>
+                        </div>
+                        
+                        <button class="btn secondary" onclick="addPlayer()">➕ Add Another Player</button>
+                    </div>
+                    
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">🎯</div>
+                            <div class="section-title">Ready to Start</div>
+                        </div>
+                        
+                        <div id="roundSummary" class="round-summary">
+                            <strong>Round 1</strong><br>
+                            <strong>Players:</strong> <span id="playerCount">Add players above</span><br>
+                            <strong>Next:</strong> Draw challenge and start bidding
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="startRoundWithBidder()">🚀 Start Round</button>
+                        <button class="btn secondary" onclick="showScreen('titleScreen')">🏠 Back to Home</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bidding Screen -->
+            <div id="biddingScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Bidding Phase</h2>
+                    <p class="screen-subtitle">How many cards can you rank correctly?</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div id="promptInfo">
+                            <div class="card-title">Challenge Loading...</div>
+                            <div class="card-description">Setting up the game...</div>
+                        </div>
+                    </div>
+                    
+                    <div id="drawnCardsInfo">
+                        <!-- Cards drawn info goes here -->
+                    </div>
+                    
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">👑</div>
+                            <div class="section-title">Current High Bidder</div>
+                        </div>
+                        <div id="highBidderDisplay" class="high-bidder-display">
+                            <div class="high-bid-amount">No bids yet</div>
+                            <div class="high-bid-player">Waiting for first bid...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">💰</div>
+                            <div class="section-title">Player Bidding</div>
+                        </div>
+                        <div id="playerBidding">
+                            <!-- Player bidding interfaces will be generated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="finishBidding()">✅ Finish Bidding</button>
+                        <button class="btn secondary" onclick="showScreen('playerScreen')">⬅️ Back to Players</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Blocking Screen -->
+            <div id="blockingScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Blocking Phase</h2>
+                    <p class="screen-subtitle">Place blocking tokens to challenge the bidder</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div id="blockingInfo">
+                            <div class="card-title">Blocking Phase</div>
+                            <div class="card-description">Players can block cards from the bidder</div>
+                        </div>
+                    </div>
+                    
+                    <div id="availableCards">
+                        <!-- Available cards for blocking -->
+                    </div>
+                    
+                    <div id="blockingTokens">
+                        <!-- Blocking tokens interface -->
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="finishBlocking()">✅ Finish Blocking</button>
+                        <button class="btn secondary" onclick="skipBlocking()">⏭️ Skip Blocking</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card Scanning Screen -->
+            <div id="scanScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Scan Cards</h2>
+                    <p class="screen-subtitle">Build your ranking</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div id="scanInfo">
+                            <div class="card-title">Scan Your Cards</div>
+                            <div class="card-description">Enter card numbers in your desired order</div>
+                        </div>
+                    </div>
+                    
+                    <div id="availableCardsForSelection">
+                        <!-- Available cards will be displayed here -->
+                    </div>
+                    
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">📱</div>
+                            <div class="section-title">Card Entry</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Enter card number (1-10):</label>
+                            <input type="text" id="cardInput" placeholder="Enter card number...">
+                            <button class="btn primary" onclick="scanCard()">📱 Add Card</button>
+                        </div>
+                    </div>
+                    
+                    <div class="cards-container">
+                        <h3>Your Ranking:</h3>
+                        <div id="scannedCards">
+                            <!-- Scanned cards will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="finishBtn" class="btn primary" onclick="finishScanning()" style="display: none;">✅ Finish Scanning</button>
+                        <button class="btn secondary" onclick="console.log('Button clicked!'); showScreen('blockingScreen')">⬅️ Back to Blocks</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reveal Screen -->
+            <div id="revealScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Reveal Phase</h2>
+                    <p class="screen-subtitle">See if your ranking is correct</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div id="revealInfo">
+                            <div class="card-title">Revealing Cards</div>
+                            <div class="card-description">Click to reveal each card</div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-card">
+                        <div class="progress-header">
+                            <span>Progress:</span>
+                            <span id="revealProgress">0 of 0</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="revealProgressBar" class="progress-fill"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="cards-container">
+                        <div id="revealCards">
+                            <!-- Reveal cards will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="revealBtn" class="btn primary" onclick="revealNext()">▶️ Reveal Next Card</button>
+                        <button class="btn secondary" onclick="newGame()">🏠 Back to Home</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interim Screen -->
+            <div id="interimScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Round Complete!</h2>
+                    <p class="screen-subtitle">Current standings and blocking tokens</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">🏆</div>
+                            <div class="section-title">Current Standings</div>
+                        </div>
+                        <div id="interimLeaderboard">
+                            <!-- Interim leaderboard will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">💎</div>
+                            <div class="section-title">Blocking Tokens</div>
+                        </div>
+                        <div id="interimTokenInventory">
+                            <!-- Token inventory will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">📋</div>
+                            <div class="section-title">Round Summary</div>
+                        </div>
+                        <div id="interimRoundSummary">
+                            <!-- Round summary will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="continueToNextRound()">🚀 Continue to Next Round</button>
+                        <button class="btn secondary" onclick="showScreen('scoresScreen')">📊 View Full Scores</button>
+                        <button class="btn secondary" onclick="newGame()">🏠 New Game</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Screen -->
+            <div id="resultsScreen" class="screen">
+                <div id="resultsHeader" class="app-header">
+                    <div class="header-background"></div>
+                    <h2 id="resultsTitle" class="screen-title">Game Results</h2>
+                    <p class="screen-subtitle">How did you do?</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div id="resultsContent">
+                            <div class="card-title">Round Results</div>
+                            <div class="card-description">Game completed</div>
+                        </div>
+                    </div>
+                    
+                    <div class="cards-container">
+                        <h3>Final Ranking:</h3>
+                        <div id="finalRanking">
+                            <!-- Final ranking will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="nextRound()">🔄 Next Round</button>
+                        <button class="btn secondary" onclick="showScreen('scoresScreen')">🏆 View Scores</button>
+                        <button class="btn secondary" onclick="newGame()">🏠 New Game</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Scores Screen -->
+            <div id="scoresScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Tournament Scores</h2>
+                    <p class="screen-subtitle">Current standings and statistics</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">🏆</div>
+                            <div class="section-title">Leaderboard</div>
+                        </div>
+                        <div id="leaderboard">
+                            <div class="no-scores-message">No games played yet!<br>Play some rounds to see the leaderboard.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">📊</div>
+                            <div class="section-title">Player Statistics</div>
+                        </div>
+                        <div id="playerStats">
+                            <div class="no-scores-message">No statistics available yet!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">💎</div>
+                            <div class="section-title">Chip Inventory</div>
+                        </div>
+                        <div id="chipInventory">
+                            <div class="no-scores-message">No chip data available!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="showScreen('playerScreen')">🎮 Play Round</button>
+                        <button class="btn secondary" onclick="clearScores()">🗑️ Clear Scores</button>
+                        <button class="btn secondary" onclick="showScreen('titleScreen')">🏠 Back to Home</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Test Results Screen -->
+            <div id="testResultsScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">📊 Test Results</h2>
+                    <p class="screen-subtitle">Automated test history and analytics</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">🎯</div>
+                            <div class="section-title">Test Overview</div>
+                        </div>
+                        <div id="testOverview">
+                            <div class="no-scores-message">No automated tests have been run yet!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">👥</div>
+                            <div class="section-title">Player Performance</div>
+                        </div>
+                        <div id="playerPerformance">
+                            <div class="no-scores-message">No player data available!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">📋</div>
+                            <div class="section-title">Round Details</div>
+                        </div>
+                        <div id="roundDetails">
+                            <div class="no-scores-message">No round data available!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">🖥️</div>
+                            <div class="section-title">Live Console Output</div>
+                            <div style="margin-left: auto; display: flex; gap: 5px;">
+                                <button class="btn secondary" onclick="exportConsoleToFile()" style="width: auto; padding: 4px 8px; font-size: 12px;">📥 Export</button>
+                                <button class="btn secondary" onclick="clearConsoleOutput()" style="width: auto; padding: 4px 8px; font-size: 12px;">Clear</button>
+                                <button class="btn secondary" onclick="disableVisualConsole()" style="width: auto; padding: 4px 8px; font-size: 12px;">Disable</button>
+                            </div>
+                        </div>
+                        <div id="consoleOutput" class="console-output">
+                            <div class="console-message">Console output will appear here during automated tests...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="runAutomatedTest()">🤖 Run New Test</button>
+                        <button class="btn secondary" onclick="exportTestResults()">📤 Export Results</button>
+                        <button class="btn secondary" onclick="clearTestResults()">🗑️ Clear Results</button>
+                        <button class="btn secondary" onclick="showScreen('titleScreen')">🏠 Back to Home</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- IMPORTANT: Load data.js FIRST, then game.js -->
+ <script src="data.js?v=1"></script>
+    <script src="game.js"></script>
+</body>
+</html>
