@@ -140,6 +140,11 @@ var originalConsoleError = console.error;
 var originalConsoleWarn = console.warn;
 
 window.enableVisualConsole = function() {
+    // Performance optimization: Skip visual console during automated tests
+    if (window.isAutomatedTestRunning) {
+        return; // Don't override console during automated tests
+    }
+    
     console.log = function() {
         originalConsoleLog.apply(console, arguments);
         var message = Array.prototype.slice.call(arguments).join(' ');
@@ -186,7 +191,8 @@ var players = {
     list: [],  // Array of player names
     scores: {},  // Player scores
     blockingTokens: {},  // Each player's blocking tokens {2: 1, 4: 1, 6: 1} (counts)
-    currentBlocks: {}  // Blocks placed this round {playerName: tokenValue}
+    currentBlocks: {},  // Blocks placed this round {playerName: tokenValue}
+    stats: {}  // Detailed player statistics {playerName: {bidsWon: 0, bidsSuccessful: 0, blocksMade: 0, tokensGained: 0, tokensLost: 0}}
 };
 var currentRound = 1;
 var maxRounds = 6;
@@ -206,9 +212,11 @@ window.checkData = function() {
 
 // Screen switching function
 window.showScreen = function(screenId) {
+    console.log('🔄 showScreen called with:', screenId);
     
     // Hide all screens
     var screens = document.querySelectorAll('.screen');
+    console.log('Found', screens.length, 'screens to hide');
     for (var i = 0; i < screens.length; i++) {
         screens[i].classList.remove('active');
     }
@@ -216,9 +224,23 @@ window.showScreen = function(screenId) {
     // Show target screen
     var target = document.getElementById(screenId);
     if (target) {
+        console.log('✅ Found target screen:', screenId);
         target.classList.add('active');
+        
+        // Update content for specific screens
+        if (screenId === 'scoresScreen') {
+            console.log('📊 Navigating to scores screen...');
+            updateScoresDisplay();
+        } else if (screenId === 'blockingScreen') {
+            console.log('🛡️ Navigating to blocking screen...');
+            setupBlockingScreen();
+        }
     } else {
-        // Screen not found
+        console.error('❌ Screen not found:', screenId);
+        console.log('Available screen IDs:');
+        document.querySelectorAll('.screen').forEach(function(screen) {
+            console.log('  -', screen.id);
+        });
     }
 };
 
@@ -266,6 +288,13 @@ window.startRealQRScan = function() {
 function initializePlayer(name) {
     players.scores[name] = 0;
     players.blockingTokens[name] = {2: 1, 4: 1, 6: 1}; // Change to counts instead of booleans
+    players.stats[name] = {
+        bidsWon: 0,
+        bidsSuccessful: 0,
+        blocksMade: 0,
+        tokensGained: 0,
+        tokensLost: 0
+    };
 }
 
 // Get players sorted by score (for blocking order)
@@ -428,15 +457,9 @@ window.nextRound = function() {
     console.log("Next round clicked!");
 };
 
-window.newGame = function() {
-    console.log("New game clicked!");
-    showScreen('titleScreen');
-};
+// Note: newGame function is defined later in the file
 
-window.clearScores = function() {
-    // Auto-confirm for automated testing
-    console.log("Scores cleared!");
-};
+// Note: clearScores function is defined later in the file
 
 // Initialize the page
 function initPage() {
@@ -634,6 +657,14 @@ window.finishBidding = function() {
 
 // Blocking Phase Functions
 function showBlockingScreen() {
+    console.log('📋 showBlockingScreen called with state:', {
+        currentPrompt: currentPrompt ? currentPrompt.label : 'null',
+        highestBidder: highestBidder,
+        currentBid: currentBid,
+        drawnCards: drawnCards.length,
+        blockedCards: blockedCards.length
+    });
+    
     // Set up blocking order (lowest score first, excluding the bidder)
     blockingOrder = getPlayersByScore().filter(function(name) {
         return name !== highestBidder;
@@ -776,6 +807,11 @@ function blockCard(cardId, tokenValue, playerName) {
         tokenValue: tokenValue
     };
     
+    // Track blocks made in player stats
+    if (players.stats[playerName]) {
+        players.stats[playerName].blocksMade++;
+    }
+    
     // Mark token as used this round (but don't remove it yet - that happens after reveal)
     usedBlockingTokens[tokenValue] = true;
     
@@ -811,15 +847,128 @@ window.skipBlocking = function() {
     showCardSelection();
 };
 
+function setupBlockingScreen() {
+    console.log('🛡️ Setting up blocking screen...');
+    console.log('Current game state:', {
+        currentPrompt: currentPrompt,
+        highestBidder: highestBidder,
+        currentBid: currentBid,
+        drawnCards: drawnCards,
+        blockedCards: blockedCards
+    });
+    
+    // Validate we have the required game state
+    if (!currentPrompt || !highestBidder || currentBid === 0 || drawnCards.length === 0) {
+        console.error('❌ Cannot setup blocking screen - missing game state');
+        showNotification('Error: Game state incomplete for blocking phase', 'error');
+        // If we're missing game state, go back to the appropriate screen
+        if (players.list.length === 0) {
+            showScreen('playerScreen');
+        } else {
+            showScreen('biddingScreen');
+        }
+        return;
+    }
+    
+    // Use the existing updateBlockingDisplay function which already handles everything
+    updateBlockingDisplay();
+    
+    console.log('✅ Blocking screen setup complete');
+}
+
+function setupBlockingCards() {
+    var container = document.getElementById('availableCards');
+    if (!container) return;
+    
+    var html = '<h3>Available Cards to Block:</h3><div class="cards-grid">';
+    
+    drawnCards.forEach(function(cardId, index) {
+        var countryData = window.GAME_DATA.countries[cardId];
+        var isBlocked = blockedCards.includes(cardId);
+        var cardClass = isBlocked ? 'card-item card-blocked' : 'card-item card-available card-selectable';
+        
+        html += '<div class="' + cardClass + '" data-card="' + cardId + '">' +
+               '<strong>' + (countryData ? countryData.name : cardId) + '</strong>' +
+               (isBlocked ? '<br><span style="color: red;">BLOCKED</span>' : '') +
+               '</div>';
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function setupBlockingTokens() {
+    var container = document.getElementById('blockingTokens');
+    if (!container) return;
+    
+    // Get current player's tokens (in a real game, this would be dynamic)
+    // For now, show tokens for the first non-bidder player
+    var currentBlocker = players.list.find(name => name !== highestBidder);
+    if (!currentBlocker) return;
+    
+    var tokens = players.blockingTokens[currentBlocker] || {2: 1, 4: 1, 6: 1};
+    
+    var html = '<h3>Your Blocking Tokens:</h3><div class="tokens-grid">';
+    
+    Object.keys(tokens).forEach(function(tokenValue) {
+        var count = tokens[tokenValue];
+        var isUsed = usedBlockingTokens[tokenValue];
+        var tokenClass = count > 0 && !isUsed ? 'token-item token-available' : 'token-item token-used';
+        
+        html += '<div class="' + tokenClass + '" data-token="' + tokenValue + '">' +
+               '<strong>' + tokenValue + ' pts</strong>' +
+               '<br>(' + (count || 0) + ' available)' +
+               '</div>';
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
 // Card Selection Phase
 function showCardSelection() {
+    console.log('🎯 Starting card selection phase...');
+    console.log('Current prompt:', currentPrompt);
+    console.log('Highest bidder:', highestBidder);
+    console.log('Current bid:', currentBid);
+    console.log('Drawn cards:', drawnCards);
+    console.log('Blocked cards:', blockedCards);
+    
+    // Validate required variables
+    if (!currentPrompt) {
+        console.error('❌ No current prompt set!');
+        showNotification('Error: No challenge selected', 'error');
+        return;
+    }
+    
+    if (!highestBidder) {
+        console.error('❌ No highest bidder set!');
+        showNotification('Error: No bidder selected', 'error');
+        return;
+    }
+    
+    if (currentBid === 0) {
+        console.error('❌ No bid amount set!');
+        showNotification('Error: No bid amount set', 'error');
+        return;
+    }
+    
     var remainingCards = drawnCards.filter(function(card) {
         return !blockedCards.includes(card);
     });
     
+    console.log('Remaining cards after blocking:', remainingCards);
+    
     if (remainingCards.length < currentBid) {
-        console.log('Not enough cards remaining! Bidder automatically fails.');
-        // Handle automatic failure
+        console.log('❌ Not enough cards remaining! Bidder automatically fails.');
+        showNotification('Not enough cards remaining for bid!', 'error');
+        // Handle automatic failure - go to reveal with failure
+        bidderSuccess = false;
+        setTimeout(() => {
+            calculateAndApplyScores();
+            updateInterimDisplay();
+            showScreen('interimScreen');
+        }, 1000);
         return;
     }
     
@@ -833,9 +982,16 @@ function showCardSelection() {
     // Reset selection
     selectedCardsForRanking = [];
     
+    // Hide any existing ranking container from previous rounds
+    var rankingContainer = document.getElementById('rankingContainer');
+    if (rankingContainer) {
+        rankingContainer.style.display = 'none';
+    }
+    
     // Show available cards for selection
     updateAvailableCardsDisplay(remainingCards);
     
+    console.log('✅ Navigating to card selection screen');
     showScreen('scanScreen');
 }
 
@@ -843,6 +999,9 @@ function updateAvailableCardsDisplay(remainingCards) {
     var container = document.getElementById('availableCardsForSelection');
     
     if (container) {
+        // Make sure the container is visible (it might have been hidden by ranking interface)
+        container.style.display = 'block';
+        
         var html = '<div class="form-card"><div class="section-header"><div class="section-icon">🎴</div>' +
                   '<div class="section-title">Available Cards (' + remainingCards.length + ' remaining)</div></div><div class="cards-grid">';
         
@@ -1298,29 +1457,88 @@ function showFinalResults() {
             window.automatedTestResults.failedBids++;
         }
         
-        // Update player final scores
+        console.log('📊 Round results tracked for automated test');
+    }
+    
+    // Calculate scores BEFORE capturing them for the test results
+    calculateAndApplyScores();
+    
+    // NOW update player final scores after they've been calculated
+    if (window.isAutomatedTestRunning && window.automatedTestResults) {
         Object.keys(players.scores).forEach(function(playerName) {
             if (window.automatedTestResults.playerStats[playerName]) {
                 window.automatedTestResults.playerStats[playerName].totalScore = players.scores[playerName];
             }
         });
-        
-        console.log('📊 Round results tracked for automated test');
+        console.log('📊 Updated player scores in test results:', players.scores);
     }
     
-    calculateAndApplyScores();
     updateInterimDisplay();
     showScreen('interimScreen');
     
     console.log('✅ Interim screen should now be visible');
+    
+    // For automated testing, continue to next round after showing interim screen
+    if (window.isAutomatedTestRunning) {
+        // Give more time for interim screen to properly display and log data
+        setTimeout(() => {
+            console.log('📊 INTERIM SCREEN DATA:');
+            console.log('Current Round:', currentRound);
+            console.log('Current Scores:', players.scores);
+            console.log('Current Tokens:', players.blockingTokens);
+            console.log('Player Stats:', players.stats);
+            
+            // Force update all interim displays again to ensure they render
+            console.log('🔄 Force updating interim displays...');
+            updateInterimDisplay();
+            
+            setTimeout(() => {
+                if (currentRound < maxRounds && !checkWinCondition()) {
+                    console.log('▶️ Continuing to next round...');
+                    continueToNextRound();
+                    
+                    setTimeout(() => {
+                        automatedRound(currentRound);
+                    }, 1500); // Increased delay for better sync
+                } else {
+                    console.log('🏁 Game completed! Generating detailed test results...');
+                    window.automatedTestResults.endTime = new Date();
+                    generateDetailedTestResults();
+                    window.isAutomatedTestRunning = false;
+                    console.log('✅ Automated test completed successfully!');
+                }
+            }, 2000); // Increased delay for screen transitions
+        }, 3000); // Increased time to properly see interim screen
+    }
 }
 
 function calculateAndApplyScores() {
+    console.log('💰 calculateAndApplyScores called');
+    console.log('Bidder success:', bidderSuccess);
+    console.log('Highest bidder:', highestBidder);
+    console.log('Current bid:', currentBid);
+    console.log('Current blocks:', players.currentBlocks);
+    console.log('Current scores before calculation:', players.scores);
+    
+    // Track that this player won a bid
+    if (players.stats[highestBidder]) {
+        players.stats[highestBidder].bidsWon++;
+        console.log('📊 Tracking bid won for', highestBidder, '- Total now:', players.stats[highestBidder].bidsWon);
+    } else {
+        console.error('❌ No stats object found for', highestBidder, '- Available stats:', Object.keys(players.stats));
+    }
+    
     if (bidderSuccess) {
         // Bidder succeeds - gets points equal to their bid
         var pointsAwarded = currentBid;
         var currentScore = (typeof players.scores[highestBidder] === 'number') ? players.scores[highestBidder] : 0;
         players.scores[highestBidder] = currentScore + pointsAwarded;
+        
+        // Track successful bid
+        if (players.stats[highestBidder]) {
+            players.stats[highestBidder].bidsSuccessful++;
+            console.log('📊 Tracking successful bid for', highestBidder, '- Total successful:', players.stats[highestBidder].bidsSuccessful);
+        }
         
         // Transfer blocking tokens from other players to bidder
         Object.keys(players.currentBlocks).forEach(function(playerName) {
@@ -1331,6 +1549,11 @@ function calculateAndApplyScores() {
                 // Remove token from blocker (decrease count)
                 if (players.blockingTokens[playerName] && players.blockingTokens[playerName][tokenValue] > 0) {
                     players.blockingTokens[playerName][tokenValue]--;
+                    // Track tokens lost
+                    if (players.stats[playerName]) {
+                        players.stats[playerName].tokensLost++;
+                        console.log('📊 Tracking token lost for', playerName, '- Total lost:', players.stats[playerName].tokensLost);
+                    }
                     console.log(playerName + ' loses ' + tokenValue + '-point token to ' + highestBidder);
                 }
                 
@@ -1339,6 +1562,11 @@ function calculateAndApplyScores() {
                     players.blockingTokens[highestBidder] = {2: 0, 4: 0, 6: 0};
                 }
                 players.blockingTokens[highestBidder][tokenValue] = (players.blockingTokens[highestBidder][tokenValue] || 0) + 1;
+                // Track tokens gained
+                if (players.stats[highestBidder]) {
+                    players.stats[highestBidder].tokensGained++;
+                    console.log('📊 Tracking token gained for', highestBidder, '- Total gained:', players.stats[highestBidder].tokensGained);
+                }
                 console.log(highestBidder + ' gains ' + tokenValue + '-point token from ' + playerName);
             }
         });
@@ -1360,6 +1588,11 @@ function calculateAndApplyScores() {
             }
         });
     }
+    
+    console.log('Current scores after calculation:', players.scores);
+    
+    // Store blocking results for round summary before clearing
+    window.lastRoundBlocks = JSON.parse(JSON.stringify(players.currentBlocks));
     
     // Clear current blocks for next round
     players.currentBlocks = {};
@@ -1431,9 +1664,12 @@ function updateResultsDisplay() {
 function getBlockingResults() {
     var results = [];
     
-    Object.keys(players.currentBlocks).forEach(function(playerName) {
-        if (playerName !== highestBidder && players.currentBlocks[playerName]) {
-            var blockData = players.currentBlocks[playerName];
+    // Use saved blocking data from before it was cleared
+    var blocksToCheck = window.lastRoundBlocks || players.currentBlocks;
+    
+    Object.keys(blocksToCheck).forEach(function(playerName) {
+        if (playerName !== highestBidder && blocksToCheck[playerName]) {
+            var blockData = blocksToCheck[playerName];
             var tokenValue = blockData.tokenValue;
             
             if (bidderSuccess) {
@@ -1450,17 +1686,25 @@ function getBlockingResults() {
 }
 
 function updateInterimDisplay() {
+    console.log('📊 updateInterimDisplay called');
     updateInterimLeaderboard();
     updateInterimTokenInventory();
     updateInterimRoundSummary();
+    console.log('✅ All interim displays updated');
 }
 
 function updateInterimLeaderboard() {
+    console.log('🏆 updateInterimLeaderboard called');
     var container = document.getElementById('interimLeaderboard');
-    if (!container) return;
+    if (!container) {
+        console.error('❌ interimLeaderboard container not found!');
+        return;
+    }
     
     var scores = getFinalScores();
+    console.log('Interim leaderboard scores:', scores);
     if (scores.length === 0) {
+        console.log('⚠️ No scores to display');
         container.innerHTML = '<div class="no-scores-message">No scores yet!</div>';
         return;
     }
@@ -1523,17 +1767,30 @@ function updateInterimTokenInventory() {
 }
 
 function updateInterimRoundSummary() {
+    console.log('📋 updateInterimRoundSummary called');
     var container = document.getElementById('interimRoundSummary');
-    if (!container) return;
+    if (!container) {
+        console.error('❌ interimRoundSummary container not found!');
+        return;
+    }
+    
+    console.log('Round summary data:', {
+        currentRound: currentRound,
+        maxRounds: maxRounds,
+        highestBidder: highestBidder,
+        currentBid: currentBid,
+        currentPrompt: currentPrompt,
+        bidderSuccess: bidderSuccess
+    });
     
     var html = '<div class="round-summary-grid">';
     
     // Round info
     html += '<div class="summary-item">' +
            '<strong>Round ' + currentRound + ' of ' + maxRounds + ' Complete</strong><br>' +
-           '<strong>Bidder:</strong> ' + highestBidder + '<br>' +
-           '<strong>Bid:</strong> ' + currentBid + ' cards<br>' +
-           '<strong>Category:</strong> ' + currentPrompt.label + '<br>' +
+           '<strong>Bidder:</strong> ' + (highestBidder || 'Unknown') + '<br>' +
+           '<strong>Bid:</strong> ' + (currentBid || 0) + ' cards<br>' +
+           '<strong>Category:</strong> ' + (currentPrompt ? currentPrompt.label : 'Unknown') + '<br>' +
            '<strong>Result:</strong> ' + (bidderSuccess ? '✅ SUCCESS' : '❌ FAILED') +
            '</div>';
     
@@ -1554,9 +1811,11 @@ function updateInterimRoundSummary() {
         html += '<strong>Points Changes:</strong><br>' +
                '• ' + highestBidder + ': 0 points (no penalty)<br>';
         
-        Object.keys(players.currentBlocks).forEach(function(playerName) {
-            if (playerName !== highestBidder && players.currentBlocks[playerName]) {
-                var blockData = players.currentBlocks[playerName];
+        // Use saved blocking data from before it was cleared
+        var blocksToCheck = window.lastRoundBlocks || players.currentBlocks;
+        Object.keys(blocksToCheck).forEach(function(playerName) {
+            if (playerName !== highestBidder && blocksToCheck[playerName]) {
+                var blockData = blocksToCheck[playerName];
                 var tokenValue = blockData.tokenValue;
                 html += '• ' + playerName + ': +' + tokenValue + ' points (blocking reward)<br>';
             }
@@ -1566,6 +1825,8 @@ function updateInterimRoundSummary() {
     
     html += '</div>';
     container.innerHTML = html;
+    console.log('✅ Round summary updated successfully');
+    console.log('HTML content length:', html.length);
 }
 
 window.continueToNextRound = function() {
@@ -1592,6 +1853,10 @@ window.nextRound = function() {
         console.log('🤖 Automated test: Starting round ' + currentRound + ' automatically...');
         // Don't change screen, just continue with automation
     } else {
+        // Clear UI elements from previous round before starting new round
+        console.log('🧹 Clearing UI from previous round...');
+        clearUIElements();
+        
         // Go back to player setup for next round
         showScreen('playerScreen');
         console.log('Round ' + currentRound + ' starting!\n\nAll players maintain their scores and blocking tokens from previous rounds.');
@@ -1614,6 +1879,8 @@ window.newGame = function() {
 };
 
 function resetRoundState() {
+    console.log('🔄 Resetting round state...');
+    
     currentPrompt = null;
     drawnCards = [];
     blockedCards = [];
@@ -1634,11 +1901,16 @@ function resetRoundState() {
     bidderSuccess = false;
     players.currentBlocks = {};
     
+    console.log('🧹 Clearing UI elements...');
     // Clear UI elements that might persist between rounds
     clearUIElements();
+    
+    console.log('✅ Round state reset complete');
 }
 
 function clearUIElements() {
+    console.log('🧹 Starting clearUIElements...');
+    
     // Clear bidding interface
     var highBidderDisplay = document.getElementById('highBidderDisplay');
     if (highBidderDisplay) {
@@ -1672,10 +1944,10 @@ function clearUIElements() {
         scannedCards.innerHTML = '';
     }
     
-    // Clear ranking interface
+    // Clear ranking interface (including dynamically created container)
     var rankingContainer = document.getElementById('rankingContainer');
     if (rankingContainer) {
-        rankingContainer.innerHTML = '';
+        rankingContainer.remove(); // Remove the entire element, not just clear it
     }
     
     // Clear reveal interface
@@ -1688,6 +1960,14 @@ function clearUIElements() {
     if (revealProgress) {
         revealProgress.textContent = '0 of 0';
     }
+    
+    // Clear the drawn cards info display on bidding screen
+    var drawnCardsInfo = document.getElementById('drawnCardsInfo');
+    if (drawnCardsInfo) {
+        drawnCardsInfo.innerHTML = '';
+    }
+    
+    console.log('✅ clearUIElements complete');
     
     var revealProgressBar = document.getElementById('revealProgressBar');
     if (revealProgressBar) {
@@ -1776,15 +2056,22 @@ function getFinalScores() {
 }
 
 function updateScoresDisplay() {
+    console.log('🔍 Updating scores display...');
+    console.log('Players list:', players.list);
+    console.log('Players scores:', players.scores);
+    
     var leaderboard = document.getElementById('leaderboard');
     var playerStats = document.getElementById('playerStats');
     var chipInventory = document.getElementById('chipInventory');
     
     if (leaderboard) {
         var scores = getFinalScores();
+        console.log('Final scores array:', scores);
         if (scores.length === 0) {
+            console.log('⚠️ No scores found, showing empty message');
             leaderboard.innerHTML = '<div class="no-scores-message">No games played yet!<br>Play some rounds to see the leaderboard.</div>';
         } else {
+            console.log('✅ Displaying scores for', scores.length, 'players');
             var html = '<table class="scores-table">' +
                       '<thead><tr><th>Rank</th><th>Player</th><th>Score</th></tr></thead><tbody>';
             
@@ -1807,11 +2094,29 @@ function updateScoresDisplay() {
             playerStats.innerHTML = '<div class="no-scores-message">No statistics available yet!</div>';
         } else {
             var html = '';
+            console.log('🔍 Displaying player stats:', players.stats);
             players.list.forEach(function(playerName) {
                 var score = players.scores[playerName] || 0;
-                html += '<div class="player-stat-item">' +
-                       '<span class="player-stat-name">' + playerName + '</span>' +
-                       '<span class="player-stat-value">' + score + ' points</span>' +
+                var stats = players.stats[playerName] || {bidsWon: 0, bidsSuccessful: 0, blocksMade: 0, tokensGained: 0, tokensLost: 0};
+                
+                console.log('📊 Stats for', playerName + ':', stats);
+                
+                // Calculate success rate
+                var successRate = stats.bidsWon > 0 ? Math.round((stats.bidsSuccessful / stats.bidsWon) * 100) : 0;
+                
+                html += '<div class="player-detailed-stats">' +
+                       '<div class="player-stats-header">' +
+                       '<span class="player-stat-name">🎯 ' + playerName + '</span>' +
+                       '<span class="player-stat-score">' + score + ' points</span>' +
+                       '</div>' +
+                       '<div class="player-stats-details">' +
+                       '<div class="stat-row">🏆 Bids Won: <span>' + stats.bidsWon + '</span></div>' +
+                       '<div class="stat-row">✅ Successful Bids: <span>' + stats.bidsSuccessful + '</span></div>' +
+                       '<div class="stat-row">🛡️ Blocks Made: <span>' + stats.blocksMade + '</span></div>' +
+                       '<div class="stat-row">💎 Tokens Gained: <span>' + stats.tokensGained + '</span></div>' +
+                       '<div class="stat-row">💸 Tokens Lost: <span>' + stats.tokensLost + '</span></div>' +
+                       '<div class="stat-row">🎲 Success Rate: <span>' + successRate + '%</span></div>' +
+                       '</div>' +
                        '</div>';
             });
             playerStats.innerHTML = html;
@@ -1849,10 +2154,23 @@ function updateScoresDisplay() {
 }
 
 window.clearScores = function() {
-    // Auto-confirm for automated testing
-    console.log('Confirmed: Clear all scores and reset the game');
-    newGame();
-    console.log('All scores cleared and game reset!');
+    // Clear all player scores but keep players and stay on scores screen
+    console.log('Clearing all scores...');
+    
+    // Reset scores to 0 for all players
+    players.list.forEach(function(playerName) {
+        players.scores[playerName] = 0;
+        players.blockingTokens[playerName] = {2: 1, 4: 1, 6: 1};
+    });
+    
+    // Reset game state
+    currentRound = 1;
+    players.currentBlocks = {};
+    
+    // Update the display immediately
+    updateScoresDisplay();
+    
+    console.log('All scores cleared and reset to 0!');
 };
 
 // Quick setup function for 4 players
@@ -1910,6 +2228,28 @@ window.testVisualConsole = function() {
     }, 1000);
 };
 
+// Test blocking screen navigation
+window.testBlockingScreen = function() {
+    console.log('🧪 Testing blocking screen navigation...');
+    
+    // Set up some dummy data so the screen has content
+    currentPrompt = { label: 'Test Challenge' };
+    highestBidder = 'Test Player';
+    currentBid = 3;
+    drawnCards = ['USA', 'GBR', 'FRA'];
+    blockedCards = [];
+    players.list = ['Test Player', 'Other Player'];
+    blockingOrder = ['Other Player'];
+    blockingTurn = 0;
+    
+    console.log('📋 Test data set up');
+    console.log('🔄 Calling showScreen("blockingScreen")...');
+    
+    showScreen('blockingScreen');
+    
+    console.log('✅ Test complete - check if blocking screen is visible');
+};
+
 // Automated testing function with detailed results tracking
 window.automatedTestResults = {
     startTime: null,
@@ -1924,11 +2264,7 @@ window.automatedTestResults = {
 };
 
 window.runAutomatedTest = function() {
-    // Enable visual console output and navigate to test results screen
-    enableVisualConsole();
-    showScreen('testResultsScreen');
-    clearConsoleOutput();
-    
+    // Just run the test without visual console to improve performance
     console.log('🤖 Automated test starting...');
     console.log('🤖 Starting automated test...');
     
@@ -1964,6 +2300,18 @@ window.runAutomatedTest = function() {
             players.scores[playerName] = 0;
             players.blockingTokens[playerName] = {2: 1, 4: 1, 6: 1};
             players.currentBlocks[playerName] = null;
+            
+            // Initialize player stats tracking
+            if (!players.stats) {
+                players.stats = {};
+            }
+            players.stats[playerName] = {
+                bidsWon: 0,
+                bidsSuccessful: 0,
+                blocksMade: 0,
+                tokensGained: 0,
+                tokensLost: 0
+            };
             
             // Initialize test stats
             window.automatedTestResults.playerStats[playerName] = {
@@ -2012,45 +2360,54 @@ function automatedRound(roundNum) {
     };
     
     try {
-        // Initialize round WITHOUT screen navigation (automated mode)
-        console.log('🎯 Initializing round data...');
+        // SHOW PLAYER SCREEN FIRST in automated mode
+        console.log('👥 Showing player screen...');
+        showScreen('playerScreen');
         
-        // Set up the round data directly
-        if (window.GAME_DATA && window.GAME_DATA.prompts) {
-            currentPrompt = window.GAME_DATA.prompts[Math.floor(Math.random() * window.GAME_DATA.prompts.length)];
-            console.log('📋 Challenge: ' + currentPrompt.label);
-        }
-        
-        // Draw cards
-        var availableCountries = Object.keys(window.GAME_DATA.countries);
-        drawnCards = [];
-        for (var i = 0; i < 10; i++) {
-            var randomIndex = Math.floor(Math.random() * availableCountries.length);
-            drawnCards.push(availableCountries.splice(randomIndex, 1)[0]);
-        }
-        console.log('🎴 Drew 10 cards: ' + drawnCards.join(', '));
-        
-        // Reset round state
-        blockedCards = [];
-        selectedCards = [];
-        selectedCardsForRanking = [];
-        revealIndex = 0;
-        blockingTurn = 0;
-        blockingOrder = [];
-        usedBlockingTokens = {2: false, 4: false, 6: false};
-        playerBids = {};
-        passedPlayers = {};
-        players.currentBlocks = {};
-        
-        // Store round data
-        roundData.prompt = currentPrompt ? currentPrompt.label : 'Unknown';
-        roundData.drawnCards = drawnCards.slice();
-        
-        // Wait for bidding screen to load
         setTimeout(function() {
-            console.log('💰 Simulating bidding phase...');
-            automatedBidding(roundData);
-        }, 500);
+            // Set up player input fields to simulate manual entry
+            console.log('🔧 Setting up player input fields...');
+            var playerNames = ['Alice', 'Bob', 'Charlie', 'Diana'];
+            
+            // Make sure we have enough player input fields
+            for (var playerNum = 2; playerNum <= 4; playerNum++) {
+                var existingInput = document.getElementById('player' + playerNum);
+                if (!existingInput) {
+                    addPlayer(); // This will create the input field
+                    console.log('✅ Added player input field:', playerNum);
+                }
+            }
+            
+            // Fill in the player names in the input fields
+            for (var i = 0; i < 4; i++) {
+                var playerInput = document.getElementById('player' + (i + 1));
+                if (playerInput) {
+                    playerInput.value = playerNames[i];
+                    console.log('✅ Set player' + (i + 1) + ' to:', playerNames[i]);
+                } else {
+                    console.log('⚠️ Could not find player input field:', 'player' + (i + 1));
+                }
+            }
+            
+            // Update the player count display
+            updatePlayerCount();
+            
+            setTimeout(function() {
+                // Now use the normal startRoundWithBidder function
+                console.log('🚀 Starting round with bidder using normal flow...');
+                startRoundWithBidder(); // This will show bidding screen and setup game state
+                
+                // Store round data after setup
+                roundData.prompt = currentPrompt ? currentPrompt.label : 'Unknown';
+                roundData.drawnCards = drawnCards.slice();
+                
+                // Wait for bidding screen to fully load, then start automated bidding
+                setTimeout(function() {
+                    console.log('💰 Starting automated bidding on bidding screen...');
+                    automatedBidding(roundData);
+                }, 1000); // Give more time for screen transition
+            }, 500); // Give time for input setup
+        }, 1000); // Give time for player screen to show
         
     } catch (error) {
         console.error('❌ Error in round ' + roundNum + ':', error);
@@ -2077,6 +2434,9 @@ function automatedBidding(roundData) {
             window.automatedTestResults.playerStats[randomWinner].bidsWon++;
         }
         
+        // Note: Bid wins are tracked in calculateAndApplyScores(), not here
+        console.log('🎯 Winner set:', randomWinner, 'with bid amount:', randomBidAmount);
+        
         // Simulate competitive bidding with multiple players
         var currentBidder = 0;
         var targetBid = randomBidAmount;
@@ -2095,10 +2455,16 @@ function automatedBidding(roundData) {
                     passDelay = 200 + (index * 300);
                 });
                 
-                // Finish bidding
+                // Finish bidding using the normal flow
                 setTimeout(() => {
                     console.log('✅ Bidding complete, ' + randomWinner + ' won with ' + currentBid + ' cards');
-                    setTimeout(() => automatedBlocking(roundData), 500);
+                    console.log('🖼️ Calling finishBidding() to transition to blocking screen...');
+                    finishBidding(); // This will show blocking screen
+                    
+                    setTimeout(() => {
+                        console.log('🚫 Starting automated blocking...');
+                        automatedBlocking(roundData);
+                    }, 1500); // Give more time for screen transition
                 }, passDelay + 500);
                 return;
             }
@@ -2134,8 +2500,17 @@ function automatedBidding(roundData) {
             }
         }
         
-        // Start the bidding simulation
-        simulateBiddingRound();
+        // Ensure randomWinner will bid at least once by making first bid
+        console.log('🎯 ' + randomWinner + ' makes opening bid to ensure game progresses');
+        setTimeout(() => {
+            placeBidForPlayer(randomWinner);
+            
+            // Now continue with normal bidding simulation
+            setTimeout(() => {
+                currentBidder = 1; // Start with next player
+                simulateBiddingRound();
+            }, 500);
+        }, 500);
         
     } catch (error) {
         console.error('❌ Error in bidding phase:', error);
@@ -2176,8 +2551,12 @@ function automatedBlocking() {
             if (blockingTurn >= blockingOrder.length) {
                 console.log('✅ All blocking turns completed, finishing blocking...');
                 setTimeout(() => {
-                    finishBlocking();
-                    setTimeout(() => automatedRanking(), 500);
+                    console.log('🏁 Finishing blocking phase and transitioning to card selection...');
+                    finishBlocking(); // This will show card selection screen
+                    setTimeout(() => {
+                        console.log('📊 Starting automated ranking...');
+                        automatedRanking();
+                    }, 1500); // Give time for screen transition
                 }, 1000);
                 return;
             }

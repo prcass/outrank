@@ -1051,6 +1051,67 @@ body {
     background: #777;
 }
 
+/* Player detailed statistics styles */
+.player-detailed-stats {
+    margin-top: 10px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.player-stats-header {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 4px;
+}
+
+.player-stats-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 0;
+}
+
+.stat-row .stat-label {
+    color: #666;
+    font-weight: normal;
+}
+
+.stat-row .stat-value {
+    color: #333;
+    font-weight: 600;
+}
+
+.stat-row.success-rate .stat-value {
+    color: #059669;
+}
+
+.stat-row.tokens-gained .stat-value {
+    color: #059669;
+}
+
+.stat-row.tokens-lost .stat-value {
+    color: #dc2626;
+}
+
+@media (max-width: 480px) {
+    .player-stats-details {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+}
+
 /* Responsive design */
 @media (max-width: 480px) {
     .phone-container {
