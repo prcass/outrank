@@ -32,6 +32,7 @@
                         <div class="card-title">Setup Game</div>
                         <div class="card-description">Add players and start a new game</div>
                         <button class="btn primary" onclick="showScreen('playerScreen')">👥 Setup Players</button>
+                        <button class="btn secondary" onclick="quickSetup4Players()" style="margin-top: 8px;">⚡ Quick 4-Player Setup</button>
                     </div>
                     
                     <div class="action-card">
@@ -60,6 +61,10 @@
                         <div class="card-title">🔧 Debug Tests</div>
                         <div class="card-description">Test functions while rebuilding</div>
                         <button class="btn secondary" onclick="checkData()" style="margin: 5px;">Check Data</button>
+                        <button class="btn secondary" onclick="testFunction()" style="margin: 5px;">Test Function</button>
+                        <button class="btn secondary" onclick="testVisualConsole()" style="margin: 5px;">🖥️ Test Visual Console</button>
+                        <button class="btn secondary" onclick="runAutomatedTest()" style="margin: 5px;">🤖 Run Automated Test</button>
+                        <button class="btn secondary" onclick="viewTestResults()" style="margin: 5px;">📊 View Test Results</button>
                     </div>
                 </div>
             </div>
@@ -273,6 +278,53 @@
                 </div>
             </div>
             
+            <!-- Interim Screen -->
+            <div id="interimScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Round Complete!</h2>
+                    <p class="screen-subtitle">Current standings and blocking tokens</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">🏆</div>
+                            <div class="section-title">Current Standings</div>
+                        </div>
+                        <div id="interimLeaderboard">
+                            <!-- Interim leaderboard will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">💎</div>
+                            <div class="section-title">Blocking Tokens</div>
+                        </div>
+                        <div id="interimTokenInventory">
+                            <!-- Token inventory will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">📋</div>
+                            <div class="section-title">Round Summary</div>
+                        </div>
+                        <div id="interimRoundSummary">
+                            <!-- Round summary will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="continueToNextRound()">🚀 Continue to Next Round</button>
+                        <button class="btn secondary" onclick="showScreen('scoresScreen')">📊 View Full Scores</button>
+                        <button class="btn secondary" onclick="newGame()">🏠 New Game</button>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Results Screen -->
             <div id="resultsScreen" class="screen">
                 <div id="resultsHeader" class="app-header">
@@ -346,6 +398,69 @@
                     <div class="button-group">
                         <button class="btn primary" onclick="showScreen('playerScreen')">🎮 Play Round</button>
                         <button class="btn secondary" onclick="clearScores()">🗑️ Clear Scores</button>
+                        <button class="btn secondary" onclick="showScreen('titleScreen')">🏠 Back to Home</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Test Results Screen -->
+            <div id="testResultsScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">📊 Test Results</h2>
+                    <p class="screen-subtitle">Automated test history and analytics</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">🎯</div>
+                            <div class="section-title">Test Overview</div>
+                        </div>
+                        <div id="testOverview">
+                            <div class="no-scores-message">No automated tests have been run yet!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">👥</div>
+                            <div class="section-title">Player Performance</div>
+                        </div>
+                        <div id="playerPerformance">
+                            <div class="no-scores-message">No player data available!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">📋</div>
+                            <div class="section-title">Round Details</div>
+                        </div>
+                        <div id="roundDetails">
+                            <div class="no-scores-message">No round data available!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">🖥️</div>
+                            <div class="section-title">Live Console Output</div>
+                            <div style="margin-left: auto; display: flex; gap: 5px;">
+                                <button class="btn secondary" onclick="exportConsoleToFile()" style="width: auto; padding: 4px 8px; font-size: 12px;">📥 Export</button>
+                                <button class="btn secondary" onclick="clearConsoleOutput()" style="width: auto; padding: 4px 8px; font-size: 12px;">Clear</button>
+                                <button class="btn secondary" onclick="disableVisualConsole()" style="width: auto; padding: 4px 8px; font-size: 12px;">Disable</button>
+                            </div>
+                        </div>
+                        <div id="consoleOutput" class="console-output">
+                            <div class="console-message">Console output will appear here during automated tests...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn primary" onclick="runAutomatedTest()">🤖 Run New Test</button>
+                        <button class="btn secondary" onclick="exportTestResults()">📤 Export Results</button>
+                        <button class="btn secondary" onclick="clearTestResults()">🗑️ Clear Results</button>
                         <button class="btn secondary" onclick="showScreen('titleScreen')">🏠 Back to Home</button>
                     </div>
                 </div>

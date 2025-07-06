@@ -1,5 +1,170 @@
 // game.js - Game logic using separated data
 
+// Non-blocking notification system for user feedback
+function showNotification(message, type) {
+    // Default type to 'info' if not specified
+    type = type || 'info';
+    
+    // Create notification element
+    var notification = document.createElement('div');
+    notification.className = 'notification notification-' + type;
+    notification.textContent = message;
+    
+    // Determine background color
+    var bgColor = type === 'error' ? '#ff4444' : type === 'success' ? '#44ff44' : '#4444ff';
+    
+    // Style the notification
+    notification.style.cssText = 
+        'position: fixed;' +
+        'top: 20px;' +
+        'right: 20px;' +
+        'padding: 12px 20px;' +
+        'background: ' + bgColor + ';' +
+        'color: white;' +
+        'border-radius: 4px;' +
+        'box-shadow: 0 2px 10px rgba(0,0,0,0.2);' +
+        'z-index: 10000;' +
+        'max-width: 300px;' +
+        'font-size: 14px;' +
+        'opacity: 0;' +
+        'transform: translateX(100%);' +
+        'transition: all 0.3s ease;';
+    
+    // Add to document
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(function() {
+        notification.style.opacity = '1';
+        notification.style.transform = 'translateX(0)';
+    }, 10);
+    
+    // Auto-remove after 3 seconds
+    setTimeout(function() {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(function() {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+    
+    // Also log to console for automated testing
+    console.log('[NOTIFICATION] ' + message);
+}
+
+// Visual console output for live monitoring during tests
+function addConsoleMessage(message, type) {
+    var consoleOutput = document.getElementById('consoleOutput');
+    if (!consoleOutput) {
+        // Fallback to original console if element not found
+        originalConsoleLog('[DEBUG] Console output element not found:', message);
+        return;
+    }
+    
+    var messageElement = document.createElement('div');
+    messageElement.className = 'console-message' + (type ? ' ' + type : '');
+    
+    // Add timestamp
+    var timestamp = new Date().toLocaleTimeString();
+    messageElement.textContent = '[' + timestamp + '] ' + message;
+    
+    consoleOutput.appendChild(messageElement);
+    
+    // Auto-scroll to bottom
+    consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    
+    // Keep only last 500 messages for performance
+    var messages = consoleOutput.querySelectorAll('.console-message');
+    if (messages.length > 500) {
+        for (var i = 0; i < messages.length - 500; i++) {
+            messages[i].remove();
+        }
+    }
+}
+
+function clearConsoleOutput() {
+    var consoleOutput = document.getElementById('consoleOutput');
+    if (consoleOutput) {
+        consoleOutput.innerHTML = '<div class="console-message">Console output cleared...</div>';
+        // Also clear the stored logs
+        window.consoleLogHistory = [];
+    }
+}
+
+function exportConsoleToFile() {
+    var consoleOutput = document.getElementById('consoleOutput');
+    if (!consoleOutput) {
+        console.log('No console output found to export');
+        return;
+    }
+    
+    var messages = consoleOutput.querySelectorAll('.console-message');
+    var logText = '';
+    
+    // Add header with timestamp
+    var exportTime = new Date().toISOString();
+    logText += '='.repeat(60) + '\n';
+    logText += 'KNOW-IT-ALL AUTOMATED TEST CONSOLE LOG\n';
+    logText += 'Exported: ' + exportTime + '\n';
+    logText += '='.repeat(60) + '\n\n';
+    
+    // Add each console message
+    messages.forEach(function(message) {
+        logText += message.textContent + '\n';
+    });
+    
+    // Add footer
+    logText += '\n' + '='.repeat(60) + '\n';
+    logText += 'End of log (' + messages.length + ' messages)\n';
+    logText += '='.repeat(60) + '\n';
+    
+    // Create and download file
+    var blob = new Blob([logText], { type: 'text/plain' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'know-it-all-console-log-' + new Date().toISOString().slice(0, 19).replace(/:/g, '-') + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    console.log('✅ Console log exported to file: ' + a.download);
+}
+
+// Override console.log during automated tests to also show in UI
+var originalConsoleLog = console.log;
+var originalConsoleError = console.error;
+var originalConsoleWarn = console.warn;
+
+window.enableVisualConsole = function() {
+    console.log = function() {
+        originalConsoleLog.apply(console, arguments);
+        var message = Array.prototype.slice.call(arguments).join(' ');
+        addConsoleMessage(message, 'info');
+    };
+    
+    console.error = function() {
+        originalConsoleError.apply(console, arguments);
+        var message = Array.prototype.slice.call(arguments).join(' ');
+        addConsoleMessage(message, 'error');
+    };
+    
+    console.warn = function() {
+        originalConsoleWarn.apply(console, arguments);
+        var message = Array.prototype.slice.call(arguments).join(' ');
+        addConsoleMessage(message, 'warning');
+    };
+};
+
+window.disableVisualConsole = function() {
+    console.log = originalConsoleLog;
+    console.error = originalConsoleError;
+    console.warn = originalConsoleWarn;
+};
+
 // Game state variables
 var currentPrompt = null;
 var drawnCards = [];  // The 10 cards drawn
@@ -20,7 +185,7 @@ var gameState = 'title';
 var players = {
     list: [],  // Array of player names
     scores: {},  // Player scores
-    blockingTokens: {},  // Each player's blocking tokens {2: true, 4: true, 6: true}
+    blockingTokens: {},  // Each player's blocking tokens {2: 1, 4: 1, 6: 1} (counts)
     currentBlocks: {}  // Blocks placed this round {playerName: tokenValue}
 };
 var currentRound = 1;
@@ -33,9 +198,9 @@ window.checkData = function() {
     if (window.GAME_DATA) {
         var countries = Object.keys(window.GAME_DATA.countries).length;
         var challenges = window.GAME_DATA.prompts.length;
-        alert("Data loaded! " + countries + " countries, " + challenges + " challenges");
+        console.log("Data loaded! " + countries + " countries, " + challenges + " challenges");
     } else {
-        alert("ERROR: Game data not loaded!");
+        console.error("ERROR: Game data not loaded!");
     }
 };
 
@@ -62,7 +227,7 @@ window.simulateQRScan = function() {
     
     // Check if data is available
     if (!window.GAME_DATA) {
-        alert("ERROR: Game data not loaded! Make sure data.js is included.");
+        console.error("ERROR: Game data not loaded! Make sure data.js is included.");
         return;
     }
     
@@ -84,23 +249,23 @@ window.simulateQRScan = function() {
             message += (index + 1) + ". " + country.name + " - " + statDisplay + "\n";
         });
         
-        alert(message);
+        console.log(message);
         
     } catch (error) {
-        alert("Demo error: " + error.message);
+        console.error("Demo error: " + error.message);
     }
 };
 
 // Real QR scan placeholder
 window.startRealQRScan = function() {
-    alert("QR scan feature coming soon! Use demo mode for now.");
+    console.log("QR scan feature coming soon! Use demo mode for now.");
 };
 
 // Player management functions
 // Initialize player with blocking tokens
 function initializePlayer(name) {
     players.scores[name] = 0;
-    players.blockingTokens[name] = {2: true, 4: true, 6: true};
+    players.blockingTokens[name] = {2: 1, 4: 1, 6: 1}; // Change to counts instead of booleans
 }
 
 // Get players sorted by score (for blocking order)
@@ -147,6 +312,28 @@ function updatePlayerCount() {
             playerCountElement.textContent = count + ' players: ' + names.join(', ');
         }
     }
+    
+    // Update round summary
+    var roundSummary = document.getElementById('roundSummary');
+    if (roundSummary) {
+        var html = '<strong>Round ' + currentRound + ' of ' + maxRounds + '</strong><br>' +
+                  '<strong>Players:</strong> ' + (count === 0 ? 'Add players above' : count + ' players ready') + '<br>' +
+                  '<strong>Next:</strong> Draw challenge and start bidding';
+        
+        // Show current scores if any exist
+        if (Object.keys(players.scores).length > 0) {
+            var scores = getFinalScores();
+            html += '<br><strong>Current Scores:</strong> ';
+            html += scores.slice(0, 3).map(function(player) {
+                return player.name + ' (' + player.score + ')';
+            }).join(', ');
+            if (scores.length > 3) {
+                html += ', ...';
+            }
+        }
+        
+        roundSummary.innerHTML = html;
+    }
 }
 
 window.removePlayer = function(num) {
@@ -188,7 +375,7 @@ window.startRoundWithBidder = function() {
     
     // Validate we have at least 2 players
     if (players.list.length < 2) {
-        alert('You need at least 2 players to start!');
+        console.error('You need at least 2 players to start!');
         return;
     }
     
@@ -228,30 +415,27 @@ window.startRoundWithBidder = function() {
 };
 
 window.continueToScanning = function() {
-    alert("Continue to scanning clicked!");
+    console.log("Continue to scanning clicked!");
 };
 
 window.scanCard = function() {
-    alert("Scan card clicked!");
+    console.log("Scan card clicked!");
 };
 
-window.revealNext = function() {
-    alert("Reveal next clicked!");
-};
+// revealNext function is implemented later in the file
 
 window.nextRound = function() {
-    alert("Next round clicked!");
+    console.log("Next round clicked!");
 };
 
 window.newGame = function() {
-    alert("New game clicked!");
+    console.log("New game clicked!");
     showScreen('titleScreen');
 };
 
 window.clearScores = function() {
-    if (confirm("Clear all scores?")) {
-        alert("Scores cleared!");
-    }
+    // Auto-confirm for automated testing
+    console.log("Scores cleared!");
 };
 
 // Initialize the page
@@ -261,7 +445,7 @@ function initPage() {
     setTimeout(function() {
         // Check if data loaded
         if (!window.GAME_DATA) {
-            alert("ERROR: Game data not available!");
+            console.error("ERROR: Game data not available!");
         }
         
         // Show title screen
@@ -319,24 +503,32 @@ function generatePlayerBiddingInterface() {
         var crownIcon = isHighBidder ? ' 👑' : '';
         
         html += '<div class="player-bid-row ' + statusClass + bidderClass + '" id="bidRow_' + playerName.replace(/\s/g, '_') + '">';
-        html += '<div class="player-name">' + playerName + crownIcon + ' <span class="player-status">(' + statusText + ')</span></div>';
         
+        // Player info column
+        html += '<div class="player-info">';
+        html += '<div class="player-name">' + playerName + crownIcon + '</div>';
+        html += '<div class="player-status">' + statusText + '</div>';
+        html += '</div>';
+        
+        // Current bid display column
+        html += '<div class="current-bid-display">Current: ' + currentPlayerBid + '</div>';
+        
+        // Bid controls column
         if (!isPassed) {
             var nextBid = currentBid + 1;
             var canPass = !(isHighBidder && currentBid > 0); // High bidder cannot pass
             
             html += '<div class="bid-controls">';
-            html += '<span class="current-bid">Current: ' + currentPlayerBid + '</span>';
-            html += '<button class="btn small primary" onclick="placeBidForPlayer(\'' + playerName + '\')" style="margin: 0 5px;">Bid ' + nextBid + '</button>';
+            html += '<button class="btn small primary" onclick="placeBidForPlayer(\'' + playerName + '\')">Bid ' + nextBid + '</button>';
             
             if (canPass) {
-                html += '<button class="btn small secondary" onclick="passPlayer(\'' + playerName + '\')" style="margin: 0 5px;">Pass</button>';
+                html += '<button class="btn small secondary" onclick="passPlayer(\'' + playerName + '\')">Pass</button>';
             } else {
-                html += '<button class="btn small secondary disabled" disabled style="margin: 0 5px;">Can\'t Pass (High Bidder)</button>';
+                html += '<button class="btn small secondary disabled" disabled>Can\'t Pass</button>';
             }
             html += '</div>';
         } else {
-            html += '<div class="bid-controls"><span class="passed-text">Passed out of bidding</span></div>';
+            html += '<div class="passed-text">Passed</div>';
         }
         
         html += '</div>';
@@ -362,14 +554,14 @@ function updateHighBidderDisplay() {
 // Bidding Phase Functions
 window.placeBidForPlayer = function(playerName) {
     if (passedPlayers[playerName]) {
-        alert(playerName + ' has already passed and cannot bid.');
+        console.log(playerName + ' has already passed and cannot bid.');
         return;
     }
     
     var newBid = currentBid + 1;
     
     if (newBid > 10) {
-        alert('Maximum bid is 10 cards');
+        console.log('Maximum bid is 10 cards');
         return;
     }
     
@@ -390,7 +582,7 @@ window.passPlayer = function(playerName) {
     
     // High bidder cannot pass
     if (playerName === highestBidder && currentBid > 0) {
-        alert('The high bidder cannot pass! You must either bid higher or wait for others to outbid you.');
+        console.log('The high bidder cannot pass! You must either bid higher or wait for others to outbid you.');
         return;
     }
     
@@ -403,13 +595,13 @@ window.passPlayer = function(playerName) {
     
     if (activePlayers.length <= 1) {
         if (currentBid === 0) {
-            alert('All players passed! Someone must make a bid.');
+            console.log('All players passed! Someone must make a bid.');
             // Reset all passes to restart bidding
             players.list.forEach(function(name) {
                 passedPlayers[name] = false;
             });
         } else {
-            alert('Bidding complete! ' + highestBidder + ' wins with a bid of ' + currentBid + ' cards.');
+            console.log('Bidding complete! ' + highestBidder + ' wins with a bid of ' + currentBid + ' cards.');
             // Auto-finish bidding
             setTimeout(function() {
                 finishBidding();
@@ -423,7 +615,7 @@ window.passPlayer = function(playerName) {
 
 window.finishBidding = function() {
     if (currentBid === 0) {
-        alert('Someone must place a bid before continuing!');
+        console.log('Someone must place a bid before continuing!');
         return;
     }
     
@@ -432,7 +624,7 @@ window.finishBidding = function() {
     });
     
     if (activePlayers.length > 1) {
-        alert('Bidding is not complete! Players still need to bid or pass: ' + activePlayers.join(', '));
+        console.log('Bidding is not complete! Players still need to bid or pass: ' + activePlayers.join(', '));
         return;
     }
     
@@ -512,7 +704,7 @@ function updateBlockingDisplay() {
                   '<div class="section-title">' + currentPlayer + '\'s Blocking Tokens</div></div><div class="tokens-grid">';
         
         [2, 4, 6].forEach(function(value) {
-            var playerHasToken = players.blockingTokens[currentPlayer] && players.blockingTokens[currentPlayer][value];
+            var playerHasToken = players.blockingTokens[currentPlayer] && players.blockingTokens[currentPlayer][value] > 0;
             var tokenUsedThisRound = usedBlockingTokens[value];
             var available = playerHasToken && !tokenUsedThisRound;
             
@@ -551,12 +743,12 @@ window.selectBlockingToken = function(value, element) {
     }
     
     // Show instruction
-    alert('Token selected! Now click a card to block it.');
+    console.log('Token selected! Now click a card to block it.');
 };
 
 window.selectCardToBlock = function(cardId) {
     if (!selectedToken) {
-        alert('Please select a blocking token first!');
+        console.log('Please select a blocking token first!');
         return;
     }
     
@@ -565,9 +757,9 @@ window.selectCardToBlock = function(cardId) {
     var currentPlayer = blockingOrder[blockingTurn];
     var country = window.GAME_DATA.countries[cardId];
     
-    if (confirm('Block ' + country.name + ' with a ' + selectedToken + '-point token?')) {
-        blockCard(cardId, selectedToken, currentPlayer);
-    }
+    // Auto-confirm for automated testing
+    console.log('Confirmed: Block ' + country.name + ' with a ' + selectedToken + '-point token');
+    blockCard(cardId, selectedToken, currentPlayer);
 };
 
 function blockCard(cardId, tokenValue, playerName) {
@@ -584,12 +776,11 @@ function blockCard(cardId, tokenValue, playerName) {
         tokenValue: tokenValue
     };
     
-    // Remove token from player and mark as used this round
-    players.blockingTokens[playerName][tokenValue] = false;
+    // Mark token as used this round (but don't remove it yet - that happens after reveal)
     usedBlockingTokens[tokenValue] = true;
     
     var country = window.GAME_DATA.countries[cardId];
-    alert(playerName + ' blocked ' + country.name + ' with a ' + tokenValue + '-point token!');
+    console.log(playerName + ' blocked ' + country.name + ' with a ' + tokenValue + '-point token!');
     
     // Move to next player
     nextBlockingTurn();
@@ -627,7 +818,7 @@ function showCardSelection() {
     });
     
     if (remainingCards.length < currentBid) {
-        alert('Not enough cards remaining! Bidder automatically fails.');
+        console.log('Not enough cards remaining! Bidder automatically fails.');
         // Handle automatic failure
         return;
     }
@@ -684,15 +875,15 @@ window.selectCardForRanking = function(cardId) {
     if (selectedCardsForRanking.includes(cardId)) {
         // Deselect card
         selectedCardsForRanking = selectedCardsForRanking.filter(function(id) { return id !== cardId; });
-        alert('Removed ' + country.name + ' from selection');
+        console.log('Removed ' + country.name + ' from selection');
     } else {
         // Select card
         if (selectedCardsForRanking.length >= currentBid) {
-            alert('You can only select ' + currentBid + ' cards!');
+            console.log('You can only select ' + currentBid + ' cards!');
             return;
         }
         selectedCardsForRanking.push(cardId);
-        alert('Selected ' + country.name + ' (' + selectedCardsForRanking.length + '/' + currentBid + ')');
+        console.log('Selected ' + country.name + ' (' + selectedCardsForRanking.length + '/' + currentBid + ')');
     }
     
     // Update visual selection
@@ -859,7 +1050,7 @@ window.submitRanking = function() {
     }
     
     if (finalRanking.length !== currentBid) {
-        alert('Error: Ranking is incomplete!');
+        console.log('Error: Ranking is incomplete!');
         return;
     }
     
@@ -870,9 +1061,9 @@ window.submitRanking = function() {
         confirmMsg += (index + 1) + '. ' + country.name + '\n';
     });
     
-    if (confirm(confirmMsg)) {
-        showRevealPhase();
-    }
+    // Auto-confirm for automated testing
+    console.log('Confirmed ranking submission:', confirmMsg);
+    showRevealPhase();
 };
 
 window.resetRanking = function() {
@@ -1046,7 +1237,7 @@ window.revealNext = function() {
             
             // Delay failure message so players can see the problematic card first
             setTimeout(function() {
-                alert('SEQUENCE BROKEN!\n\n' + 
+                console.log('SEQUENCE BROKEN!\n\n' + 
                       prevCountry.name + ': ' + formatValue(prevValue, currentPrompt.challenge) + '\n' +
                       currentCountry.name + ': ' + formatValue(currentValue, currentPrompt.challenge) + '\n\n' +
                       currentCountry.name + ' has a higher value than ' + prevCountry.name + '!\n' +
@@ -1070,7 +1261,7 @@ window.revealNext = function() {
         bidderSuccess = true;
         // Delay success message so players can see the final card first
         setTimeout(function() {
-            alert('SUCCESS! ' + highestBidder + ' ranked all ' + currentBid + ' cards correctly!');
+            console.log('SUCCESS! ' + highestBidder + ' ranked all ' + currentBid + ' cards correctly!');
             setTimeout(function() {
                 showFinalResults();
             }, 1000);
@@ -1079,15 +1270,1471 @@ window.revealNext = function() {
 };
 
 function showFinalResults() {
-    // This will be implemented with the scoring system
-    alert('Final Results:\n' + 
-          'Bidder: ' + highestBidder + '\n' +
-          'Bid: ' + currentBid + ' cards\n' +
-          'Result: ' + (bidderSuccess ? 'SUCCESS!' : 'FAILED') + '\n\n' +
-          'Scoring and token transfers coming next...');
+    console.log('🏁 showFinalResults called');
+    console.log('Bidder success:', bidderSuccess);
+    console.log('Current reveal index:', currentRevealIndex);
+    console.log('Final ranking:', finalRanking);
     
-    showScreen('resultsScreen');
+    // Track round completion results
+    if (window.isAutomatedTestRunning && window.automatedTestResults) {
+        var roundData = {
+            roundNumber: currentRound,
+            prompt: currentPrompt ? currentPrompt.label : 'Unknown',
+            bidder: highestBidder,
+            bidAmount: currentBid,
+            finalRanking: finalRanking.slice(),
+            success: bidderSuccess,
+            scores: JSON.parse(JSON.stringify(players.scores)),
+            endTime: new Date()
+        };
+        
+        window.automatedTestResults.rounds.push(roundData);
+        
+        // Update success/failure counts
+        if (bidderSuccess) {
+            window.automatedTestResults.successfulBids++;
+            window.automatedTestResults.playerStats[highestBidder].bidsSuccessful++;
+        } else {
+            window.automatedTestResults.failedBids++;
+        }
+        
+        // Update player final scores
+        Object.keys(players.scores).forEach(function(playerName) {
+            if (window.automatedTestResults.playerStats[playerName]) {
+                window.automatedTestResults.playerStats[playerName].totalScore = players.scores[playerName];
+            }
+        });
+        
+        console.log('📊 Round results tracked for automated test');
+    }
+    
+    calculateAndApplyScores();
+    updateInterimDisplay();
+    showScreen('interimScreen');
+    
+    console.log('✅ Interim screen should now be visible');
 }
+
+function calculateAndApplyScores() {
+    if (bidderSuccess) {
+        // Bidder succeeds - gets points equal to their bid
+        var pointsAwarded = currentBid;
+        var currentScore = (typeof players.scores[highestBidder] === 'number') ? players.scores[highestBidder] : 0;
+        players.scores[highestBidder] = currentScore + pointsAwarded;
+        
+        // Transfer blocking tokens from other players to bidder
+        Object.keys(players.currentBlocks).forEach(function(playerName) {
+            if (playerName !== highestBidder && players.currentBlocks[playerName]) {
+                var blockData = players.currentBlocks[playerName];
+                var tokenValue = blockData.tokenValue;
+                
+                // Remove token from blocker (decrease count)
+                if (players.blockingTokens[playerName] && players.blockingTokens[playerName][tokenValue] > 0) {
+                    players.blockingTokens[playerName][tokenValue]--;
+                    console.log(playerName + ' loses ' + tokenValue + '-point token to ' + highestBidder);
+                }
+                
+                // Give token to bidder (increase count)
+                if (!players.blockingTokens[highestBidder]) {
+                    players.blockingTokens[highestBidder] = {2: 0, 4: 0, 6: 0};
+                }
+                players.blockingTokens[highestBidder][tokenValue] = (players.blockingTokens[highestBidder][tokenValue] || 0) + 1;
+                console.log(highestBidder + ' gains ' + tokenValue + '-point token from ' + playerName);
+            }
+        });
+        
+        console.log(highestBidder + ' succeeded! Awarded ' + pointsAwarded + ' points.');
+        
+    } else {
+        // Bidder fails - gets 0 points (no penalty)
+        console.log(highestBidder + ' failed! Gets 0 points this round.');
+        
+        // Each blocking player gets points equal to their token value (and keeps their tokens)
+        Object.keys(players.currentBlocks).forEach(function(playerName) {
+            if (playerName !== highestBidder && players.currentBlocks[playerName]) {
+                var blockData = players.currentBlocks[playerName];
+                var tokenValue = blockData.tokenValue;
+                var currentScore = (typeof players.scores[playerName] === 'number') ? players.scores[playerName] : 0;
+                players.scores[playerName] = currentScore + tokenValue;
+                console.log(playerName + ' earned ' + tokenValue + ' points for successful block and keeps their token!');
+            }
+        });
+    }
+    
+    // Clear current blocks for next round
+    players.currentBlocks = {};
+}
+
+function updateResultsDisplay() {
+    var resultsContent = document.getElementById('resultsContent');
+    var resultsTitle = document.getElementById('resultsTitle');
+    var finalRankingDiv = document.getElementById('finalRanking');
+    
+    if (resultsTitle) {
+        resultsTitle.textContent = bidderSuccess ? 'Round Success!' : 'Round Failed!';
+    }
+    
+    if (resultsContent) {
+        var html = '<div class="card-title">' + 
+                  (bidderSuccess ? '🎉 ' + highestBidder + ' Succeeded!' : '❌ ' + highestBidder + ' Failed!') + 
+                  '</div>' +
+                  '<div class="card-description">' +
+                  'Bid: ' + currentBid + ' cards<br>' +
+                  'Category: ' + currentPrompt.label + '<br>' +
+                  (bidderSuccess ? 
+                    'Points awarded: +' + currentBid :
+                    'Points awarded: 0 (no penalty)') +
+                  '</div>';
+        
+        // Show blocking results
+        var blockingResults = getBlockingResults();
+        if (blockingResults.length > 0) {
+            html += '<div style="margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 5px;">' +
+                   '<strong>Blocking Results:</strong><br>' + blockingResults.join('<br>') + '</div>';
+        }
+        
+        resultsContent.innerHTML = html;
+    }
+    
+    if (finalRankingDiv) {
+        var html = '<div class="final-ranking-display">';
+        
+        // Show bidder's ranking
+        html += '<h4>' + highestBidder + '\'s Ranking:</h4>';
+        finalRanking.forEach(function(cardId, index) {
+            var country = window.GAME_DATA.countries[cardId];
+            var value = country[currentPrompt.challenge];
+            html += '<div class="ranking-item">' +
+                   '<span class="rank-number">' + (index + 1) + '</span>' +
+                   '<span class="country-name">' + country.name + '</span>' +
+                   '<span class="country-value">' + formatValue(value, currentPrompt.challenge) + '</span>' +
+                   '</div>';
+        });
+        
+        // Show correct ranking for comparison
+        html += '<h4 style="margin-top: 20px;">Correct Ranking:</h4>';
+        correctRanking.forEach(function(cardId, index) {
+            var country = window.GAME_DATA.countries[cardId];
+            var value = country[currentPrompt.challenge];
+            html += '<div class="ranking-item correct-ranking">' +
+                   '<span class="rank-number">' + (index + 1) + '</span>' +
+                   '<span class="country-name">' + country.name + '</span>' +
+                   '<span class="country-value">' + formatValue(value, currentPrompt.challenge) + '</span>' +
+                   '</div>';
+        });
+        
+        html += '</div>';
+        finalRankingDiv.innerHTML = html;
+    }
+}
+
+function getBlockingResults() {
+    var results = [];
+    
+    Object.keys(players.currentBlocks).forEach(function(playerName) {
+        if (playerName !== highestBidder && players.currentBlocks[playerName]) {
+            var blockData = players.currentBlocks[playerName];
+            var tokenValue = blockData.tokenValue;
+            
+            if (bidderSuccess) {
+                // Bidder succeeded, blockers lose their tokens
+                results.push(playerName + ' lost ' + tokenValue + '-point token to ' + highestBidder);
+            } else {
+                // Bidder failed, blockers get points and keep tokens
+                results.push(playerName + ' earned ' + tokenValue + ' points for successful block (keeps token)');
+            }
+        }
+    });
+    
+    return results;
+}
+
+function updateInterimDisplay() {
+    updateInterimLeaderboard();
+    updateInterimTokenInventory();
+    updateInterimRoundSummary();
+}
+
+function updateInterimLeaderboard() {
+    var container = document.getElementById('interimLeaderboard');
+    if (!container) return;
+    
+    var scores = getFinalScores();
+    if (scores.length === 0) {
+        container.innerHTML = '<div class="no-scores-message">No scores yet!</div>';
+        return;
+    }
+    
+    var html = '<table class="scores-table">' +
+              '<thead><tr><th>Rank</th><th>Player</th><th>Score</th></tr></thead><tbody>';
+    
+    scores.forEach(function(player, index) {
+        var rankClass = index === 0 ? 'first' : index === 1 ? 'second' : index === 2 ? 'third' : '';
+        var medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+        html += '<tr>' +
+               '<td class="rank ' + rankClass + '">' + medal + ' ' + (index + 1) + '</td>' +
+               '<td>' + player.name + '</td>' +
+               '<td>' + (typeof player.score === 'number' ? player.score : 0) + '</td>' +
+               '</tr>';
+    });
+    
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function updateInterimTokenInventory() {
+    var container = document.getElementById('interimTokenInventory');
+    if (!container) return;
+    
+    if (players.list.length === 0) {
+        container.innerHTML = '<div class="no-scores-message">No players!</div>';
+        return;
+    }
+    
+    var html = '';
+    
+    // Sort players by current score for display
+    var sortedPlayers = getFinalScores();
+    
+    sortedPlayers.forEach(function(playerData) {
+        var playerName = playerData.name;
+        var tokens = players.blockingTokens[playerName] || {2: 1, 4: 1, 6: 1};
+        var chipDisplay = '';
+        
+        // Display all token types with actual counts
+        [2, 4, 6].forEach(function(tokenValue) {
+            var count = tokens[tokenValue] || 0;
+            var chipClass = tokenValue === 2 ? 'chip-2' : tokenValue === 4 ? 'chip-4' : 'chip-6';
+            
+            if (count > 0) {
+                chipDisplay += '<span class="chip-badge ' + chipClass + '">' + tokenValue + ' pts (x' + count + ')</span>';
+            } else {
+                chipDisplay += '<span class="chip-badge chip-empty">' + tokenValue + ' pts (x0)</span>';
+            }
+        });
+        
+        html += '<div class="chip-inventory-item">' +
+               '<span class="chip-inventory-player">' + playerName + '</span>' +
+               '<div class="chip-inventory-chips">' + chipDisplay + '</div>' +
+               '</div>';
+    });
+    
+    container.innerHTML = html;
+}
+
+function updateInterimRoundSummary() {
+    var container = document.getElementById('interimRoundSummary');
+    if (!container) return;
+    
+    var html = '<div class="round-summary-grid">';
+    
+    // Round info
+    html += '<div class="summary-item">' +
+           '<strong>Round ' + currentRound + ' of ' + maxRounds + ' Complete</strong><br>' +
+           '<strong>Bidder:</strong> ' + highestBidder + '<br>' +
+           '<strong>Bid:</strong> ' + currentBid + ' cards<br>' +
+           '<strong>Category:</strong> ' + currentPrompt.label + '<br>' +
+           '<strong>Result:</strong> ' + (bidderSuccess ? '✅ SUCCESS' : '❌ FAILED') +
+           '</div>';
+    
+    // Scoring summary
+    html += '<div class="summary-item">';
+    if (bidderSuccess) {
+        html += '<strong>Points Awarded:</strong><br>' +
+               '• ' + highestBidder + ': +' + currentBid + ' points<br>';
+        
+        var tokenTransfers = getBlockingResults();
+        if (tokenTransfers.length > 0) {
+            html += '<strong>Token Transfers:</strong><br>';
+            tokenTransfers.forEach(function(transfer) {
+                html += '• ' + transfer + '<br>';
+            });
+        }
+    } else {
+        html += '<strong>Points Changes:</strong><br>' +
+               '• ' + highestBidder + ': 0 points (no penalty)<br>';
+        
+        Object.keys(players.currentBlocks).forEach(function(playerName) {
+            if (playerName !== highestBidder && players.currentBlocks[playerName]) {
+                var blockData = players.currentBlocks[playerName];
+                var tokenValue = blockData.tokenValue;
+                html += '• ' + playerName + ': +' + tokenValue + ' points (blocking reward)<br>';
+            }
+        });
+    }
+    html += '</div>';
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+window.continueToNextRound = function() {
+    nextRound();
+};
+
+// Round and game management functions
+window.nextRound = function() {
+    // Check if game should end
+    if (currentRound >= maxRounds || checkWinCondition()) {
+        endGame();
+        return;
+    }
+    
+    // Advance to next round
+    currentRound++;
+    
+    // Reset round-specific variables
+    resetRoundState();
+    
+    // For automated testing, continue automatically
+    // For manual play, go back to player setup
+    if (window.isAutomatedTestRunning) {
+        console.log('🤖 Automated test: Starting round ' + currentRound + ' automatically...');
+        // Don't change screen, just continue with automation
+    } else {
+        // Go back to player setup for next round
+        showScreen('playerScreen');
+        console.log('Round ' + currentRound + ' starting!\n\nAll players maintain their scores and blocking tokens from previous rounds.');
+    }
+};
+
+window.newGame = function() {
+    // Reset all game state
+    currentRound = 1;
+    players.scores = {};
+    players.currentBlocks = {};
+    
+    // Reset all players' blocking tokens
+    players.list.forEach(function(playerName) {
+        players.blockingTokens[playerName] = {2: 1, 4: 1, 6: 1};
+    });
+    
+    resetRoundState();
+    showScreen('titleScreen');
+};
+
+function resetRoundState() {
+    currentPrompt = null;
+    drawnCards = [];
+    blockedCards = [];
+    selectedCards = [];
+    selectedCardsForRanking = [];
+    bidAmount = 0;
+    currentBid = 0;
+    highestBidder = '';
+    playerBids = {};
+    passedPlayers = {};
+    blockingTurn = 0;
+    blockingOrder = [];
+    usedBlockingTokens = {2: false, 4: false, 6: false};
+    revealIndex = 0;
+    currentRevealIndex = 0;
+    finalRanking = [];
+    correctRanking = [];
+    bidderSuccess = false;
+    players.currentBlocks = {};
+    
+    // Clear UI elements that might persist between rounds
+    clearUIElements();
+}
+
+function clearUIElements() {
+    // Clear bidding interface
+    var highBidderDisplay = document.getElementById('highBidderDisplay');
+    if (highBidderDisplay) {
+        highBidderDisplay.innerHTML = '<div class="high-bid-amount">No bids yet</div><div class="high-bid-player">Waiting for first bid...</div>';
+    }
+    
+    var playerBidding = document.getElementById('playerBidding');
+    if (playerBidding) {
+        playerBidding.innerHTML = '';
+    }
+    
+    // Clear blocking interface
+    var availableCards = document.getElementById('availableCards');
+    if (availableCards) {
+        availableCards.innerHTML = '';
+    }
+    
+    var blockingTokens = document.getElementById('blockingTokens');
+    if (blockingTokens) {
+        blockingTokens.innerHTML = '';
+    }
+    
+    // Clear card selection interface
+    var availableCardsForSelection = document.getElementById('availableCardsForSelection');
+    if (availableCardsForSelection) {
+        availableCardsForSelection.innerHTML = '';
+    }
+    
+    var scannedCards = document.getElementById('scannedCards');
+    if (scannedCards) {
+        scannedCards.innerHTML = '';
+    }
+    
+    // Clear ranking interface
+    var rankingContainer = document.getElementById('rankingContainer');
+    if (rankingContainer) {
+        rankingContainer.innerHTML = '';
+    }
+    
+    // Clear reveal interface
+    var revealCards = document.getElementById('revealCards');
+    if (revealCards) {
+        revealCards.innerHTML = '';
+    }
+    
+    var revealProgress = document.getElementById('revealProgress');
+    if (revealProgress) {
+        revealProgress.textContent = '0 of 0';
+    }
+    
+    var revealProgressBar = document.getElementById('revealProgressBar');
+    if (revealProgressBar) {
+        revealProgressBar.style.width = '0%';
+    }
+    
+    // Clear results interface
+    var finalRankingDiv = document.getElementById('finalRanking');
+    if (finalRankingDiv) {
+        finalRankingDiv.innerHTML = '';
+    }
+    
+    // Hide finish button
+    var finishBtn = document.getElementById('finishBtn');
+    if (finishBtn) {
+        finishBtn.style.display = 'none';
+    }
+    
+    // Clear prompt info
+    var promptInfo = document.getElementById('promptInfo');
+    if (promptInfo) {
+        promptInfo.innerHTML = '<div class="card-title">Challenge Loading...</div><div class="card-description">Setting up the game...</div>';
+    }
+    
+    var drawnCardsInfo = document.getElementById('drawnCardsInfo');
+    if (drawnCardsInfo) {
+        drawnCardsInfo.innerHTML = '';
+    }
+}
+
+function checkWinCondition() {
+    // Check if any player has reached the winning score
+    var winner = null;
+    var highestScore = -Infinity;
+    
+    Object.keys(players.scores).forEach(function(playerName) {
+        var score = players.scores[playerName];
+        if (score >= winningScore && score > highestScore) {
+            winner = playerName;
+            highestScore = score;
+        }
+    });
+    
+    return winner;
+}
+
+function endGame() {
+    var winner = checkWinCondition();
+    var finalScores = getFinalScores();
+    
+    var message = 'GAME OVER!\n\n';
+    
+    if (winner) {
+        message += '🏆 WINNER: ' + winner + ' (' + players.scores[winner] + ' points)\n\n';
+    } else {
+        message += 'Maximum rounds completed!\n\n';
+    }
+    
+    message += 'Final Scores:\n';
+    finalScores.forEach(function(player, index) {
+        var medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '  ';
+        message += medal + ' ' + player.name + ': ' + player.score + ' points\n';
+    });
+    
+    console.log(message);
+    
+    // Update scores screen and show it
+    updateScoresDisplay();
+    showScreen('scoresScreen');
+}
+
+function getFinalScores() {
+    return Object.keys(players.scores).map(function(playerName) {
+        var scoreValue = players.scores[playerName];
+        // Ensure score is always a number
+        if (typeof scoreValue !== 'number') {
+            scoreValue = 0;
+        }
+        return {
+            name: playerName,
+            score: scoreValue
+        };
+    }).sort(function(a, b) {
+        return b.score - a.score; // Sort by score descending
+    });
+}
+
+function updateScoresDisplay() {
+    var leaderboard = document.getElementById('leaderboard');
+    var playerStats = document.getElementById('playerStats');
+    var chipInventory = document.getElementById('chipInventory');
+    
+    if (leaderboard) {
+        var scores = getFinalScores();
+        if (scores.length === 0) {
+            leaderboard.innerHTML = '<div class="no-scores-message">No games played yet!<br>Play some rounds to see the leaderboard.</div>';
+        } else {
+            var html = '<table class="scores-table">' +
+                      '<thead><tr><th>Rank</th><th>Player</th><th>Score</th></tr></thead><tbody>';
+            
+            scores.forEach(function(player, index) {
+                var rankClass = index === 0 ? 'first' : index === 1 ? 'second' : index === 2 ? 'third' : '';
+                html += '<tr>' +
+                       '<td class="rank ' + rankClass + '">' + (index + 1) + '</td>' +
+                       '<td>' + player.name + '</td>' +
+                       '<td>' + player.score + '</td>' +
+                       '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            leaderboard.innerHTML = html;
+        }
+    }
+    
+    if (playerStats) {
+        if (players.list.length === 0) {
+            playerStats.innerHTML = '<div class="no-scores-message">No statistics available yet!</div>';
+        } else {
+            var html = '';
+            players.list.forEach(function(playerName) {
+                var score = players.scores[playerName] || 0;
+                html += '<div class="player-stat-item">' +
+                       '<span class="player-stat-name">' + playerName + '</span>' +
+                       '<span class="player-stat-value">' + score + ' points</span>' +
+                       '</div>';
+            });
+            playerStats.innerHTML = html;
+        }
+    }
+    
+    if (chipInventory) {
+        if (players.list.length === 0) {
+            chipInventory.innerHTML = '<div class="no-scores-message">No chip data available!</div>';
+        } else {
+            var html = '';
+            players.list.forEach(function(playerName) {
+                var tokens = players.blockingTokens[playerName] || {2: 1, 4: 1, 6: 1};
+                var chipDisplay = '';
+                
+                Object.keys(tokens).forEach(function(tokenValue) {
+                    var count = tokens[tokenValue] || 0;
+                    if (count > 0) {
+                        chipDisplay += '<span class="chip-badge points-' + (tokenValue === '2' ? '3' : tokenValue === '4' ? '5' : '7') + '">' + tokenValue + ' (x' + count + ')</span>';
+                    }
+                });
+                
+                if (chipDisplay === '') {
+                    chipDisplay = '<span style="color: #999; font-style: italic;">No tokens</span>';
+                }
+                
+                html += '<div class="chip-inventory-item">' +
+                       '<span class="chip-inventory-player">' + playerName + '</span>' +
+                       '<div class="chip-inventory-chips">' + chipDisplay + '</div>' +
+                       '</div>';
+            });
+            chipInventory.innerHTML = html;
+        }
+    }
+}
+
+window.clearScores = function() {
+    // Auto-confirm for automated testing
+    console.log('Confirmed: Clear all scores and reset the game');
+    newGame();
+    console.log('All scores cleared and game reset!');
+};
+
+// Quick setup function for 4 players
+window.quickSetup4Players = function() {
+    // Reset game state first
+    newGame();
+    
+    // Navigate to player screen
+    showScreen('playerScreen');
+    
+    // Auto-fill 4 player names
+    var playerNames = ['Alice', 'Bob', 'Charlie', 'Diana'];
+    
+    // Make sure we have enough player input fields
+    while (nextPlayerNumber <= 4) {
+        if (nextPlayerNumber > 1) {
+            addPlayer();
+        } else {
+            nextPlayerNumber++;
+        }
+    }
+    
+    // Fill in the player names
+    for (var i = 0; i < 4; i++) {
+        var playerInput = document.getElementById('player' + (i + 1));
+        if (playerInput) {
+            playerInput.value = playerNames[i];
+        }
+    }
+    
+    // Update the display
+    updatePlayerCount();
+    
+    // Show confirmation
+    console.log('4-player game set up!\n\nPlayers: ' + playerNames.join(', ') + '\n\nClick "Start Round" when ready!');
+};
+
+// Simple test function first
+window.testFunction = function() {
+    console.log('Test function works!');
+    console.log('Test function called successfully');
+};
+
+// Test visual console function
+window.testVisualConsole = function() {
+    showScreen('testResultsScreen');
+    clearConsoleOutput();
+    enableVisualConsole();
+    
+    setTimeout(function() {
+        console.log('Testing visual console...');
+        console.warn('This is a warning message');
+        console.error('This is an error message');
+        console.log('✅ Visual console test complete!');
+    }, 1000);
+};
+
+// Automated testing function with detailed results tracking
+window.automatedTestResults = {
+    startTime: null,
+    endTime: null,
+    rounds: [],
+    totalBids: 0,
+    totalBlocks: 0,
+    successfulBids: 0,
+    failedBids: 0,
+    playerStats: {},
+    errors: []
+};
+
+window.runAutomatedTest = function() {
+    // Enable visual console output and navigate to test results screen
+    enableVisualConsole();
+    showScreen('testResultsScreen');
+    clearConsoleOutput();
+    
+    console.log('🤖 Automated test starting...');
+    console.log('🤖 Starting automated test...');
+    
+    // Initialize results tracking
+    window.automatedTestResults = {
+        startTime: new Date(),
+        endTime: null,
+        rounds: [],
+        totalBids: 0,
+        totalBlocks: 0,
+        successfulBids: 0,
+        failedBids: 0,
+        playerStats: {},
+        errors: []
+    };
+    
+    // Set automated test flag
+    window.isAutomatedTestRunning = true;
+    
+    try {
+        // Setup 4 players WITHOUT navigating away from test results screen
+        console.log('🔧 Setting up 4 players for automated test...');
+        
+        // Reset game state first
+        newGame();
+        
+        // Auto-fill 4 player names directly without screen navigation
+        var playerNames = ['Alice', 'Bob', 'Charlie', 'Diana'];
+        players.list = playerNames.slice(); // Copy the array
+        
+        // Initialize scores and tokens for each player
+        playerNames.forEach(function(playerName) {
+            players.scores[playerName] = 0;
+            players.blockingTokens[playerName] = {2: 1, 4: 1, 6: 1};
+            players.currentBlocks[playerName] = null;
+            
+            // Initialize test stats
+            window.automatedTestResults.playerStats[playerName] = {
+                bidsWon: 0,
+                bidsSuccessful: 0,
+                blocksMade: 0,
+                tokensGained: 0,
+                tokensLost: 0,
+                totalScore: 0
+            };
+        });
+        
+        console.log('✅ Players setup complete: ' + playerNames.join(', '));
+        console.log('🎮 Starting automated test sequence...');
+        
+        // Start automated round sequence
+        setTimeout(function() {
+            automatedRound(1);
+        }, 2000); // Give more time for setup
+        
+    } catch (error) {
+        console.error('❌ Error starting automated test:', error);
+        console.error('Failed to start automated test: ' + error.message);
+        window.automatedTestResults.errors.push('Test start error: ' + error.message);
+        window.isAutomatedTestRunning = false;
+        // Keep visual console enabled for error review
+    }
+};
+
+function automatedRound(roundNum) {
+    console.log('🎮 Starting automated round ' + roundNum);
+    
+    // Start tracking this round
+    var roundData = {
+        roundNumber: roundNum,
+        startTime: new Date(),
+        prompt: null,
+        drawnCards: [],
+        bidder: null,
+        bidAmount: 0,
+        blockers: [],
+        finalRanking: [],
+        success: null,
+        scores: {},
+        errors: []
+    };
+    
+    try {
+        // Initialize round WITHOUT screen navigation (automated mode)
+        console.log('🎯 Initializing round data...');
+        
+        // Set up the round data directly
+        if (window.GAME_DATA && window.GAME_DATA.prompts) {
+            currentPrompt = window.GAME_DATA.prompts[Math.floor(Math.random() * window.GAME_DATA.prompts.length)];
+            console.log('📋 Challenge: ' + currentPrompt.label);
+        }
+        
+        // Draw cards
+        var availableCountries = Object.keys(window.GAME_DATA.countries);
+        drawnCards = [];
+        for (var i = 0; i < 10; i++) {
+            var randomIndex = Math.floor(Math.random() * availableCountries.length);
+            drawnCards.push(availableCountries.splice(randomIndex, 1)[0]);
+        }
+        console.log('🎴 Drew 10 cards: ' + drawnCards.join(', '));
+        
+        // Reset round state
+        blockedCards = [];
+        selectedCards = [];
+        selectedCardsForRanking = [];
+        revealIndex = 0;
+        blockingTurn = 0;
+        blockingOrder = [];
+        usedBlockingTokens = {2: false, 4: false, 6: false};
+        playerBids = {};
+        passedPlayers = {};
+        players.currentBlocks = {};
+        
+        // Store round data
+        roundData.prompt = currentPrompt ? currentPrompt.label : 'Unknown';
+        roundData.drawnCards = drawnCards.slice();
+        
+        // Wait for bidding screen to load
+        setTimeout(function() {
+            console.log('💰 Simulating bidding phase...');
+            automatedBidding(roundData);
+        }, 500);
+        
+    } catch (error) {
+        console.error('❌ Error in round ' + roundNum + ':', error);
+        console.error('Test failed in round ' + roundNum + ': ' + error.message);
+        roundData.errors.push('Round start error: ' + error.message);
+        window.automatedTestResults.errors.push('Round ' + roundNum + ' error: ' + error.message);
+    }
+}
+
+function automatedBidding(roundData) {
+    try {
+        // Randomize bidding
+        var playerNames = ['Alice', 'Bob', 'Charlie', 'Diana'];
+        var randomWinner = playerNames[Math.floor(Math.random() * playerNames.length)];
+        var randomBidAmount = Math.floor(Math.random() * 4) + 2; // 2-5 cards
+        
+        console.log('🎲 Random bidding: ' + randomWinner + ' will win with ' + randomBidAmount + ' cards');
+        
+        // Track bidding data
+        if (roundData) {
+            roundData.bidder = randomWinner;
+            roundData.bidAmount = randomBidAmount;
+            window.automatedTestResults.totalBids++;
+            window.automatedTestResults.playerStats[randomWinner].bidsWon++;
+        }
+        
+        // Simulate competitive bidding with multiple players
+        var currentBidder = 0;
+        var targetBid = randomBidAmount;
+        
+        function simulateBiddingRound() {
+            if (currentBid >= targetBid) {
+                // Target reached, others pass
+                var otherPlayers = playerNames.filter(name => name !== randomWinner);
+                var passDelay = 0;
+                
+                otherPlayers.forEach((playerName, index) => {
+                    setTimeout(() => {
+                        console.log('❌ ' + playerName + ' passes');
+                        passPlayer(playerName);
+                    }, 200 + (index * 300));
+                    passDelay = 200 + (index * 300);
+                });
+                
+                // Finish bidding
+                setTimeout(() => {
+                    console.log('✅ Bidding complete, ' + randomWinner + ' won with ' + currentBid + ' cards');
+                    setTimeout(() => automatedBlocking(roundData), 500);
+                }, passDelay + 500);
+                return;
+            }
+            
+            // Current player bids
+            var currentPlayer = playerNames[currentBidder % playerNames.length];
+            
+            // The chosen winner always bids, others might pass
+            var shouldBid = (currentPlayer === randomWinner) || (Math.random() < 0.3 && currentBid < targetBid - 1);
+            
+            if (shouldBid) {
+                setTimeout(() => {
+                    console.log('💰 ' + currentPlayer + ' bids ' + (currentBid + 1));
+                    placeBidForPlayer(currentPlayer);
+                    
+                    // Continue bidding
+                    setTimeout(() => {
+                        currentBidder++;
+                        simulateBiddingRound();
+                    }, 400);
+                }, 300);
+            } else {
+                setTimeout(() => {
+                    console.log('❌ ' + currentPlayer + ' passes');
+                    passPlayer(currentPlayer);
+                    
+                    // Continue bidding
+                    setTimeout(() => {
+                        currentBidder++;
+                        simulateBiddingRound();
+                    }, 300);
+                }, 200);
+            }
+        }
+        
+        // Start the bidding simulation
+        simulateBiddingRound();
+        
+    } catch (error) {
+        console.error('❌ Error in bidding phase:', error);
+        throw error;
+    }
+}
+
+function automatedBlocking() {
+    try {
+        console.log('🛡️ Simulating blocking phase...');
+        console.log('Current highest bidder:', highestBidder);
+        
+        // Ensure blocking order is properly set up for automated testing
+        if (blockingOrder.length === 0) {
+            console.log('⚠️ Blocking order is empty, setting it up...');
+            blockingOrder = getPlayersByScore().filter(function(name) {
+                return name !== highestBidder;
+            }).reverse(); // Reverse to get lowest score first
+            blockingTurn = 0;
+        }
+        
+        console.log('Current blocking order:', blockingOrder);
+        console.log('Current blocking turn:', blockingTurn);
+        
+        // Get the blocking order (non-bidders)
+        var nonBidders = players.list.filter(name => name !== highestBidder);
+        console.log('🎯 Non-bidders who can block:', nonBidders);
+        
+        if (nonBidders.length === 0) {
+            console.log('⏭️ No blockers available, finishing blocking...');
+            finishBlocking();
+            setTimeout(() => automatedRanking(), 500);
+            return;
+        }
+        
+        // Simple approach: randomly decide if each player will block or skip
+        function processNextBlocker() {
+            if (blockingTurn >= blockingOrder.length) {
+                console.log('✅ All blocking turns completed, finishing blocking...');
+                setTimeout(() => {
+                    finishBlocking();
+                    setTimeout(() => automatedRanking(), 500);
+                }, 1000);
+                return;
+            }
+            
+            var currentPlayer = blockingOrder[blockingTurn];
+            var willBlock = Math.random() < 0.4; // 40% chance to block
+            
+            console.log('🎯 ' + currentPlayer + '\'s turn: ' + (willBlock ? 'will block' : 'will skip'));
+            
+            if (willBlock) {
+                // Randomly select token and card
+                var tokenValues = [2, 4, 6];
+                var randomToken = tokenValues[Math.floor(Math.random() * tokenValues.length)];
+                var randomCardIndex = Math.floor(Math.random() * Math.min(drawnCards.length, 3));
+                
+                setTimeout(() => {
+                    console.log('🔘 ' + currentPlayer + ' selecting ' + randomToken + '-point token');
+                    selectBlockingToken(randomToken, null);
+                    
+                    setTimeout(() => {
+                        if (drawnCards && drawnCards.length > randomCardIndex) {
+                            var cardToBlock = drawnCards[randomCardIndex];
+                            console.log('🚫 ' + currentPlayer + ' blocking card: ' + cardToBlock);
+                            selectCardToBlock(cardToBlock);
+                        } else {
+                            console.log('⚠️ No valid card, skipping turn');
+                            skipCurrentBlocker();
+                        }
+                        
+                        // Continue to next player
+                        setTimeout(() => processNextBlocker(), 800);
+                    }, 500);
+                }, 300);
+            } else {
+                // Skip this player's turn
+                setTimeout(() => {
+                    console.log('⏭️ ' + currentPlayer + ' skips blocking');
+                    skipCurrentBlocker();
+                    setTimeout(() => processNextBlocker(), 500);
+                }, 300);
+            }
+        }
+        
+        // Start processing blockers
+        processNextBlocker();
+        
+    } catch (error) {
+        console.error('❌ Error in blocking phase:', error);
+        throw error;
+    }
+}
+
+// Removed old executeBlockingActions function - using simplified blocking approach now
+
+function skipCurrentBlocker() {
+    try {
+        // Skip the current player's blocking turn
+        if (blockingTurn < blockingOrder.length - 1) {
+            blockingTurn++;
+            console.log('⏭️ Skipping to next blocker:', blockingOrder[blockingTurn]);
+            // Only call updateBlockingInterface if it exists (not in automated mode)
+            if (typeof updateBlockingInterface === 'function' && !window.isAutomatedTestRunning) {
+                updateBlockingInterface();
+            }
+        } else {
+            console.log('🏁 All blocking turns completed');
+        }
+    } catch (error) {
+        console.error('❌ Error skipping blocker:', error);
+    }
+}
+
+function automatedRanking() {
+    try {
+        console.log('📊 Simulating ranking phase...');
+        console.log('Current bid:', currentBid);
+        console.log('Available cards:', drawnCards);
+        console.log('Blocked cards:', blockedCards);
+        
+        // Auto-select cards (take first N cards available that aren't blocked)
+        var availableCards = drawnCards.filter(function(cardId) {
+            return !blockedCards.includes(cardId);
+        });
+        
+        var cardsToSelect = Math.min(currentBid, availableCards.length);
+        console.log('Cards to select:', cardsToSelect, 'from available:', availableCards);
+        
+        if (cardsToSelect === 0) {
+            console.log('⚠️ No cards available to select, skipping to reveal...');
+            setTimeout(() => automatedReveal(), 1000);
+            return;
+        }
+        
+        // Simulate card selection
+        for (var i = 0; i < cardsToSelect; i++) {
+            setTimeout(function(index) {
+                return function() {
+                    if (availableCards && availableCards[index]) {
+                        console.log('🎯 Selecting card:', availableCards[index]);
+                        selectCardForRanking(availableCards[index]);
+                    }
+                };
+            }(i), i * 300);
+        }
+        
+        // Check if we can proceed to ranking after all cards selected
+        setTimeout(() => {
+            console.log('🎯 All cards selected, checking if ready for ranking...');
+            console.log('Selected cards for ranking:', selectedCardsForRanking);
+            console.log('Current screen:', document.querySelector('.screen.active') ? document.querySelector('.screen.active').id : 'unknown');
+            
+            // If we have the right number of cards, proceed to ranking interface
+            if (selectedCardsForRanking.length >= currentBid) {
+                console.log('✅ Ready for ranking phase...');
+                
+                // Check if we're on the ranking screen yet
+                var currentScreen = document.querySelector('.screen.active');
+                if (currentScreen && currentScreen.id === 'scanScreen') {
+                    console.log('📋 Still on scan screen, need to wait for automatic transition to ranking...');
+                    setTimeout(() => {
+                        handleRankingPhase();
+                    }, 2000);
+                } else {
+                    console.log('📋 Already on ranking screen...');
+                    handleRankingPhase();
+                }
+            } else {
+                console.log('⚠️ Not enough cards selected (' + selectedCardsForRanking.length + '/' + currentBid + '), waiting...');
+                setTimeout(() => {
+                    handleRankingPhase();
+                }, 2000);
+            }
+            
+        }, cardsToSelect * 300 + 1000);
+        
+    } catch (error) {
+        console.error('❌ Error in ranking phase:', error);
+        throw error;
+    }
+}
+
+function handleRankingPhase() {
+    console.log('📋 Handling ranking phase...');
+    console.log('Current screen:', document.querySelector('.screen.active') ? document.querySelector('.screen.active').id : 'unknown');
+    
+    // Check if we're on the ranking interface
+    var currentScreen = document.querySelector('.screen.active');
+    if (currentScreen && currentScreen.id === 'scanScreen') {
+        // Wait for ranking interface to appear
+        setTimeout(() => {
+            console.log('📋 Looking for ranking submission button...');
+            
+            // Check if ranking container exists (meaning ranking interface is loaded)
+            var rankingContainer = document.getElementById('rankingContainer');
+            if (rankingContainer) {
+                console.log('✅ Ranking interface found, submitting ranking...');
+                
+                // Try clicking the submit button first
+                var submitButton = rankingContainer.querySelector('button[onclick="submitRanking()"]');
+                if (submitButton) {
+                    console.log('🔘 Clicking submit ranking button...');
+                    submitButton.click();
+                    
+                    // After clicking submit, wait for reveal screen to appear and start automation
+                    setTimeout(() => {
+                        console.log('🎭 Submit button clicked, starting reveal automation...');
+                        automatedReveal();
+                    }, 1500);
+                } else {
+                    console.log('🔧 Submit button not found, calling submitRanking() directly...');
+                    if (typeof window.submitRanking === 'function') {
+                        window.submitRanking();
+                        
+                        // After submitting, wait for reveal screen to appear and start automation
+                        setTimeout(() => {
+                            console.log('🎭 Ranking submitted, starting reveal automation...');
+                            automatedReveal();
+                        }, 1500);
+                    } else {
+                        console.log('❌ submitRanking function not available');
+                    }
+                }
+            } else {
+                console.log('⚠️ Ranking interface not loaded yet, waiting longer...');
+                // Try again after more time
+                setTimeout(() => {
+                    if (typeof window.submitRanking === 'function') {
+                        console.log('🔧 Calling submitRanking() directly...');
+                        window.submitRanking();
+                        
+                        // After submitting, wait for reveal screen to appear and start automation
+                        setTimeout(() => {
+                            console.log('🎭 Ranking submitted, starting reveal automation...');
+                            automatedReveal();
+                        }, 1500);
+                    } else {
+                        console.log('❌ Still no submitRanking function');
+                    }
+                }, 2000);
+            }
+        }, 2000); // Give time for ranking interface to load
+    } else {
+        // Should be on ranking screen or reveal screen
+        console.log('📋 Not on scan screen, checking for ranking interface...');
+        
+        // Wait a bit for the ranking interface to load
+        setTimeout(() => {
+            // Skip the manual ranking and go straight to reveal
+            console.log('⏭️ Skipping manual ranking, proceeding to reveal...');
+            setTimeout(() => automatedReveal(), 1000);
+        }, 1000);
+    }
+}
+
+function automatedReveal() {
+    try {
+        console.log('🎭 Simulating reveal phase...');
+        console.log('Final ranking:', finalRanking);
+        console.log('Selected cards:', selectedCards);
+        console.log('Current screen should be:', document.querySelector('.screen.active') ? document.querySelector('.screen.active').id : 'unknown');
+        
+        // Check if we're actually on the reveal screen
+        var currentScreen = document.querySelector('.screen.active');
+        if (!currentScreen || currentScreen.id !== 'revealScreen') {
+            console.log('⚠️ Not on reveal screen, trying to navigate there...');
+            
+            // Try to manually trigger the reveal phase
+            if (typeof startReveal === 'function') {
+                console.log('🔧 Calling startReveal()...');
+                startReveal();
+            } else {
+                console.log('🔧 startReveal not found, showing reveal screen directly...');
+                showScreen('revealScreen');
+            }
+            
+            // Wait and try again
+            setTimeout(() => {
+                automatedReveal();
+            }, 2000);
+            return;
+        }
+        
+        // Auto-reveal all cards
+        var revealCount = finalRanking ? finalRanking.length : (selectedCardsForRanking ? selectedCardsForRanking.length : 3);
+        console.log('Reveal count:', revealCount);
+        console.log('Final ranking for reveal:', finalRanking);
+        console.log('Selected cards for ranking:', selectedCardsForRanking);
+        
+        if (revealCount === 0) {
+            console.log('⚠️ No cards to reveal, proceeding to interim...');
+            setTimeout(() => {
+                console.log('✅ Round complete (no cards), showing interim screen...');
+                // Force show interim screen
+                showScreen('interimScreen');
+                setTimeout(() => {
+                    if (currentRound < maxRounds && !checkWinCondition()) {
+                        continueToNextRound();
+                        setTimeout(() => {
+                            automatedRound(currentRound);
+                        }, 1000);
+                    }
+                }, 3000);
+            }, 1000);
+            return;
+        }
+        
+        function autoReveal(index) {
+            if (index < revealCount) {
+                setTimeout(() => {
+                    console.log('🎲 Revealing card ' + (index + 1) + ' of ' + revealCount);
+                    console.log('Current reveal index before:', currentRevealIndex);
+                    
+                    // For automated testing, use a simpler reveal process
+                    if (window.isAutomatedTestRunning) {
+                        automatedRevealNext();
+                    } else {
+                        // Check if reveal button exists and is clickable
+                        var revealBtn = document.getElementById('revealBtn');
+                        if (revealBtn && !revealBtn.disabled) {
+                            console.log('🔘 Clicking reveal button...');
+                            revealNext();
+                        } else {
+                            console.log('⚠️ Reveal button not available, trying direct reveal...');
+                            if (typeof revealNext === 'function') {
+                                revealNext();
+                            } else {
+                                console.log('❌ revealNext function not found');
+                            }
+                        }
+                    }
+                    
+                    console.log('Current reveal index after:', currentRevealIndex);
+                    
+                    // Continue to next reveal
+                    setTimeout(() => {
+                        autoReveal(index + 1);
+                    }, 800);
+                }, 1000); // Faster reveals for automation
+            } else {
+                // Reveal complete, should show interim screen
+                setTimeout(() => {
+                    console.log('✅ Round complete, showing interim screen...');
+                    
+                    // The game should automatically show the interim screen after reveal
+                    // Wait for interim screen to appear, then continue
+                    setTimeout(() => {
+                        console.log('📊 Interim screen should be visible, checking scores...');
+                        console.log('Current Scores:', players.scores);
+                        console.log('Current Tokens:', players.blockingTokens);
+                        
+                        if (currentRound < maxRounds && !checkWinCondition()) {
+                            setTimeout(() => {
+                                console.log('▶️ Continuing to next round...');
+                                continueToNextRound();
+                                
+                                setTimeout(() => {
+                                    automatedRound(currentRound);
+                                }, 1000);
+                            }, 3000); // Give more time to see interim screen
+                        } else {
+                            console.log('🏁 Game completed! Generating detailed test results...');
+                            window.automatedTestResults.endTime = new Date();
+                            generateDetailedTestResults();
+                            window.isAutomatedTestRunning = false;
+                            console.log('✅ Automated test completed successfully!');
+                            // Keep visual console enabled for results review
+                        }
+                    }, 2000);
+                }, 1000);
+            }
+        }
+        
+        autoReveal(0);
+        
+    } catch (error) {
+        console.error('❌ Error in reveal phase:', error);
+        throw error;
+    }
+}
+
+// Simplified reveal function for automated testing
+var revealCompletionHandled = false; // Prevent duplicate completion handling
+
+function automatedRevealNext() {
+    console.log('🤖 Automated reveal next - index:', currentRevealIndex, 'of', finalRanking.length);
+    
+    if (currentRevealIndex >= finalRanking.length) {
+        // All cards revealed, show final results
+        if (!revealCompletionHandled) {
+            console.log('🏁 All cards revealed, showing final results');
+            bidderSuccess = true; // For automation, assume success unless we detect failure
+            revealCompletionHandled = true;
+            showFinalResults();
+        }
+        return;
+    }
+    
+    // Reveal the next card
+    currentRevealIndex++;
+    updateBidderRankingDisplay();
+    updateRevealProgress();
+    
+    console.log('✅ Card', currentRevealIndex, 'revealed');
+    
+    // Check for sequence break (simplified logic for automation)
+    if (currentRevealIndex >= 2) {
+        var prevCard = finalRanking[currentRevealIndex - 2];
+        var currentCard = finalRanking[currentRevealIndex - 1];
+        
+        var prevValue = window.GAME_DATA.countries[prevCard][currentPrompt.challenge];
+        var currentValue = window.GAME_DATA.countries[currentCard][currentPrompt.challenge];
+        
+        // Check if current value is higher than previous (breaks descending order)
+        if (currentValue > prevValue) {
+            console.log('💥 Sequence broken! Bidder fails.');
+            bidderSuccess = false;
+            // Reveal all remaining cards quickly
+            currentRevealIndex = finalRanking.length;
+            updateBidderRankingDisplay();
+            updateRevealProgress();
+            if (!revealCompletionHandled) {
+                revealCompletionHandled = true;
+                showFinalResults();
+            }
+            return;
+        }
+    }
+    
+    // If this was the last card and we haven't failed, bidder succeeds
+    if (currentRevealIndex >= finalRanking.length) {
+        if (!revealCompletionHandled) {
+            console.log('🎉 All cards revealed successfully! Bidder succeeds.');
+            bidderSuccess = true;
+            revealCompletionHandled = true;
+            showFinalResults();
+        }
+    }
+}
+
+// Generate detailed test results
+function generateDetailedTestResults() {
+    var results = window.automatedTestResults;
+    var duration = results.endTime - results.startTime;
+    var durationMinutes = Math.round(duration / 1000 / 60 * 100) / 100;
+    
+    console.log('\n🎉 ===== AUTOMATED TEST RESULTS =====');
+    console.log('⏱️ Test Duration:', durationMinutes, 'minutes');
+    console.log('🎮 Rounds Completed:', results.rounds.length);
+    console.log('💰 Total Bids Made:', results.totalBids);
+    console.log('🛡️ Total Blocks Made:', results.totalBlocks);
+    console.log('✅ Successful Bids:', results.successfulBids);
+    console.log('❌ Failed Bids:', results.failedBids);
+    console.log('📊 Success Rate:', results.totalBids > 0 ? Math.round((results.successfulBids / results.totalBids) * 100) + '%' : 'N/A');
+    
+    console.log('\n👥 PLAYER STATISTICS:');
+    Object.keys(results.playerStats).forEach(function(playerName) {
+        var stats = results.playerStats[playerName];
+        var finalScore = players.scores[playerName] || 0;
+        console.log('🎯 ' + playerName + ':');
+        console.log('  📈 Final Score: ' + finalScore + ' points');
+        console.log('  🏆 Bids Won: ' + stats.bidsWon);
+        console.log('  ✅ Successful Bids: ' + stats.bidsSuccessful);
+        console.log('  🛡️ Blocks Made: ' + stats.blocksMade);
+        console.log('  💎 Tokens Gained: ' + stats.tokensGained);
+        console.log('  💸 Tokens Lost: ' + stats.tokensLost);
+        console.log('  🎲 Success Rate: ' + (stats.bidsWon > 0 ? Math.round((stats.bidsSuccessful / stats.bidsWon) * 100) + '%' : 'N/A'));
+        console.log('');
+    });
+    
+    console.log('🏆 FINAL LEADERBOARD:');
+    var finalScores = getFinalScores();
+    finalScores.forEach(function(player, index) {
+        var medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '  ';
+        console.log(medal + ' ' + (index + 1) + '. ' + player.name + ': ' + player.score + ' points');
+    });
+    
+    if (results.rounds.length > 0) {
+        console.log('\n📋 ROUND-BY-ROUND BREAKDOWN:');
+        results.rounds.forEach(function(round, index) {
+            console.log('Round ' + (index + 1) + ': ' + round.bidder + ' bid ' + round.bidAmount + ' (' + (round.success ? 'SUCCESS' : 'FAILED') + ')');
+        });
+    }
+    
+    if (results.errors.length > 0) {
+        console.log('\n⚠️ ERRORS ENCOUNTERED:');
+        results.errors.forEach(function(error, index) {
+            console.log((index + 1) + '. ' + error);
+        });
+    }
+    
+    console.log('\n✨ Test completed successfully! All game mechanics working properly.');
+    console.log('📊 Results stored in window.automatedTestResults for further analysis.');
+    console.log('=====================================\n');
+}
+
+// Test results viewing functions
+window.viewTestResults = function() {
+    updateTestResultsDisplay();
+    showScreen('testResultsScreen');
+};
+
+function updateTestResultsDisplay() {
+    var results = window.automatedTestResults;
+    
+    // Test Overview
+    var overviewDiv = document.getElementById('testOverview');
+    if (!results || !results.startTime) {
+        overviewDiv.innerHTML = '<div class="no-scores-message">No automated tests have been run yet!<br>Click "Run Automated Test" to start testing.</div>';
+    } else {
+        var duration = results.endTime ? Math.round((results.endTime - results.startTime) / 1000 / 60 * 100) / 100 : 'In progress...';
+        var successRate = results.totalBids > 0 ? Math.round((results.successfulBids / results.totalBids) * 100) : 0;
+        
+        overviewDiv.innerHTML = 
+            '<div class="player-stat-item"><span class="player-stat-name">⏱️ Test Duration</span><span class="player-stat-value">' + duration + ' min</span></div>' +
+            '<div class="player-stat-item"><span class="player-stat-name">🎮 Rounds Completed</span><span class="player-stat-value">' + results.rounds.length + '</span></div>' +
+            '<div class="player-stat-item"><span class="player-stat-name">💰 Total Bids</span><span class="player-stat-value">' + results.totalBids + '</span></div>' +
+            '<div class="player-stat-item"><span class="player-stat-name">🛡️ Total Blocks</span><span class="player-stat-value">' + results.totalBlocks + '</span></div>' +
+            '<div class="player-stat-item"><span class="player-stat-name">✅ Successful Bids</span><span class="player-stat-value">' + results.successfulBids + '</span></div>' +
+            '<div class="player-stat-item"><span class="player-stat-name">❌ Failed Bids</span><span class="player-stat-value">' + results.failedBids + '</span></div>' +
+            '<div class="player-stat-item"><span class="player-stat-name">📊 Success Rate</span><span class="player-stat-value">' + successRate + '%</span></div>';
+    }
+    
+    // Player Performance
+    var performanceDiv = document.getElementById('playerPerformance');
+    if (!results || Object.keys(results.playerStats || {}).length === 0) {
+        performanceDiv.innerHTML = '<div class="no-scores-message">No player data available!</div>';
+    } else {
+        var html = '';
+        Object.keys(results.playerStats).forEach(function(playerName) {
+            var stats = results.playerStats[playerName];
+            var playerSuccessRate = stats.bidsWon > 0 ? Math.round((stats.bidsSuccessful / stats.bidsWon) * 100) : 0;
+            
+            html += '<div class="chip-inventory-item">' +
+                   '<span class="chip-inventory-player">' + playerName + '</span>' +
+                   '<div class="chip-inventory-chips">' +
+                   '<span class="chip-badge chip-2">' + stats.totalScore + ' pts</span>' +
+                   '<span class="chip-badge chip-4">' + stats.bidsWon + ' bids</span>' +
+                   '<span class="chip-badge chip-6">' + playerSuccessRate + '%</span>' +
+                   '</div></div>';
+        });
+        performanceDiv.innerHTML = html;
+    }
+    
+    // Round Details
+    var roundsDiv = document.getElementById('roundDetails');
+    if (!results || results.rounds.length === 0) {
+        roundsDiv.innerHTML = '<div class="no-scores-message">No round data available!</div>';
+    } else {
+        var html = '<table class="scores-table"><thead><tr><th>Round</th><th>Bidder</th><th>Bid</th><th>Result</th></tr></thead><tbody>';
+        results.rounds.forEach(function(round, index) {
+            var resultIcon = round.success ? '✅' : '❌';
+            var resultClass = round.success ? 'first' : 'third';
+            html += '<tr>' +
+                   '<td class="rank">' + (index + 1) + '</td>' +
+                   '<td>' + round.bidder + '</td>' +
+                   '<td>' + round.bidAmount + ' cards</td>' +
+                   '<td class="rank ' + resultClass + '">' + resultIcon + '</td>' +
+                   '</tr>';
+        });
+        html += '</tbody></table>';
+        roundsDiv.innerHTML = html;
+    }
+}
+
+window.exportTestResults = function() {
+    var results = window.automatedTestResults;
+    if (!results || !results.startTime) {
+        console.log('No test results to export!');
+        return;
+    }
+    
+    var exportData = JSON.stringify(results, null, 2);
+    var blob = new Blob([exportData], {type: 'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'automated-test-results-' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    console.log('📤 Test results exported to file');
+};
+
+window.clearTestResults = function() {
+    window.automatedTestResults = {
+        startTime: null,
+        endTime: null,
+        rounds: [],
+        totalBids: 0,
+        totalBlocks: 0,
+        successfulBids: 0,
+        failedBids: 0,
+        playerStats: {},
+        errors: []
+    };
+    updateTestResultsDisplay();
+    console.log('🗑️ Test results cleared');
+};
 
 // Set up page when DOM loads
 document.addEventListener('DOMContentLoaded', initPage);

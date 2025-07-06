@@ -288,13 +288,16 @@ body {
     width: 100%;
     border-collapse: collapse;
     margin-top: 12px;
+    table-layout: fixed;
 }
 
 .scores-table th,
 .scores-table td {
     padding: 12px 8px;
-    text-align: left;
     border-bottom: 1px solid #e9ecef;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .scores-table th {
@@ -309,10 +312,27 @@ body {
     font-size: 14px;
 }
 
+.scores-table th:nth-child(1),
+.scores-table td:nth-child(1) {
+    width: 60px;
+    text-align: center;
+}
+
+.scores-table th:nth-child(2),
+.scores-table td:nth-child(2) {
+    width: auto;
+    text-align: left;
+}
+
+.scores-table th:nth-child(3),
+.scores-table td:nth-child(3) {
+    width: 80px;
+    text-align: right;
+}
+
 .scores-table .rank {
     text-align: center;
     font-weight: 600;
-    width: 50px;
 }
 
 .scores-table .rank.first {
@@ -328,9 +348,10 @@ body {
 }
 
 .player-stat-item {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: center;
+    gap: 15px;
     padding: 12px 0;
     border-bottom: 1px solid #e9ecef;
 }
@@ -342,11 +363,16 @@ body {
 .player-stat-name {
     font-weight: 600;
     color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .player-stat-value {
     color: #666;
     font-size: 14px;
+    text-align: right;
+    min-width: 80px;
 }
 
 .no-scores-message {
@@ -358,9 +384,10 @@ body {
 
 /* Chip inventory */
 .chip-inventory-item {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: center;
+    gap: 15px;
     padding: 12px 16px;
     margin: 8px 0;
     background: #f8f9fa;
@@ -371,11 +398,16 @@ body {
 .chip-inventory-player {
     font-weight: 600;
     color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .chip-inventory-chips {
     display: flex;
-    gap: 8px;
+    gap: 6px;
+    justify-content: flex-end;
+    min-width: 120px;
 }
 
 .chip-badge {
@@ -420,9 +452,10 @@ body {
 }
 
 .player-bid-row {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
     align-items: center;
+    gap: 15px;
     padding: 15px;
     margin: 10px 0;
     border: 2px solid #ddd;
@@ -447,45 +480,66 @@ body {
     opacity: 0.7;
 }
 
+.player-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Allow text truncation if needed */
+}
+
 .player-name {
     font-weight: bold;
-    flex: 1;
+    font-size: 14px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .player-status {
     font-size: 12px;
     font-weight: normal;
+    color: #666;
+}
+
+.current-bid-display {
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    min-width: 80px;
+    padding: 4px 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
 }
 
 .bid-controls {
     display: flex;
     align-items: center;
-    gap: 5px;
-}
-
-.current-bid {
-    font-size: 12px;
-    color: #666;
-    margin-right: 10px;
-    min-width: 70px;
+    gap: 8px;
+    min-width: 120px;
+    justify-content: flex-end;
 }
 
 .bid-input {
-    width: 60px;
-    padding: 5px;
+    width: 50px;
+    padding: 6px;
     border: 1px solid #ddd;
     border-radius: 4px;
     text-align: center;
+    font-size: 12px;
 }
 
 .btn.small {
-    padding: 8px 12px;
-    font-size: 12px;
+    padding: 6px 10px;
+    font-size: 11px;
+    min-width: 50px;
+    white-space: nowrap;
 }
 
 .passed-text {
     color: #999;
     font-style: italic;
+    text-align: center;
+    min-width: 120px;
 }
 
 /* Blocking phase styles */
@@ -582,8 +636,10 @@ body {
 }
 
 .ranking-card {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
+    gap: 15px;
     padding: 12px 15px;
     margin: 8px 0;
     background: white;
@@ -620,9 +676,11 @@ body {
 }
 
 .country-name {
-    flex: 1;
     font-weight: bold;
     font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .drag-handle {
@@ -836,6 +894,163 @@ body {
     opacity: 0.6;
 }
 
+/* Interim screen styles */
+.round-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.summary-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    line-height: 1.6;
+}
+
+.summary-item strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.chip-2 {
+    background: #059669;
+    color: white;
+}
+
+.chip-4 {
+    background: #dc2626;
+    color: white;
+}
+
+.chip-6 {
+    background: #7c3aed;
+    color: white;
+}
+
+.chip-empty {
+    background: #e5e7eb;
+    color: #9ca3af;
+    border: 1px solid #d1d5db;
+}
+
+/* Results display styles */
+.final-ranking-display {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+.final-ranking-display h4 {
+    color: #2196f3;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 8px;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    margin: 4px 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background: #fafafa;
+}
+
+.ranking-item.correct-ranking {
+    background: #e8f5e9;
+    border-color: #4caf50;
+}
+
+.ranking-item .rank-number {
+    background: #666;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 12px;
+    font-size: 11px;
+}
+
+.ranking-item.correct-ranking .rank-number {
+    background: #4caf50;
+}
+
+.ranking-item .country-name {
+    flex: 1;
+    font-weight: bold;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.ranking-item .country-value {
+    font-size: 12px;
+    color: #666;
+    font-weight: normal;
+}
+
+/* Console output styles */
+.console-output {
+    background: #1a1a1a;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #333;
+    margin-top: 10px;
+}
+
+.console-message {
+    margin: 2px 0;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.console-message.error {
+    color: #ff6b6b;
+}
+
+.console-message.warning {
+    color: #ffd93d;
+}
+
+.console-message.success {
+    color: #6bcf7f;
+}
+
+.console-message.info {
+    color: #74c0fc;
+}
+
+.console-output::-webkit-scrollbar {
+    width: 8px;
+}
+
+.console-output::-webkit-scrollbar-track {
+    background: #2a2a2a;
+}
+
+.console-output::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.console-output::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
 /* Responsive design */
 @media (max-width: 480px) {
     .phone-container {
@@ -863,5 +1078,10 @@ body {
     .tokens-grid {
         flex-direction: column;
         align-items: center;
+    }
+    
+    .console-output {
+        height: 200px;
+        font-size: 11px;
     }
 }
