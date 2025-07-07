@@ -158,6 +158,355 @@ var eventListenerManager = {
     }
 };
 
+// Centralized State Management System
+var GameState = {
+    // Game Configuration
+    config: GAME_CONFIG,
+    
+    // Game State
+    data: {
+        currentPrompt: null,
+        drawnCards: [],
+        blockedCards: [],
+        selectedCards: [],
+        selectedCardsForRanking: [],
+        bidAmount: 0,
+        currentBid: 0,
+        highestBidder: '',
+        currentRound: 1,
+        maxRounds: GAME_CONFIG.MAX_ROUNDS,
+        winningScore: GAME_CONFIG.WINNING_SCORE,
+        phase: 'idle', // idle, bidding, blocking, ranking, revealing, scoring
+        gamePhase: 'titleScreen',
+        
+        // Player management
+        players: {
+            list: [],
+            scores: {},
+            blockingTokens: {},
+            currentBlocks: {},
+            stats: {}
+        },
+        
+        // Bidding state
+        playerBids: {},
+        passedPlayers: {},
+        
+        // Blocking state
+        blockingOrder: [],
+        blockingTurn: 0,
+        
+        // Ranking state
+        finalRanking: [],
+        
+        // Automated testing state
+        isAutomatedTestRunning: false,
+        automatedTestResults: null
+    },
+    
+    // State getters with validation
+    get: function(path) {
+        try {
+            var keys = path.split('.');
+            var current = this.data;
+            
+            for (var i = 0; i < keys.length; i++) {
+                if (current === null || current === undefined) {
+                    return null;
+                }
+                current = current[keys[i]];
+            }
+            
+            return current;
+        } catch (error) {
+            safeConsoleLog('Error getting state path:', path, error);
+            return null;
+        }
+    },
+    
+    // State setters with validation
+    set: function(path, value) {
+        try {
+            var keys = path.split('.');
+            var current = this.data;
+            
+            // Navigate to the parent of the target property
+            for (var i = 0; i < keys.length - 1; i++) {
+                if (current[keys[i]] === undefined) {
+                    current[keys[i]] = {};
+                }
+                current = current[keys[i]];
+            }
+            
+            // Set the value
+            var lastKey = keys[keys.length - 1];
+            var oldValue = current[lastKey];
+            current[lastKey] = value;
+            
+            // Notify listeners of state change
+            this.notifyStateChange(path, value, oldValue);
+            
+            return true;
+        } catch (error) {
+            safeConsoleLog('Error setting state path:', path, error);
+            return false;
+        }
+    },
+    
+    // State change listeners
+    listeners: {},
+    
+    // Subscribe to state changes
+    subscribe: function(path, callback) {
+        try {
+            if (!this.listeners[path]) {
+                this.listeners[path] = [];
+            }
+            this.listeners[path].push(callback);
+            return true;
+        } catch (error) {
+            safeConsoleLog('Error subscribing to state:', error);
+            return false;
+        }
+    },
+    
+    // Notify listeners of state changes
+    notifyStateChange: function(path, newValue, oldValue) {
+        try {
+            if (this.listeners[path]) {
+                this.listeners[path].forEach(function(callback) {
+                    try {
+                        callback(newValue, oldValue, path);
+                    } catch (callbackError) {
+                        safeConsoleLog('Error in state change callback:', callbackError);
+                    }
+                });
+            }
+        } catch (error) {
+            safeConsoleLog('Error notifying state change:', error);
+        }
+    },
+    
+    // Reset game state
+    reset: function() {
+        try {
+            this.data = {
+                currentPrompt: null,
+                drawnCards: [],
+                blockedCards: [],
+                selectedCards: [],
+                selectedCardsForRanking: [],
+                bidAmount: 0,
+                currentBid: 0,
+                highestBidder: '',
+                currentRound: 1,
+                maxRounds: this.config.MAX_ROUNDS,
+                winningScore: this.config.WINNING_SCORE,
+                phase: 'idle',
+                gamePhase: 'titleScreen',
+                
+                players: {
+                    list: [],
+                    scores: {},
+                    blockingTokens: {},
+                    currentBlocks: {},
+                    stats: {}
+                },
+                
+                playerBids: {},
+                passedPlayers: {},
+                blockingOrder: [],
+                blockingTurn: 0,
+                finalRanking: [],
+                
+                isAutomatedTestRunning: false,
+                automatedTestResults: null
+            };
+            
+            safeConsoleLog('Game state reset successfully');
+            return true;
+        } catch (error) {
+            safeConsoleLog('Error resetting game state:', error);
+            return false;
+        }
+    },
+    
+    // Initialize player with validation
+    initializePlayer: function(name) {
+        try {
+            if (!validateInput(name, 'string', {minLength: 1})) {
+                safeConsoleLog('initializePlayer: Invalid name');
+                return false;
+            }
+            
+            // Add to player list if not already present
+            if (this.data.players.list.indexOf(name) === -1) {
+                this.data.players.list.push(name);
+            }
+            
+            // Initialize player data
+            this.data.players.scores[name] = 0;
+            this.data.players.blockingTokens[name] = Object.assign({}, this.config.DEFAULT_TOKEN_SET);
+            this.data.players.stats[name] = {
+                bidsWon: 0,
+                bidsSuccessful: 0,
+                blocksMade: 0,
+                tokensGained: 0,
+                tokensLost: 0
+            };
+            
+            safeConsoleLog('Player initialized:', name);
+            return true;
+        } catch (error) {
+            safeConsoleLog('Error initializing player:', error);
+            return false;
+        }
+    },
+    
+    // Get game state summary for debugging
+    getStateSnapshot: function() {
+        try {
+            return {
+                phase: this.data.phase,
+                currentRound: this.data.currentRound,
+                playerCount: this.data.players.list.length,
+                currentBid: this.data.currentBid,
+                highestBidder: this.data.highestBidder
+            };
+        } catch (error) {
+            safeConsoleLog('Error getting state snapshot:', error);
+            return {};
+        }
+    }
+};
+
+// DOM Cache Management System for Performance
+var DOMCache = {
+    cache: {},
+    
+    // Get cached DOM element or query and cache it
+    get: function(id) {
+        try {
+            if (!id) {
+                return null;
+            }
+            
+            // Return cached element if available and still in DOM
+            if (this.cache[id] && document.contains(this.cache[id])) {
+                return this.cache[id];
+            }
+            
+            // Query and cache the element
+            var element = document.getElementById(id);
+            if (element) {
+                this.cache[id] = element;
+            }
+            
+            return element;
+        } catch (error) {
+            safeConsoleLog('Error getting cached DOM element:', id, error);
+            return null;
+        }
+    },
+    
+    // Query multiple elements and cache them
+    queryAll: function(selector, cacheKey) {
+        try {
+            if (!selector) {
+                return [];
+            }
+            
+            // Use cache key if provided
+            if (cacheKey && this.cache[cacheKey]) {
+                // Verify cached elements are still in DOM
+                var cached = this.cache[cacheKey];
+                var stillValid = true;
+                for (var i = 0; i < cached.length; i++) {
+                    if (!document.contains(cached[i])) {
+                        stillValid = false;
+                        break;
+                    }
+                }
+                if (stillValid) {
+                    return cached;
+                }
+            }
+            
+            // Query and cache
+            var elements = Array.from(document.querySelectorAll(selector));
+            if (cacheKey) {
+                this.cache[cacheKey] = elements;
+            }
+            
+            return elements;
+        } catch (error) {
+            safeConsoleLog('Error querying and caching elements:', selector, error);
+            return [];
+        }
+    },
+    
+    // Clear cache (useful for screen transitions)
+    clear: function() {
+        try {
+            this.cache = {};
+            safeConsoleLog('DOM cache cleared');
+        } catch (error) {
+            safeConsoleLog('Error clearing DOM cache:', error);
+        }
+    },
+    
+    // Remove specific item from cache
+    remove: function(key) {
+        try {
+            if (this.cache[key]) {
+                delete this.cache[key];
+                return true;
+            }
+            return false;
+        } catch (error) {
+            safeConsoleLog('Error removing from DOM cache:', key, error);
+            return false;
+        }
+    },
+    
+    // Validate cached elements (remove stale references)
+    validate: function() {
+        try {
+            var removedCount = 0;
+            for (var key in this.cache) {
+                if (this.cache.hasOwnProperty(key)) {
+                    var element = this.cache[key];
+                    if (Array.isArray(element)) {
+                        // Handle cached NodeLists
+                        var validElements = element.filter(function(el) {
+                            return document.contains(el);
+                        });
+                        if (validElements.length !== element.length) {
+                            if (validElements.length === 0) {
+                                delete this.cache[key];
+                                removedCount++;
+                            } else {
+                                this.cache[key] = validElements;
+                            }
+                        }
+                    } else {
+                        // Handle single elements
+                        if (!document.contains(element)) {
+                            delete this.cache[key];
+                            removedCount++;
+                        }
+                    }
+                }
+            }
+            if (removedCount > 0) {
+                safeConsoleLog('Cleaned up', removedCount, 'stale DOM cache entries');
+            }
+        } catch (error) {
+            safeConsoleLog('Error validating DOM cache:', error);
+        }
+    }
+};
+
 // Input validation utility functions
 function validateInput(value, type, options) {
     options = options || {};
@@ -447,32 +796,310 @@ window.disableVisualConsole = function() {
 };
 
 // Game state variables
-var currentPrompt = null;
-var drawnCards = [];  // The 10 cards drawn
-var blockedCards = [];  // Cards blocked by other players
-var selectedCards = [];  // Cards selected by bidder
-var bidAmount = 0;
-var currentBid = 0;
-var highestBidder = '';
-var playerBids = {};  // Track each player's current bid
-var passedPlayers = {};  // Track who has passed
-var blockingTurn = 0;  // Current player's turn in blocking phase
-var blockingOrder = [];  // Players in blocking order (lowest score first)
-var usedBlockingTokens = {2: false, 4: false, 6: false};  // Track which token values are used
-var revealIndex = 0;
-var gameState = 'title';
+// Legacy global variables removed - now using GameState system
+// All game state is now managed through GameState.get() and GameState.set()
 
-// Player management
-var players = {
-    list: [],  // Array of player names
-    scores: {},  // Player scores
-    blockingTokens: {},  // Each player's blocking tokens {2: 1, 4: 1, 6: 1} (counts)
-    currentBlocks: {},  // Blocks placed this round {playerName: tokenValue}
-    stats: {}  // Detailed player statistics {playerName: {bidsWon: 0, bidsSuccessful: 0, blocksMade: 0, tokensGained: 0, tokensLost: 0}}
+// Backward compatibility helpers for legacy code
+function getCurrentPrompt() { return GameState.get('currentPrompt'); }
+function getDrawnCards() { return GameState.get('drawnCards'); }
+function getBlockedCards() { return GameState.get('blockedCards'); }
+function getSelectedCards() { return GameState.get('selectedCards'); }
+function getCurrentBid() { return GameState.get('currentBid'); }
+function getHighestBidder() { return GameState.get('highestBidder'); }
+function getPlayerBids() { return GameState.get('playerBids'); }
+function getPassedPlayers() { return GameState.get('passedPlayers'); }
+function getBlockingTurn() { return GameState.get('blockingTurn'); }
+function getBlockingOrder() { return GameState.get('blockingOrder'); }
+function getCurrentRound() { return GameState.get('currentRound'); }
+function getMaxRounds() { return GameState.get('maxRounds'); }
+function getPlayers() { return GameState.get('players'); }
+
+// Legacy property accessors for gradual migration
+Object.defineProperty(window, 'currentPrompt', {
+    get: function() { return GameState.get('currentPrompt'); },
+    set: function(value) { GameState.set('currentPrompt', value); }
+});
+
+Object.defineProperty(window, 'drawnCards', {
+    get: function() { return GameState.get('drawnCards'); },
+    set: function(value) { GameState.set('drawnCards', value); }
+});
+
+Object.defineProperty(window, 'blockedCards', {
+    get: function() { return GameState.get('blockedCards'); },
+    set: function(value) { GameState.set('blockedCards', value); }
+});
+
+Object.defineProperty(window, 'selectedCards', {
+    get: function() { return GameState.get('selectedCards'); },
+    set: function(value) { GameState.set('selectedCards', value); }
+});
+
+Object.defineProperty(window, 'currentBid', {
+    get: function() { return GameState.get('currentBid'); },
+    set: function(value) { GameState.set('currentBid', value); }
+});
+
+Object.defineProperty(window, 'highestBidder', {
+    get: function() { return GameState.get('highestBidder'); },
+    set: function(value) { GameState.set('highestBidder', value); }
+});
+
+Object.defineProperty(window, 'playerBids', {
+    get: function() { return GameState.get('playerBids'); },
+    set: function(value) { GameState.set('playerBids', value); }
+});
+
+Object.defineProperty(window, 'passedPlayers', {
+    get: function() { return GameState.get('passedPlayers'); },
+    set: function(value) { GameState.set('passedPlayers', value); }
+});
+
+Object.defineProperty(window, 'blockingTurn', {
+    get: function() { return GameState.get('blockingTurn'); },
+    set: function(value) { GameState.set('blockingTurn', value); }
+});
+
+Object.defineProperty(window, 'blockingOrder', {
+    get: function() { return GameState.get('blockingOrder'); },
+    set: function(value) { GameState.set('blockingOrder', value); }
+});
+
+Object.defineProperty(window, 'currentRound', {
+    get: function() { return GameState.get('currentRound'); },
+    set: function(value) { GameState.set('currentRound', value); }
+});
+
+Object.defineProperty(window, 'maxRounds', {
+    get: function() { return GameState.get('maxRounds'); },
+    set: function(value) { GameState.set('maxRounds', value); }
+});
+
+Object.defineProperty(window, 'players', {
+    get: function() { return GameState.get('players'); },
+    set: function(value) { GameState.set('players', value); }
+});
+
+// Selected cards for ranking (specific to ranking phase)
+Object.defineProperty(window, 'selectedCardsForRanking', {
+    get: function() { return GameState.get('selectedCardsForRanking'); },
+    set: function(value) { GameState.set('selectedCardsForRanking', value); }
+});
+
+Object.defineProperty(window, 'finalRanking', {
+    get: function() { return GameState.get('finalRanking'); },
+    set: function(value) { GameState.set('finalRanking', value); }
+});
+
+// Template System for HTML Generation
+var TemplateEngine = {
+    templates: {},
+    
+    // Register a template
+    register: function(name, template) {
+        try {
+            this.templates[name] = template;
+            return true;
+        } catch (error) {
+            safeConsoleLog('Error registering template:', name, error);
+            return false;
+        }
+    },
+    
+    // Render a template with data
+    render: function(templateName, data) {
+        try {
+            var template = this.templates[templateName];
+            if (!template) {
+                safeConsoleLog('Template not found:', templateName);
+                return '';
+            }
+            
+            data = data || {};
+            
+            // Simple template replacement
+            return template.replace(/\{\{(\w+)\}\}/g, function(match, key) {
+                var value = data[key];
+                return value !== undefined ? String(value) : match;
+            });
+        } catch (error) {
+            safeConsoleLog('Error rendering template:', templateName, error);
+            return '';
+        }
+    },
+    
+    // Render template with array data (for lists)
+    renderList: function(templateName, dataArray, separator) {
+        try {
+            if (!Array.isArray(dataArray)) {
+                return '';
+            }
+            
+            separator = separator || '';
+            var results = [];
+            
+            for (var i = 0; i < dataArray.length; i++) {
+                var rendered = this.render(templateName, dataArray[i]);
+                if (rendered) {
+                    results.push(rendered);
+                }
+            }
+            
+            return results.join(separator);
+        } catch (error) {
+            safeConsoleLog('Error rendering template list:', templateName, error);
+            return '';
+        }
+    }
 };
-var currentRound = 1;
-var maxRounds = 6;
-var winningScore = 30;
+
+// Register common templates
+TemplateEngine.register('playerBidRow', 
+    '<div class="player-bid-row {{statusClass}} {{bidderClass}}" id="bidRow_{{safePlayerName}}">' +
+    '<div class="player-name">{{playerName}}</div>' +
+    '<div class="current-bid-display">Current: {{currentBid}}</div>' +
+    '<div class="bid-actions">{{bidActions}}</div>' +
+    '</div>'
+);
+
+TemplateEngine.register('bidButton', 
+    '<button class="btn small primary" onclick="placeBidForPlayer(\'{{playerName}}\')">Bid {{nextBid}}</button>'
+);
+
+TemplateEngine.register('passButton',
+    '<button class="btn small secondary" onclick="passPlayer(\'{{playerName}}\')">Pass</button>'
+);
+
+TemplateEngine.register('cardItem',
+    '<div class="card-item {{blockClass}}" data-card-id="{{cardId}}">' +
+    '{{index}}. {{countryName}}{{blocker}}' +
+    '</div>'
+);
+
+TemplateEngine.register('blockingToken',
+    '<div class="token-item {{tokenClass}}" onclick="{{onclick}}">' +
+    '<span class="token-value">{{value}}</span>' +
+    '<span class="token-count">{{count}}</span>' +
+    '</div>'
+);
+
+// Utility Functions to Reduce Code Duplication
+var GameUtils = {
+    // Safely get nested object property
+    getNestedProperty: function(obj, path, defaultValue) {
+        try {
+            var keys = path.split('.');
+            var current = obj;
+            
+            for (var i = 0; i < keys.length; i++) {
+                if (current === null || current === undefined) {
+                    return defaultValue;
+                }
+                current = current[keys[i]];
+            }
+            
+            return current !== undefined ? current : defaultValue;
+        } catch (error) {
+            return defaultValue;
+        }
+    },
+    
+    // Create safe HTML class name from string
+    createSafeClassName: function(str) {
+        try {
+            return String(str).replace(/[^a-zA-Z0-9-_]/g, '_');
+        } catch (error) {
+            return 'invalid';
+        }
+    },
+    
+    // Format player name for display
+    formatPlayerName: function(name) {
+        try {
+            return validateInput(name, 'string') ? String(name).trim() : 'Unknown Player';
+        } catch (error) {
+            return 'Unknown Player';
+        }
+    },
+    
+    // Get player status class
+    getPlayerStatusClass: function(playerName, passedPlayers, currentBid, playerBids) {
+        try {
+            if (passedPlayers && passedPlayers[playerName]) {
+                return 'passed';
+            }
+            if (playerBids && playerBids[playerName] === currentBid && currentBid > 0) {
+                return 'active-bidder';
+            }
+            return 'active';
+        } catch (error) {
+            return 'unknown';
+        }
+    },
+    
+    // Sort players by score (for blocking order)
+    sortPlayersByScore: function(playerList, playerScores) {
+        try {
+            if (!Array.isArray(playerList) || !playerScores) {
+                return [];
+            }
+            
+            return playerList.slice().sort(function(a, b) {
+                var scoreA = playerScores[a] || 0;
+                var scoreB = playerScores[b] || 0;
+                return scoreA - scoreB; // Ascending order (lowest first)
+            });
+        } catch (error) {
+            safeConsoleLog('Error sorting players by score:', error);
+            return playerList || [];
+        }
+    },
+    
+    // Validate and sanitize bid amount
+    validateBidAmount: function(bid) {
+        try {
+            var numBid = parseInt(bid);
+            if (isNaN(numBid)) {
+                return null;
+            }
+            
+            if (numBid < GAME_CONFIG.MIN_BID || numBid > GAME_CONFIG.MAX_BID) {
+                return null;
+            }
+            
+            return numBid;
+        } catch (error) {
+            return null;
+        }
+    },
+    
+    // Get available blocking tokens for player
+    getAvailableTokens: function(playerName) {
+        try {
+            var players = GameState.get('players');
+            if (!players || !players.blockingTokens || !players.blockingTokens[playerName]) {
+                return [];
+            }
+            
+            var tokens = players.blockingTokens[playerName];
+            var available = [];
+            
+            for (var value in tokens) {
+                if (tokens.hasOwnProperty(value) && tokens[value] > 0) {
+                    available.push({
+                        value: parseInt(value),
+                        count: tokens[value]
+                    });
+                }
+            }
+            
+            return available.sort(function(a, b) { return a.value - b.value; });
+        } catch (error) {
+            safeConsoleLog('Error getting available tokens:', error);
+            return [];
+        }
+    }
+};
 
 
 // Check if data is available
@@ -500,15 +1127,21 @@ window.showScreen = function(screenId) {
         // Clean up previous screen's event listeners and timeouts
         eventListenerManager.cleanup();
         
+        // Clean up DOM cache for screen transition
+        DOMCache.clear();
+        
+        // Update game state
+        GameState.set('gamePhase', screenId);
+        
         // Validate DOM environment
         if (!document || !document.querySelectorAll || !document.getElementById) {
             safeConsoleLog('showScreen: DOM methods not available');
             return false;
         }
         
-        // Hide all screens with error handling
+        // Hide all screens with error handling using cached query
         try {
-            var screens = document.querySelectorAll('.screen');
+            var screens = DOMCache.queryAll('.screen', 'allScreens');
             if (!screens) {
                 throw new Error('Failed to query screens');
             }
@@ -528,8 +1161,8 @@ window.showScreen = function(screenId) {
             return false;
         }
         
-        // Show target screen
-        var target = document.getElementById(screenId);
+        // Show target screen using cached DOM access
+        var target = DOMCache.get(screenId);
         if (target) {
             safeConsoleLog('✅ Found target screen:', screenId);
             
