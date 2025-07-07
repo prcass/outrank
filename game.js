@@ -37,6 +37,127 @@ var GAME_CONFIG = {
     ENABLE_CONSOLE_LOGGING: true
 };
 
+// Memory Management - Event Listener Cleanup System
+var eventListenerManager = {
+    listeners: [],
+    timeouts: [],
+    
+    // Add an event listener with automatic cleanup tracking
+    addListener: function(element, event, handler, options) {
+        try {
+            if (!element || !event || !handler) {
+                safeConsoleLog('addListener: Invalid parameters');
+                return false;
+            }
+            
+            element.addEventListener(event, handler, options);
+            
+            // Track for cleanup
+            this.listeners.push({
+                element: element,
+                event: event,
+                handler: handler,
+                options: options
+            });
+            
+            return true;
+        } catch (error) {
+            safeConsoleLog('Error adding event listener:', error);
+            return false;
+        }
+    },
+    
+    // Remove specific event listener
+    removeListener: function(element, event, handler) {
+        try {
+            if (!element || !event || !handler) {
+                return false;
+            }
+            
+            element.removeEventListener(event, handler);
+            
+            // Remove from tracking
+            this.listeners = this.listeners.filter(function(listener) {
+                return !(listener.element === element && 
+                        listener.event === event && 
+                        listener.handler === handler);
+            });
+            
+            return true;
+        } catch (error) {
+            safeConsoleLog('Error removing event listener:', error);
+            return false;
+        }
+    },
+    
+    // Clean up all tracked event listeners
+    cleanup: function() {
+        try {
+            var removedCount = 0;
+            
+            this.listeners.forEach(function(listener) {
+                try {
+                    if (listener.element && listener.element.removeEventListener) {
+                        listener.element.removeEventListener(listener.event, listener.handler);
+                        removedCount++;
+                    }
+                } catch (removeError) {
+                    safeConsoleLog('Error removing listener during cleanup:', removeError);
+                }
+            });
+            
+            this.listeners = [];
+            safeConsoleLog('Cleaned up', removedCount, 'event listeners');
+            
+            // Clean up timeouts
+            var timeoutCount = 0;
+            this.timeouts.forEach(function(timeoutId) {
+                try {
+                    clearTimeout(timeoutId);
+                    timeoutCount++;
+                } catch (timeoutError) {
+                    safeConsoleLog('Error clearing timeout:', timeoutError);
+                }
+            });
+            
+            this.timeouts = [];
+            safeConsoleLog('Cleaned up', timeoutCount, 'timeouts');
+            
+            return true;
+            
+        } catch (error) {
+            safeConsoleLog('Error during event listener cleanup:', error);
+            return false;
+        }
+    },
+    
+    // Add timeout with tracking
+    addTimeout: function(callback, delay) {
+        try {
+            var timeoutId = setTimeout(callback, delay);
+            this.timeouts.push(timeoutId);
+            return timeoutId;
+        } catch (error) {
+            safeConsoleLog('Error adding timeout:', error);
+            return null;
+        }
+    },
+    
+    // Remove specific timeout
+    removeTimeout: function(timeoutId) {
+        try {
+            clearTimeout(timeoutId);
+            this.timeouts = this.timeouts.filter(function(id) {
+                return id !== timeoutId;
+            });
+            return true;
+        } catch (error) {
+            safeConsoleLog('Error removing timeout:', error);
+            return false;
+        }
+    }
+};
+
 // Input validation utility functions
 function validateInput(value, type, options) {
     options = options || {};
@@ -124,8 +245,8 @@ function showNotification(message, type) {
         // Add to document
         document.body.appendChild(notification);
         
-        // Animate in with error handling
-        setTimeout(function() {
+        // Animate in with error handling and managed timeout
+        eventListenerManager.addTimeout(function() {
             try {
                 if (notification && notification.style) {
                     notification.style.opacity = '1';
@@ -136,13 +257,13 @@ function showNotification(message, type) {
             }
         }, GAME_CONFIG.FADE_IN_DELAY);
         
-        // Auto-remove after configured duration
-        setTimeout(function() {
+        // Auto-remove after configured duration with managed timeouts
+        eventListenerManager.addTimeout(function() {
             try {
                 if (notification && notification.style) {
                     notification.style.opacity = '0';
                     notification.style.transform = 'translateX(100%)';
-                    setTimeout(function() {
+                    eventListenerManager.addTimeout(function() {
                         try {
                             if (notification && notification.parentNode) {
                                 notification.parentNode.removeChild(notification);
@@ -365,37 +486,106 @@ window.checkData = function() {
     }
 };
 
-// Screen switching function
+// Screen switching function with comprehensive error handling and memory management
 window.showScreen = function(screenId) {
-    console.log('🔄 showScreen called with:', screenId);
-    
-    // Hide all screens
-    var screens = document.querySelectorAll('.screen');
-    console.log('Found', screens.length, 'screens to hide');
-    for (var i = 0; i < screens.length; i++) {
-        screens[i].classList.remove('active');
-    }
-    
-    // Show target screen
-    var target = document.getElementById(screenId);
-    if (target) {
-        console.log('✅ Found target screen:', screenId);
-        target.classList.add('active');
-        
-        // Update content for specific screens
-        if (screenId === 'scoresScreen') {
-            console.log('📊 Navigating to scores screen...');
-            updateScoresDisplay();
-        } else if (screenId === 'blockingScreen') {
-            console.log('🛡️ Navigating to blocking screen...');
-            setupBlockingScreen();
+    try {
+        // Input validation
+        if (!validateInput(screenId, 'string', {minLength: 1})) {
+            safeConsoleLog('showScreen: Invalid screenId parameter');
+            return false;
         }
-    } else {
-        console.error('❌ Screen not found:', screenId);
-        console.log('Available screen IDs:');
-        document.querySelectorAll('.screen').forEach(function(screen) {
-            console.log('  -', screen.id);
-        });
+        
+        safeConsoleLog('🔄 showScreen called with:', screenId);
+        
+        // Clean up previous screen's event listeners and timeouts
+        eventListenerManager.cleanup();
+        
+        // Validate DOM environment
+        if (!document || !document.querySelectorAll || !document.getElementById) {
+            safeConsoleLog('showScreen: DOM methods not available');
+            return false;
+        }
+        
+        // Hide all screens with error handling
+        try {
+            var screens = document.querySelectorAll('.screen');
+            if (!screens) {
+                throw new Error('Failed to query screens');
+            }
+            
+            safeConsoleLog('Found', screens.length, 'screens to hide');
+            for (var i = 0; i < screens.length; i++) {
+                try {
+                    if (screens[i] && screens[i].classList) {
+                        screens[i].classList.remove('active');
+                    }
+                } catch (hideError) {
+                    safeConsoleLog('Error hiding screen', i, ':', hideError);
+                }
+            }
+        } catch (screenError) {
+            safeConsoleLog('Error querying/hiding screens:', screenError);
+            return false;
+        }
+        
+        // Show target screen
+        var target = document.getElementById(screenId);
+        if (target) {
+            safeConsoleLog('✅ Found target screen:', screenId);
+            
+            try {
+                if (target.classList) {
+                    target.classList.add('active');
+                } else {
+                    throw new Error('classList not available on target element');
+                }
+            } catch (activateError) {
+                safeConsoleLog('Error activating screen:', activateError);
+                return false;
+            }
+            
+            // Update content for specific screens with error handling
+            try {
+                if (screenId === 'scoresScreen') {
+                    safeConsoleLog('📊 Navigating to scores screen...');
+                    if (typeof updateScoresDisplay === 'function') {
+                        updateScoresDisplay();
+                    }
+                } else if (screenId === 'blockingScreen') {
+                    safeConsoleLog('🛡️ Navigating to blocking screen...');
+                    if (typeof setupBlockingScreen === 'function') {
+                        setupBlockingScreen();
+                    }
+                }
+            } catch (updateError) {
+                safeConsoleLog('Error updating screen content:', updateError);
+                // Don't return false - screen switch was successful
+            }
+            
+            return true;
+            
+        } else {
+            safeConsoleLog('❌ Screen not found:', screenId);
+            
+            // Show available screens for debugging
+            try {
+                var allScreens = document.querySelectorAll('.screen');
+                safeConsoleLog('Available screen IDs:');
+                allScreens.forEach(function(screen) {
+                    safeConsoleLog('  -', screen.id || 'no-id');
+                });
+            } catch (debugError) {
+                safeConsoleLog('Error listing available screens:', debugError);
+            }
+            
+            showNotification('Screen "' + screenId + '" not found', 'error');
+            return false;
+        }
+        
+    } catch (error) {
+        safeConsoleLog('Critical error in showScreen:', error);
+        showNotification('Failed to switch screens', 'error');
+        return false;
     }
 };
 
@@ -868,8 +1058,8 @@ window.passPlayer = function(playerName) {
                     safeConsoleLog('Bidding complete! ' + highestBidder + ' wins with a bid of ' + currentBid + ' cards.');
                     showNotification('Bidding complete! ' + highestBidder + ' wins!', 'success');
                     
-                    // Auto-finish bidding with error handling
-                    setTimeout(function() {
+                    // Auto-finish bidding with error handling and managed timeout
+                    eventListenerManager.addTimeout(function() {
                         try {
                             if (typeof finishBidding === 'function') {
                                 finishBidding();
@@ -989,12 +1179,13 @@ function updateBlockingDisplay() {
         html += '</div></div>';
         availableCards.innerHTML = html;
         
-        // Add click listeners for card selection
+        // Add click listeners for card selection with memory management
         document.querySelectorAll('.card-available[data-card-id]').forEach(function(cardElement) {
-            cardElement.addEventListener('click', function() {
+            var clickHandler = function() {
                 var cardId = this.getAttribute('data-card-id');
                 selectCardToBlock(cardId);
-            });
+            };
+            eventListenerManager.addListener(cardElement, 'click', clickHandler);
         });
     }
     
@@ -1304,12 +1495,13 @@ function updateAvailableCardsDisplay(remainingCards) {
         html += '</div><div class="selection-info">Click cards to select them for ranking</div></div>';
         container.innerHTML = html;
         
-        // Add click listeners for card selection
+        // Add click listeners for card selection with memory management
         document.querySelectorAll('.card-selectable[data-card-id]').forEach(function(cardElement) {
-            cardElement.addEventListener('click', function() {
+            var clickHandler = function() {
                 var cardId = this.getAttribute('data-card-id');
                 selectCardForRanking(cardId);
-            });
+            };
+            eventListenerManager.addListener(cardElement, 'click', clickHandler);
         });
     } else {
         console.log('Container not found for available cards');
@@ -1461,32 +1653,58 @@ function setupDragAndDrop() {
     var rankingArea = document.getElementById('rankingArea');
     
     rankingCards.forEach(function(card) {
-        card.addEventListener('dragstart', function(e) {
-            e.dataTransfer.setData('text/plain', this.getAttribute('data-card-id'));
-            this.classList.add('dragging');
-        });
+        var dragStartHandler = function(e) {
+            try {
+                e.dataTransfer.setData('text/plain', this.getAttribute('data-card-id'));
+                this.classList.add('dragging');
+            } catch (dragError) {
+                safeConsoleLog('Error in dragstart:', dragError);
+            }
+        };
         
-        card.addEventListener('dragend', function(e) {
-            this.classList.remove('dragging');
-        });
+        var dragEndHandler = function(e) {
+            try {
+                this.classList.remove('dragging');
+            } catch (dragError) {
+                safeConsoleLog('Error in dragend:', dragError);
+            }
+        };
+        
+        eventListenerManager.addListener(card, 'dragstart', dragStartHandler);
+        eventListenerManager.addListener(card, 'dragend', dragEndHandler);
     });
     
-    rankingArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        var dragging = document.querySelector('.dragging');
-        var afterElement = getDragAfterElement(rankingArea, e.clientY);
-        
-        if (afterElement == null) {
-            rankingArea.appendChild(dragging);
-        } else {
-            rankingArea.insertBefore(dragging, afterElement);
+    var dragOverHandler = function(e) {
+        try {
+            e.preventDefault();
+            var dragging = document.querySelector('.dragging');
+            if (dragging) {
+                var afterElement = getDragAfterElement(rankingArea, e.clientY);
+                
+                if (afterElement == null) {
+                    rankingArea.appendChild(dragging);
+                } else {
+                    rankingArea.insertBefore(dragging, afterElement);
+                }
+            }
+        } catch (dragError) {
+            safeConsoleLog('Error in dragover:', dragError);
         }
-    });
+    };
     
-    rankingArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        updateRankingOrder();
-    });
+    var dropHandler = function(e) {
+        try {
+            e.preventDefault();
+            if (typeof updateRankingOrder === 'function') {
+                updateRankingOrder();
+            }
+        } catch (dropError) {
+            safeConsoleLog('Error in drop:', dropError);
+        }
+    };
+    
+    eventListenerManager.addListener(rankingArea, 'dragover', dragOverHandler);
+    eventListenerManager.addListener(rankingArea, 'drop', dropHandler);
 }
 
 function getDragAfterElement(container, y) {
