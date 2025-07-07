@@ -2395,9 +2395,8 @@ function addTimeout(fn, delay) {
 function updateTestStatistics(action, data) {
     switch(action) {
         case 'BLOCK_MADE':
-            if (players.stats[data.player]) {
-                players.stats[data.player].blocksMade++;
-            }
+            // Don't increment blocksMade here - it's already tracked in the actual game logic
+            // This was causing inflated block counts
             window.automatedTestResults.totalBlocks++;
             console.log(`📊 Block tracked: ${data.player} (Total blocks: ${window.automatedTestResults.totalBlocks})`);
             break;
@@ -2634,10 +2633,8 @@ async function automatedBidding(roundData) {
         if (roundData) {
             roundData.bidder = randomWinner;
             roundData.bidAmount = randomBidAmount;
-            window.automatedTestResults.totalBids++;
-            if (window.automatedTestResults.playerStats[randomWinner]) {
-                window.automatedTestResults.playerStats[randomWinner].bidsWon++;
-            }
+            // Don't increment bidsWon here - it's tracked in calculateAndApplyScores()
+            // This was causing double counting
         }
         
         // Note: Bid wins are tracked in calculateAndApplyScores(), not here
