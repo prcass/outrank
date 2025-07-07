@@ -1586,8 +1586,16 @@ function calculateAndApplyScores() {
     if (players.stats[highestBidder]) {
         players.stats[highestBidder].bidsWon++;
         console.log('📊 Tracking bid won for', highestBidder, '- Total now:', players.stats[highestBidder].bidsWon);
+        
+        // Debug: Log total bids won across all players
+        var totalBidsWon = 0;
+        Object.keys(players.stats).forEach(function(playerName) {
+            totalBidsWon += players.stats[playerName].bidsWon || 0;
+        });
+        console.log('📊 Total bids won across all players:', totalBidsWon, '(should equal current round:', currentRound + ')');
     } else {
         console.error('❌ No stats object found for', highestBidder, '- Available stats:', Object.keys(players.stats));
+        console.error('❌ This will cause missing bid tracking! Current round:', currentRound);
     }
     
     // Update test statistics for bid tracking
@@ -3077,7 +3085,8 @@ function automatedRevealNext() {
         // All cards revealed, show final results
         if (!revealCompletionHandled) {
             console.log('🏁 All cards revealed, showing final results');
-            bidderSuccess = true; // For automation, assume success unless we detect failure
+            // Don't modify bidderSuccess here - it should already be set correctly
+            // by the sequence checking logic below
             revealCompletionHandled = true;
             showFinalResults();
         }
@@ -3127,8 +3136,44 @@ function automatedRevealNext() {
     }
 }
 
+// Validate statistics consistency
+function validateStatistics() {
+    console.log('🔍 Validating statistics consistency...');
+    
+    // Calculate total bids won
+    var totalBidsWon = 0;
+    Object.keys(players.stats).forEach(function(playerName) {
+        totalBidsWon += players.stats[playerName].bidsWon || 0;
+    });
+    
+    console.log('📊 Statistics Validation:');
+    console.log('  🎯 Total bids won:', totalBidsWon, '(should equal', currentRound, 'rounds)');
+    console.log('  🎮 Current round:', currentRound);
+    console.log('  📋 Max rounds:', maxRounds);
+    
+    if (totalBidsWon !== currentRound) {
+        console.error('❌ STATISTICS ERROR: Total bids won (' + totalBidsWon + ') does not equal current round (' + currentRound + ')');
+        return false;
+    }
+    
+    // Validate individual player stats
+    Object.keys(players.stats).forEach(function(playerName) {
+        var stats = players.stats[playerName];
+        if (stats.bidsSuccessful > stats.bidsWon) {
+            console.error('❌ STATISTICS ERROR: Player ' + playerName + ' has more successful bids (' + stats.bidsSuccessful + ') than total bids won (' + stats.bidsWon + ')');
+            return false;
+        }
+    });
+    
+    console.log('✅ Statistics validation passed');
+    return true;
+}
+
 // Generate detailed test results
 function generateDetailedTestResults() {
+    // Validate statistics before generating results
+    validateStatistics();
+    
     var results = window.automatedTestResults;
     var duration = results.endTime - results.startTime;
     var durationMinutes = Math.round(duration / 1000 / 60 * 100) / 100;
