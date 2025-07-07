@@ -731,64 +731,180 @@ function updateHighBidderDisplay() {
 
 // Bidding Phase Functions
 window.placeBidForPlayer = function(playerName) {
-    if (passedPlayers[playerName]) {
-        console.log(playerName + ' has already passed and cannot bid.');
-        return;
+    try {
+        // Input validation
+        if (!validateInput(playerName, 'string', {minLength: 1})) {
+            safeConsoleLog('placeBidForPlayer: Invalid playerName parameter');
+            showNotification('Invalid player name', 'error');
+            return false;
+        }
+        
+        // Validate game state
+        if (typeof passedPlayers !== 'object' || passedPlayers === null) {
+            safeConsoleLog('placeBidForPlayer: passedPlayers not properly initialized');
+            showNotification('Game state error', 'error');
+            return false;
+        }
+        
+        if (passedPlayers[playerName]) {
+            safeConsoleLog(playerName + ' has already passed and cannot bid.');
+            showNotification(playerName + ' has already passed', 'error');
+            return false;
+        }
+        
+        // Validate bid amount
+        var newBid = currentBid + 1;
+        if (!validateInput(newBid, 'integer', {min: GAME_CONFIG.MIN_BID, max: GAME_CONFIG.MAX_BID})) {
+            safeConsoleLog('Maximum bid is ' + GAME_CONFIG.MAX_BID + ' cards');
+            showNotification('Maximum bid is ' + GAME_CONFIG.MAX_BID + ' cards', 'error');
+            return false;
+        }
+        
+        // Validate currentBid is a number
+        if (!validateInput(currentBid, 'number')) {
+            safeConsoleLog('placeBidForPlayer: currentBid is not a valid number');
+            showNotification('Invalid game state', 'error');
+            return false;
+        }
+        
+        // Update bid tracking with validation
+        try {
+            currentBid = newBid;
+            highestBidder = playerName;
+            
+            // Ensure playerBids object exists
+            if (typeof playerBids !== 'object' || playerBids === null) {
+                playerBids = {};
+            }
+            playerBids[playerName] = newBid;
+            
+            safeConsoleLog('Bid placed:', playerName, 'bids', newBid);
+            
+        } catch (updateError) {
+            safeConsoleLog('Error updating bid state:', updateError);
+            showNotification('Failed to place bid', 'error');
+            return false;
+        }
+        
+        // Refresh the interface with error handling
+        try {
+            if (typeof generatePlayerBiddingInterface === 'function') {
+                generatePlayerBiddingInterface();
+            }
+            if (typeof updateHighBidderDisplay === 'function') {
+                updateHighBidderDisplay();
+            }
+        } catch (refreshError) {
+            safeConsoleLog('Error refreshing interface after bid:', refreshError);
+            // Don't return false - bid was placed successfully
+        }
+        
+        return true;
+        
+    } catch (error) {
+        safeConsoleLog('Critical error in placeBidForPlayer:', error);
+        showNotification('Failed to place bid', 'error');
+        return false;
     }
-    
-    var newBid = currentBid + 1;
-    
-    if (newBid > 10) {
-        console.log('Maximum bid is 10 cards');
-        return;
-    }
-    
-    // Update bid tracking
-    currentBid = newBid;
-    highestBidder = playerName;
-    playerBids[playerName] = newBid;
-    
-    // Refresh the interface
-    generatePlayerBiddingInterface();
-    updateHighBidderDisplay();
 };
 
 window.passPlayer = function(playerName) {
-    if (passedPlayers[playerName]) {
-        return; // Already passed
-    }
-    
-    // High bidder cannot pass
-    if (playerName === highestBidder && currentBid > 0) {
-        console.log('The high bidder cannot pass! You must either bid higher or wait for others to outbid you.');
-        return;
-    }
-    
-    passedPlayers[playerName] = true;
-    
-    // Check if bidding should end
-    var activePlayers = players.list.filter(function(name) {
-        return !passedPlayers[name];
-    });
-    
-    if (activePlayers.length <= 1) {
-        if (currentBid === 0) {
-            console.log('All players passed! Someone must make a bid.');
-            // Reset all passes to restart bidding
-            players.list.forEach(function(name) {
-                passedPlayers[name] = false;
-            });
-        } else {
-            console.log('Bidding complete! ' + highestBidder + ' wins with a bid of ' + currentBid + ' cards.');
-            // Auto-finish bidding
-            setTimeout(function() {
-                finishBidding();
-            }, 2000);
+    try {
+        // Input validation
+        if (!validateInput(playerName, 'string', {minLength: 1})) {
+            safeConsoleLog('passPlayer: Invalid playerName parameter');
+            showNotification('Invalid player name', 'error');
+            return false;
         }
+        
+        // Validate game state
+        if (typeof passedPlayers !== 'object' || passedPlayers === null) {
+            safeConsoleLog('passPlayer: passedPlayers not properly initialized');
+            showNotification('Game state error', 'error');
+            return false;
+        }
+        
+        if (passedPlayers[playerName]) {
+            safeConsoleLog(playerName + ' has already passed');
+            return true; // Already passed, not an error
+        }
+        
+        // High bidder cannot pass validation
+        if (playerName === highestBidder && validateInput(currentBid, 'number') && currentBid > 0) {
+            safeConsoleLog('The high bidder cannot pass! You must either bid higher or wait for others to outbid you.');
+            showNotification('High bidder cannot pass', 'error');
+            return false;
+        }
+        
+        // Mark player as passed
+        passedPlayers[playerName] = true;
+        safeConsoleLog(playerName + ' passes');
+        
+        // Check if bidding should end with validation
+        try {
+            if (!validateInput(players.list, 'array')) {
+                throw new Error('players.list is not a valid array');
+            }
+            
+            var activePlayers = players.list.filter(function(name) {
+                return !passedPlayers[name];
+            });
+            
+            if (activePlayers.length <= 1) {
+                if (!validateInput(currentBid, 'number') || currentBid === 0) {
+                    safeConsoleLog('All players passed! Someone must make a bid.');
+                    showNotification('All players passed! Someone must make a bid.', 'info');
+                    
+                    // Reset all passes to restart bidding
+                    try {
+                        players.list.forEach(function(name) {
+                            passedPlayers[name] = false;
+                        });
+                    } catch (resetError) {
+                        safeConsoleLog('Error resetting passes:', resetError);
+                        return false;
+                    }
+                } else {
+                    safeConsoleLog('Bidding complete! ' + highestBidder + ' wins with a bid of ' + currentBid + ' cards.');
+                    showNotification('Bidding complete! ' + highestBidder + ' wins!', 'success');
+                    
+                    // Auto-finish bidding with error handling
+                    setTimeout(function() {
+                        try {
+                            if (typeof finishBidding === 'function') {
+                                finishBidding();
+                            } else {
+                                safeConsoleLog('finishBidding function not available');
+                            }
+                        } catch (finishError) {
+                            safeConsoleLog('Error finishing bidding:', finishError);
+                            showNotification('Error completing bidding phase', 'error');
+                        }
+                    }, 2000);
+                }
+            }
+        } catch (biddingEndError) {
+            safeConsoleLog('Error checking bidding end condition:', biddingEndError);
+            // Continue - pass was still successful
+        }
+        
+        // Refresh the interface with error handling
+        try {
+            if (typeof generatePlayerBiddingInterface === 'function') {
+                generatePlayerBiddingInterface();
+            }
+        } catch (refreshError) {
+            safeConsoleLog('Error refreshing interface after pass:', refreshError);
+            // Don't return false - pass was successful
+        }
+        
+        return true;
+        
+    } catch (error) {
+        safeConsoleLog('Critical error in passPlayer:', error);
+        showNotification('Failed to pass player', 'error');
+        return false;
     }
-    
-    // Refresh the interface
-    generatePlayerBiddingInterface();
 };
 
 window.finishBidding = function() {
