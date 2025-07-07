@@ -1,86 +1,241 @@
 // game.js - Game logic using separated data
 
+// Game Configuration - Centralized constants
+var GAME_CONFIG = {
+    // Game Rules
+    MAX_ROUNDS: 6,
+    WINNING_SCORE: 30,
+    MIN_PLAYERS: 2,
+    MAX_PLAYERS: 6,
+    DEFAULT_PLAYER_COUNT: 4,
+    
+    // Bid Constraints
+    MIN_BID: 1,
+    MAX_BID: 10,
+    
+    // Token Configuration
+    BLOCKING_TOKENS: {
+        LOW: 2,
+        MEDIUM: 4,
+        HIGH: 6
+    },
+    DEFAULT_TOKEN_SET: {2: 1, 4: 1, 6: 1},
+    
+    // UI Timing (milliseconds)
+    NOTIFICATION_DURATION: 3000,
+    ANIMATION_DELAY: 300,
+    FADE_IN_DELAY: 10,
+    
+    // Performance Settings
+    MAX_CONSOLE_MESSAGES: 500,
+    
+    // Test Configuration
+    TEST_PLAYER_NAMES: ['Alice', 'Bob', 'Charlie', 'Diana'],
+    
+    // Debug Mode
+    DEBUG_MODE: false,
+    ENABLE_CONSOLE_LOGGING: true
+};
+
+// Input validation utility functions
+function validateInput(value, type, options) {
+    options = options || {};
+    
+    switch (type) {
+        case 'string':
+            return value && typeof value === 'string' && 
+                   (!options.minLength || value.length >= options.minLength) &&
+                   (!options.maxLength || value.length <= options.maxLength);
+        case 'number':
+            return typeof value === 'number' && !isNaN(value) &&
+                   (!options.min || value >= options.min) &&
+                   (!options.max || value <= options.max);
+        case 'integer':
+            return Number.isInteger(value) &&
+                   (!options.min || value >= options.min) &&
+                   (!options.max || value <= options.max);
+        case 'array':
+            return Array.isArray(value) &&
+                   (!options.minLength || value.length >= options.minLength) &&
+                   (!options.maxLength || value.length <= options.maxLength);
+        default:
+            return value != null;
+    }
+}
+
+// Safe console logging with debug mode support
+function safeConsoleLog() {
+    try {
+        if (GAME_CONFIG.ENABLE_CONSOLE_LOGGING && console && console.log) {
+            console.log.apply(console, arguments);
+        }
+    } catch (error) {
+        // Fail silently if console is not available
+    }
+}
+
 // Non-blocking notification system for user feedback
 function showNotification(message, type) {
-    // Default type to 'info' if not specified
-    type = type || 'info';
-    
-    // Create notification element
-    var notification = document.createElement('div');
-    notification.className = 'notification notification-' + type;
-    notification.textContent = message;
-    
-    // Determine background color
-    var bgColor = type === 'error' ? '#ff4444' : type === 'success' ? '#44ff44' : '#4444ff';
-    
-    // Style the notification
-    notification.style.cssText = 
-        'position: fixed;' +
-        'top: 20px;' +
-        'right: 20px;' +
-        'padding: 12px 20px;' +
-        'background: ' + bgColor + ';' +
-        'color: white;' +
-        'border-radius: 4px;' +
-        'box-shadow: 0 2px 10px rgba(0,0,0,0.2);' +
-        'z-index: 10000;' +
-        'max-width: 300px;' +
-        'font-size: 14px;' +
-        'opacity: 0;' +
-        'transform: translateX(100%);' +
-        'transition: all 0.3s ease;';
-    
-    // Add to document
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(function() {
-        notification.style.opacity = '1';
-        notification.style.transform = 'translateX(0)';
-    }, 10);
-    
-    // Auto-remove after 3 seconds
-    setTimeout(function() {
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateX(100%)';
+    try {
+        // Input validation
+        if (!validateInput(message, 'string', {minLength: 1})) {
+            safeConsoleLog('showNotification: Invalid message parameter');
+            return false;
+        }
+        
+        // Default type to 'info' if not specified
+        type = type || 'info';
+        
+        // Validate DOM environment
+        if (!document || !document.body || !document.createElement) {
+            safeConsoleLog('showNotification: DOM not available');
+            return false;
+        }
+        
+        // Create notification element
+        var notification = document.createElement('div');
+        if (!notification) {
+            throw new Error('Failed to create notification element');
+        }
+        
+        notification.className = 'notification notification-' + type;
+        notification.textContent = message;
+        
+        // Determine background color
+        var bgColor = type === 'error' ? '#ff4444' : type === 'success' ? '#44ff44' : '#4444ff';
+        
+        // Style the notification
+        notification.style.cssText = 
+            'position: fixed;' +
+            'top: 20px;' +
+            'right: 20px;' +
+            'padding: 12px 20px;' +
+            'background: ' + bgColor + ';' +
+            'color: white;' +
+            'border-radius: 4px;' +
+            'box-shadow: 0 2px 10px rgba(0,0,0,0.2);' +
+            'z-index: 10000;' +
+            'max-width: 300px;' +
+            'font-size: 14px;' +
+            'opacity: 0;' +
+            'transform: translateX(100%);' +
+            'transition: all 0.3s ease;';
+        
+        // Add to document
+        document.body.appendChild(notification);
+        
+        // Animate in with error handling
         setTimeout(function() {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
+            try {
+                if (notification && notification.style) {
+                    notification.style.opacity = '1';
+                    notification.style.transform = 'translateX(0)';
+                }
+            } catch (animError) {
+                safeConsoleLog('Error animating notification:', animError);
             }
-        }, 300);
-    }, 3000);
-    
-    // Also log to console for automated testing
-    console.log('[NOTIFICATION] ' + message);
+        }, GAME_CONFIG.FADE_IN_DELAY);
+        
+        // Auto-remove after configured duration
+        setTimeout(function() {
+            try {
+                if (notification && notification.style) {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(function() {
+                        try {
+                            if (notification && notification.parentNode) {
+                                notification.parentNode.removeChild(notification);
+                            }
+                        } catch (removeError) {
+                            safeConsoleLog('Error removing notification:', removeError);
+                        }
+                    }, GAME_CONFIG.ANIMATION_DELAY);
+                }
+            } catch (fadeError) {
+                safeConsoleLog('Error fading notification:', fadeError);
+            }
+        }, GAME_CONFIG.NOTIFICATION_DURATION);
+        
+        // Log for automated testing
+        safeConsoleLog('[NOTIFICATION] ' + message);
+        return true;
+        
+    } catch (error) {
+        safeConsoleLog('Error in showNotification:', error);
+        // Fallback to console only
+        safeConsoleLog('[NOTIFICATION FALLBACK] ' + message);
+        return false;
+    }
 }
 
 // Visual console output for live monitoring during tests
 function addConsoleMessage(message, type) {
-    var consoleOutput = document.getElementById('consoleOutput');
-    if (!consoleOutput) {
-        // Fallback to original console if element not found
-        originalConsoleLog('[DEBUG] Console output element not found:', message);
-        return;
-    }
-    
-    var messageElement = document.createElement('div');
-    messageElement.className = 'console-message' + (type ? ' ' + type : '');
-    
-    // Add timestamp
-    var timestamp = new Date().toLocaleTimeString();
-    messageElement.textContent = '[' + timestamp + '] ' + message;
-    
-    consoleOutput.appendChild(messageElement);
-    
-    // Auto-scroll to bottom
-    consoleOutput.scrollTop = consoleOutput.scrollHeight;
-    
-    // Keep only last 500 messages for performance
-    var messages = consoleOutput.querySelectorAll('.console-message');
-    if (messages.length > 500) {
-        for (var i = 0; i < messages.length - 500; i++) {
-            messages[i].remove();
+    try {
+        // Input validation
+        if (!message) {
+            return false; // Silent fail for empty messages
         }
+        
+        var consoleOutput = document.getElementById('consoleOutput');
+        if (!consoleOutput) {
+            // Fallback to original console if element not found
+            if (typeof originalConsoleLog === 'function') {
+                originalConsoleLog('[DEBUG] Console output element not found:', message);
+            }
+            return false;
+        }
+        
+        var messageElement = document.createElement('div');
+        if (!messageElement) {
+            throw new Error('Failed to create message element');
+        }
+        
+        messageElement.className = 'console-message' + (type ? ' ' + type : '');
+        
+        // Add timestamp with error handling
+        var timestamp;
+        try {
+            timestamp = new Date().toLocaleTimeString();
+        } catch (timeError) {
+            timestamp = 'Unknown';
+        }
+        
+        messageElement.textContent = '[' + timestamp + '] ' + String(message);
+        
+        consoleOutput.appendChild(messageElement);
+        
+        // Auto-scroll to bottom with error handling
+        try {
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        } catch (scrollError) {
+            safeConsoleLog('Error scrolling console:', scrollError);
+        }
+        
+        // Keep only last configured number of messages for performance
+        try {
+            var messages = consoleOutput.querySelectorAll('.console-message');
+            if (messages && messages.length > GAME_CONFIG.MAX_CONSOLE_MESSAGES) {
+                var removeCount = messages.length - GAME_CONFIG.MAX_CONSOLE_MESSAGES;
+                for (var i = 0; i < removeCount; i++) {
+                    if (messages[i] && messages[i].remove) {
+                        messages[i].remove();
+                    }
+                }
+            }
+        } catch (cleanupError) {
+            safeConsoleLog('Error cleaning up console messages:', cleanupError);
+        }
+        
+        return true;
+        
+    } catch (error) {
+        safeConsoleLog('Error in addConsoleMessage:', error);
+        // Fallback to original console
+        if (typeof originalConsoleLog === 'function') {
+            originalConsoleLog('[CONSOLE FALLBACK]', message);
+        }
+        return false;
     }
 }
 
