@@ -68,6 +68,7 @@
                         <button class="btn primary" onclick="runFastAutomatedTest()" style="margin: 5px;">⚡ Fast Test</button>
                         <button class="btn secondary" onclick="viewTestResults()" style="margin: 5px;">📊 View Test Results</button>
                         <button class="btn secondary" onclick="resetAllStatistics()" style="margin: 5px;">🔄 Reset Stats</button>
+                        <button class="btn secondary" onclick="showScreen('rulesScreen')" style="margin: 5px;">⚙️ Rules Config</button>
                     </div>
                 </div>
             </div>
@@ -135,6 +136,10 @@
                     
                     <div id="drawnCardsInfo">
                         <!-- Cards drawn info goes here -->
+                    </div>
+                    
+                    <div id="ownedCardsInfo" style="display: none;">
+                        <!-- Owned cards info goes here -->
                     </div>
                     
                     <div class="form-card">
@@ -464,6 +469,169 @@
                         <button class="btn primary" onclick="runAutomatedTest()">🤖 Run New Test</button>
                         <button class="btn secondary" onclick="exportTestResults()">📤 Export Results</button>
                         <button class="btn secondary" onclick="clearTestResults()">🗑️ Clear Results</button>
+                        <button class="btn secondary" onclick="showScreen('titleScreen')">🏠 Back to Home</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rules Configuration Screen -->
+            <div id="rulesScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">⚙️ Rules Configuration</h2>
+                    <p class="screen-subtitle">Configure game mechanics for testing and iteration</p>
+                </div>
+                
+                <div class="screen-content">
+                    <!-- Quick Presets -->
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">🎮</div>
+                            <div class="section-title">Game Mode Presets</div>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="btn secondary" onclick="loadRulePreset('classic')" style="flex: 1;">Classic</button>
+                            <button class="btn secondary" onclick="loadRulePreset('tokenOwnership')" style="flex: 1;">Token Ownership</button>
+                            <button class="btn secondary" onclick="loadRulePreset('highStakes')" style="flex: 1;">High Stakes</button>
+                            <button class="btn secondary" onclick="loadRulePreset('experimental')" style="flex: 1;">Experimental</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Token Economics -->
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">💎</div>
+                            <div class="section-title">Token Economics</div>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label for="startingTokens">Starting Tokens (each type):</label>
+                            <input type="number" id="startingTokens" value="1" min="0" max="5" style="width: 60px;">
+                            <span class="rule-description">How many 2s, 4s, and 6s each player starts with</span>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label for="blockingReward">Blocking Points:</label>
+                            <input type="number" id="blockingReward" value="1" min="0" max="10" style="width: 60px;" disabled>
+                            <span class="rule-description">AUTOMATIC: Points = token value used (2-token = 2pts, 6-token = 6pts)</span>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label><input type="checkbox" id="tokenOwnership"> Token Ownership</label>
+                            <span class="rule-description">When you successfully block a card (like China), you own that token for future use</span>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label><input type="checkbox" id="requireSuccessfulBlock" checked> Require Successful Block</label>
+                            <span class="rule-description">Must successfully block to gain token ownership (if Token Ownership enabled)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Bidding & Scoring -->
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">🏆</div>
+                            <div class="section-title">Bidding & Scoring</div>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label><input type="checkbox" id="competitiveBidding" checked> Competitive Bidding</label>
+                            <span class="rule-description">Multiple players can bid against each other</span>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label><input type="checkbox" id="mustStartAtOne" checked> Must Start at 1 Card</label>
+                            <span class="rule-description">Bidding always starts at 1 card and builds up</span>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label for="bidMultiplier">Bid Success Multiplier:</label>
+                            <input type="number" id="bidMultiplier" value="1.0" min="0.5" max="5.0" step="0.5" style="width: 80px;">
+                            <span class="rule-description">Multiply bid success points (1.0 = normal, 2.0 = double points)</span>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label for="maxBid">Maximum Bid:</label>
+                            <input type="number" id="maxBid" value="10" min="1" max="20" style="width: 60px;">
+                            <span class="rule-description">Highest number of cards that can be bid</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Pool Mechanics -->
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">🃏</div>
+                            <div class="section-title">Card Pool Mechanics</div>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label><input type="checkbox" id="allowBlocking" checked> Allow Blocking</label>
+                            <span class="rule-description">Players can use blocking tokens to challenge the bidder</span>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label><input type="checkbox" id="tokenReplacement"> Token Replacement in Pool</label>
+                            <span class="rule-description">Replace any card in the 10 with one of your owned tokens</span>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label><input type="checkbox" id="refreshUsedCards"> Refresh Used Cards</label>
+                            <span class="rule-description">Replace cards used in ranking attempts with new cards next round</span>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label><input type="checkbox" id="allowOwnedInSelection"> Use Owned Tokens in Selection</label>
+                            <span class="rule-description">Use your owned tokens when selecting cards for ranking</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Game Flow -->
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">🎯</div>
+                            <div class="section-title">Game Flow</div>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label for="maxRounds">Maximum Rounds:</label>
+                            <input type="number" id="maxRounds" value="6" min="1" max="15" style="width: 60px;">
+                            <span class="rule-description">Game ends after this many rounds</span>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label for="winningScore">Winning Score:</label>
+                            <input type="number" id="winningScore" value="30" min="10" max="100" style="width: 60px;">
+                            <span class="rule-description">Score needed to win the game</span>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label for="endGameTokenPoints">Points per Country Token at End:</label>
+                            <input type="number" id="endGameTokenPoints" value="1" min="0" max="5" style="width: 60px;">
+                            <span class="rule-description">Bonus points for each owned country token at game end (0 = disabled)</span>
+                        </div>
+                        
+                        <div class="rule-item">
+                            <label for="endGameBlockingTokenPoints">Points per Blocking Token at End:</label>
+                            <input type="number" id="endGameBlockingTokenPoints" value="1" min="0" max="5" style="width: 60px;">
+                            <span class="rule-description">Bonus points for each remaining blocking token at game end (0 = disabled)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Live Preview -->
+                    <div class="info-card">
+                        <div class="section-header">
+                            <div class="section-icon">📋</div>
+                            <div class="section-title">Current Configuration</div>
+                        </div>
+                        <div id="rulesPreview" style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px;">
+                            <div id="activeRulesList">Rules configuration will appear here...</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="button-group">
+                        <button class="btn primary" onclick="applyRulesAndStart()">🚀 Apply Rules & Start Game</button>
+                        <button class="btn secondary" onclick="updateRulesPreview()">🔄 Update Preview</button>
                         <button class="btn secondary" onclick="showScreen('titleScreen')">🏠 Back to Home</button>
                     </div>
                 </div>
