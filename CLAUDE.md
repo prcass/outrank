@@ -58,7 +58,12 @@ Know-It-All is a JavaScript-based trivia ranking game where players bid on how m
 - **Testing**: Built-in automated test system with visual console
 - **Cards**: Comprehensive lifecycle tracking with statistics
 
-## Current State (July 2025 - Last Updated: July 12)
+## Version History
+- **2025-07-14 v2.1** `stable-ui-v2.1`: All UI issues fixed, responsive design, leaderboard working
+- **2025-07-12 v2.0**: State management migration completed, Fast Automated Test functional  
+- **2025-07-06 v1.9**: Code quality improvements, security enhancements
+
+## Current State (July 2025 - Last Updated: July 14)
 - ✅ Fully functional with all mechanics implemented
 - ✅ Movie category added with 47 comprehensive entries
 - ✅ End-game token scoring (1 point per remaining token)
