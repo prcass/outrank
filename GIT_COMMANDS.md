@@ -66,13 +66,13 @@ git checkout main  # Return to main branch
 ```
 
 ## Current Stable Versions
-- `stable-ui-v2.1` - All UI fixes complete, responsive design working
+- `outrank-v2.1` - All UI fixes complete, responsive design working
 - Add new stable versions here as you create them
 
 ## Emergency Rollback
 If everything breaks:
 ```bash
-git checkout stable-ui-v2.1
+git checkout outrank-v2.1
 ```
 
 This will return you to the last known working state.
