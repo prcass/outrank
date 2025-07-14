@@ -1,4 +1,4 @@
-# Know-It-All Game - Project Context for Claude
+# Outrank Game - Project Context for Claude
 
 @COMMANDS.md
 @DEVELOPMENT.md
@@ -11,7 +11,7 @@
 - Be innovative and think outside the box
 
 ## Overview
-Know-It-All is a JavaScript-based trivia ranking game where players bid on how many cards they can rank correctly in various categories. Mobile-first web application with phone-like interface.
+Outrank is a JavaScript-based trivia ranking game where players bid on how many cards they can rank correctly in various categories. Mobile-first web application with phone-like interface.
 
 **Categories Available:**
 - **Countries** (40 items): Coffee consumption, happiness rankings, GDP, etc.
