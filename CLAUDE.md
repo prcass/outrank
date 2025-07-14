@@ -97,6 +97,13 @@ Outrank is a JavaScript-based trivia ranking game where players bid on how many 
 - **Error handling** → Try-catch for all user interactions
 - **Testing** → Use built-in automated test button + manual verification
 - **Debugging** → Console messages with emoji prefixes for easy filtering
+- **Version Control** → AUTOMATIC: Use `./auto-save.sh` after changes, `checkpoint` for stable states
+
+## Automatic Safeguards
+- **Pre-commit hooks** → Automatically remind about documentation
+- **Auto-save script** → `./auto-save.sh "description"` - saves and pushes to Outrank
+- **Session commands** → `source session-commands.sh` for easy git operations
+- **Emergency rollback** → `git checkout outrank-v2.1` always available
 
 ## Known Edge Cases
 - Token distribution must always sum correctly
