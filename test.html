@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Server Test</title>
+</head>
+<body>
+    <h1>Server is working!</h1>
+    <p>If you can see this, the server is running correctly.</p>
+    <p>Click <a href="/">here</a> to go to the game.</p>
+    
+    <h2>Debug Info:</h2>
+    <div id="debug"></div>
+    
+    <script>
+        document.getElementById('debug').innerHTML = 
+            'Current URL: ' + window.location.href + '<br>' +
+            'Server accessible: Yes<br>' +
+            'JavaScript enabled: Yes';
+    </script>
+</body>
+</html>

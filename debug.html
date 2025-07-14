@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know-It-All Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        pre { 
+            background-color: white; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            overflow-x: auto; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Know-It-All Game Debug Page</h1>
+    
+    <div id="status"></div>
+    
+    <h2>Loading Status:</h2>
+    <div id="loadStatus"></div>
+    
+    <h2>Console Output:</h2>
+    <pre id="console"></pre>
+    
+    <script>
+        const status = document.getElementById('status');
+        const loadStatus = document.getElementById('loadStatus');
+        const consoleDiv = document.getElementById('console');
+        
+        // Override console.log and console.error
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            consoleDiv.innerHTML += args.join(' ') + '\n';
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            consoleDiv.innerHTML += '<span style="color: red">ERROR: ' + args.join(' ') + '</span>\n';
+        };
+        
+        // Test basic functionality
+        status.innerHTML = '<div class="status success">✓ Basic JavaScript is working</div>';
+        
+        // Try to load data.js
+        loadStatus.innerHTML += '<div class="status info">Loading data.js...</div>';
+        
+        const dataScript = document.createElement('script');
+        dataScript.src = 'data.js?v=' + Date.now();
+        dataScript.onload = function() {
+            loadStatus.innerHTML += '<div class="status success">✓ data.js loaded successfully</div>';
+            
+            // Check if GAME_DATA exists
+            if (typeof window.GAME_DATA !== 'undefined') {
+                loadStatus.innerHTML += '<div class="status success">✓ GAME_DATA object found</div>';
+                console.log('Categories found:', Object.keys(window.GAME_DATA.categories));
+                
+                // Check movie data
+                if (window.GAME_DATA.categories.movies) {
+                    const movieCount = Object.keys(window.GAME_DATA.categories.movies.items).length;
+                    loadStatus.innerHTML += '<div class="status success">✓ Movies category found with ' + movieCount + ' movies</div>';
+                }
+            } else {
+                loadStatus.innerHTML += '<div class="status error">✗ GAME_DATA object not found</div>';
+            }
+            
+            // Now try to load game.js
+            loadStatus.innerHTML += '<div class="status info">Loading game.js...</div>';
+            
+            const gameScript = document.createElement('script');
+            gameScript.src = 'game.js?v=' + Date.now();
+            gameScript.onload = function() {
+                loadStatus.innerHTML += '<div class="status success">✓ game.js loaded successfully</div>';
+                loadStatus.innerHTML += '<div class="status info">Check console output above for any errors</div>';
+                loadStatus.innerHTML += '<br><a href="index.html" class="status info" style="display:inline-block;text-decoration:none;">Click here to try the main game</a>';
+            };
+            gameScript.onerror = function(e) {
+                loadStatus.innerHTML += '<div class="status error">✗ Failed to load game.js: ' + e + '</div>';
+            };
+            document.head.appendChild(gameScript);
+        };
+        dataScript.onerror = function(e) {
+            loadStatus.innerHTML += '<div class="status error">✗ Failed to load data.js: ' + e + '</div>';
+        };
+        document.head.appendChild(dataScript);
+    </script>
+</body>
+</html>
