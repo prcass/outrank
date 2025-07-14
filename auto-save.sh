@@ -23,11 +23,24 @@ BRANCH=$(git branch --show-current)
 # Stage all changes
 git add .
 
-# Create descriptive commit message
+# Get commit message
 if [ "$1" ]; then
+    # Description provided as argument
     COMMIT_MSG="$1"
 else
-    COMMIT_MSG="🔄 Auto-save: $TIMESTAMP"
+    # Interactive mode - prompt for description
+    echo ""
+    echo "📝 What changes did you make?"
+    echo "   Examples: 'fixed fonts', 'added feature', 'bug fix'"
+    echo "   (or press Enter for timestamp only)"
+    echo ""
+    read -p "💬 Description: " USER_INPUT
+    
+    if [ -n "$USER_INPUT" ]; then
+        COMMIT_MSG="$USER_INPUT"
+    else
+        COMMIT_MSG="🔄 Auto-save: $TIMESTAMP"
+    fi
 fi
 
 # Commit changes
