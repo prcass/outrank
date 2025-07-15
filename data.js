@@ -42,6 +42,7 @@ window.GAME_DATA = {
             items: {
         "USA": {
             name: "United States",
+            code: "USA",
             coffee_consumption: 4.7,
             chocolate_consumption: 4.4,
             wine_consumption: 12.1,
@@ -78,6 +79,7 @@ window.GAME_DATA = {
         },
         "CHN": {
             name: "China",
+            code: "CHN",
             coffee_consumption: 0.05,
             chocolate_consumption: 0.2,
             wine_consumption: 1.2,
@@ -114,6 +116,7 @@ window.GAME_DATA = {
         },
         "JPN": {
             name: "Japan",
+            code: "JPN",
             coffee_consumption: 4.1,
             chocolate_consumption: 2.1,
             wine_consumption: 2.8,
@@ -150,6 +153,7 @@ window.GAME_DATA = {
         },
         "DEU": {
             name: "Germany",
+            code: "DEU",
             coffee_consumption: 7.4,
             chocolate_consumption: 8.8,
             wine_consumption: 27.6,
@@ -186,6 +190,7 @@ window.GAME_DATA = {
         },
         "GBR": {
             name: "United Kingdom",
+            code: "GBR",
             coffee_consumption: 2.8,
             chocolate_consumption: 7.6,
             wine_consumption: 20.8,
@@ -222,6 +227,7 @@ window.GAME_DATA = {
         },
         "FRA": {
             name: "France",
+            code: "FRA",
             coffee_consumption: 5.4,
             chocolate_consumption: 6.3,
             wine_consumption: 46.9,
@@ -258,6 +264,7 @@ window.GAME_DATA = {
         },
         "IND": {
             name: "India",
+            code: "IND",
             coffee_consumption: 0.09,
             chocolate_consumption: 0.2,
             wine_consumption: 0.005,
@@ -294,6 +301,7 @@ window.GAME_DATA = {
         },
         "ITA": {
             name: "Italy",
+            code: "ITA",
             coffee_consumption: 5.9,
             chocolate_consumption: 4,
             wine_consumption: 46.6,
@@ -330,6 +338,7 @@ window.GAME_DATA = {
         },
         "BRA": {
             name: "Brazil",
+            code: "BRA",
             coffee_consumption: 6.2,
             chocolate_consumption: 2.2,
             wine_consumption: 1.8,
@@ -366,6 +375,7 @@ window.GAME_DATA = {
         },
         "CAN": {
             name: "Canada",
+            code: "CAN",
             coffee_consumption: 6.5,
             chocolate_consumption: 4.9,
             wine_consumption: 16.2,
@@ -402,6 +412,7 @@ window.GAME_DATA = {
         },
         "RUS": {
             name: "Russia",
+            code: "RUS",
             coffee_consumption: 1.7,
             chocolate_consumption: 2.1,
             wine_consumption: 7.8,
@@ -438,6 +449,7 @@ window.GAME_DATA = {
         },
         "KOR": {
             name: "South Korea",
+            code: "KOR",
             coffee_consumption: 2.3,
             chocolate_consumption: 2.4,
             wine_consumption: 1.9,
@@ -474,6 +486,7 @@ window.GAME_DATA = {
         },
         "AUS": {
             name: "Australia",
+            code: "AUS",
             coffee_consumption: 3,
             chocolate_consumption: 4.8,
             wine_consumption: 22.8,
@@ -510,6 +523,7 @@ window.GAME_DATA = {
         },
         "ESP": {
             name: "Spain",
+            code: "ESP",
             coffee_consumption: 4.5,
             chocolate_consumption: 3.8,
             wine_consumption: 21.6,
@@ -546,6 +560,7 @@ window.GAME_DATA = {
         },
         "MEX": {
             name: "Mexico",
+            code: "MEX",
             coffee_consumption: 1.4,
             chocolate_consumption: 1.4,
             wine_consumption: 0.7,
@@ -582,6 +597,7 @@ window.GAME_DATA = {
         },
         "IDN": {
             name: "Indonesia",
+            code: "IDN",
             coffee_consumption: 1.3,
             chocolate_consumption: 0.1,
             wine_consumption: 0.02,
@@ -618,6 +634,7 @@ window.GAME_DATA = {
         },
         "NLD": {
             name: "Netherlands",
+            code: "NLD",
             coffee_consumption: 8.4,
             chocolate_consumption: 6.7,
             wine_consumption: 19,
@@ -654,6 +671,7 @@ window.GAME_DATA = {
         },
         "SAU": {
             name: "Saudi Arabia",
+            code: "SAU",
             coffee_consumption: 3.1,
             chocolate_consumption: 1.2,
             wine_consumption: 0,
@@ -690,6 +708,7 @@ window.GAME_DATA = {
         },
         "TUR": {
             name: "Turkey",
+            code: "TUR",
             coffee_consumption: 3.4,
             chocolate_consumption: 1.8,
             wine_consumption: 0.5,
@@ -726,6 +745,7 @@ window.GAME_DATA = {
         },
         "TWN": {
             name: "Taiwan",
+            code: "TWN",
             coffee_consumption: 1.5,
             chocolate_consumption: 1.1,
             wine_consumption: 0.8,
@@ -762,6 +782,7 @@ window.GAME_DATA = {
         },
         "BEL": {
             name: "Belgium",
+            code: "BEL",
             coffee_consumption: 6.8,
             chocolate_consumption: 6.6,
             wine_consumption: 20,
@@ -798,6 +819,7 @@ window.GAME_DATA = {
         },
         "ARG": {
             name: "Argentina",
+            code: "ARG",
             coffee_consumption: 1.1,
             chocolate_consumption: 1.9,
             wine_consumption: 18,
@@ -834,6 +856,7 @@ window.GAME_DATA = {
         },
         "IRL": {
             name: "Ireland",
+            code: "IRL",
             coffee_consumption: 5.2,
             chocolate_consumption: 7.9,
             wine_consumption: 26,
@@ -870,6 +893,7 @@ window.GAME_DATA = {
         },
         "ISR": {
             name: "Israel",
+            code: "ISR",
             coffee_consumption: 6.8,
             chocolate_consumption: 3.5,
             wine_consumption: 5.5,
@@ -906,6 +930,7 @@ window.GAME_DATA = {
         },
         "THA": {
             name: "Thailand",
+            code: "THA",
             coffee_consumption: 1.2,
             chocolate_consumption: 0.5,
             wine_consumption: 0.6,
@@ -942,6 +967,7 @@ window.GAME_DATA = {
         },
         "EGY": {
             name: "Egypt",
+            code: "EGY",
             coffee_consumption: 0.9,
             chocolate_consumption: 0.3,
             wine_consumption: 0.1,
@@ -978,6 +1004,7 @@ window.GAME_DATA = {
         },
         "ZAF": {
             name: "South Africa",
+            code: "ZAF",
             coffee_consumption: 1.2,
             chocolate_consumption: 1.7,
             wine_consumption: 7.5,
@@ -1014,6 +1041,7 @@ window.GAME_DATA = {
         },
         "PHL": {
             name: "Philippines",
+            code: "PHL",
             coffee_consumption: 0.6,
             chocolate_consumption: 0.07,
             wine_consumption: 0.1,
@@ -1050,6 +1078,7 @@ window.GAME_DATA = {
         },
         "MYS": {
             name: "Malaysia",
+            code: "MYS",
             coffee_consumption: 1.5,
             chocolate_consumption: 0.6,
             wine_consumption: 0.2,
@@ -1086,6 +1115,7 @@ window.GAME_DATA = {
         },
         "CHL": {
             name: "Chile",
+            code: "CHL",
             coffee_consumption: 3,
             chocolate_consumption: 2,
             wine_consumption: 15.5,
@@ -1122,6 +1152,7 @@ window.GAME_DATA = {
         },
         "FIN": {
             name: "Finland",
+            code: "FIN",
             coffee_consumption: 12,
             chocolate_consumption: 7,
             wine_consumption: 13,
@@ -1158,6 +1189,7 @@ window.GAME_DATA = {
         },
         "DNK": {
             name: "Denmark",
+            code: "DNK",
             coffee_consumption: 8.7,
             chocolate_consumption: 7.3,
             wine_consumption: 16,
@@ -1194,6 +1226,7 @@ window.GAME_DATA = {
         },
         "NOR": {
             name: "Norway",
+            code: "NOR",
             coffee_consumption: 9.9,
             chocolate_consumption: 7.4,
             wine_consumption: 10,
@@ -1230,6 +1263,7 @@ window.GAME_DATA = {
         },
         "NZL": {
             name: "New Zealand",
+            code: "NZL",
             coffee_consumption: 2.9,
             chocolate_consumption: 4.2,
             wine_consumption: 24,
@@ -1266,6 +1300,7 @@ window.GAME_DATA = {
         },
         "VNM": {
             name: "Vietnam",
+            code: "VNM",
             coffee_consumption: 1.5,
             chocolate_consumption: 0.1,
             wine_consumption: 0.1,
@@ -1302,6 +1337,7 @@ window.GAME_DATA = {
         },
         "BGD": {
             name: "Bangladesh",
+            code: "BGD",
             coffee_consumption: 0.01,
             chocolate_consumption: 0.05,
             wine_consumption: 0,
@@ -1338,6 +1374,7 @@ window.GAME_DATA = {
         },
         "NGA": {
             name: "Nigeria",
+            code: "NGA",
             coffee_consumption: 0.8,
             chocolate_consumption: 0.1,
             wine_consumption: 0.02,
@@ -1374,6 +1411,7 @@ window.GAME_DATA = {
         },
         "KEN": {
             name: "Kenya",
+            code: "KEN",
             coffee_consumption: 0.4,
             chocolate_consumption: 0.2,
             wine_consumption: 0.05,
@@ -1410,6 +1448,7 @@ window.GAME_DATA = {
         },
         "GRC": {
             name: "Greece",
+            code: "GRC",
             coffee_consumption: 5.4,
             chocolate_consumption: 2.1,
             wine_consumption: 21,
@@ -1446,6 +1485,7 @@ window.GAME_DATA = {
         },
         "PRT": {
             name: "Portugal",
+            code: "PRT",
             coffee_consumption: 4.3,
             chocolate_consumption: 2.9,
             wine_consumption: 52.3,
@@ -1525,6 +1565,7 @@ window.GAME_DATA = {
             items: {
                 "AVATAR": {
                     name: "Avatar",
+                    code: "AVT",
                     box_office_gross: 2923.7,
                     production_budget: 237,
                     runtime_minutes: 162,
@@ -1561,6 +1602,7 @@ window.GAME_DATA = {
                 },
                 "TITANIC": {
                     name: "Titanic",
+                    code: "TIT",
                     box_office_gross: 2264.8,
                     production_budget: 200,
                     runtime_minutes: 195,
@@ -1597,6 +1639,7 @@ window.GAME_DATA = {
                 },
                 "AVENGERS_ENDGAME": {
                     name: "Avengers: Endgame",
+                    code: "AEG",
                     box_office_gross: 2798.0,
                     production_budget: 356,
                     runtime_minutes: 181,
@@ -1633,6 +1676,7 @@ window.GAME_DATA = {
                 },
                 "STAR_WARS_VII": {
                     name: "Star Wars: The Force Awakens",
+                    code: "SW7",
                     box_office_gross: 2071.3,
                     production_budget: 245,
                     runtime_minutes: 138,
@@ -1669,6 +1713,7 @@ window.GAME_DATA = {
                 },
                 "AVENGERS_INFINITY_WAR": {
                     name: "Avengers: Infinity War",
+                    code: "AIW",
                     box_office_gross: 2048.4,
                     production_budget: 321,
                     runtime_minutes: 149,
@@ -1705,6 +1750,7 @@ window.GAME_DATA = {
                 },
                 "SPIDER_MAN_NO_WAY_HOME": {
                     name: "Spider-Man: No Way Home",
+                    code: "SNH",
                     box_office_gross: 1921.8,
                     production_budget: 200,
                     runtime_minutes: 148,
@@ -1741,6 +1787,7 @@ window.GAME_DATA = {
                 },
                 "JURASSIC_WORLD": {
                     name: "Jurassic World",
+                    code: "JUW",
                     box_office_gross: 1672.8,
                     production_budget: 150,
                     runtime_minutes: 124,
@@ -1777,6 +1824,7 @@ window.GAME_DATA = {
                 },
                 "THE_LION_KING_2019": {
                     name: "The Lion King (2019)",
+                    code: "LK9",
                     box_office_gross: 1656.9,
                     production_budget: 260,
                     runtime_minutes: 118,
@@ -1813,6 +1861,7 @@ window.GAME_DATA = {
                 },
                 "FURIOUS_7": {
                     name: "Furious 7",
+                    code: "FU7",
                     box_office_gross: 1515.3,
                     production_budget: 190,
                     runtime_minutes: 137,
@@ -1849,6 +1898,7 @@ window.GAME_DATA = {
                 },
                 "FROZEN2": {
                     name: "Frozen 2",
+                    code: "FR2",
                     box_office_gross: 1453.7,
                     production_budget: 150,
                     runtime_minutes: 103,
@@ -1885,6 +1935,7 @@ window.GAME_DATA = {
                 },
                 "TOPGUNMAVERICK": {
                     name: "Top Gun: Maverick",
+                    code: "TGM",
                     box_office_gross: 1495.7,
                     production_budget: 170,
                     runtime_minutes: 131,
@@ -1921,6 +1972,7 @@ window.GAME_DATA = {
                 },
                 "BLACKPANTHER": {
                     name: "Black Panther",
+                    code: "BLP",
                     box_office_gross: 1349.9,
                     production_budget: 200,
                     runtime_minutes: 134,
@@ -1957,6 +2009,7 @@ window.GAME_DATA = {
                 },
                 "BARBIE": {
                     name: "Barbie",
+                    code: "BAR",
                     box_office_gross: 1446.3,
                     production_budget: 145,
                     runtime_minutes: 114,
@@ -1993,6 +2046,7 @@ window.GAME_DATA = {
                 },
                 "FROZEN": {
                     name: "Frozen",
+                    code: "FRZ",
                     box_office_gross: 1284.5,
                     production_budget: 150,
                     runtime_minutes: 102,
@@ -2029,6 +2083,7 @@ window.GAME_DATA = {
                 },
                 "INCREDIBLES2": {
                     name: "Incredibles 2",
+                    code: "IN2",
                     box_office_gross: 1243.1,
                     production_budget: 200,
                     runtime_minutes: 118,
@@ -2065,6 +2120,7 @@ window.GAME_DATA = {
                 },
                 "BEAUTYANDTHEBEAST": {
                     name: "Beauty and the Beast (2017)",
+                    code: "BAB",
                     box_office_gross: 1264.1,
                     production_budget: 160,
                     runtime_minutes: 129,
@@ -2101,6 +2157,7 @@ window.GAME_DATA = {
                 },
                 "MINIONS": {
                     name: "Minions",
+                    code: "MIN",
                     box_office_gross: 1157.4,
                     production_budget: 74,
                     runtime_minutes: 91,
@@ -2137,6 +2194,7 @@ window.GAME_DATA = {
                 },
                 "IRONMAN3": {
                     name: "Iron Man 3",
+                    code: "IM3",
                     box_office_gross: 1215.4,
                     production_budget: 200,
                     runtime_minutes: 130,
@@ -2173,6 +2231,7 @@ window.GAME_DATA = {
                 },
                 "CAPTAINAMERICACIVILWAR": {
                     name: "Captain America: Civil War",
+                    code: "CAC",
                     box_office_gross: 1155.0,
                     production_budget: 250,
                     runtime_minutes: 147,
@@ -2209,6 +2268,7 @@ window.GAME_DATA = {
                 },
                 "AQUAMAN": {
                     name: "Aquaman",
+                    code: "AQM",
                     box_office_gross: 1152.0,
                     production_budget: 160,
                     runtime_minutes: 143,
@@ -2245,6 +2305,7 @@ window.GAME_DATA = {
                 },
                 "SKYFALL": {
                     name: "Skyfall",
+                    code: "SKY",
                     box_office_gross: 1142.5,
                     production_budget: 200,
                     runtime_minutes: 143,
@@ -2281,6 +2342,7 @@ window.GAME_DATA = {
                 },
                 "JOKER": {
                     name: "Joker",
+                    code: "JOK",
                     box_office_gross: 1079.0,
                     production_budget: 55,
                     runtime_minutes: 122,
@@ -2317,6 +2379,7 @@ window.GAME_DATA = {
                 },
                 "TOYSTORY4": {
                     name: "Toy Story 4",
+                    code: "TS4",
                     box_office_gross: 1073.8,
                     production_budget: 200,
                     runtime_minutes: 100,
@@ -2353,6 +2416,7 @@ window.GAME_DATA = {
                 },
                 "TOYSTORY3": {
                     name: "Toy Story 3",
+                    code: "TS3",
                     box_office_gross: 1067.3,
                     production_budget: 200,
                     runtime_minutes: 103,
@@ -2389,6 +2453,7 @@ window.GAME_DATA = {
                 },
                 "FINDINGDORY": {
                     name: "Finding Dory",
+                    code: "FDO",
                     box_office_gross: 1029.3,
                     production_budget: 200,
                     runtime_minutes: 97,
@@ -2425,6 +2490,7 @@ window.GAME_DATA = {
                 },
                 "ALADDIN2019": {
                     name: "Aladdin (2019)",
+                    code: "AL9",
                     box_office_gross: 1054.3,
                     production_budget: 183,
                     runtime_minutes: 128,
@@ -2461,6 +2527,7 @@ window.GAME_DATA = {
                 },
                 "ZOOTOPIA": {
                     name: "Zootopia",
+                    code: "ZOO",
                     box_office_gross: 1025.5,
                     production_budget: 150,
                     runtime_minutes: 108,
@@ -2497,6 +2564,7 @@ window.GAME_DATA = {
                 },
                 "ALICE2010": {
                     name: "Alice in Wonderland (2010)",
+                    code: "ALI",
                     box_office_gross: 1025.5,
                     production_budget: 200,
                     runtime_minutes: 108,
@@ -2533,6 +2601,7 @@ window.GAME_DATA = {
                 },
                 "PIRATESDEADMAN": {
                     name: "Pirates of the Caribbean: Dead Man's Chest",
+                    code: "PDM",
                     box_office_gross: 1066.2,
                     production_budget: 225,
                     runtime_minutes: 151,
@@ -2569,6 +2638,7 @@ window.GAME_DATA = {
                 },
                 "HOBBITUNEXPECTED": {
                     name: "The Hobbit: An Unexpected Journey",
+                    code: "HUJ",
                     box_office_gross: 1017.0,
                     production_budget: 180,
                     runtime_minutes: 169,
@@ -2605,6 +2675,7 @@ window.GAME_DATA = {
                 },
                 "DARKKNIGHTRISES": {
                     name: "The Dark Knight Rises",
+                    code: "DKR",
                     box_office_gross: 1081.1,
                     production_budget: 250,
                     runtime_minutes: 165,
@@ -2641,6 +2712,7 @@ window.GAME_DATA = {
                 },
                 "ROGUE1": {
                     name: "Rogue One: A Star Wars Story",
+                    code: "RO1",
                     box_office_gross: 1058.7,
                     production_budget: 200,
                     runtime_minutes: 133,
@@ -2677,6 +2749,7 @@ window.GAME_DATA = {
                 },
                 "DESPICABLEME3": {
                     name: "Despicable Me 3",
+                    code: "DM3",
                     box_office_gross: 1034.8,
                     production_budget: 80,
                     runtime_minutes: 90,
@@ -2713,6 +2786,7 @@ window.GAME_DATA = {
                 },
                 "JURASSICWORLDFALLEN": {
                     name: "Jurassic World: Fallen Kingdom",
+                    code: "JWF",
                     box_office_gross: 1310.5,
                     production_budget: 170,
                     runtime_minutes: 128,
@@ -2749,6 +2823,7 @@ window.GAME_DATA = {
                 },
                 "JURASSICWORLDDOMINION": {
                     name: "Jurassic World Dominion",
+                    code: "JWD",
                     box_office_gross: 1001.9,
                     production_budget: 185,
                     runtime_minutes: 147,
@@ -2785,6 +2860,7 @@ window.GAME_DATA = {
                 },
                 "TRANSFORMERSDARK": {
                     name: "Transformers: Dark of the Moon",
+                    code: "TDM",
                     box_office_gross: 1123.8,
                     production_budget: 195,
                     runtime_minutes: 154,
@@ -2821,6 +2897,7 @@ window.GAME_DATA = {
                 },
                 "TRANSFORMERSAGE": {
                     name: "Transformers: Age of Extinction",
+                    code: "TAE",
                     box_office_gross: 1104.1,
                     production_budget: 210,
                     runtime_minutes: 165,

@@ -1,3 +1,5 @@
+console.log('🚨🚨🚨 GAME.JS v13 LOADING! 🚨🚨🚨');
+
 /**
  * @fileoverview Know-It-All Trivia Ranking Game
  * 
@@ -598,7 +600,7 @@ var ACTIVE_RULES = {
     // Card Pool Mechanics
     allowBlocking: true,            // Players can use blocking tokens
     tokenReplacement: false,        // Replace cards in pool with owned tokens
-    refreshUsedCards: false,        // Replace used cards between rounds
+    refreshUsedCards: true,         // Replace used cards between rounds
     allowOwnedInSelection: false,   // Use owned tokens in card selection
     
     // Game Flow
@@ -1398,123 +1400,194 @@ function showNotification(message, type) {
 }
 
 /**
- * Show notification about card replacements between rounds
- * @param {Array} removedCards - Cards that were used/owned in previous round
- * @param {Array} addedCards - New cards that replaced them
+ * Show notification about token replacements between rounds
+ * @param {Array} removedTokens - Tokens that were used/owned in previous round
+ * @param {Array} addedTokens - New tokens that replaced them
  */
-function showCardReplacementNotification(removedCards, addedCards) {
+function showTokenReplacementNotification(removedTokens, addedTokens) {
     try {
-        if ((!removedCards || removedCards.length === 0) && (!addedCards || addedCards.length === 0)) {
+        // Always show screen in Round 2+ even if no specific tokens tracked
+        if (getCurrentRound() < 2) {
             return;
         }
         
-        // Build notification message
-        var message = '🔄 Round ' + getCurrentRound() + ' Card Replacements:\n\n';
+        console.log('📱 Showing token replacement screen...');
         
-        if (removedCards.length > 0) {
-            message += '❌ Removed Cards:\n';
-            removedCards.forEach(function(cardId) {
-                var currentCategory = GameState.get('currentCategory') || 'countries';
-                var categoryData = window.GAME_DATA.categories[currentCategory];
-                var item = categoryData ? categoryData.items[cardId] : null;
-                var reason = '';
-                // Check if it was used in ranking
-                if (window.lastRoundSelectedCards && window.lastRoundSelectedCards.includes(cardId)) {
-                    reason = ' (used in ranking - removed forever)';
-                }
-                // Check if it became owned
-                else if (window.lastRoundNewlyOwnedCards && window.lastRoundNewlyOwnedCards.includes(cardId)) {
-                    reason = ' (now owned by blocker)';
-                }
-                message += '  • ' + (item ? item.name : cardId) + reason + '\n';
-            });
-            message += '\n';
-        }
-        
-        if (addedCards.length > 0) {
-            message += '✅ New Cards:\n';
-            addedCards.forEach(function(cardId) {
-                var currentCategory = GameState.get('currentCategory') || 'countries';
-                var categoryData = window.GAME_DATA.categories[currentCategory];
-                var item = categoryData ? categoryData.items[cardId] : null;
-                message += '  • ' + (item ? item.name : cardId) + '\n';
-            });
-        }
-        
-        if (removedCards.length === 0 && addedCards.length === 0) {
-            message += '🔄 No replacements - all cards remain from last round';
-        }
-        
-        // Show notification with longer duration for card changes
-        console.log(message);
-        showNotification(message.replace(/\n/g, ' | '), 'info');
-        
-        // Also create a more detailed display in the bidding screen if available
-        var drawnCardsInfo = document.getElementById('drawnCardsInfo');
-        if (drawnCardsInfo) {
-            var changesHtml = '<div class="info-card" style="margin-bottom: 15px; background: #e3f2fd;">' +
-                             '<div class="card-title">🔄 Round ' + getCurrentRound() + ' Card Replacements</div>';
-            
-            if (removedCards.length > 0 || addedCards.length > 0) {
-                changesHtml += '<div style="margin: 10px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">';
+        // Show removed tokens organized by reason
+        var removedList = document.getElementById('removedTokensList');
+        if (removedList) {
+            var removedHtml = '';
+            if (removedTokens && removedTokens.length > 0) {
+                // Group tokens by removal reason
+                var usedInRanking = [];
+                var usedInBlockAndOwned = [];
+                var otherReasons = [];
                 
-                // Left column - removed cards
-                changesHtml += '<div>';
-                changesHtml += '<strong>❌ Removed Cards:</strong><br>';
-                if (removedCards.length > 0) {
-                    removedCards.forEach(function(cardId) {
-                        var currentCategory = GameState.get('currentCategory') || 'countries';
-                        var categoryData = window.GAME_DATA.categories[currentCategory];
-                        var item = categoryData ? categoryData.items[cardId] : null;
-                        var reason = '';
-                        // Check if it was used in ranking
-                        if (window.lastRoundSelectedCards && window.lastRoundSelectedCards.includes(cardId)) {
-                            reason = ' <em style="font-size: 11px; color: #666;">(ranked - gone forever)</em>';
+                removedTokens.forEach(function(tokenId) {
+                    // Try to find the token in both categories
+                    var foundItem = null;
+                    var foundCategory = null;
+                    
+                    // Check countries first
+                    if (window.GAME_DATA.categories.countries && window.GAME_DATA.categories.countries.items[tokenId]) {
+                        foundItem = window.GAME_DATA.categories.countries.items[tokenId];
+                        foundCategory = 'countries';
+                    }
+                    // Then check movies
+                    else if (window.GAME_DATA.categories.movies && window.GAME_DATA.categories.movies.items[tokenId]) {
+                        foundItem = window.GAME_DATA.categories.movies.items[tokenId];
+                        foundCategory = 'movies';
+                    }
+                    
+                    var tokenData = {
+                        id: tokenId,
+                        item: foundItem,
+                        category: foundCategory
+                    };
+                    
+                    // Check if this token was blocked and now owned
+                    var blockedCardsFromPreviousRound = window.lastRoundBlockedCards || [];
+                    if (blockedCardsFromPreviousRound.indexOf(tokenId) !== -1) {
+                        usedInBlockAndOwned.push(tokenData);
+                    } else {
+                        // Otherwise, it was used in ranking
+                        usedInRanking.push(tokenData);
+                    }
+                });
+                
+                // Build HTML with reason categories as headings
+                if (usedInRanking.length > 0) {
+                    removedHtml += '<div style="margin-bottom: 15px;">';
+                    removedHtml += '<h4 style="margin: 0 0 8px 0; font-size: 14px; color: #dc2626;">🎯 Used in Ranking (' + usedInRanking.length + ')</h4>';
+                    removedHtml += '<ul style="margin: 0; padding-left: 16px; font-size: 13px;">';
+                    usedInRanking.forEach(function(tokenData) {
+                        if (tokenData.item) {
+                            var categoryIcon = tokenData.category === 'countries' ? '🌍' : '🎬';
+                            removedHtml += '<li style="margin: 3px 0;">' + tokenData.item.name + ' (' + (tokenData.item.code || tokenData.id) + ') ' + categoryIcon + '</li>';
+                        } else {
+                            removedHtml += '<li style="margin: 3px 0;">' + tokenData.id + '</li>';
                         }
-                        // Check if it became owned
-                        else if (window.lastRoundNewlyOwnedCards && window.lastRoundNewlyOwnedCards.includes(cardId)) {
-                            reason = ' <em style="font-size: 11px; color: #666;">(now owned)</em>';
+                    });
+                    removedHtml += '</ul>';
+                    removedHtml += '</div>';
+                }
+                
+                if (usedInBlockAndOwned.length > 0) {
+                    removedHtml += '<div style="margin-bottom: 15px;">';
+                    removedHtml += '<h4 style="margin: 0 0 8px 0; font-size: 14px; color: #dc2626;">🛡️ Used in Block and Now Owned (' + usedInBlockAndOwned.length + ')</h4>';
+                    removedHtml += '<ul style="margin: 0; padding-left: 16px; font-size: 13px;">';
+                    usedInBlockAndOwned.forEach(function(tokenData) {
+                        if (tokenData.item) {
+                            var categoryIcon = tokenData.category === 'countries' ? '🌍' : '🎬';
+                            removedHtml += '<li style="margin: 3px 0;">' + tokenData.item.name + ' (' + (tokenData.item.code || tokenData.id) + ') ' + categoryIcon + '</li>';
+                        } else {
+                            removedHtml += '<li style="margin: 3px 0;">' + tokenData.id + '</li>';
                         }
-                        changesHtml += '<span style="color: #d32f2f; font-size: 13px;">• ' + (item ? item.name : cardId) + reason + '</span><br>';
                     });
-                } else {
-                    changesHtml += '<span style="color: #666; font-size: 13px;">None</span><br>';
+                    removedHtml += '</ul>';
+                    removedHtml += '</div>';
                 }
-                changesHtml += '</div>';
-                
-                // Right column - added cards
-                changesHtml += '<div>';
-                changesHtml += '<strong>✅ Replacement Cards:</strong><br>';
-                if (addedCards.length > 0) {
-                    addedCards.forEach(function(cardId) {
-                        var currentCategory = GameState.get('currentCategory') || 'countries';
-                        var categoryData = window.GAME_DATA.categories[currentCategory];
-                        var item = categoryData ? categoryData.items[cardId] : null;
-                        changesHtml += '<span style="color: #388e3c; font-size: 13px;">• ' + (item ? item.name : cardId) + '</span><br>';
-                    });
-                } else {
-                    changesHtml += '<span style="color: #666; font-size: 13px;">None</span><br>';
-                }
-                changesHtml += '</div>';
-                
-                changesHtml += '</div>';
             } else {
-                changesHtml += '<div style="margin: 10px 0; color: #666;">🔄 No replacements - all cards remain from last round</div>';
+                removedHtml = '<p style="color: #666; font-style: italic; font-size: 13px;">No specific tokens tracked</p>';
             }
-            
-            changesHtml += '</div>';
-            
-            // Insert the changes display at the top of drawnCardsInfo safely
-            var changesElement = createSafeElement(changesHtml);
-            if (drawnCardsInfo.firstChild) {
-                drawnCardsInfo.insertBefore(changesElement.firstChild || changesElement, drawnCardsInfo.firstChild);
-            } else {
-                drawnCardsInfo.appendChild(changesElement.firstChild || changesElement);
-            }
+            removedList.innerHTML = removedHtml;
         }
+        
+        // Show added tokens as simple list
+        var addedList = document.getElementById('addedTokensList');
+        if (addedList) {
+            var addedHtml = '';
+            
+            if (addedTokens && addedTokens.length > 0) {
+                addedHtml += '<ul style="margin: 0; padding-left: 16px; font-size: 13px;">';
+                addedTokens.forEach(function(tokenId) {
+                    // Try to find the token in both categories
+                    var foundItem = null;
+                    var foundCategory = null;
+                    
+                    // Check countries first
+                    if (window.GAME_DATA.categories.countries && window.GAME_DATA.categories.countries.items[tokenId]) {
+                        foundItem = window.GAME_DATA.categories.countries.items[tokenId];
+                        foundCategory = 'countries';
+                    }
+                    // Then check movies
+                    else if (window.GAME_DATA.categories.movies && window.GAME_DATA.categories.movies.items[tokenId]) {
+                        foundItem = window.GAME_DATA.categories.movies.items[tokenId];
+                        foundCategory = 'movies';
+                    }
+                    
+                    if (foundItem) {
+                        var categoryIcon = foundCategory === 'countries' ? '🌍' : '🎬';
+                        addedHtml += '<li style="margin: 3px 0;">' + foundItem.name + ' (' + (foundItem.code || tokenId) + ') ' + categoryIcon + '</li>';
+                    } else {
+                        addedHtml += '<li style="margin: 3px 0;">' + tokenId + '</li>';
+                    }
+                });
+                addedHtml += '</ul>';
+            } else {
+                addedHtml = '<p style="color: #666; font-style: italic; font-size: 13px;">No new tokens added</p>';
+            }
+            addedList.innerHTML = addedHtml;
+        }
+        
+        // Show the screen
+        console.log('🔄 Attempting to show tokenReplacementScreen...');
+        
+        // Add a temporary alert to verify this code is reached
+        if (window.isAutomatedTestRunning) {
+            console.log('🚨 ALERT: About to show token replacement screen in automated test!');
+        }
+        
+        // Add debugging before showing screen
+        console.log('🔍 About to call showScreen("tokenReplacementScreen")...');
+        
+        showScreen('tokenReplacementScreen');
+        
+        // Update the screen title and headers AFTER showing the screen
+        var titleElement = document.getElementById('tokenReplacementTitle');
+        if (titleElement) {
+            titleElement.textContent = 'Round ' + getCurrentRound() + ' Token Changes';
+        }
+        
+        // Update column headers with counts
+        var removedHeader = document.getElementById('removedTokensHeader');
+        var addedHeader = document.getElementById('addedTokensHeader');
+        var removedCount = removedTokens ? removedTokens.length : 0;
+        var addedCount = addedTokens ? addedTokens.length : 0;
+        
+        if (removedHeader) {
+            removedHeader.textContent = '❌ Cards Used in Gameplay [' + removedCount + ']';
+            console.log('✅ Updated removed header with count:', removedCount);
+        }
+        if (addedHeader) {
+            addedHeader.textContent = '✅ Replacement Cards [' + addedCount + ']';
+            console.log('✅ Updated added header with count:', addedCount);
+        }
+        
+        // Verify screen is shown
+        var screenElement = document.getElementById('tokenReplacementScreen');
+        if (screenElement) {
+            console.log('✅ Token replacement screen element found');
+            console.log('  Display style:', screenElement.style.display);
+            console.log('  Has active class:', screenElement.classList.contains('active'));
+            
+            // Check if any other screen also has active class
+            var allScreens = document.querySelectorAll('.screen.active');
+            console.log('  Total active screens:', allScreens.length);
+            if (allScreens.length > 1) {
+                console.warn('⚠️ Multiple screens are active!');
+                for (var i = 0; i < allScreens.length; i++) {
+                    console.log('    Active screen', i + ':', allScreens[i].id);
+                }
+            }
+        } else {
+            console.error('❌ Token replacement screen element not found in DOM');
+        }
+        
+        console.log('✅ Token replacement screen displayed successfully');
         
     } catch (error) {
-        console.error('Error showing card replacement notification:', error);
+        console.error('Error showing token replacement screen:', error);
     }
 }
 
@@ -2094,7 +2167,8 @@ TemplateEngine.register('passButton',
 
 TemplateEngine.register('cardItem',
     '<div class="card-item {{blockClass}}" data-card-id="{{cardId}}">' +
-    '{{index}}. {{countryName}}{{blocker}}' +
+    '<div class="card-name">{{countryName}}</div>' +
+    '<div class="card-code">{{cardCode}}</div>{{blocker}}' +
     '</div>'
 );
 
@@ -2166,7 +2240,10 @@ TemplateEngine.register('drawnCardsInfo',
 );
 
 TemplateEngine.register('simpleCardItem',
-    '<div class="card-item">{{index}}. {{countryName}}</div>'
+    '<div class="card-item">' +
+    '<div class="card-name">{{countryName}}</div>' +
+    '<div class="card-code">{{cardCode}}</div>' +
+    '</div>'
 );
 
 TemplateEngine.register('scanInfo',
@@ -2786,8 +2863,21 @@ function startCategorySelection() {
 /**
  * Select a category and continue to bidding
  */
+// Test function to verify code is loading
+window.testDebugVersion = function() {
+    console.log('🧪 DEBUG VERSION v13 IS LOADED!');
+    console.log('🧪 selectCategory function exists:', typeof window.selectCategory);
+    console.log('🧪 showBiddingScreen function exists:', typeof showBiddingScreen);
+    return 'v13-loaded';
+};
+
 window.selectCategory = function(categoryId) {
+    console.log('🚨🚨🚨 SELECTCATEGORY FUNCTION ENTERED! 🚨🚨🚨');
+    console.log('🚨 Category ID:', categoryId);
     try {
+        console.log('🎯 selectCategory() called with:', categoryId);
+        console.log('🎯 Current round when selecting category:', getCurrentRound());
+        
         // Set current category and challenge
         var gameState = GameState.data;
         gameState.currentCategory = categoryId;
@@ -2799,6 +2889,7 @@ window.selectCategory = function(categoryId) {
         // Update category indicators
         updateCategoryIndicators();
         
+        console.log('🎯 About to call showBiddingScreen()...');
         // Continue to bidding phase
         showBiddingScreen();
     } catch (error) {
@@ -2812,6 +2903,7 @@ window.selectCategory = function(categoryId) {
  * Uses template system for consistent HTML generation
  */
 function showBiddingScreen() {
+    console.log('🚨🚨🚨 SHOWBIDDINGSCREEN FUNCTION ENTERED! 🚨🚨🚨');
     console.log('🎯 showBiddingScreen() called');
     try {
         // First, draw cards from the selected category
@@ -2863,8 +2955,82 @@ function showBiddingScreen() {
         }
         console.log('🐛 DEBUG: drawnCards after drawing:', drawnCards.length, drawnCards);
         
+        // Track token changes for token replacement screen (category-specific)
+        if (getCurrentRound() > 1) {
+            var previousCategoryCards = window.previousRoundCardsByCategory && window.previousRoundCardsByCategory[currentCategory] || [];
+            
+            if (previousCategoryCards.length > 0) {
+                // Build removed tokens list from actual game events (not pool differences)
+                var removedTokens = [];
+                
+                // Add cards that were selected for ranking in previous round
+                var lastRoundSelectedCards = window.lastRoundSelectedCards || [];
+                lastRoundSelectedCards.forEach(function(cardId) {
+                    if (removedTokens.indexOf(cardId) === -1) {
+                        removedTokens.push(cardId);
+                    }
+                });
+                
+                // Add blocked cards from previous round to removed tokens (if token ownership is enabled)
+                var blockedCardsFromPreviousRound = window.lastRoundBlockedCards || [];
+                if (blockedCardsFromPreviousRound.length > 0) {
+                    console.log('🛡️ Adding blocked cards from previous round to removed tokens:', blockedCardsFromPreviousRound);
+                    blockedCardsFromPreviousRound.forEach(function(cardId) {
+                        if (removedTokens.indexOf(cardId) === -1) {
+                            removedTokens.push(cardId);
+                        }
+                    });
+                }
+                
+                console.log('🎯 Cards used in ranking:', lastRoundSelectedCards);
+                console.log('🛡️ Cards blocked and owned:', blockedCardsFromPreviousRound);
+                console.log('📋 Total removed cards (gameplay only):', removedTokens);
+                
+                // Calculate tokens that were added to replace the gameplay-removed cards
+                // Only show replacements for cards that were actually used/blocked
+                var addedTokens = [];
+                var allPoolChanges = drawnCards.filter(function(cardId) {
+                    return previousCategoryCards.indexOf(cardId) === -1;
+                });
+                
+                // Limit added tokens to match the number of gameplay-removed cards
+                // This shows the 1:1 replacement for cards that were actually used
+                for (var i = 0; i < Math.min(removedTokens.length, allPoolChanges.length); i++) {
+                    addedTokens.push(allPoolChanges[i]);
+                }
+                
+                console.log('🔄 All pool changes:', allPoolChanges.length, 'cards');
+                console.log('🎯 Showing replacements for gameplay-removed cards only:', addedTokens.length, 'cards');
+                
+                console.log('🔄 Previous ' + currentCategory + ' cards:', previousCategoryCards);
+                console.log('🔄 Current ' + currentCategory + ' cards:', drawnCards);
+                console.log('🔄 Removed ' + currentCategory + ' tokens (gameplay events):', removedTokens);
+                console.log('🔄 Added ' + currentCategory + ' tokens (new in pool):', addedTokens);
+                console.log('📊 Gameplay events - Removed:', removedTokens.length, 'Pool refresh - Added:', addedTokens.length);
+                
+                // Store both for the token replacement screen
+                window.removedReplacementCards = removedTokens;
+                window.newReplacementCards = addedTokens;
+                
+                // Note: Pool size maintained by game, removed=used cards, added=pool refresh
+                console.log('✅ Token tracking updated to show actual gameplay events only');
+            } else {
+                // First time using this category - no replacements to show
+                console.log('🔄 First time using ' + currentCategory + ' category - no token replacements');
+                window.removedReplacementCards = [];
+                window.newReplacementCards = [];
+            }
+        }
+        
         // Store in game state
         gameState.drawnCards = drawnCards;
+        
+        // Remember current cards for next round (by category)
+        if (!window.previousRoundCardsByCategory) {
+            window.previousRoundCardsByCategory = {};
+        }
+        window.previousRoundCardsByCategory[currentCategory] = drawnCards.slice();
+        console.log('🔄 Stored cards for ' + currentCategory + ':', drawnCards.slice());
         
         // Initialize game state for bidding
         gameState.currentBid = 0;
@@ -2884,6 +3050,7 @@ function showBiddingScreen() {
         });
         
         console.log('🎴 Drew', drawnCards.length, 'cards from', currentCategory, ':', drawnCards);
+        console.log('📍 Current round at card draw:', getCurrentRound());
         
         // Update the challenge info
         var promptInfo = DOMCache.get('promptInfo');
@@ -2912,7 +3079,8 @@ function showBiddingScreen() {
                 var item = categoryData.items[cardId];
                 return {
                     index: index + 1,
-                    countryName: item.name
+                    countryName: item.name,
+                    cardCode: item.code || cardId
                 };
             });
             
@@ -2923,18 +3091,55 @@ function showBiddingScreen() {
             
             safeSetHTML(cardsInfo, TemplateEngine.render('drawnCardsInfo', cardsData));
             
-            // Show card changes notification after cards are displayed (only for rounds 2+)
-            if (getCurrentRound() > 1) {
+            console.log('📍 About to check round for token replacement:', getCurrentRound());
+            
+            // Check if we've completed at least one round (round increment happens AFTER this)
+            // So if we're starting Round 1's bidding screen, we haven't completed any rounds yet
+            // If we're starting Round 2's bidding screen, getCurrentRound() is still 1 but we've completed Round 1
+            var completedRounds = window.automatedTestResults ? window.automatedTestResults.roundsCompleted : 0;
+            console.log('📍 Completed rounds:', completedRounds);
+            console.log('📍 Current round from getCurrentRound():', getCurrentRound());
+            console.log('📍 GameState current round:', GameState.get('currentRound'));
+            console.log('📍 Round check condition result:', (completedRounds > 0 || getCurrentRound() > 1));
+            
+            // Show card changes notification after cards are displayed (only after completing at least 1 round)
+            if (completedRounds > 0 || getCurrentRound() > 1) {
                 console.log('🔄 Round 2+ detected, checking for card changes...');
+                console.log('  Current round:', getCurrentRound());
                 console.log('  Cards replaced:', window.cardsReplacedThisRound);
                 console.log('  New replacement cards:', window.newReplacementCards);
+                console.log('  Last round selected cards:', window.lastRoundSelectedCards);
+                console.log('  Automated test running:', window.isAutomatedTestRunning);
                 
-                if (window.cardsReplacedThisRound && window.newReplacementCards) {
-                    showCardReplacementNotification(window.cardsReplacedThisRound, window.newReplacementCards);
-                } else if (window.cardsReplacedThisRound && window.cardsReplacedThisRound.length > 0) {
-                    // Even if we don't have specific replacement cards tracked, show what was removed
-                    showCardReplacementNotification(window.cardsReplacedThisRound, []);
+                // Use the properly calculated token replacements from the category selection
+                var removedCards = window.removedReplacementCards || [];
+                var addedCards = window.newReplacementCards || [];
+                
+                console.log('🔄 Removed cards for ' + currentCategory + ':', removedCards);
+                console.log('🔄 Added cards for ' + currentCategory + ':', addedCards);
+                console.log('🔄 Balance check - Removed:', removedCards.length, 'Added:', addedCards.length);
+                
+                // Always show token replacement screen in Round 2+ (even if no specific cards tracked)
+                console.log('🔄 FORCING token replacement screen to show...');
+                console.log('  Removed cards array:', removedCards);
+                console.log('  Added cards array:', addedCards);
+                
+                // Show token replacement screen IMMEDIATELY before showScreen clears timeouts
+                console.log('🔧 Showing token replacement screen immediately...');
+                try {
+                    showTokenReplacementNotification(removedCards, addedCards);
+                    console.log('✅ Token replacement function called successfully');
+                    
+                    // For automated tests, return early to prevent bidding screen from immediately showing
+                    if (window.isAutomatedTestRunning) {
+                        console.log('🤖 Automated test: Returning early to prevent bidding screen override...');
+                        return; // Don't show bidding screen yet - let user see token replacement screen
+                    }
+                } catch (error) {
+                    console.error('❌ Error calling token replacement function:', error);
                 }
+            } else {
+                console.log('🔄 Round 1 - no token replacement screen needed');
             }
         }
     } catch (error) {
@@ -3468,6 +3673,7 @@ function updateBlockingDisplay() {
                     cardId: cardId,
                     index: index + 1,
                     countryName: item.name,
+                    cardCode: item.code || cardId,
                     blocker: blocker
                 };
             });
@@ -3741,8 +3947,9 @@ function setupBlockingCards() {
         var cardClass = isBlocked ? 'card-item card-blocked' : 'card-item card-available card-selectable';
         
         html += '<div class="' + cardClass + '" data-card="' + HTMLEscaper.escapeHTMLAttribute(cardId) + '">' +
-               '<strong>' + sanitizeHTML(item ? item.name : cardId) + '</strong>' +
-               (isBlocked ? '<br><span style="color: red;">BLOCKED</span>' : '') +
+               '<div class="card-name">' + sanitizeHTML(item ? item.name : cardId) + '</div>' +
+               '<div class="card-code">' + sanitizeHTML(item ? item.code : cardId) + '</div>' +
+               (isBlocked ? '<div style="color: red; font-size: 11px; margin-top: 5px;">BLOCKED</div>' : '') +
                '</div>';
     });
     
@@ -3910,7 +4117,9 @@ function updateAvailableCardsDisplay(remainingCards) {
                 var categoryData = window.GAME_DATA.categories[currentCategory];
                 var cardData = categoryData.items[cardId];
                 html += '<div class="card-item card-selectable owned-card" data-card-id="' + HTMLEscaper.escapeHTMLAttribute(cardId) + '">' +
-                       '👑 ' + sanitizeHTML(cardData.name) + ' (OWNED)</div>'
+                       '<div class="card-name">👑 ' + sanitizeHTML(cardData.name) + '</div>' +
+                       '<div class="card-code">' + sanitizeHTML(cardData.code) + '</div>' +
+                       '<div style="font-size: 10px; color: #666;">OWNED</div></div>'
             });
             
             html += '</div><div class="selection-info">💡 Use your owned cards strategically - once used, they\'re gone forever!</div></div>';
@@ -3924,7 +4133,9 @@ function updateAvailableCardsDisplay(remainingCards) {
             var categoryData = window.GAME_DATA.categories[currentCategory];
             var item = categoryData.items[cardId];
             html += '<div class="card-item card-selectable" data-card-id="' + HTMLEscaper.escapeHTMLAttribute(cardId) + '">' +
-                   (index + 1) + '. ' + sanitizeHTML(item.name) + '</div>';
+                   '<div class="card-name">' + sanitizeHTML(item.name) + '</div>' +
+                   '<div class="card-code">' + sanitizeHTML(item.code) + '</div>' +
+                   '</div>';
         });
         
         html += '</div><div class="selection-info">Click cards to select them for ranking</div></div>';
@@ -4142,7 +4353,7 @@ function updateRankingInterface() {
         var item = categoryData ? categoryData.items[cardId] : null;
         html += '<div class="ranking-card" data-card-id="' + HTMLEscaper.escapeHTMLAttribute(cardId) + '" draggable="true">' +
                '<span class="rank-number">' + (index + 1) + '</span>' +
-               '<span class="country-name">' + sanitizeHTML(item ? item.name : cardId) + '</span>' +
+               '<span class="country-name">' + sanitizeHTML(item ? item.name : cardId) + '<br><small>' + sanitizeHTML(item ? item.code : cardId) + '</small></span>' +
                '<span class="drag-handle">⋮⋮</span>' +
                '</div>';
     });
@@ -4407,7 +4618,7 @@ function updateBidderRankingDisplay() {
         html += '<div class="reveal-card bidder-card ' + statusClass + '">' +
                '<span class="rank-number">' + (index + 1) + '</span>' +
                '<span class="country-info">' +
-               '<span class="country-name">' + (item ? item.name : cardId) + '</span>' +
+               '<span class="country-name">' + (item ? item.name : cardId) + '<br><small>' + (item ? item.code : cardId) + '</small></span>' +
                '<span class="country-value">' + (isRevealed ? formatValue(value, currentPrompt.challenge) : '???') + '</span>' +
                '</span>' +
                '<span class="status-icon">' + statusIcon + '</span>' +
@@ -4867,6 +5078,7 @@ function calculateAndApplyScores() {
     
     // 2. Track newly owned cards from this round (cards that became owned through blocking)
     window.lastRoundNewlyOwnedCards = [];
+    window.lastRoundBlockedCards = [];
     if (!bidderSuccess && ACTIVE_RULES.tokenOwnership) {
         var currentBlocks = GameState.get('players.currentBlocks');
         Object.keys(currentBlocks).forEach(function(playerName) {
@@ -4874,9 +5086,11 @@ function calculateAndApplyScores() {
                 var blockedCardId = currentBlocks[playerName].cardId;
                 if (blockedCardId && !window.lastRoundNewlyOwnedCards.includes(blockedCardId)) {
                     window.lastRoundNewlyOwnedCards.push(blockedCardId);
+                    window.lastRoundBlockedCards.push(blockedCardId);
                 }
             }
         });
+        console.log('🛡️ Tracking blocked cards for token replacement screen:', window.lastRoundBlockedCards);
     }
     
     console.log('📋 Tracking for next round - Selected cards (will be removed):', window.lastRoundSelectedCards);
@@ -4932,7 +5146,7 @@ function updateResultsDisplay() {
             var value = item ? item[currentPrompt.challenge] : 0;
             html += '<div class="ranking-item">' +
                    '<span class="rank-number">' + (index + 1) + '</span>' +
-                   '<span class="country-name">' + (item ? item.name : cardId) + '</span>' +
+                   '<span class="country-name">' + (item ? item.name : cardId) + '<br><small>' + (item ? item.code : cardId) + '</small></span>' +
                    '<span class="country-value">' + formatValue(value, currentPrompt.challenge) + '</span>' +
                    '</div>';
         });
@@ -4946,7 +5160,7 @@ function updateResultsDisplay() {
             var value = item ? item[currentPrompt.challenge] : 0;
             html += '<div class="ranking-item correct-ranking">' +
                    '<span class="rank-number">' + (index + 1) + '</span>' +
-                   '<span class="country-name">' + (item ? item.name : cardId) + '</span>' +
+                   '<span class="country-name">' + (item ? item.name : cardId) + '<br><small>' + (item ? item.code : cardId) + '</small></span>' +
                    '<span class="country-value">' + formatValue(value, currentPrompt.challenge) + '</span>' +
                    '</div>';
         });
@@ -5230,8 +5444,11 @@ window.newGame = function() {
     window.previousRoundCards = [];
     window.lastRoundSelectedCards = [];
     window.lastRoundNewlyOwnedCards = [];
+    window.lastRoundBlockedCards = [];
     window.cardsReplacedThisRound = [];
     window.newReplacementCards = [];
+    window.removedReplacementCards = [];
+    window.previousRoundCardsByCategory = {};
     
     resetRoundState();
     showScreen('titleScreen');
@@ -5823,6 +6040,44 @@ window.testBlockingScreen = function() {
     console.log('✅ Test complete - check if blocking screen is visible');
 };
 
+// Continue from token replacement screen
+window.continueFromTokenReplacement = function() {
+    console.log('Continuing from token replacement screen...');
+    
+    // Hide the token replacement screen first
+    var tokenScreen = document.getElementById('tokenReplacementScreen');
+    if (tokenScreen) {
+        tokenScreen.classList.remove('active');
+    }
+    
+    // If automated test is running, don't do anything - let the test continue naturally
+    if (window.isAutomatedTestRunning) {
+        console.log('📱 Automated test: token screen dismissed, test will continue...');
+        // The automated test will continue on its own timing
+    } else {
+        // Manual game: go to bidding screen
+        console.log('📱 Manual game: returning to bidding screen...');
+        showScreen('biddingScreen');
+    }
+};
+
+// Test function to manually trigger token replacement screen
+window.testTokenReplacement = function() {
+    console.log('Testing token replacement screen...');
+    
+    // Create some test data
+    var removedTokens = ['USA', 'JPN', 'GBR'];
+    var addedTokens = ['FRA', 'GER', 'ITA'];
+    
+    // Set round to 2 so it shows
+    GameState.set('currentRound', 2);
+    
+    // Show the notification
+    showTokenReplacementNotification(removedTokens, addedTokens);
+    
+    console.log('Token replacement screen should be visible now!');
+};
+
 // Automated testing state management and execution guards
 window.automatedTestState = {
     isProcessingBid: false,
@@ -6183,7 +6438,9 @@ async function automatedRound(roundNum) {
         var categories = ['countries', 'movies'];
         var selectedCategory = categories[Math.floor(Math.random() * categories.length)];
         console.log('🎯 Automated test selecting category:', selectedCategory);
+        console.log('🚨🚨🚨 AUTOMATED TEST ABOUT TO CALL SELECTCATEGORY! 🚨🚨🚨');
         selectCategory(selectedCategory); // This will call showBiddingScreen()
+        console.log('🚨🚨🚨 AUTOMATED TEST FINISHED CALLING SELECTCATEGORY! 🚨🚨🚨');
         
         // Store round data after setup
         var currentPrompt = GameState.get('currentPrompt');
@@ -7126,7 +7383,12 @@ function displayCardStatistics() {
     }
     
     var stats = window.automatedTestResults.cardStats;
-    var totalCountries = window.GAME_DATA && window.GAME_DATA.countries ? Object.keys(window.GAME_DATA.countries).length : 194;
+    var totalCountries = 0;
+    if (window.GAME_DATA && window.GAME_DATA.categories) {
+        var countries = window.GAME_DATA.categories.countries ? Object.keys(window.GAME_DATA.categories.countries.items).length : 0;
+        var movies = window.GAME_DATA.categories.movies ? Object.keys(window.GAME_DATA.categories.movies.items).length : 0;
+        totalCountries = countries + movies;
+    }
     
     // Add card statistics to the overview
     var existingCardStats = document.getElementById('cardStatsSection');
