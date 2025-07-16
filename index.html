@@ -3,9 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Know-It-All - Updated v2</title>
+    <!-- Content Security Policy for enhanced security -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self'; 
+        script-src 'self' 'unsafe-inline'; 
+        style-src 'self' 'unsafe-inline'; 
+        img-src 'self' data:; 
+        font-src 'self'; 
+        connect-src 'self'; 
+        media-src 'none'; 
+        object-src 'none'; 
+        child-src 'none'; 
+        frame-src 'none'; 
+        worker-src 'none'; 
+        manifest-src 'self'; 
+        base-uri 'self'; 
+        form-action 'self';
+        upgrade-insecure-requests;
+    ">
+    <title>OUTRANK - TOKENS UPDATED v4</title>
     <!-- FORCE DEPLOY: July 6, 2025 - 12:58 AM -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?t=1752601702">
 </head>
 <body>
     <div class="phone-container">
@@ -20,27 +38,27 @@
             </div>
             
             <!-- Title Screen -->
-            <div id="titleScreen" class="screen active">
+            <div id="titleScreen" class="screen active" role="main" aria-label="Main menu">
                 <div class="app-header">
                     <div class="header-background"></div>
                     <h1 class="app-title">Know-It-All</h1>
                     <p class="app-subtitle">Trivia Ranking Game</p>
                 </div>
                 
-                <div class="screen-content">
+                <div class="screen-content" role="navigation" aria-label="Game options menu">
                     <div class="action-card">
                         <div class="card-icon">👥</div>
                         <div class="card-title">Setup Game</div>
                         <div class="card-description">Add players and start a new game</div>
-                        <button class="btn primary" onclick="showScreen('playerScreen')">👥 Setup Players</button>
-                        <button class="btn secondary" onclick="quickSetup4Players()" style="margin-top: 8px;">⚡ Quick 4-Player Setup</button>
+                        <button class="btn primary" onclick="showScreen('playerScreen')" aria-label="Setup players for a new game">👥 Setup Players</button>
+                        <button class="btn secondary" onclick="quickSetup4Players()" style="margin-top: 8px;" aria-label="Quick setup with 4 default players">⚡ Quick 4-Player Setup</button>
                     </div>
                     
                     <div class="action-card">
                         <div class="card-icon">🏆</div>
                         <div class="card-title">View Scores</div>
                         <div class="card-description">See current tournament standings</div>
-                        <button class="btn secondary" onclick="showScreen('scoresScreen')">🏆 View Scores</button>
+                        <button class="btn secondary" onclick="showScreen('scoresScreen')" aria-label="View current tournament scores and standings">🏆 View Scores</button>
                     </div>
                     
                     <div class="action-card">
@@ -66,9 +84,17 @@
                         <button class="btn secondary" onclick="testVisualConsole()" style="margin: 5px;">🖥️ Test Visual Console</button>
                         <button class="btn secondary" onclick="runAutomatedTest()" style="margin: 5px;">🤖 Run Automated Test</button>
                         <button class="btn primary" onclick="runFastAutomatedTest()" style="margin: 5px;">⚡ Fast Test</button>
+                        <button class="btn secondary" onclick="testTokenReplacement()" style="margin: 5px;">🔄 Test Token Screen</button>
                         <button class="btn secondary" onclick="viewTestResults()" style="margin: 5px;">📊 View Test Results</button>
                         <button class="btn secondary" onclick="resetAllStatistics()" style="margin: 5px;">🔄 Reset Stats</button>
                         <button class="btn secondary" onclick="showScreen('rulesScreen')" style="margin: 5px;">⚙️ Rules Config</button>
+                        <button class="btn primary" onclick="testStateMigration()" style="margin: 5px;">🧪 Test Migration</button>
+                        <button class="btn secondary" onclick="resetStateForTesting()" style="margin: 5px;">🔄 Reset State</button>
+                        <select id="debugCategorySelect" onchange="debugSetCategory(this.value)" style="margin: 5px; padding: 5px; font-size: 12px;">
+                            <option value="">🎯 Quick Category</option>
+                            <option value="countries">🌍 Countries</option>
+                            <option value="movies">🎬 Movies</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -118,12 +144,52 @@
                 </div>
             </div>
             
+            <!-- Category Selection Screen -->
+            <div id="categoryScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">Choose Category</h2>
+                    <p class="screen-subtitle" id="categoryChooserName">Player's turn to choose</p>
+                </div>
+                
+                <div class="screen-content">
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">🌍</div>
+                            <div class="section-title">Countries</div>
+                        </div>
+                        <div class="category-challenge" id="countryChallenge">
+                            Countries: Loading challenge...
+                        </div>
+                        <button class="btn primary" onclick="selectCategory('countries')">🌍 Choose Countries</button>
+                    </div>
+                    
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">🎬</div>
+                            <div class="section-title">Movies</div>
+                        </div>
+                        <div class="category-challenge" id="movieChallenge">
+                            Movies: Loading challenge...
+                        </div>
+                        <button class="btn primary" onclick="selectCategory('movies')">🎬 Choose Movies</button>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn secondary" onclick="showScreen('playerScreen')">⬅️ Back to Players</button>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Bidding Screen -->
             <div id="biddingScreen" class="screen">
                 <div class="app-header">
                     <div class="header-background"></div>
                     <h2 class="screen-title">Bidding Phase</h2>
                     <p class="screen-subtitle">How many cards can you rank correctly?</p>
+                    <div id="categoryIndicator" class="category-indicator">
+                        <span class="category-badge" id="categoryBadge">🌍 Countries</span>
+                    </div>
                 </div>
                 
                 <div class="screen-content">
@@ -176,6 +242,9 @@
                     <div class="header-background"></div>
                     <h2 class="screen-title">Blocking Phase</h2>
                     <p class="screen-subtitle">Place blocking tokens to challenge the bidder</p>
+                    <div class="category-indicator">
+                        <span class="category-badge" id="blockingCategoryBadge">🌍 Countries</span>
+                    </div>
                 </div>
                 
                 <div class="screen-content">
@@ -207,6 +276,9 @@
                     <div class="header-background"></div>
                     <h2 class="screen-title">Scan Cards</h2>
                     <p class="screen-subtitle">Build your ranking</p>
+                    <div class="category-indicator">
+                        <span class="category-badge" id="scanCategoryBadge">🌍 Countries</span>
+                    </div>
                 </div>
                 
                 <div class="screen-content">
@@ -253,6 +325,9 @@
                     <div class="header-background"></div>
                     <h2 class="screen-title">Reveal Phase</h2>
                     <p class="screen-subtitle">See if your ranking is correct</p>
+                    <div class="category-indicator">
+                        <span class="category-badge" id="revealCategoryBadge">🌍 Countries</span>
+                    </div>
                 </div>
                 
                 <div class="screen-content">
@@ -636,11 +711,37 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Token Replacement Screen -->
+            <div class="screen" id="tokenReplacementScreen">
+                <div class="screen-header">
+                    <h2>🔄 Token Replacements</h2>
+                </div>
+                <div class="screen-content" id="tokenReplacementContent">
+                    <div class="info-card" style="background: #e3f2fd; margin-bottom: 20px;">
+                        <div class="card-title" id="tokenReplacementTitle">Round 2 Token Changes</div>
+                        <div style="margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 5px; font-size: 13px; color: #666;">
+                            <strong>What happened:</strong> Cards used in gameplay are removed from the pool and replaced with new cards to maintain game balance.
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                            <div>
+                                <h3 style="color: #dc2626; font-size: 16px;" id="removedTokensHeader">❌ Cards Used in Gameplay</h3>
+                                <div id="removedTokensList" style="margin-top: 10px;"></div>
+                            </div>
+                            <div>
+                                <h3 style="color: #16a34a; font-size: 16px;" id="addedTokensHeader">✅ Replacement Cards</h3>
+                                <div id="addedTokensList" style="margin-top: 10px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn primary" onclick="continueFromTokenReplacement()">Continue</button>
+                </div>
+            </div>
         </div>
     </div>
     
     <!-- IMPORTANT: Load data.js FIRST, then game.js -->
- <script src="data.js?v=1"></script>
-    <script src="game.js"></script>
+ <script src="data.js?v=33"></script>
+    <script src="game.js?v=33"></script>
 </body>
 </html>

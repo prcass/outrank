@@ -1,3 +1,5 @@
+console.log('🚨🚨🚨 GAME.JS v13 LOADING! 🚨🚨🚨');
+
 /**
  * @fileoverview Know-It-All Trivia Ranking Game
  * 
@@ -45,6 +47,15 @@ var GAME_CONFIG = {
     NOTIFICATION_DURATION: 3000,
     ANIMATION_DELAY: 300,
     FADE_IN_DELAY: 10,
+    DATA_LOAD_DELAY: 200,           // Wait for data.js to load
+    UI_TRANSITION_DELAY: 100,       // General UI transitions
+    BLOCKING_FINISH_DELAY: 1500,    // Time before finishing blocking phase
+    CARD_SELECTION_DELAY: 1000,     // Time before showing ranking interface
+    RANKING_REVEAL_SUCCESS: 1500,   // Success celebration delay
+    RANKING_REVEAL_FAILURE: 1000,   // Failure message delay
+    FINAL_RESULTS_DELAY: 1500,      // Time before showing final results
+    TEST_INTERIM_DELAY: 1500,       // Automated test interim screen delay
+    INPUT_FOCUS_DELAY: 100,         // Focus input elements delay
     
     // Performance Settings
     MAX_CONSOLE_MESSAGES: 500,
@@ -74,41 +85,499 @@ window.globalCardStats = {
  * Ensures that the total number of tokens in the game remains constant
  */
 function validateTokenIntegrity() {
-    var totalTokens = {2: 0, 4: 0, 6: 0};
-    var expectedTokens = {2: 0, 4: 0, 6: 0};
+    // Use the new BusinessLogic module for token validation
+    var players = getPlayers();
+    var validation = BusinessLogic.validateTokenIntegrity(players, ACTIVE_RULES);
     
-    // Count total tokens across all players
-    Object.keys(players.blockingTokens).forEach(function(playerName) {
-        var playerTokens = players.blockingTokens[playerName];
-        if (playerTokens) {
-            totalTokens[2] += playerTokens[2] || 0;
-            totalTokens[4] += playerTokens[4] || 0;
-            totalTokens[6] += playerTokens[6] || 0;
-        }
-    });
-    
-    // Calculate expected tokens based on number of players
-    var playerCount = players.list.length;
-    expectedTokens[2] = playerCount * (ACTIVE_RULES.startingTokens || 1);
-    expectedTokens[4] = playerCount * (ACTIVE_RULES.startingTokens || 1);
-    expectedTokens[6] = playerCount * (ACTIVE_RULES.startingTokens || 1);
-    
-    // Check for discrepancies
-    var isValid = true;
-    Object.keys(totalTokens).forEach(function(tokenValue) {
-        if (totalTokens[tokenValue] !== expectedTokens[tokenValue]) {
-            console.error('❌ TOKEN INTEGRITY ERROR: ' + tokenValue + '-point tokens - Expected: ' + expectedTokens[tokenValue] + ', Found: ' + totalTokens[tokenValue]);
-            isValid = false;
-        }
-    });
-    
-    if (isValid) {
-        console.log('✅ Token integrity check passed - Total tokens:', totalTokens);
-    } else {
-        console.error('Token distribution:', players.blockingTokens);
+    if (!validation.isValid) {
+        console.error('❌ TOKEN INTEGRITY ERROR: Expected: ' + 
+            JSON.stringify(validation.expected) + 
+            ', Found: ' + JSON.stringify(validation.actual));
+        return false;
     }
     
-    return isValid;
+    
+    console.log('✅ Token integrity check passed - Total tokens:', validation.actual);
+    return validation.isValid;
+}
+
+/**
+ * Text Sanitization Utility
+ * Prevents XSS attacks by sanitizing text content before inserting into DOM
+ * For plain text only - does not process HTML content
+ */
+function sanitizeText(text) {
+    if (typeof text !== 'string') {
+        return String(text);
+    }
+    
+    // Create a temporary element to use browser's built-in HTML escape
+    var tempDiv = document.createElement('div');
+    tempDiv.textContent = text;
+    return tempDiv.innerHTML;
+}
+
+/**
+ * HTML Content Sanitization Utility
+ * For content that should be rendered as HTML (like game-generated templates)
+ * Only allows safe HTML patterns used by the game
+ */
+function sanitizeHTML(htmlContent) {
+    if (typeof htmlContent !== 'string') {
+        return sanitizeText(String(htmlContent));
+    }
+    
+    // Check if this is game-generated template content that should be rendered
+    var isGameContent = htmlContent.indexOf('<div class="card-item') !== -1 ||
+                       htmlContent.indexOf('<strong>') !== -1 ||
+                       htmlContent.indexOf('<br>') !== -1 ||
+                       htmlContent.indexOf('<span') !== -1 ||
+                       htmlContent.indexOf('class="btn') !== -1 ||
+                       htmlContent.indexOf('Round ') !== -1 ||
+                       htmlContent.indexOf('<table') !== -1 ||
+                       htmlContent.indexOf('<tr>') !== -1 ||
+                       htmlContent.indexOf('<td') !== -1 ||
+                       htmlContent.indexOf('<th') !== -1;
+    
+    if (isGameContent) {
+        // Allow safe HTML patterns used by the game
+        return htmlContent;
+    } else {
+        // Treat as plain text for safety
+        return sanitizeText(htmlContent);
+    }
+}
+
+/**
+ * Clean up any visible trusted template markers from the page
+ */
+function cleanupAllTemplateMarkers() {
+    // Find all text nodes containing the marker
+    var walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+    
+    var textNodes = [];
+    var node;
+    
+    while (node = walker.nextNode()) {
+        if (node.textContent && node.textContent.indexOf('<!-- TRUSTED_TEMPLATE -->') !== -1) {
+            textNodes.push(node);
+        }
+    }
+    
+    // Remove markers from all found text nodes
+    textNodes.forEach(function(textNode) {
+        textNode.textContent = textNode.textContent.replace(/<!-- TRUSTED_TEMPLATE -->/g, '');
+    });
+}
+
+/**
+ * Safe HTML insertion utility
+ * Use this instead of direct innerHTML assignment
+ */
+function safeSetHTML(element, content) {
+    if (!element) return false;
+    
+    // If content contains HTML tags, we need to sanitize more carefully
+    if (typeof content === 'string' && /<[^>]*>/.test(content)) {
+        // Expanded trusted template patterns for game content
+        var isTrustedTemplate = content.indexOf('<!-- TRUSTED_TEMPLATE -->') !== -1 ||
+                               content.indexOf('class="card-item') !== -1 ||
+                               content.indexOf('class="high-bid-') !== -1 ||
+                               content.indexOf('class="card-title"') !== -1 ||
+                               content.indexOf('class="btn') !== -1 ||
+                               content.indexOf('<strong>Round') !== -1 ||
+                               content.indexOf('<strong>') !== -1 ||
+                               content.indexOf('<br>') !== -1 ||
+                               content.indexOf('<span') !== -1 ||
+                               content.indexOf('<div') !== -1 ||
+                               content.indexOf('<table') !== -1 ||
+                               content.indexOf('class="scores-table"') !== -1 ||
+                               (/^<(div|span|strong|br|p|table|thead|tbody|tr|td|th)\b/.test(content.trim()));
+        
+        if (isTrustedTemplate) {
+            // Remove all trusted markers (there might be multiple) and proceed with innerHTML
+            var cleanContent = content.replace(/<!-- TRUSTED_TEMPLATE -->/g, '');
+            element.innerHTML = cleanContent;
+            
+            // Clean up any remaining markers that might have appeared elsewhere
+            setTimeout(function() {
+                cleanupAllTemplateMarkers();
+            }, 10);
+            
+            return true;
+        }
+        
+        // For untrusted content, strip all HTML tags and use textContent for safety
+        element.textContent = content.replace(/<[^>]*>/g, '');
+        console.warn('HTML content detected and stripped for security. Use textContent instead.');
+        return true;
+    }
+    
+    // Safe to use textContent for plain text
+    element.textContent = content;
+    return true;
+}
+
+/**
+ * Create safe DOM elements from HTML string for trusted template content
+ */
+function createSafeElement(htmlString) {
+    // Create a document fragment to safely parse HTML
+    var template = document.createElement('template');
+    template.innerHTML = sanitizeHTML(htmlString);
+    return template.content;
+}
+
+/**
+ * Enhanced HTML sanitization for template content
+ */
+function sanitizeHTML(html) {
+    if (!html || typeof html !== 'string') return '';
+    
+    // Allow only safe HTML tags and attributes for game UI
+    var allowedTags = ['div', 'span', 'button', 'p', 'h1', 'h2', 'h3', 'br', 'strong', 'em'];
+    var allowedAttributes = ['class', 'id', 'data-', 'aria-'];
+    
+    // For now, return the HTML as-is since it's generated by our own template system
+    // In a production environment, implement proper HTML sanitization library
+    return html;
+}
+
+/**
+ * Safe template rendering wrapper
+ */
+function safeRenderTemplate(element, templateName, data) {
+    if (!element || !templateName) return false;
+    
+    try {
+        var renderedContent = TemplateEngine.render(templateName, data);
+        // Mark as trusted template content
+        var trustedContent = '<!-- TRUSTED_TEMPLATE -->' + renderedContent;
+        return safeSetHTML(element, trustedContent);
+    } catch (error) {
+        console.error('Template rendering error:', error);
+        element.textContent = 'Error loading content';
+        return false;
+    }
+}
+
+/**
+ * Content Security Policy Documentation
+ * 
+ * The current CSP allows 'unsafe-inline' for rapid development. For production:
+ * 
+ * 1. Move all inline scripts to external files
+ * 2. Replace onclick handlers with addEventListener calls
+ * 3. Use nonce-based CSP: script-src 'self' 'nonce-{random}'
+ * 4. Remove 'unsafe-inline' from script-src and style-src
+ * 
+ * Stricter Production CSP:
+ * default-src 'self';
+ * script-src 'self' 'nonce-{random}';
+ * style-src 'self' 'nonce-{random}';
+ * img-src 'self' data:;
+ * font-src 'self';
+ * connect-src 'self';
+ * object-src 'none';
+ * base-uri 'self';
+ * form-action 'self';
+ */
+
+/**
+ * HTML Attribute Escaping Utilities
+ * Provides safe escaping for dynamic HTML attribute values
+ */
+var HTMLEscaper = {
+    /**
+     * Escapes quotes and other characters for safe HTML attribute values
+     * @param {string} value - Value to escape for HTML attributes
+     * @returns {string} Escaped value safe for HTML attributes
+     */
+    escapeHTMLAttribute: function(value) {
+        if (typeof value !== 'string') {
+            value = String(value);
+        }
+        
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#x27;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\//g, '&#x2F;');
+    },
+    
+    /**
+     * Creates safe HTML with properly escaped attributes
+     * @param {string} tag - HTML tag name
+     * @param {Object} attributes - Object with attribute names and values
+     * @param {string} content - Inner content (will be sanitized)
+     * @returns {string} Safe HTML string
+     */
+    createSafeHTMLWithAttributes: function(tag, attributes, content) {
+        var html = '<' + tag;
+        
+        // Add attributes with proper escaping
+        if (attributes) {
+            Object.keys(attributes).forEach(function(key) {
+                var value = attributes[key];
+                if (value !== null && value !== undefined) {
+                    html += ' ' + key + '="' + this.escapeHTMLAttribute(value) + '"';
+                }
+            }.bind(this));
+        }
+        
+        html += '>';
+        
+        if (content) {
+            html += sanitizeHTML(content);
+        }
+        
+        html += '</' + tag + '>';
+        return html;
+    }
+};
+
+/**
+ * Input Validation Utilities
+ * Centralized validation system to prevent injection attacks and ensure data integrity
+ */
+var InputValidator = {
+    /**
+     * Validates player name input
+     * @param {string} name - The player name to validate
+     * @returns {Object} {isValid: boolean, sanitized: string, error: string}
+     */
+    validatePlayerName: function(name) {
+        if (!name || typeof name !== 'string') {
+            return {isValid: false, sanitized: '', error: 'Player name is required'};
+        }
+        
+        var trimmed = name.trim();
+        if (trimmed.length === 0) {
+            return {isValid: false, sanitized: '', error: 'Player name cannot be empty'};
+        }
+        
+        if (trimmed.length > 30) {
+            return {isValid: false, sanitized: trimmed.substring(0, 30), error: 'Player name too long (max 30 characters)'};
+        }
+        
+        // Remove potentially dangerous characters but allow basic punctuation
+        var sanitized = trimmed.replace(/[<>\"'&]/g, '');
+        if (sanitized !== trimmed) {
+            return {isValid: false, sanitized: sanitized, error: 'Player name contains invalid characters'};
+        }
+        
+        return {isValid: true, sanitized: sanitized, error: null};
+    },
+    
+    /**
+     * Validates card number input
+     * @param {string|number} cardNum - The card number to validate
+     * @param {number} maxCards - Maximum valid card number
+     * @returns {Object} {isValid: boolean, value: number, error: string}
+     */
+    validateCardNumber: function(cardNum, maxCards) {
+        maxCards = maxCards || 10;
+        
+        if (cardNum === null || cardNum === undefined || cardNum === '') {
+            return {isValid: false, value: null, error: 'Card number is required'};
+        }
+        
+        var num = parseInt(cardNum);
+        if (isNaN(num)) {
+            return {isValid: false, value: null, error: 'Card number must be a number'};
+        }
+        
+        if (num < 1) {
+            return {isValid: false, value: num, error: 'Card number must be at least 1'};
+        }
+        
+        if (num > maxCards) {
+            return {isValid: false, value: num, error: 'Card number cannot exceed ' + maxCards};
+        }
+        
+        return {isValid: true, value: num, error: null};
+    },
+    
+    /**
+     * Validates bid amount
+     * @param {string|number} bid - The bid amount to validate
+     * @returns {Object} {isValid: boolean, value: number, error: string}
+     */
+    validateBidAmount: function(bid) {
+        if (bid === null || bid === undefined || bid === '') {
+            return {isValid: false, value: null, error: 'Bid amount is required'};
+        }
+        
+        var num = parseInt(bid);
+        if (isNaN(num)) {
+            return {isValid: false, value: null, error: 'Bid must be a number'};
+        }
+        
+        var minBid = GAME_CONFIG.MIN_BID || 1;
+        var maxBid = GAME_CONFIG.MAX_BID || 10;
+        
+        if (num < minBid) {
+            return {isValid: false, value: num, error: 'Bid must be at least ' + minBid};
+        }
+        
+        if (num > maxBid) {
+            return {isValid: false, value: num, error: 'Bid cannot exceed ' + maxBid};
+        }
+        
+        return {isValid: true, value: num, error: null};
+    },
+    
+    /**
+     * Validates and sanitizes general text input
+     * @param {string} text - Text to validate
+     * @param {number} maxLength - Maximum allowed length
+     * @returns {Object} {isValid: boolean, sanitized: string, error: string}
+     */
+    validateText: function(text, maxLength) {
+        maxLength = maxLength || 1000;
+        
+        if (text === null || text === undefined) {
+            return {isValid: false, sanitized: '', error: 'Text input is required'};
+        }
+        
+        if (typeof text !== 'string') {
+            text = String(text);
+        }
+        
+        var trimmed = text.trim();
+        if (trimmed.length > maxLength) {
+            return {isValid: false, sanitized: trimmed.substring(0, maxLength), error: 'Text too long (max ' + maxLength + ' characters)'};
+        }
+        
+        // Sanitize HTML entities and dangerous characters
+        var sanitized = trimmed
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#x27;')
+            .replace(/&/g, '&amp;');
+        
+        return {isValid: true, sanitized: sanitized, error: null};
+    },
+    
+    /**
+     * Validates numeric input within a range
+     * @param {string|number} value - Value to validate
+     * @param {number} min - Minimum allowed value
+     * @param {number} max - Maximum allowed value
+     * @returns {Object} {isValid: boolean, value: number, error: string}
+     */
+    validateNumericRange: function(value, min, max) {
+        if (value === null || value === undefined || value === '') {
+            return {isValid: false, value: null, error: 'Numeric value is required'};
+        }
+        
+        var num = parseFloat(value);
+        if (isNaN(num)) {
+            return {isValid: false, value: null, error: 'Value must be a number'};
+        }
+        
+        if (min !== undefined && num < min) {
+            return {isValid: false, value: num, error: 'Value must be at least ' + min};
+        }
+        
+        if (max !== undefined && num > max) {
+            return {isValid: false, value: num, error: 'Value cannot exceed ' + max};
+        }
+        
+        return {isValid: true, value: num, error: null};
+    },
+    
+    /**
+     * Validates all form inputs on a screen
+     * @param {string} screenId - ID of the screen to validate
+     * @returns {Object} {isValid: boolean, errors: Array, validatedData: Object}
+     */
+    validateFormInputs: function(screenId) {
+        var errors = [];
+        var validatedData = {};
+        
+        var screen = document.getElementById(screenId);
+        if (!screen) {
+            return {isValid: false, errors: ['Screen not found'], validatedData: {}};
+        }
+        
+        // Find all input elements in the screen
+        var inputs = screen.querySelectorAll('input[type="text"], input[type="number"]');
+        
+        for (var i = 0; i < inputs.length; i++) {
+            var input = inputs[i];
+            var id = input.id;
+            var value = input.value;
+            
+            // Skip empty optional fields
+            if (!value && !input.required) {
+                continue;
+            }
+            
+            var validation;
+            
+            // Apply specific validation based on input type and ID
+            if (id.startsWith('player')) {
+                validation = this.validatePlayerName(value);
+            } else if (id === 'cardInput') {
+                validation = this.validateCardNumber(value, 10);
+            } else if (input.type === 'number') {
+                var min = parseFloat(input.min) || undefined;
+                var max = parseFloat(input.max) || undefined;
+                validation = this.validateNumericRange(value, min, max);
+            } else {
+                validation = this.validateText(value, 100);
+            }
+            
+            if (!validation.isValid) {
+                errors.push({
+                    field: id,
+                    error: validation.error,
+                    value: value
+                });
+            } else {
+                validatedData[id] = validation.sanitized || validation.value;
+            }
+        }
+        
+        return {
+            isValid: errors.length === 0,
+            errors: errors,
+            validatedData: validatedData
+        };
+    },
+    
+    /**
+     * Shows validation errors to the user
+     * @param {Array} errors - Array of error objects
+     */
+    showValidationErrors: function(errors) {
+        if (errors.length === 0) return;
+        
+        var errorMessage = 'Please fix the following errors:\n';
+        errors.forEach(function(error) {
+            errorMessage += '• ' + error.error + '\n';
+        });
+        
+        showNotification(errorMessage, 'error');
+    }
+};
+
+/**
+ * Safe console logging utility
+ */
+function safeConsoleLog() {
+    if (console && console.log) {
+        console.log.apply(console, arguments);
+    }
 }
 
 /**
@@ -131,7 +600,7 @@ var ACTIVE_RULES = {
     // Card Pool Mechanics
     allowBlocking: true,            // Players can use blocking tokens
     tokenReplacement: false,        // Replace cards in pool with owned tokens
-    refreshUsedCards: false,        // Replace used cards between rounds
+    refreshUsedCards: true,         // Replace used cards between rounds
     allowOwnedInSelection: false,   // Use owned tokens in card selection
     
     // Game Flow
@@ -594,7 +1063,10 @@ var GameState = {
                 this.data.players.ownedCards = {};
             }
             if (!this.data.players.ownedCards[name]) {
-                this.data.players.ownedCards[name] = [];
+                this.data.players.ownedCards[name] = {
+                    countries: [],
+                    movies: []
+                };
             }
             
             // CRITICAL FIX: Preserve existing statistics instead of resetting them
@@ -928,112 +1400,194 @@ function showNotification(message, type) {
 }
 
 /**
- * Show notification about card replacements between rounds
- * @param {Array} removedCards - Cards that were used/owned in previous round
- * @param {Array} addedCards - New cards that replaced them
+ * Show notification about token replacements between rounds
+ * @param {Array} removedTokens - Tokens that were used/owned in previous round
+ * @param {Array} addedTokens - New tokens that replaced them
  */
-function showCardReplacementNotification(removedCards, addedCards) {
+function showTokenReplacementNotification(removedTokens, addedTokens) {
     try {
-        if ((!removedCards || removedCards.length === 0) && (!addedCards || addedCards.length === 0)) {
+        // Always show screen in Round 2+ even if no specific tokens tracked
+        if (getCurrentRound() < 2) {
             return;
         }
         
-        // Build notification message
-        var message = '🔄 Round ' + currentRound + ' Card Replacements:\n\n';
+        console.log('📱 Showing token replacement screen...');
         
-        if (removedCards.length > 0) {
-            message += '❌ Removed Cards:\n';
-            removedCards.forEach(function(cardId) {
-                var country = window.GAME_DATA.countries[cardId];
-                var reason = '';
-                // Check if it was used in ranking
-                if (window.lastRoundSelectedCards && window.lastRoundSelectedCards.includes(cardId)) {
-                    reason = ' (used in ranking - removed forever)';
-                }
-                // Check if it became owned
-                else if (window.lastRoundNewlyOwnedCards && window.lastRoundNewlyOwnedCards.includes(cardId)) {
-                    reason = ' (now owned by blocker)';
-                }
-                message += '  • ' + (country ? country.name : cardId) + reason + '\n';
-            });
-            message += '\n';
-        }
-        
-        if (addedCards.length > 0) {
-            message += '✅ New Cards:\n';
-            addedCards.forEach(function(cardId) {
-                var country = window.GAME_DATA.countries[cardId];
-                message += '  • ' + (country ? country.name : cardId) + '\n';
-            });
-        }
-        
-        if (removedCards.length === 0 && addedCards.length === 0) {
-            message += '🔄 No replacements - all cards remain from last round';
-        }
-        
-        // Show notification with longer duration for card changes
-        console.log(message);
-        showNotification(message.replace(/\n/g, ' | '), 'info');
-        
-        // Also create a more detailed display in the bidding screen if available
-        var drawnCardsInfo = document.getElementById('drawnCardsInfo');
-        if (drawnCardsInfo) {
-            var changesHtml = '<div class="info-card" style="margin-bottom: 15px; background: #e3f2fd;">' +
-                             '<div class="card-title">🔄 Round ' + currentRound + ' Card Replacements</div>';
-            
-            if (removedCards.length > 0 || addedCards.length > 0) {
-                changesHtml += '<div style="margin: 10px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">';
+        // Show removed tokens organized by reason
+        var removedList = document.getElementById('removedTokensList');
+        if (removedList) {
+            var removedHtml = '';
+            if (removedTokens && removedTokens.length > 0) {
+                // Group tokens by removal reason
+                var usedInRanking = [];
+                var usedInBlockAndOwned = [];
+                var otherReasons = [];
                 
-                // Left column - removed cards
-                changesHtml += '<div>';
-                changesHtml += '<strong>❌ Removed Cards:</strong><br>';
-                if (removedCards.length > 0) {
-                    removedCards.forEach(function(cardId) {
-                        var country = window.GAME_DATA.countries[cardId];
-                        var reason = '';
-                        // Check if it was used in ranking
-                        if (window.lastRoundSelectedCards && window.lastRoundSelectedCards.includes(cardId)) {
-                            reason = ' <em style="font-size: 11px; color: #666;">(ranked - gone forever)</em>';
+                removedTokens.forEach(function(tokenId) {
+                    // Try to find the token in both categories
+                    var foundItem = null;
+                    var foundCategory = null;
+                    
+                    // Check countries first
+                    if (window.GAME_DATA.categories.countries && window.GAME_DATA.categories.countries.items[tokenId]) {
+                        foundItem = window.GAME_DATA.categories.countries.items[tokenId];
+                        foundCategory = 'countries';
+                    }
+                    // Then check movies
+                    else if (window.GAME_DATA.categories.movies && window.GAME_DATA.categories.movies.items[tokenId]) {
+                        foundItem = window.GAME_DATA.categories.movies.items[tokenId];
+                        foundCategory = 'movies';
+                    }
+                    
+                    var tokenData = {
+                        id: tokenId,
+                        item: foundItem,
+                        category: foundCategory
+                    };
+                    
+                    // Check if this token was blocked and now owned
+                    var blockedCardsFromPreviousRound = window.lastRoundBlockedCards || [];
+                    if (blockedCardsFromPreviousRound.indexOf(tokenId) !== -1) {
+                        usedInBlockAndOwned.push(tokenData);
+                    } else {
+                        // Otherwise, it was used in ranking
+                        usedInRanking.push(tokenData);
+                    }
+                });
+                
+                // Build HTML with reason categories as headings
+                if (usedInRanking.length > 0) {
+                    removedHtml += '<div style="margin-bottom: 15px;">';
+                    removedHtml += '<h4 style="margin: 0 0 8px 0; font-size: 14px; color: #dc2626;">🎯 Used in Ranking (' + usedInRanking.length + ')</h4>';
+                    removedHtml += '<ul style="margin: 0; padding-left: 16px; font-size: 13px;">';
+                    usedInRanking.forEach(function(tokenData) {
+                        if (tokenData.item) {
+                            var categoryIcon = tokenData.category === 'countries' ? '🌍' : '🎬';
+                            removedHtml += '<li style="margin: 3px 0;">' + tokenData.item.name + ' (' + (tokenData.item.code || tokenData.id) + ') ' + categoryIcon + '</li>';
+                        } else {
+                            removedHtml += '<li style="margin: 3px 0;">' + tokenData.id + '</li>';
                         }
-                        // Check if it became owned
-                        else if (window.lastRoundNewlyOwnedCards && window.lastRoundNewlyOwnedCards.includes(cardId)) {
-                            reason = ' <em style="font-size: 11px; color: #666;">(now owned)</em>';
+                    });
+                    removedHtml += '</ul>';
+                    removedHtml += '</div>';
+                }
+                
+                if (usedInBlockAndOwned.length > 0) {
+                    removedHtml += '<div style="margin-bottom: 15px;">';
+                    removedHtml += '<h4 style="margin: 0 0 8px 0; font-size: 14px; color: #dc2626;">🛡️ Used in Block and Now Owned (' + usedInBlockAndOwned.length + ')</h4>';
+                    removedHtml += '<ul style="margin: 0; padding-left: 16px; font-size: 13px;">';
+                    usedInBlockAndOwned.forEach(function(tokenData) {
+                        if (tokenData.item) {
+                            var categoryIcon = tokenData.category === 'countries' ? '🌍' : '🎬';
+                            removedHtml += '<li style="margin: 3px 0;">' + tokenData.item.name + ' (' + (tokenData.item.code || tokenData.id) + ') ' + categoryIcon + '</li>';
+                        } else {
+                            removedHtml += '<li style="margin: 3px 0;">' + tokenData.id + '</li>';
                         }
-                        changesHtml += '<span style="color: #d32f2f; font-size: 13px;">• ' + (country ? country.name : cardId) + reason + '</span><br>';
                     });
-                } else {
-                    changesHtml += '<span style="color: #666; font-size: 13px;">None</span><br>';
+                    removedHtml += '</ul>';
+                    removedHtml += '</div>';
                 }
-                changesHtml += '</div>';
-                
-                // Right column - added cards
-                changesHtml += '<div>';
-                changesHtml += '<strong>✅ Replacement Cards:</strong><br>';
-                if (addedCards.length > 0) {
-                    addedCards.forEach(function(cardId) {
-                        var country = window.GAME_DATA.countries[cardId];
-                        changesHtml += '<span style="color: #388e3c; font-size: 13px;">• ' + (country ? country.name : cardId) + '</span><br>';
-                    });
-                } else {
-                    changesHtml += '<span style="color: #666; font-size: 13px;">None</span><br>';
-                }
-                changesHtml += '</div>';
-                
-                changesHtml += '</div>';
             } else {
-                changesHtml += '<div style="margin: 10px 0; color: #666;">🔄 No replacements - all cards remain from last round</div>';
+                removedHtml = '<p style="color: #666; font-style: italic; font-size: 13px;">No specific tokens tracked</p>';
             }
-            
-            changesHtml += '</div>';
-            
-            // Insert the changes display at the top of drawnCardsInfo
-            // Get current content first
-            var currentContent = drawnCardsInfo.innerHTML;
-            drawnCardsInfo.innerHTML = changesHtml + currentContent;
+            removedList.innerHTML = removedHtml;
         }
+        
+        // Show added tokens as simple list
+        var addedList = document.getElementById('addedTokensList');
+        if (addedList) {
+            var addedHtml = '';
+            
+            if (addedTokens && addedTokens.length > 0) {
+                addedHtml += '<ul style="margin: 0; padding-left: 16px; font-size: 13px;">';
+                addedTokens.forEach(function(tokenId) {
+                    // Try to find the token in both categories
+                    var foundItem = null;
+                    var foundCategory = null;
+                    
+                    // Check countries first
+                    if (window.GAME_DATA.categories.countries && window.GAME_DATA.categories.countries.items[tokenId]) {
+                        foundItem = window.GAME_DATA.categories.countries.items[tokenId];
+                        foundCategory = 'countries';
+                    }
+                    // Then check movies
+                    else if (window.GAME_DATA.categories.movies && window.GAME_DATA.categories.movies.items[tokenId]) {
+                        foundItem = window.GAME_DATA.categories.movies.items[tokenId];
+                        foundCategory = 'movies';
+                    }
+                    
+                    if (foundItem) {
+                        var categoryIcon = foundCategory === 'countries' ? '🌍' : '🎬';
+                        addedHtml += '<li style="margin: 3px 0;">' + foundItem.name + ' (' + (foundItem.code || tokenId) + ') ' + categoryIcon + '</li>';
+                    } else {
+                        addedHtml += '<li style="margin: 3px 0;">' + tokenId + '</li>';
+                    }
+                });
+                addedHtml += '</ul>';
+            } else {
+                addedHtml = '<p style="color: #666; font-style: italic; font-size: 13px;">No new tokens added</p>';
+            }
+            addedList.innerHTML = addedHtml;
+        }
+        
+        // Show the screen
+        console.log('🔄 Attempting to show tokenReplacementScreen...');
+        
+        // Add a temporary alert to verify this code is reached
+        if (window.isAutomatedTestRunning) {
+            console.log('🚨 ALERT: About to show token replacement screen in automated test!');
+        }
+        
+        // Add debugging before showing screen
+        console.log('🔍 About to call showScreen("tokenReplacementScreen")...');
+        
+        showScreen('tokenReplacementScreen');
+        
+        // Update the screen title and headers AFTER showing the screen
+        var titleElement = document.getElementById('tokenReplacementTitle');
+        if (titleElement) {
+            titleElement.textContent = 'Round ' + getCurrentRound() + ' Token Changes';
+        }
+        
+        // Update column headers with counts
+        var removedHeader = document.getElementById('removedTokensHeader');
+        var addedHeader = document.getElementById('addedTokensHeader');
+        var removedCount = removedTokens ? removedTokens.length : 0;
+        var addedCount = addedTokens ? addedTokens.length : 0;
+        
+        if (removedHeader) {
+            removedHeader.textContent = '❌ Cards Used in Gameplay [' + removedCount + ']';
+            console.log('✅ Updated removed header with count:', removedCount);
+        }
+        if (addedHeader) {
+            addedHeader.textContent = '✅ Replacement Cards [' + addedCount + ']';
+            console.log('✅ Updated added header with count:', addedCount);
+        }
+        
+        // Verify screen is shown
+        var screenElement = document.getElementById('tokenReplacementScreen');
+        if (screenElement) {
+            console.log('✅ Token replacement screen element found');
+            console.log('  Display style:', screenElement.style.display);
+            console.log('  Has active class:', screenElement.classList.contains('active'));
+            
+            // Check if any other screen also has active class
+            var allScreens = document.querySelectorAll('.screen.active');
+            console.log('  Total active screens:', allScreens.length);
+            if (allScreens.length > 1) {
+                console.warn('⚠️ Multiple screens are active!');
+                for (var i = 0; i < allScreens.length; i++) {
+                    console.log('    Active screen', i + ':', allScreens[i].id);
+                }
+            }
+        } else {
+            console.error('❌ Token replacement screen element not found in DOM');
+        }
+        
+        console.log('✅ Token replacement screen displayed successfully');
         
     } catch (error) {
-        console.error('Error showing card replacement notification:', error);
+        console.error('Error showing token replacement screen:', error);
     }
 }
 
@@ -1110,7 +1664,7 @@ function addConsoleMessage(message, type) {
 function clearConsoleOutput() {
     var consoleOutput = document.getElementById('consoleOutput');
     if (consoleOutput) {
-        consoleOutput.innerHTML = '<div class="console-message">Console output cleared...</div>';
+        safeSetHTML(consoleOutput, '<div class="console-message">Console output cleared...</div>');
         // Also clear the stored logs
         window.consoleLogHistory = [];
     }
@@ -1212,73 +1766,275 @@ function getCurrentRound() { return GameState.get('currentRound'); }
 function getMaxRounds() { return GameState.get('maxRounds'); }
 function getPlayers() { return GameState.get('players'); }
 
-// Legacy property accessors for gradual migration
-Object.defineProperty(window, 'currentPrompt', {
-    get: function() { return GameState.get('currentPrompt'); },
-    set: function(value) { GameState.set('currentPrompt', value); }
-});
+// Additional helper functions for common state access patterns
+function getPlayersList() { return GameState.get('players.list'); }
+function getPlayersScores() { return GameState.get('players.scores'); }
+function getPlayerScore(playerName) { return GameState.get('players.scores.' + playerName) || 0; }
+function setPlayerScore(playerName, score) { GameState.set('players.scores.' + playerName, score); }
+function getPlayerTokens(playerName) { return GameState.get('players.blockingTokens.' + playerName) || {2: 1, 4: 1, 6: 1}; }
+function getPlayerOwnedCards(playerName, category) { 
+    if (category) {
+        return GameState.get('players.ownedCards.' + playerName + '.' + category) || [];
+    }
+    return GameState.get('players.ownedCards.' + playerName) || {};
+}
+function getPlayerStats(playerName) { return GameState.get('players.stats.' + playerName) || {}; }
+function getCurrentBlocks() { return GameState.get('players.currentBlocks') || {}; }
 
-Object.defineProperty(window, 'drawnCards', {
-    get: function() { return GameState.get('drawnCards'); },
-    set: function(value) { GameState.set('drawnCards', value); }
-});
+// Migration complete - all state access now uses GameState.get/set directly
 
-Object.defineProperty(window, 'blockedCards', {
-    get: function() { return GameState.get('blockedCards'); },
-    set: function(value) { GameState.set('blockedCards', value); }
-});
+/**
+ * Business Logic Dependency Injection
+ * Provides clean state access for business functions with explicit dependencies
+ */
+var BusinessLogic = {
+    /**
+     * Calculate and apply scores with explicit dependencies
+     * @param {Object} gameState - Current game state
+     * @param {Object} gameRules - Game rules configuration
+     * @param {boolean} bidderSuccess - Whether bidder succeeded
+     */
+    calculateAndApplyScores: function(gameState, gameRules, bidderSuccess) {
+        var highestBidder = gameState.highestBidder;
+        var currentBid = gameState.currentBid;
+        var currentBlocks = gameState.players.currentBlocks || {};
+        
+        if (bidderSuccess) {
+            // Bidder succeeds - gets points equal to their bid
+            var currentScore = getPlayerScore(highestBidder);
+            setPlayerScore(highestBidder, currentScore + currentBid);
+            console.log(highestBidder + ' succeeded! Awarded ' + currentBid + ' points.');
+        } else {
+            // Bidder fails - each blocking player gets points equal to their token value
+            Object.keys(currentBlocks).forEach(function(playerName) {
+                if (playerName !== highestBidder && currentBlocks[playerName]) {
+                    var blockData = currentBlocks[playerName];
+                    var tokenValue = blockData.tokenValue;
+                    var currentScore = getPlayerScore(playerName);
+                    setPlayerScore(playerName, currentScore + tokenValue);
+                    console.log(playerName + ' earned ' + tokenValue + ' points for successful block!');
+                }
+            });
+        }
+    },
+    
+    /**
+     * Validate bid with explicit dependencies
+     * @param {number} bidAmount - Proposed bid amount
+     * @param {Object} gameRules - Game rules configuration
+     * @param {Object} gameState - Current game state
+     * @returns {Object} Validation result
+     */
+    validateBid: function(bidAmount, gameRules, gameState) {
+        if (bidAmount < gameRules.MIN_BID || bidAmount > gameRules.MAX_BID) {
+            return {isValid: false, error: 'Bid must be between ' + gameRules.MIN_BID + ' and ' + gameRules.MAX_BID};
+        }
+        
+        var availableCards = gameState.drawnCards.length - gameState.blockedCards.length;
+        if (bidAmount > availableCards) {
+            return {isValid: false, error: 'Not enough cards available for this bid'};
+        }
+        
+        return {isValid: true, error: null};
+    },
+    
+    /**
+     * Calculate token integrity with explicit dependencies
+     * @param {Object} players - Players object with tokens
+     * @param {Object} gameRules - Expected token configuration
+     * @returns {Object} Validation result
+     */
+    validateTokenIntegrity: function(players, gameRules) {
+        var totalTokens = {2: 0, 4: 0, 6: 0};
+        var expectedTokens = {2: 0, 4: 0, 6: 0};
+        
+        // Count total tokens across all players
+        Object.keys(players.blockingTokens || {}).forEach(function(playerName) {
+            var playerTokens = players.blockingTokens[playerName];
+            if (playerTokens) {
+                totalTokens[2] += playerTokens[2] || 0;
+                totalTokens[4] += playerTokens[4] || 0;
+                totalTokens[6] += playerTokens[6] || 0;
+            }
+        });
+        
+        // Calculate expected tokens based on number of players
+        var playerCount = players.list.length;
+        expectedTokens[2] = playerCount * (gameRules.startingTokens || 1);
+        expectedTokens[4] = playerCount * (gameRules.startingTokens || 1);
+        expectedTokens[6] = playerCount * (gameRules.startingTokens || 1);
+        
+        var isValid = totalTokens[2] === expectedTokens[2] && 
+                     totalTokens[4] === expectedTokens[4] && 
+                     totalTokens[6] === expectedTokens[6];
+        
+        return {
+            isValid: isValid,
+            actual: totalTokens,
+            expected: expectedTokens,
+            playerCount: playerCount
+        };
+    }
+};
 
-Object.defineProperty(window, 'selectedCards', {
-    get: function() { return GameState.get('selectedCards'); },
-    set: function(value) { GameState.set('selectedCards', value); }
-});
-
-Object.defineProperty(window, 'currentBid', {
-    get: function() { return GameState.get('currentBid'); },
-    set: function(value) { GameState.set('currentBid', value); }
-});
-
-Object.defineProperty(window, 'highestBidder', {
-    get: function() { return GameState.get('highestBidder'); },
-    set: function(value) { GameState.set('highestBidder', value); }
-});
-
-Object.defineProperty(window, 'playerBids', {
-    get: function() { return GameState.get('playerBids'); },
-    set: function(value) { GameState.set('playerBids', value); }
-});
-
-Object.defineProperty(window, 'passedPlayers', {
-    get: function() { return GameState.get('passedPlayers'); },
-    set: function(value) { GameState.set('passedPlayers', value); }
-});
-
-Object.defineProperty(window, 'blockingTurn', {
-    get: function() { return GameState.get('blockingTurn'); },
-    set: function(value) { GameState.set('blockingTurn', value); }
-});
-
-Object.defineProperty(window, 'blockingOrder', {
-    get: function() { return GameState.get('blockingOrder'); },
-    set: function(value) { GameState.set('blockingOrder', value); }
-});
-
-Object.defineProperty(window, 'currentRound', {
-    get: function() { return GameState.get('currentRound'); },
-    set: function(value) { GameState.set('currentRound', value); }
-});
-
-Object.defineProperty(window, 'maxRounds', {
-    get: function() { return GameState.get('maxRounds'); },
-    set: function(value) { GameState.set('maxRounds', value); }
-});
-
-Object.defineProperty(window, 'players', {
-    get: function() { return GameState.get('players'); },
-    set: function(value) { GameState.set('players', value); }
-});
-
-// finalRanking now managed through GameState
+/**
+ * State Validation and Integrity Checks
+ * Ensures game state remains consistent and prevents corruption
+ */
+var StateValidator = {
+    /**
+     * Validate complete game state integrity
+     * @returns {Object} Validation result with details
+     */
+    validateGameState: function() {
+        var errors = [];
+        var warnings = [];
+        
+        try {
+            // Validate token integrity
+            var players = getPlayers();
+            var tokenValidation = BusinessLogic.validateTokenIntegrity(players, ACTIVE_RULES);
+            if (!tokenValidation.isValid) {
+                errors.push('Token integrity check failed: Expected ' + 
+                    JSON.stringify(tokenValidation.expected) + 
+                    ', but found ' + JSON.stringify(tokenValidation.actual));
+            }
+            
+            // Validate player list consistency
+            var playersList = getPlayersList();
+            if (!Array.isArray(playersList) || playersList.length < GAME_CONFIG.MIN_PLAYERS) {
+                errors.push('Invalid player list: Need at least ' + GAME_CONFIG.MIN_PLAYERS + ' players');
+            }
+            
+            // Validate scores are numbers
+            var scores = getPlayersScores();
+            playersList.forEach(function(playerName) {
+                var score = scores[playerName];
+                if (typeof score !== 'number' || isNaN(score)) {
+                    errors.push('Invalid score for player ' + playerName + ': ' + score);
+                }
+            });
+            
+            // Validate bid constraints
+            var currentBid = getCurrentBid();
+            if (currentBid < 0 || currentBid > GAME_CONFIG.MAX_BID) {
+                errors.push('Invalid current bid: ' + currentBid);
+            }
+            
+            // Validate round bounds
+            var currentRound = getCurrentRound();
+            if (currentRound < 1 || currentRound > GAME_CONFIG.MAX_ROUNDS) {
+                warnings.push('Round number out of expected bounds: ' + currentRound);
+            }
+            
+            // Validate card pools
+            var drawnCards = getDrawnCards();
+            var blockedCards = getBlockedCards();
+            var selectedCards = getSelectedCards();
+            
+            if (!Array.isArray(drawnCards)) {
+                errors.push('Drawn cards is not an array');
+            }
+            if (!Array.isArray(blockedCards)) {
+                errors.push('Blocked cards is not an array');
+            }
+            if (!Array.isArray(selectedCards)) {
+                errors.push('Selected cards is not an array');
+            }
+            
+            // Check for duplicate cards in pools
+            var allCards = drawnCards.concat(blockedCards).concat(selectedCards);
+            var uniqueCards = allCards.filter(function(card, index) {
+                return allCards.indexOf(card) === index;
+            });
+            if (allCards.length !== uniqueCards.length) {
+                warnings.push('Duplicate cards found across card pools');
+            }
+            
+        } catch (error) {
+            errors.push('State validation failed with error: ' + error.message);
+        }
+        
+        return {
+            isValid: errors.length === 0,
+            errors: errors,
+            warnings: warnings,
+            timestamp: new Date()
+        };
+    },
+    
+    /**
+     * Auto-fix common state issues
+     * @returns {Array} List of fixes applied
+     */
+    autoFixState: function() {
+        var fixes = [];
+        
+        try {
+            // Fix missing player scores
+            var playersList = getPlayersList();
+            var scores = getPlayersScores();
+            playersList.forEach(function(playerName) {
+                if (typeof scores[playerName] !== 'number') {
+                    setPlayerScore(playerName, 0);
+                    fixes.push('Set score for ' + playerName + ' to 0');
+                }
+            });
+            
+            // Fix invalid current bid
+            var currentBid = getCurrentBid();
+            if (currentBid < 0) {
+                GameState.set('currentBid', 0);
+                fixes.push('Reset negative bid to 0');
+            }
+            if (currentBid > GAME_CONFIG.MAX_BID) {
+                GameState.set('currentBid', GAME_CONFIG.MAX_BID);
+                fixes.push('Capped bid at maximum: ' + GAME_CONFIG.MAX_BID);
+            }
+            
+            // Ensure all card arrays exist
+            if (!Array.isArray(getDrawnCards())) {
+                GameState.set('drawnCards', []);
+                fixes.push('Initialized drawn cards array');
+            }
+            if (!Array.isArray(getBlockedCards())) {
+                GameState.set('blockedCards', []);
+                fixes.push('Initialized blocked cards array');
+            }
+            if (!Array.isArray(getSelectedCards())) {
+                GameState.set('selectedCards', []);
+                fixes.push('Initialized selected cards array');
+            }
+            
+        } catch (error) {
+            fixes.push('Auto-fix failed: ' + error.message);
+        }
+        
+        return fixes;
+    },
+    
+    /**
+     * Run validation and auto-fix if needed
+     * @param {boolean} autoFix - Whether to attempt auto-fixing issues
+     * @returns {Object} Complete validation and fix report
+     */
+    runStateCheck: function(autoFix) {
+        var validation = this.validateGameState();
+        var fixes = [];
+        
+        if (!validation.isValid && autoFix) {
+            fixes = this.autoFixState();
+            // Re-validate after fixes
+            validation = this.validateGameState();
+        }
+        
+        return {
+            validation: validation,
+            fixes: fixes,
+            timestamp: new Date()
+        };
+    }
+};
 
 /**
  * Template System for HTML Generation
@@ -1327,10 +2083,31 @@ var TemplateEngine = {
             data = data || {};
             
             // Simple template replacement
-            return template.replace(/\{\{(\w+)\}\}/g, function(match, key) {
+            var rendered = template.replace(/\{\{(\w+)\}\}/g, function(match, key) {
                 var value = data[key];
-                return value !== undefined ? String(value) : match;
+                if (value !== undefined) {
+                    // Check if this is an attribute context (look for data- or other attribute patterns)
+                    var beforeMatch = template.substring(0, template.indexOf(match));
+                    var isInAttribute = /\s+[\w-]+\s*=\s*["']([^"']*$)/.test(beforeMatch);
+                    
+                    if (isInAttribute) {
+                        return HTMLEscaper.escapeHTMLAttribute(String(value));
+                    } else {
+                        // Check if this value is already processed template content (contains HTML tags and trusted marker)
+                        var stringValue = String(value);
+                        if (stringValue.indexOf('<!-- TRUSTED_TEMPLATE -->') !== -1 || stringValue.indexOf('<div class="') !== -1) {
+                            // Return the HTML content as-is, but strip any trusted markers
+                            return stringValue.replace(/<!-- TRUSTED_TEMPLATE -->/g, '');
+                        } else {
+                            return sanitizeHTML(stringValue);
+                        }
+                    }
+                }
+                return match;
             });
+            
+            // Mark as trusted template content for safeSetHTML
+            return '<!-- TRUSTED_TEMPLATE -->' + rendered;
         } catch (error) {
             safeConsoleLog('Error rendering template:', templateName, error);
             return '';
@@ -1356,11 +2133,14 @@ var TemplateEngine = {
             for (var i = 0; i < dataArray.length; i++) {
                 var rendered = this.render(templateName, dataArray[i]);
                 if (rendered) {
-                    results.push(rendered);
+                    // Remove the trusted template marker from individual renders
+                    var cleanRendered = rendered.replace('<!-- TRUSTED_TEMPLATE -->', '');
+                    results.push(cleanRendered);
                 }
             }
             
-            return results.join(separator);
+            // Add single trusted marker for the entire list
+            return '<!-- TRUSTED_TEMPLATE -->' + results.join(separator);
         } catch (error) {
             safeConsoleLog('Error rendering template list:', templateName, error);
             return '';
@@ -1387,7 +2167,8 @@ TemplateEngine.register('passButton',
 
 TemplateEngine.register('cardItem',
     '<div class="card-item {{blockClass}}" data-card-id="{{cardId}}">' +
-    '{{index}}. {{countryName}}{{blocker}}' +
+    '<div class="card-name">{{countryName}}</div>' +
+    '<div class="card-code">{{cardCode}}</div>{{blocker}}' +
     '</div>'
 );
 
@@ -1459,7 +2240,10 @@ TemplateEngine.register('drawnCardsInfo',
 );
 
 TemplateEngine.register('simpleCardItem',
-    '<div class="card-item">{{index}}. {{countryName}}</div>'
+    '<div class="card-item">' +
+    '<div class="card-name">{{countryName}}</div>' +
+    '<div class="card-code">{{cardCode}}</div>' +
+    '</div>'
 );
 
 TemplateEngine.register('scanInfo',
@@ -1547,16 +2331,8 @@ var GameUtils = {
     // Validate and sanitize bid amount
     validateBidAmount: function(bid) {
         try {
-            var numBid = parseInt(bid);
-            if (isNaN(numBid)) {
-                return null;
-            }
-            
-            if (numBid < GAME_CONFIG.MIN_BID || numBid > GAME_CONFIG.MAX_BID) {
-                return null;
-            }
-            
-            return numBid;
+            var validation = InputValidator.validateBidAmount(bid);
+            return validation.isValid ? validation.value : null;
         } catch (error) {
             return null;
         }
@@ -1570,7 +2346,7 @@ var GameUtils = {
                 return [];
             }
             
-            var tokens = players.blockingTokens[playerName];
+            var tokens = GameState.get('players.blockingTokens.' + playerName);
             var available = [];
             
             for (var value in tokens) {
@@ -1722,20 +2498,25 @@ window.simulateQRScan = function() {
     
     try {
         // Pick random challenge
-        currentPrompt = window.GAME_DATA.getRandomChallenge();
+        var selectedPrompt = window.GAME_DATA.getRandomChallenge();
+        GameState.set('currentPrompt', selectedPrompt);
         
         // Draw random countries
-        drawnCards = window.GAME_DATA.getRandomCountries(5);
+        var selectedCards = window.GAME_DATA.getRandomCountries(5);
+        GameState.set('drawnCards', selectedCards);
+        GameState.set('currentCategory', 'countries');
         
         // Show what we got
         var message = "Demo Game Started!\n\n";
-        message += "Challenge: " + currentPrompt.label + "\n\n";
+        message += "Challenge: " + selectedPrompt.label + "\n\n";
         message += "Countries drawn:\n";
         
-        drawnCards.forEach(function(cardId, index) {
-            var country = window.GAME_DATA.countries[cardId];
-            var statDisplay = window.GAME_DATA.getStatDisplay(country, currentPrompt.challenge);
-            message += (index + 1) + ". " + country.name + " - " + statDisplay + "\n";
+        selectedCards.forEach(function(cardId, index) {
+            var currentCategory = GameState.get('currentCategory') || 'countries';
+            var categoryData = window.GAME_DATA.categories[currentCategory];
+            var item = categoryData ? categoryData.items[cardId] : null;
+            var statDisplay = window.GAME_DATA.getStatDisplay(item, selectedPrompt.challenge);
+            message += (index + 1) + ". " + (item ? item.name : cardId) + " - " + statDisplay + "\n";
         });
         
         console.log(message);
@@ -1785,9 +2566,15 @@ function updatePlayerCount() {
     
     for (var i = 1; i < nextPlayerNumber; i++) {
         var input = document.getElementById('player' + i);
-        if (input && input.value.trim()) {
-            count++;
-            names.push(input.value.trim());
+        if (input && input.value) {
+            var validation = InputValidator.validatePlayerName(input.value);
+            if (validation.isValid) {
+                count++;
+                names.push(validation.sanitized);
+            } else {
+                // Show validation error for this input
+                console.warn('Player ' + i + ' validation error:', validation.error);
+            }
         }
     }
     
@@ -1803,12 +2590,12 @@ function updatePlayerCount() {
     // Update round summary
     var roundSummary = document.getElementById('roundSummary');
     if (roundSummary) {
-        var html = '<strong>Round ' + currentRound + ' of ' + maxRounds + '</strong><br>' +
+        var html = '<strong>Round ' + getCurrentRound() + ' of ' + GAME_CONFIG.MAX_ROUNDS + '</strong><br>' +
                   '<strong>Players:</strong> ' + (count === 0 ? 'Add players above' : count + ' players ready') + '<br>' +
                   '<strong>Next:</strong> Draw challenge and start bidding';
         
         // Show current scores if any exist
-        if (Object.keys(players.scores).length > 0) {
+        if (Object.keys(getPlayersScores()).length > 0) {
             var scores = getFinalScores();
             html += '<br><strong>Current Scores:</strong> ';
             html += scores.slice(0, 3).map(function(player) {
@@ -1819,7 +2606,7 @@ function updatePlayerCount() {
             }
         }
         
-        roundSummary.innerHTML = html;
+        safeSetHTML(roundSummary, html);
     }
 }
 
@@ -1847,142 +2634,102 @@ window.goBackHome = function() {
 
 // Button functions for different screens
 window.startRoundWithBidder = function() {
-    // Collect all players
-    players.list = [];
+    // Validate all player inputs first
+    var formValidation = InputValidator.validateFormInputs('playerScreen');
+    if (!formValidation.isValid) {
+        InputValidator.showValidationErrors(formValidation.errors);
+        return;
+    }
+    
+    // Collect all players using validated data
+    var playersList = [];
+    var validationErrors = [];
+    
     for (var i = 1; i < nextPlayerNumber; i++) {
         var input = document.getElementById('player' + i);
-        if (input && input.value.trim()) {
-            var name = input.value.trim();
-            players.list.push(name);
-            if (!players.scores[name]) {
-                initializePlayer(name);
+        if (input && input.value) {
+            var validation = InputValidator.validatePlayerName(input.value);
+            if (validation.isValid) {
+                var name = validation.sanitized;
+                playersList.push(name);
+                // Initialize player in GameState
+                if (getPlayerScore(name) === 0 && !getPlayerStats(name).initialized) {
+                    initializePlayer(name);
+                }
+            } else {
+                validationErrors.push(validation.error);
             }
         }
     }
     
+    // Update GameState with validated players list
+    GameState.set('players.list', playersList);
+    
+    // Show any remaining validation errors
+    if (validationErrors.length > 0) {
+        showNotification('Player name errors: ' + validationErrors.join(', '), 'error');
+        return;
+    }
+    
     // Validate we have at least 2 players
-    if (players.list.length < 2) {
+    var playersList = getPlayersList();
+    if (playersList.length < 2) {
         console.error('You need at least 2 players to start!');
         return;
     }
     
-    // Draw challenge and cards
-    currentPrompt = window.GAME_DATA.prompts[Math.floor(Math.random() * window.GAME_DATA.prompts.length)];
-    drawnCards = [];
-    var allCountries = Object.keys(window.GAME_DATA.countries);
+    // Start category selection instead of directly drawing challenge
+    startCategorySelection();
+};
+
+// Update category indicators throughout the UI
+function updateCategoryIndicators() {
+    var gameState = GameState.data;
+    var currentCategory = gameState.currentCategory || 'countries';
+    var categoryData = window.GAME_DATA.categories[currentCategory];
     
-    // CRITICAL FIX: Remove owned cards from available pool
-    var ownedCards = [];
-    if (ACTIVE_RULES.tokenOwnership && players.ownedCards) {
-        Object.keys(players.ownedCards).forEach(function(playerName) {
-            if (players.ownedCards[playerName]) {
-                ownedCards = ownedCards.concat(players.ownedCards[playerName]);
-            }
-        });
-    }
+    if (!categoryData) return;
     
-    // Filter out owned cards from available pool
-    var availableCountries = allCountries.filter(function(cardId) {
-        return !ownedCards.includes(cardId);
+    var categoryText = categoryData.icon + ' ' + categoryData.name;
+    var categoryClass = currentCategory;
+    
+    // Update all category badges
+    var badges = ['categoryBadge', 'blockingCategoryBadge', 'scanCategoryBadge', 'revealCategoryBadge'];
+    badges.forEach(function(badgeId) {
+        var badge = document.getElementById(badgeId);
+        if (badge) {
+            badge.textContent = categoryText;
+            badge.className = 'category-badge ' + categoryClass;
+        }
     });
     
-    console.log('🎴 Total countries:', allCountries.length);
-    console.log('🏆 Owned cards (excluded):', ownedCards.length, ownedCards);
-    console.log('🎯 Available for drawing:', availableCountries.length);
+    console.log('🎯 Updated category indicators to:', categoryText);
+}
+
+// Debug function to quickly set category for testing
+window.debugSetCategory = function(categoryId) {
+    if (!categoryId) return;
     
-    // Track previous round's cards for comparison (store globally for later use)
-    window.previousRoundCards = drawnCards ? drawnCards.slice() : [];
+    var gameState = GameState.data;
+    gameState.currentCategory = categoryId;
     
-    // Track which cards need to be replaced (used in ranking + newly owned through blocking)
-    var cardsToReplace = [];
+    // Update indicators
+    updateCategoryIndicators();
     
-    // Add cards that were selected for ranking in the previous round
-    if (window.lastRoundSelectedCards && window.lastRoundSelectedCards.length > 0) {
-        cardsToReplace = cardsToReplace.concat(window.lastRoundSelectedCards);
+    console.log('🐛 Debug: Set category to', categoryId);
+    
+    // Reset the dropdown
+    var select = document.getElementById('debugCategorySelect');
+    if (select) {
+        select.value = '';
     }
-    
-    // Add cards that were successfully blocked and now owned (if not already in cardsToReplace)
-    if (window.lastRoundNewlyOwnedCards && window.lastRoundNewlyOwnedCards.length > 0) {
-        window.lastRoundNewlyOwnedCards.forEach(function(cardId) {
-            if (!cardsToReplace.includes(cardId)) {
-                cardsToReplace.push(cardId);
-            }
-        });
-    }
-    
-    // Store cards that need replacement for the notification
-    window.cardsReplacedThisRound = cardsToReplace;
-    
-    console.log('🔍 Tracking cards to replace in round', currentRound + ':');
-    console.log('  Selected cards from last round:', window.lastRoundSelectedCards);
-    console.log('  Newly owned cards from last round:', window.lastRoundNewlyOwnedCards);
-    console.log('  Total cards to replace:', cardsToReplace);
-    
-    // Draw 10 cards, keeping track of which are replacements
-    drawnCards = [];
-    var newReplacementCards = [];
-    
-    // First, keep the cards that weren't used/owned (only if we have cards from previous round)
-    if (window.previousRoundCards && window.previousRoundCards.length > 0) {
-        window.previousRoundCards.forEach(function(cardId) {
-            if (!cardsToReplace.includes(cardId) && !ownedCards.includes(cardId)) {
-                drawnCards.push(cardId);
-            }
-        });
-    }
-    
-    // Then, draw new cards to fill up to 10 total
-    var cardsNeeded = 10 - drawnCards.length;
-    
-    // Only track as "replacement" cards if we're actually replacing specific cards
-    var trackingReplacements = (cardsToReplace.length > 0);
-    
-    for (var i = 0; i < cardsNeeded; i++) {
-        if (availableCountries.length === 0) {
-            console.warn('⚠️ No more cards available to draw!');
-            break;
-        }
-        var index = Math.floor(Math.random() * availableCountries.length);
-        var newCard = availableCountries[index];
-        drawnCards.push(newCard);
-        
-        // Only add to replacement cards if we're tracking replacements and haven't filled all replacements yet
-        if (trackingReplacements && newReplacementCards.length < cardsToReplace.length) {
-            newReplacementCards.push(newCard);
-        }
-        
-        availableCountries.splice(index, 1);
-    }
-    
-    // Store the new replacement cards for the notification
-    window.newReplacementCards = newReplacementCards;
-    
-    // Reset round state
-    blockedCards = [];
-    selectedCards = [];
-    players.currentBlocks = {};
-    currentBid = 0;
-    highestBidder = '';
-    playerBids = {};
-    passedPlayers = {};
-    
-    // Initialize bidding for all players
-    players.list.forEach(function(playerName) {
-        playerBids[playerName] = 0;
-        passedPlayers[playerName] = false;
-    });
-    
-    // Reset blocking state
-    blockingTurn = 0;
-    GameState.set('usedBlockingTokens', {2: false, 4: false, 6: false});
-    
-    // Navigate to bidding screen
-    showBiddingScreen();
 };
 
 window.continueToScanning = function() {
     console.log("Continue to scanning clicked!");
 };
+
+// Removed duplicate scanCard function - implementation exists below
 
 window.scanCard = function() {
     console.log("Scan card clicked!");
@@ -1993,11 +2740,13 @@ window.scanCard = function() {
         return;
     }
     
-    var cardNumber = parseInt(cardInput.value);
-    if (isNaN(cardNumber) || cardNumber < 1) {
-        showNotification('Please enter a valid card number', 'error');
+    // Validate card input using centralized validation
+    var validation = InputValidator.validateCardNumber(cardInput.value, 10);
+    if (!validation.isValid) {
+        showNotification(validation.error, 'error');
         return;
     }
+    var cardNumber = validation.value;
     
     // Get the remaining cards (after blocking)
     var drawnCards = GameState.get('drawnCards') || [];
@@ -2028,16 +2777,16 @@ window.scanCard = function() {
 
 // Add Enter key support for card input
 window.addEventListener('load', function() {
-    setTimeout(function() {
+    eventListenerManager.addTimeout(function() {
         var cardInput = document.getElementById('cardInput');
         if (cardInput) {
-            cardInput.addEventListener('keypress', function(e) {
+            eventListenerManager.addListener(cardInput, 'keypress', function(e) {
                 if (e.key === 'Enter') {
                     scanCard();
                 }
             });
         }
-    }, 100);
+    }, GAME_CONFIG.INPUT_FOCUS_DELAY);
 });
 
 // revealNext function is implemented later in the file
@@ -2054,7 +2803,7 @@ window.nextRound = function() {
 function initPage() {
     
     // Wait a moment for data.js to load
-    setTimeout(function() {
+    eventListenerManager.addTimeout(function() {
         // Check if data loaded
         if (!window.GAME_DATA) {
             console.error("ERROR: Game data not available!");
@@ -2062,8 +2811,91 @@ function initPage() {
         
         // Show title screen
         showScreen('titleScreen');
-    }, 200);
+    }, GAME_CONFIG.DATA_LOAD_DELAY);
 }
+
+// Category selection system
+var categoryChooserIndex = 0;
+var preGeneratedChallenges = {};
+
+/**
+ * Get the current player whose turn it is to choose category
+ */
+function getCurrentCategoryChooser() {
+    var players = GameState.get('players');
+    return players.list[categoryChooserIndex % players.list.length];
+}
+
+/**
+ * Start category selection phase
+ * Pre-generates challenges for both categories and shows selection UI
+ */
+function startCategorySelection() {
+    try {
+        // Pre-generate challenges for both categories
+        preGeneratedChallenges.countries = window.GAME_DATA.getRandomChallenge('countries');
+        preGeneratedChallenges.movies = window.GAME_DATA.getRandomChallenge('movies');
+        
+        // Update UI with challenge descriptions
+        var countryChallenge = document.getElementById('countryChallenge');
+        var movieChallenge = document.getElementById('movieChallenge');
+        
+        if (countryChallenge) {
+            countryChallenge.textContent = preGeneratedChallenges.countries.label;
+        }
+        if (movieChallenge) {
+            movieChallenge.textContent = preGeneratedChallenges.movies.label;
+        }
+        
+        // Show whose turn it is to choose
+        var chooser = getCurrentCategoryChooser();
+        var categoryChooserName = document.getElementById('categoryChooserName');
+        if (categoryChooserName) {
+            categoryChooserName.textContent = chooser + "'s turn to choose";
+        }
+        
+        showScreen('categoryScreen');
+    } catch (error) {
+        console.error('Error in startCategorySelection:', error);
+    }
+}
+
+/**
+ * Select a category and continue to bidding
+ */
+// Test function to verify code is loading
+window.testDebugVersion = function() {
+    console.log('🧪 DEBUG VERSION v13 IS LOADED!');
+    console.log('🧪 selectCategory function exists:', typeof window.selectCategory);
+    console.log('🧪 showBiddingScreen function exists:', typeof showBiddingScreen);
+    return 'v13-loaded';
+};
+
+window.selectCategory = function(categoryId) {
+    console.log('🚨🚨🚨 SELECTCATEGORY FUNCTION ENTERED! 🚨🚨🚨');
+    console.log('🚨 Category ID:', categoryId);
+    try {
+        console.log('🎯 selectCategory() called with:', categoryId);
+        console.log('🎯 Current round when selecting category:', getCurrentRound());
+        
+        // Set current category and challenge
+        var gameState = GameState.data;
+        gameState.currentCategory = categoryId;
+        gameState.currentPrompt = preGeneratedChallenges[categoryId];
+        
+        // Advance to next player for next round
+        categoryChooserIndex++;
+        
+        // Update category indicators
+        updateCategoryIndicators();
+        
+        console.log('🎯 About to call showBiddingScreen()...');
+        // Continue to bidding phase
+        showBiddingScreen();
+    } catch (error) {
+        console.error('Error in selectCategory:', error);
+    }
+};
 
 /**
  * Show bidding screen with challenge and cards
@@ -2071,16 +2903,163 @@ function initPage() {
  * Uses template system for consistent HTML generation
  */
 function showBiddingScreen() {
+    console.log('🚨🚨🚨 SHOWBIDDINGSCREEN FUNCTION ENTERED! 🚨🚨🚨');
+    console.log('🎯 showBiddingScreen() called');
     try {
+        // First, draw cards from the selected category
+        var gameState = GameState.data;
+        var currentCategory = gameState.currentCategory || 'countries';
+        
+        // Get all items from the selected category
+        var categoryData = window.GAME_DATA.categories[currentCategory];
+        console.log('🐛 DEBUG: currentCategory:', currentCategory);
+        console.log('🐛 DEBUG: categoryData:', categoryData);
+        
+        if (!categoryData) {
+            console.error('❌ Category data not found for:', currentCategory);
+            return;
+        }
+        
+        if (!categoryData.items) {
+            console.error('❌ Category items not found for:', currentCategory);
+            return;
+        }
+        
+        var allItems = Object.keys(categoryData.items);
+        console.log('🐛 DEBUG: allItems length:', allItems.length);
+        
+        // Remove owned cards from available pool
+        var ownedCards = [];
+        var players = GameState.get('players');
+        if (ACTIVE_RULES.tokenOwnership && players.ownedCards) {
+            Object.keys(players.ownedCards).forEach(function(playerName) {
+                if (players.ownedCards[playerName] && players.ownedCards[playerName][currentCategory]) {
+                    ownedCards = ownedCards.concat(players.ownedCards[playerName][currentCategory]);
+                }
+            });
+        }
+        
+        // Filter out owned cards
+        var availableItems = allItems.filter(function(cardId) {
+            return !ownedCards.includes(cardId);
+        });
+        
+        // Draw 10 cards
+        var drawnCards = [];
+        console.log('🐛 DEBUG: availableItems length before drawing:', availableItems.length);
+        while (drawnCards.length < 10 && availableItems.length > 0) {
+            var randomIndex = Math.floor(Math.random() * availableItems.length);
+            var cardId = availableItems[randomIndex];
+            drawnCards.push(cardId);
+            availableItems.splice(randomIndex, 1);
+        }
+        console.log('🐛 DEBUG: drawnCards after drawing:', drawnCards.length, drawnCards);
+        
+        // Track token changes for token replacement screen (category-specific)
+        if (getCurrentRound() > 1) {
+            var previousCategoryCards = window.previousRoundCardsByCategory && window.previousRoundCardsByCategory[currentCategory] || [];
+            
+            if (previousCategoryCards.length > 0) {
+                // Build removed tokens list from actual game events (not pool differences)
+                var removedTokens = [];
+                
+                // Add cards that were selected for ranking in previous round
+                var lastRoundSelectedCards = window.lastRoundSelectedCards || [];
+                lastRoundSelectedCards.forEach(function(cardId) {
+                    if (removedTokens.indexOf(cardId) === -1) {
+                        removedTokens.push(cardId);
+                    }
+                });
+                
+                // Add blocked cards from previous round to removed tokens (if token ownership is enabled)
+                var blockedCardsFromPreviousRound = window.lastRoundBlockedCards || [];
+                if (blockedCardsFromPreviousRound.length > 0) {
+                    console.log('🛡️ Adding blocked cards from previous round to removed tokens:', blockedCardsFromPreviousRound);
+                    blockedCardsFromPreviousRound.forEach(function(cardId) {
+                        if (removedTokens.indexOf(cardId) === -1) {
+                            removedTokens.push(cardId);
+                        }
+                    });
+                }
+                
+                console.log('🎯 Cards used in ranking:', lastRoundSelectedCards);
+                console.log('🛡️ Cards blocked and owned:', blockedCardsFromPreviousRound);
+                console.log('📋 Total removed cards (gameplay only):', removedTokens);
+                
+                // Calculate tokens that were added to replace the gameplay-removed cards
+                // Only show replacements for cards that were actually used/blocked
+                var addedTokens = [];
+                var allPoolChanges = drawnCards.filter(function(cardId) {
+                    return previousCategoryCards.indexOf(cardId) === -1;
+                });
+                
+                // Limit added tokens to match the number of gameplay-removed cards
+                // This shows the 1:1 replacement for cards that were actually used
+                for (var i = 0; i < Math.min(removedTokens.length, allPoolChanges.length); i++) {
+                    addedTokens.push(allPoolChanges[i]);
+                }
+                
+                console.log('🔄 All pool changes:', allPoolChanges.length, 'cards');
+                console.log('🎯 Showing replacements for gameplay-removed cards only:', addedTokens.length, 'cards');
+                
+                console.log('🔄 Previous ' + currentCategory + ' cards:', previousCategoryCards);
+                console.log('🔄 Current ' + currentCategory + ' cards:', drawnCards);
+                console.log('🔄 Removed ' + currentCategory + ' tokens (gameplay events):', removedTokens);
+                console.log('🔄 Added ' + currentCategory + ' tokens (new in pool):', addedTokens);
+                console.log('📊 Gameplay events - Removed:', removedTokens.length, 'Pool refresh - Added:', addedTokens.length);
+                
+                // Store both for the token replacement screen
+                window.removedReplacementCards = removedTokens;
+                window.newReplacementCards = addedTokens;
+                
+                // Note: Pool size maintained by game, removed=used cards, added=pool refresh
+                console.log('✅ Token tracking updated to show actual gameplay events only');
+            } else {
+                // First time using this category - no replacements to show
+                console.log('🔄 First time using ' + currentCategory + ' category - no token replacements');
+                window.removedReplacementCards = [];
+                window.newReplacementCards = [];
+            }
+        }
+        
+        // Store in game state
+        gameState.drawnCards = drawnCards;
+        
+        // Remember current cards for next round (by category)
+        if (!window.previousRoundCardsByCategory) {
+            window.previousRoundCardsByCategory = {};
+        }
+        window.previousRoundCardsByCategory[currentCategory] = drawnCards.slice();
+        console.log('🔄 Stored cards for ' + currentCategory + ':', drawnCards.slice());
+        
+        // Initialize game state for bidding
+        gameState.currentBid = 0;
+        gameState.highestBidder = '';
+        gameState.blockedCards = [];
+        
+        // Reset bidding state
+        playerBids = {};
+        passedPlayers = {};
+        highestBid = 0;
+        highestBidder = '';
+        
+        // Initialize all players for bidding
+        players.list.forEach(function(playerName) {
+            playerBids[playerName] = 0;
+            passedPlayers[playerName] = false;
+        });
+        
+        console.log('🎴 Drew', drawnCards.length, 'cards from', currentCategory, ':', drawnCards);
+        console.log('📍 Current round at card draw:', getCurrentRound());
+        
         // Update the challenge info
         var promptInfo = DOMCache.get('promptInfo');
         if (promptInfo) {
-            var gameState = GameState.data;
             var promptData = {
                 challengeLabel: gameState.currentPrompt.label,
                 description: 'Players bid on how many they can rank correctly'
             };
-            promptInfo.innerHTML = TemplateEngine.render('promptInfo', promptData);
+            safeSetHTML(promptInfo, TemplateEngine.render('promptInfo', promptData));
         }
     } catch (error) {
         safeConsoleLog('Error updating prompt info:', error);
@@ -2094,11 +3073,14 @@ function showBiddingScreen() {
             var drawnCards = gameState.drawnCards;
             
             // Generate card data for template
+            var currentCategory = gameState.currentCategory || 'countries';
+            var categoryData = window.GAME_DATA.categories[currentCategory];
             var cardData = drawnCards.map(function(cardId, index) {
-                var country = window.GAME_DATA.countries[cardId];
+                var item = categoryData.items[cardId];
                 return {
                     index: index + 1,
-                    countryName: country.name
+                    countryName: item.name,
+                    cardCode: item.code || cardId
                 };
             });
             
@@ -2107,20 +3089,57 @@ function showBiddingScreen() {
                 cardsList: cardsList
             };
             
-            cardsInfo.innerHTML = TemplateEngine.render('drawnCardsInfo', cardsData);
+            safeSetHTML(cardsInfo, TemplateEngine.render('drawnCardsInfo', cardsData));
             
-            // Show card changes notification after cards are displayed (only for rounds 2+)
-            if (currentRound > 1) {
+            console.log('📍 About to check round for token replacement:', getCurrentRound());
+            
+            // Check if we've completed at least one round (round increment happens AFTER this)
+            // So if we're starting Round 1's bidding screen, we haven't completed any rounds yet
+            // If we're starting Round 2's bidding screen, getCurrentRound() is still 1 but we've completed Round 1
+            var completedRounds = window.automatedTestResults ? window.automatedTestResults.roundsCompleted : 0;
+            console.log('📍 Completed rounds:', completedRounds);
+            console.log('📍 Current round from getCurrentRound():', getCurrentRound());
+            console.log('📍 GameState current round:', GameState.get('currentRound'));
+            console.log('📍 Round check condition result:', (completedRounds > 0 || getCurrentRound() > 1));
+            
+            // Show card changes notification after cards are displayed (only after completing at least 1 round)
+            if (completedRounds > 0 || getCurrentRound() > 1) {
                 console.log('🔄 Round 2+ detected, checking for card changes...');
+                console.log('  Current round:', getCurrentRound());
                 console.log('  Cards replaced:', window.cardsReplacedThisRound);
                 console.log('  New replacement cards:', window.newReplacementCards);
+                console.log('  Last round selected cards:', window.lastRoundSelectedCards);
+                console.log('  Automated test running:', window.isAutomatedTestRunning);
                 
-                if (window.cardsReplacedThisRound && window.newReplacementCards) {
-                    showCardReplacementNotification(window.cardsReplacedThisRound, window.newReplacementCards);
-                } else if (window.cardsReplacedThisRound && window.cardsReplacedThisRound.length > 0) {
-                    // Even if we don't have specific replacement cards tracked, show what was removed
-                    showCardReplacementNotification(window.cardsReplacedThisRound, []);
+                // Use the properly calculated token replacements from the category selection
+                var removedCards = window.removedReplacementCards || [];
+                var addedCards = window.newReplacementCards || [];
+                
+                console.log('🔄 Removed cards for ' + currentCategory + ':', removedCards);
+                console.log('🔄 Added cards for ' + currentCategory + ':', addedCards);
+                console.log('🔄 Balance check - Removed:', removedCards.length, 'Added:', addedCards.length);
+                
+                // Always show token replacement screen in Round 2+ (even if no specific cards tracked)
+                console.log('🔄 FORCING token replacement screen to show...');
+                console.log('  Removed cards array:', removedCards);
+                console.log('  Added cards array:', addedCards);
+                
+                // Show token replacement screen IMMEDIATELY before showScreen clears timeouts
+                console.log('🔧 Showing token replacement screen immediately...');
+                try {
+                    showTokenReplacementNotification(removedCards, addedCards);
+                    console.log('✅ Token replacement function called successfully');
+                    
+                    // For automated tests, return early to prevent bidding screen from immediately showing
+                    if (window.isAutomatedTestRunning) {
+                        console.log('🤖 Automated test: Returning early to prevent bidding screen override...');
+                        return; // Don't show bidding screen yet - let user see token replacement screen
+                    }
+                } catch (error) {
+                    console.error('❌ Error calling token replacement function:', error);
                 }
+            } else {
+                console.log('🔄 Round 1 - no token replacement screen needed');
             }
         }
     } catch (error) {
@@ -2132,40 +3151,75 @@ function showBiddingScreen() {
         var ownedCardsInfo = DOMCache.get('ownedCardsInfo');
         if (ownedCardsInfo && ACTIVE_RULES.tokenOwnership) {
             var gameState = GameState.data;
-            var players = gameState.players;
+            var players = GameState.get('players');
             var ownedCardsHtml = '';
             
             if (players.ownedCards) {
                 var hasOwnedCards = false;
                 Object.keys(players.ownedCards).forEach(function(playerName) {
-                    if (players.ownedCards[playerName] && players.ownedCards[playerName].length > 0) {
+                    var hasCards = false;
+                    if (players.ownedCards[playerName]) {
+                        if (typeof players.ownedCards[playerName] === 'object' && !Array.isArray(players.ownedCards[playerName])) {
+                            // New format: check if any category has cards
+                            Object.keys(players.ownedCards[playerName]).forEach(function(category) {
+                                if (Array.isArray(players.ownedCards[playerName][category]) && players.ownedCards[playerName][category].length > 0) {
+                                    hasCards = true;
+                                }
+                            });
+                        } else if (Array.isArray(players.ownedCards[playerName]) && players.ownedCards[playerName].length > 0) {
+                            // Legacy format
+                            hasCards = true;
+                        }
+                    }
+                    if (hasCards) {
                         hasOwnedCards = true;
                         ownedCardsHtml += '<div class="owned-cards-player">' +
                             '<strong>' + playerName + '</strong> owns: ';
                         
-                        var ownedCardNames = players.ownedCards[playerName].map(function(cardId) {
-                            var country = window.GAME_DATA.countries[cardId];
-                            return country ? country.name : cardId;
-                        });
+                        var ownedCardNames = [];
+                        if (players.ownedCards[playerName] && typeof players.ownedCards[playerName] === 'object') {
+                            // Handle category-specific owned cards
+                            Object.keys(players.ownedCards[playerName]).forEach(function(category) {
+                                if (Array.isArray(players.ownedCards[playerName][category])) {
+                                    players.ownedCards[playerName][category].forEach(function(cardId) {
+                                        var categoryData = window.GAME_DATA.categories[category];
+                                        var item = categoryData && categoryData.items[cardId];
+                                        if (item) {
+                                            var categoryIcon = categoryData.icon || '📋';
+                                            ownedCardNames.push(item.name + ' <span class="category-card-badge ' + category + '">' + categoryIcon + ' ' + categoryData.name + '</span>');
+                                        }
+                                    });
+                                }
+                            });
+                        } else if (Array.isArray(players.ownedCards[playerName])) {
+                            // Handle legacy format (backwards compatibility)
+                            players.ownedCards[playerName].forEach(function(cardId) {
+                                var countryData = window.GAME_DATA.categories.countries.items[cardId];
+                                if (countryData) {
+                                    ownedCardNames.push(countryData.name + ' <span class="category-card-badge countries">🌍 Countries</span>');
+                                }
+                            });
+                        }
                         
                         ownedCardsHtml += ownedCardNames.join(', ') + 
-                            ' <span class="owned-count">(' + players.ownedCards[playerName].length + ')</span>' +
+                            ' <span class="owned-count">(' + ownedCardNames.length + ')</span>' +
                             '</div>';
                     }
                 });
                 
                 if (hasOwnedCards) {
-                    ownedCardsInfo.innerHTML = '<div class="owned-cards-section">' +
+                    var ownedSectionHtml = '<div class="owned-cards-section">' +
                         '<h4>🏆 Owned Cards (Not Available This Round)</h4>' +
                         ownedCardsHtml +
                         '</div>';
+                    safeSetHTML(ownedCardsInfo, ownedSectionHtml);
                     ownedCardsInfo.style.display = 'block';
                 } else {
-                    ownedCardsInfo.innerHTML = '';
+                    safeSetHTML(ownedCardsInfo, '');
                     ownedCardsInfo.style.display = 'none';
                 }
             } else {
-                ownedCardsInfo.innerHTML = '';
+                safeSetHTML(ownedCardsInfo, '');
                 ownedCardsInfo.style.display = 'none';
             }
         }
@@ -2193,7 +3247,7 @@ function generatePlayerBiddingInterface() {
         
         // Get game state
         var gameState = GameState.data;
-        var players = gameState.players;
+        var players = GameState.get('players');
         var currentBid = gameState.currentBid;
         var highestBidder = gameState.highestBidder;
         var passedPlayers = gameState.passedPlayers;
@@ -2205,11 +3259,14 @@ function generatePlayerBiddingInterface() {
         }
         
         // Generate player data for template
-        var playerData = players.list.map(function(playerName) {
+        var playersList = GameState.get('players.list');
+        var playerData = playersList.map(function(playerName) {
             var isPassed = passedPlayers[playerName];
             var currentPlayerBid = playerBids[playerName] || 0;
+            var highestBidder = GameState.get('highestBidder');
+            var currentBid = GameState.get('currentBid');
             var isHighBidder = (playerName === highestBidder && currentBid > 0);
-            var nextBid = currentBid + 1;
+            var nextBid = GameState.get('currentBid') + 1;
             var canPass = !(isHighBidder && currentBid > 0);
             
             // Generate bid actions HTML
@@ -2257,8 +3314,8 @@ function generatePlayerBiddingInterface() {
         // Render all players
         var html = TemplateEngine.renderList('playerBidRowComplete', playerData);
         
-        // Update container
-        container.innerHTML = html;
+        // Update container safely
+        safeSetHTML(container, html);
         
         return true;
         
@@ -2287,13 +3344,13 @@ function updateHighBidderDisplay() {
                 amount: 'No bids yet',
                 playerText: 'Waiting for first bid...'
             };
-            display.innerHTML = TemplateEngine.render('highBidderDisplay', noBidsData);
+            safeSetHTML(display, TemplateEngine.render('highBidderDisplay', noBidsData));
         } else {
             var bidData = {
                 amount: currentBid + ' cards',
                 playerText: 'High bidder: ' + GameUtils.formatPlayerName(highestBidder)
             };
-            display.innerHTML = TemplateEngine.render('highBidderDisplay', bidData);
+            safeSetHTML(display, TemplateEngine.render('highBidderDisplay', bidData));
         }
         
         return true;
@@ -2316,6 +3373,7 @@ window.placeBidForPlayer = function(playerName) {
         }
         
         // Validate game state
+        var passedPlayers = GameState.get('passedPlayers') || {};
         if (typeof passedPlayers !== 'object' || passedPlayers === null) {
             safeConsoleLog('placeBidForPlayer: passedPlayers not properly initialized');
             showNotification('Game state error', 'error');
@@ -2329,7 +3387,7 @@ window.placeBidForPlayer = function(playerName) {
         }
         
         // Validate bid amount
-        var newBid = currentBid + 1;
+        var newBid = GameState.get('currentBid') + 1;
         if (!validateInput(newBid, 'integer', {min: GAME_CONFIG.MIN_BID, max: GAME_CONFIG.MAX_BID})) {
             safeConsoleLog('Maximum bid is ' + GAME_CONFIG.MAX_BID + ' cards');
             showNotification('Maximum bid is ' + GAME_CONFIG.MAX_BID + ' cards', 'error');
@@ -2337,7 +3395,7 @@ window.placeBidForPlayer = function(playerName) {
         }
         
         // Validate currentBid is a number
-        if (!validateInput(currentBid, 'number')) {
+        if (!validateInput(GameState.get('currentBid'), 'number')) {
             safeConsoleLog('placeBidForPlayer: currentBid is not a valid number');
             showNotification('Invalid game state', 'error');
             return false;
@@ -2345,6 +3403,11 @@ window.placeBidForPlayer = function(playerName) {
         
         // Update bid tracking with validation
         try {
+            var gameState = GameState.data;
+            gameState.currentBid = newBid;
+            gameState.highestBidder = playerName;
+            
+            // Also update global variables for backward compatibility
             currentBid = newBid;
             highestBidder = playerName;
             
@@ -2355,6 +3418,7 @@ window.placeBidForPlayer = function(playerName) {
             playerBids[playerName] = newBid;
             
             // Track bid attempt
+            var players = GameState.get('players');
             if (players.stats && players.stats[playerName]) {
                 players.stats[playerName].bidAttempts++;
                 safeConsoleLog('📊 Tracked bid attempt for', playerName, '- Total attempts:', players.stats[playerName].bidAttempts);
@@ -2400,6 +3464,7 @@ window.passPlayer = function(playerName) {
         }
         
         // Validate game state
+        var passedPlayers = GameState.get('passedPlayers') || {};
         if (typeof passedPlayers !== 'object' || passedPlayers === null) {
             safeConsoleLog('passPlayer: passedPlayers not properly initialized');
             showNotification('Game state error', 'error');
@@ -2412,6 +3477,8 @@ window.passPlayer = function(playerName) {
         }
         
         // High bidder cannot pass validation
+        var highestBidder = GameState.get('highestBidder');
+        var currentBid = GameState.get('currentBid');
         if (playerName === highestBidder && validateInput(currentBid, 'number') && currentBid > 0) {
             safeConsoleLog('The high bidder cannot pass! You must either bid higher or wait for others to outbid you.');
             showNotification('High bidder cannot pass', 'error');
@@ -2420,8 +3487,10 @@ window.passPlayer = function(playerName) {
         
         // Mark player as passed
         passedPlayers[playerName] = true;
+        GameState.set('passedPlayers', passedPlayers);
         
         // Track pass in statistics
+        var players = GameState.get('players');
         if (players.stats && players.stats[playerName]) {
             players.stats[playerName].bidsPassed++;
             safeConsoleLog('📊 Tracked pass for', playerName, '- Total passes:', players.stats[playerName].bidsPassed);
@@ -2431,11 +3500,13 @@ window.passPlayer = function(playerName) {
         
         // Check if bidding should end with validation
         try {
-            if (!validateInput(players.list, 'array')) {
+            var playersList = GameState.get('players.list');
+            if (!validateInput(playersList, 'array')) {
                 throw new Error('players.list is not a valid array');
             }
             
-            var activePlayers = players.list.filter(function(name) {
+            var playersList = GameState.get('players.list');
+            var activePlayers = playersList.filter(function(name) {
                 return !passedPlayers[name];
             });
             
@@ -2446,9 +3517,10 @@ window.passPlayer = function(playerName) {
                     
                     // Reset all passes to restart bidding
                     try {
-                        players.list.forEach(function(name) {
+                        playersList.forEach(function(name) {
                             passedPlayers[name] = false;
                         });
+                        GameState.set('passedPlayers', passedPlayers);
                     } catch (resetError) {
                         safeConsoleLog('Error resetting passes:', resetError);
                         return false;
@@ -2497,12 +3569,18 @@ window.passPlayer = function(playerName) {
 };
 
 window.finishBidding = function() {
+    var gameState = GameState.data;
+    var currentBid = gameState.currentBid || 0;
+    var players = gameState.players;
+    
     if (currentBid === 0) {
         console.log('Someone must place a bid before continuing!');
         return;
     }
     
-    var activePlayers = players.list.filter(function(name) {
+    var playersList = GameState.get('players.list');
+    var passedPlayers = GameState.get('passedPlayers') || {};
+    var activePlayers = playersList.filter(function(name) {
         return !passedPlayers[name];
     });
     
@@ -2517,20 +3595,22 @@ window.finishBidding = function() {
 
 // Blocking Phase Functions
 function showBlockingScreen() {
+    var gameState = GameState.data;
     console.log('📋 showBlockingScreen called with state:', {
-        currentPrompt: currentPrompt ? currentPrompt.label : 'null',
-        highestBidder: highestBidder,
-        currentBid: currentBid,
-        drawnCards: drawnCards.length,
-        blockedCards: blockedCards.length
+        currentPrompt: gameState.currentPrompt ? gameState.currentPrompt.label : 'null',
+        highestBidder: gameState.highestBidder,
+        currentBid: gameState.currentBid,
+        drawnCards: gameState.drawnCards ? gameState.drawnCards.length : 0,
+        blockedCards: gameState.blockedCards ? gameState.blockedCards.length : 0
     });
     
     // Set up blocking order (lowest score first, excluding the bidder)
-    blockingOrder = getPlayersByScore().filter(function(name) {
-        return name !== highestBidder;
+    var blockingOrder = getPlayersByScore().filter(function(name) {
+        return name !== gameState.highestBidder;
     }).reverse(); // Reverse to get lowest score first
     
-    blockingTurn = 0;
+    GameState.set('blockingOrder', blockingOrder);
+    GameState.set('blockingTurn', 0);
     
     // Update display
     updateBlockingDisplay();
@@ -2553,7 +3633,7 @@ function updateBlockingDisplay() {
                 turnText: turnText
             };
             
-            blockingInfo.innerHTML = TemplateEngine.render('blockingInfo', blockingData);
+            safeSetHTML(blockingInfo, TemplateEngine.render('blockingInfo', blockingData));
         }
     } catch (error) {
         safeConsoleLog('Error updating blocking display info:', error);
@@ -2566,11 +3646,13 @@ function updateBlockingDisplay() {
             var gameState = GameState.data;
             var drawnCards = gameState.drawnCards;
             var blockedCards = gameState.blockedCards;
-            var players = gameState.players;
+            var players = GameState.get('players');
             
             // Generate card data for template
+            var currentCategory = gameState.currentCategory || 'countries';
+            var categoryData = window.GAME_DATA.categories[currentCategory];
             var cardData = drawnCards.map(function(cardId, index) {
-                var country = window.GAME_DATA.countries[cardId];
+                var item = categoryData.items[cardId];
                 var isBlocked = blockedCards.includes(cardId);
                 var blockClass = isBlocked ? 'card-blocked' : 'card-available';
                 var blocker = '';
@@ -2578,7 +3660,8 @@ function updateBlockingDisplay() {
                 // Find who blocked this card
                 if (isBlocked) {
                     for (var playerName in players.currentBlocks) {
-                        if (players.currentBlocks[playerName].cardId === cardId) {
+                        var blockInfo = players.currentBlocks[playerName];
+                        if (blockInfo && blockInfo.cardId === cardId) {
                             blocker = ' (blocked by ' + GameUtils.formatPlayerName(playerName) + ')';
                             break;
                         }
@@ -2589,7 +3672,8 @@ function updateBlockingDisplay() {
                     blockClass: blockClass,
                     cardId: cardId,
                     index: index + 1,
-                    countryName: country.name,
+                    countryName: item.name,
+                    cardCode: item.code || cardId,
                     blocker: blocker
                 };
             });
@@ -2600,7 +3684,7 @@ function updateBlockingDisplay() {
                 cardsList: cardsList
             };
             
-            availableCards.innerHTML = TemplateEngine.render('availableCardsHeader', availableCardsData);
+            safeSetHTML(availableCards, TemplateEngine.render('availableCardsHeader', availableCardsData));
             
             // Add click listeners for card selection with memory management
             DOMCache.queryAll('.card-available[data-card-id]', 'blockableCards').forEach(function(cardElement) {
@@ -2622,7 +3706,7 @@ function updateBlockingDisplay() {
             var gameState = GameState.data;
             var blockingTurn = gameState.blockingTurn;
             var blockingOrder = gameState.blockingOrder;
-            var players = gameState.players;
+            var players = GameState.get('players');
             var usedBlockingTokens = GameState.get('usedBlockingTokens') || {2: false, 4: false, 6: false};
             
             if (blockingTurn < blockingOrder.length) {
@@ -2630,7 +3714,8 @@ function updateBlockingDisplay() {
                 
                 // Generate token data for template
                 var tokenData = [2, 4, 6].map(function(value) {
-                    var playerHasToken = players.blockingTokens[currentPlayer] && players.blockingTokens[currentPlayer][value] > 0;
+                    var playerTokens = GameState.get('players.blockingTokens.' + currentPlayer);
+                    var playerHasToken = playerTokens && playerTokens[value] > 0;
                     var tokenUsedThisRound = usedBlockingTokens[value];
                     var available = playerHasToken && !tokenUsedThisRound;
                     
@@ -2655,9 +3740,9 @@ function updateBlockingDisplay() {
                     tokensList: tokensList
                 };
                 
-                blockingTokens.innerHTML = TemplateEngine.render('blockingTokensHeader', tokensData);
+                safeSetHTML(blockingTokens, TemplateEngine.render('blockingTokensHeader', tokensData));
             } else {
-                blockingTokens.innerHTML = TemplateEngine.render('blockingComplete', {});
+                safeSetHTML(blockingTokens, TemplateEngine.render('blockingComplete', {}));
             }
         }
     } catch (error) {
@@ -2692,11 +3777,16 @@ window.selectCardToBlock = function(cardId) {
     
     selectedCard = cardId;
     
+    var blockingOrder = GameState.get('blockingOrder');
+    var blockingTurn = GameState.get('blockingTurn');
     var currentPlayer = blockingOrder[blockingTurn];
-    var country = window.GAME_DATA.countries[cardId];
+    var gameState = GameState.data;
+    var currentCategory = gameState.currentCategory || 'countries';
+    var categoryData = window.GAME_DATA.categories[currentCategory];
+    var item = categoryData.items[cardId];
     
     // Auto-confirm for automated testing
-    console.log('Confirmed: Block ' + country.name + ' with a ' + selectedToken + '-point token');
+    console.log('Confirmed: Block ' + item.name + ' with a ' + selectedToken + '-point token');
     blockCard(cardId, selectedToken, currentPlayer);
 };
 
@@ -2707,6 +3797,7 @@ function blockCard(cardId, tokenValue, playerName) {
         return;
     }
     
+    var blockedCards = GameState.get('blockedCards') || [];
     if (blockedCards.includes(cardId)) {
         return; // Already blocked
     }
@@ -2718,16 +3809,20 @@ function blockCard(cardId, tokenValue, playerName) {
     
     // Block the card
     blockedCards.push(cardId);
+    GameState.set('blockedCards', blockedCards);
     
     // Record the blocking action
+    var players = GameState.get('players');
     players.currentBlocks[playerName] = {
         cardId: cardId,
         tokenValue: tokenValue
     };
+    GameState.set('players', players);
     
     // Track blocks made in player stats
     if (players.stats[playerName]) {
         players.stats[playerName].blocksMade++;
+        GameState.set('players', players);
     }
     
     // Update test statistics
@@ -2738,8 +3833,11 @@ function blockCard(cardId, tokenValue, playerName) {
     usedTokens[tokenValue] = true;
     GameState.set('usedBlockingTokens', usedTokens);
     
-    var country = window.GAME_DATA.countries[cardId];
-    console.log(playerName + ' blocked ' + country.name + ' with a ' + tokenValue + '-point token!');
+    var gameState = GameState.data;
+    var currentCategory = gameState.currentCategory || 'countries';
+    var categoryData = window.GAME_DATA.categories[currentCategory];
+    var item = categoryData.items[cardId];
+    console.log(playerName + ' blocked ' + item.name + ' with a ' + tokenValue + '-point token!');
     
     // Clear processing guard
     if (window.automatedTestState) {
@@ -2751,7 +3849,11 @@ function blockCard(cardId, tokenValue, playerName) {
 }
 
 function nextBlockingTurn() {
-    blockingTurn++;
+    var gameState = GameState.data;
+    var blockingOrder = gameState.blockingOrder || [];
+    var blockingTurn = (gameState.blockingTurn || 0) + 1;
+    
+    GameState.set('blockingTurn', blockingTurn);
     selectedToken = null;
     selectedCard = null;
     
@@ -2759,9 +3861,9 @@ function nextBlockingTurn() {
     
     // Check if all players have had their turn
     if (blockingTurn >= blockingOrder.length) {
-        setTimeout(function() {
+        eventListenerManager.addTimeout(function() {
             finishBlocking();
-        }, 1500);
+        }, GAME_CONFIG.BLOCKING_FINISH_DELAY);
     }
 }
 
@@ -2772,10 +3874,15 @@ window.finishBlocking = function() {
 
 window.skipBlocking = function() {
     // Skip current player's blocking turn
+    var gameState = GameState.data;
+    var blockingOrder = gameState.blockingOrder || [];
+    var blockingTurn = gameState.blockingTurn || 0;
+    
     console.log('⏭️ Player skipping blocking turn:', blockingOrder[blockingTurn]);
     
     // Move to next player's turn
     blockingTurn++;
+    GameState.set('blockingTurn', blockingTurn);
     
     if (blockingTurn >= blockingOrder.length) {
         // All players have had their turn, move to card selection
@@ -2791,19 +3898,24 @@ window.skipBlocking = function() {
 function setupBlockingScreen() {
     console.log('🛡️ Setting up blocking screen...');
     console.log('Current game state:', {
-        currentPrompt: currentPrompt,
-        highestBidder: highestBidder,
-        currentBid: currentBid,
-        drawnCards: drawnCards,
-        blockedCards: blockedCards
+        currentPrompt: GameState.get('currentPrompt'),
+        highestBidder: GameState.get('highestBidder'),
+        currentBid: GameState.get('currentBid'),
+        drawnCards: GameState.get('drawnCards'),
+        blockedCards: GameState.get('blockedCards')
     });
     
     // Validate we have the required game state
+    var currentPrompt = GameState.get('currentPrompt');
+    var highestBidder = GameState.get('highestBidder');
+    var currentBid = GameState.get('currentBid');
+    var drawnCards = GameState.get('drawnCards');
     if (!currentPrompt || !highestBidder || currentBid === 0 || drawnCards.length === 0) {
         console.error('❌ Cannot setup blocking screen - missing game state');
         showNotification('Error: Game state incomplete for blocking phase', 'error');
         // If we're missing game state, go back to the appropriate screen
-        if (players.list.length === 0) {
+        var playersList = GameState.get('players.list');
+        if (playersList.length === 0) {
             showScreen('playerScreen');
         } else {
             showScreen('biddingScreen');
@@ -2821,21 +3933,28 @@ function setupBlockingCards() {
     var container = document.getElementById('availableCards');
     if (!container) return;
     
+    var gameState = GameState.data;
+    var currentCategory = gameState.currentCategory || 'countries';
+    var categoryData = window.GAME_DATA.categories[currentCategory];
+    var drawnCards = gameState.drawnCards || [];
+    var blockedCards = gameState.blockedCards || [];
+    
     var html = '<h3>Available Cards to Block:</h3><div class="cards-grid">';
     
     drawnCards.forEach(function(cardId, index) {
-        var countryData = window.GAME_DATA.countries[cardId];
+        var item = categoryData.items[cardId];
         var isBlocked = blockedCards.includes(cardId);
         var cardClass = isBlocked ? 'card-item card-blocked' : 'card-item card-available card-selectable';
         
-        html += '<div class="' + cardClass + '" data-card="' + cardId + '">' +
-               '<strong>' + (countryData ? countryData.name : cardId) + '</strong>' +
-               (isBlocked ? '<br><span style="color: red;">BLOCKED</span>' : '') +
+        html += '<div class="' + cardClass + '" data-card="' + HTMLEscaper.escapeHTMLAttribute(cardId) + '">' +
+               '<div class="card-name">' + sanitizeHTML(item ? item.name : cardId) + '</div>' +
+               '<div class="card-code">' + sanitizeHTML(item ? item.code : cardId) + '</div>' +
+               (isBlocked ? '<div style="color: red; font-size: 11px; margin-top: 5px;">BLOCKED</div>' : '') +
                '</div>';
     });
     
     html += '</div>';
-    container.innerHTML = html;
+    safeSetHTML(container, html);
 }
 
 function setupBlockingTokens() {
@@ -2844,10 +3963,12 @@ function setupBlockingTokens() {
     
     // Get current player's tokens (in a real game, this would be dynamic)
     // For now, show tokens for the first non-bidder player
-    var currentBlocker = players.list.find(name => name !== highestBidder);
+    var playersList = GameState.get('players.list');
+    var highestBidder = GameState.get('highestBidder');
+    var currentBlocker = playersList.find(name => name !== highestBidder);
     if (!currentBlocker) return;
     
-    var tokens = players.blockingTokens[currentBlocker] || {2: 1, 4: 1, 6: 1};
+    var tokens = GameState.get('players.blockingTokens.' + currentBlocker) || {2: 1, 4: 1, 6: 1};
     var usedBlockingTokens = GameState.get('usedBlockingTokens') || {2: false, 4: false, 6: false};
     
     var html = '<h3>Your Blocking Tokens:</h3><div class="tokens-grid">';
@@ -2857,14 +3978,14 @@ function setupBlockingTokens() {
         var isUsed = usedBlockingTokens[tokenValue];
         var tokenClass = count > 0 && !isUsed ? 'token-item token-available' : 'token-item token-used';
         
-        html += '<div class="' + tokenClass + '" data-token="' + tokenValue + '">' +
-               '<strong>' + tokenValue + ' pts</strong>' +
-               '<br>(' + (count || 0) + ' available)' +
+        html += '<div class="' + tokenClass + '" data-token="' + HTMLEscaper.escapeHTMLAttribute(tokenValue) + '">' +
+               '<strong>' + sanitizeText(tokenValue) + ' pts</strong>' +
+               '<br>(' + sanitizeText(count || 0) + ' available)' +
                '</div>';
     });
     
     html += '</div>';
-    container.innerHTML = html;
+    safeSetHTML(container, html);
 }
 
 // Card Selection Phase
@@ -2876,6 +3997,14 @@ function showCardSelection() {
     }
     
     console.log('🎯 Starting card selection phase...');
+    
+    var gameState = GameState.data;
+    var currentPrompt = gameState.currentPrompt;
+    var highestBidder = gameState.highestBidder;
+    var currentBid = gameState.currentBid;
+    var drawnCards = gameState.drawnCards || [];
+    var blockedCards = gameState.blockedCards || [];
+    
     console.log('Current prompt:', currentPrompt);
     console.log('Highest bidder:', highestBidder);
     console.log('Current bid:', currentBid);
@@ -2891,7 +4020,7 @@ function showCardSelection() {
     
     if (!highestBidder) {
         console.error('❌ No highest bidder set!');
-        console.log('Game state check - currentRound:', currentRound, 'isAutomatedTestRunning:', window.isAutomatedTestRunning);
+        console.log('Game state check - currentRound:', gameState.currentRound, 'isAutomatedTestRunning:', window.isAutomatedTestRunning);
         
         // Don't show error notifications during automated tests to avoid spam
         if (!window.isAutomatedTestRunning && (!window.automatedTestResults || !window.automatedTestResults.endTime)) {
@@ -2916,12 +4045,12 @@ function showCardSelection() {
         console.log('❌ Not enough cards remaining! Bidder automatically fails.');
         showNotification('Not enough cards remaining for bid!', 'error');
         // Handle automatic failure - go to reveal with failure
-        bidderSuccess = false;
-        setTimeout(() => {
+        GameState.set('bidderSuccess', false);
+        eventListenerManager.addTimeout(() => {
             calculateAndApplyScores();
             updateInterimDisplay();
             showScreen('interimScreen');
-        }, 1000);
+        }, GAME_CONFIG.RANKING_REVEAL_FAILURE);
         return;
     }
     
@@ -2934,7 +4063,7 @@ function showCardSelection() {
                 challengeLabel: gameState.currentPrompt.label,
                 description: GameUtils.formatPlayerName(gameState.highestBidder) + ' must select ' + gameState.currentBid + ' cards to rank'
             };
-            scanInfo.innerHTML = TemplateEngine.render('scanInfo', scanData);
+            safeSetHTML(scanInfo, TemplateEngine.render('scanInfo', scanData));
         }
     } catch (error) {
         safeConsoleLog('Error updating scan info:', error);
@@ -2968,9 +4097,15 @@ function updateAvailableCardsDisplay(remainingCards) {
         // Show owned cards first (if token ownership is enabled and player has owned cards)
         var currentPlayer = GameState.get('highestBidder');
         var ownedCards = [];
+        var gameState = GameState.data;
+        var currentCategory = gameState.currentCategory || 'countries';
         
+        var players = GameState.get('players');
         if (ACTIVE_RULES.tokenOwnership && ACTIVE_RULES.allowOwnedInSelection && players.ownedCards && players.ownedCards[currentPlayer]) {
-            ownedCards = players.ownedCards[currentPlayer];
+            // Get owned cards for the current category only
+            if (players.ownedCards[currentPlayer][currentCategory]) {
+                ownedCards = GameState.get('players.ownedCards.' + currentPlayer + '.' + currentCategory);
+            }
         }
         
         if (ownedCards.length > 0) {
@@ -2979,9 +4114,12 @@ function updateAvailableCardsDisplay(remainingCards) {
                    '<div class="cards-grid">';
             
             ownedCards.forEach(function(cardId) {
-                var country = window.GAME_DATA.countries[cardId];
-                html += '<div class="card-item card-selectable owned-card" data-card-id="' + cardId + '">' +
-                       '👑 ' + country.name + ' (OWNED)</div>';
+                var categoryData = window.GAME_DATA.categories[currentCategory];
+                var cardData = categoryData.items[cardId];
+                html += '<div class="card-item card-selectable owned-card" data-card-id="' + HTMLEscaper.escapeHTMLAttribute(cardId) + '">' +
+                       '<div class="card-name">👑 ' + sanitizeHTML(cardData.name) + '</div>' +
+                       '<div class="card-code">' + sanitizeHTML(cardData.code) + '</div>' +
+                       '<div style="font-size: 10px; color: #666;">OWNED</div></div>'
             });
             
             html += '</div><div class="selection-info">💡 Use your owned cards strategically - once used, they\'re gone forever!</div></div>';
@@ -2992,17 +4130,20 @@ function updateAvailableCardsDisplay(remainingCards) {
                '<div class="section-title">Available Cards (' + remainingCards.length + ' remaining)</div></div><div class="cards-grid">';
         
         remainingCards.forEach(function(cardId, index) {
-            var country = window.GAME_DATA.countries[cardId];
-            html += '<div class="card-item card-selectable" data-card-id="' + cardId + '">' +
-                   (index + 1) + '. ' + country.name + '</div>';
+            var categoryData = window.GAME_DATA.categories[currentCategory];
+            var item = categoryData.items[cardId];
+            html += '<div class="card-item card-selectable" data-card-id="' + HTMLEscaper.escapeHTMLAttribute(cardId) + '">' +
+                   '<div class="card-name">' + sanitizeHTML(item.name) + '</div>' +
+                   '<div class="card-code">' + sanitizeHTML(item.code) + '</div>' +
+                   '</div>';
         });
         
         html += '</div><div class="selection-info">Click cards to select them for ranking</div></div>';
-        container.innerHTML = html;
+        safeSetHTML(container, html);
         
         // Remove any existing listeners on the container to prevent duplicates
         var newContainer = container.cloneNode(false);
-        newContainer.innerHTML = html;
+        safeSetHTML(newContainer, html);
         container.parentNode.replaceChild(newContainer, container);
         container = newContainer;
         
@@ -3020,10 +4161,10 @@ function updateAvailableCardsDisplay(remainingCards) {
                 console.log('🎴 Click target is not a selectable card');
             }
         };
-        container.addEventListener('click', containerClickHandler);
+        eventListenerManager.addListener(container, 'click', containerClickHandler);
         
         // Add direct click listeners as backup
-        setTimeout(function() {
+        eventListenerManager.addTimeout(function() {
             var selectableCards = container.querySelectorAll('.card-selectable[data-card-id]');
             console.log('🎴 Found', selectableCards.length, 'selectable cards in container');
             
@@ -3038,7 +4179,7 @@ function updateAvailableCardsDisplay(remainingCards) {
                     selectCardForRanking(cardId);
                 };
                 
-                cardElement.addEventListener('click', clickHandler);
+                eventListenerManager.addListener(cardElement, 'click', clickHandler);
                 
                 // Also add a test attribute for debugging
                 cardElement.setAttribute('data-clickable', 'true');
@@ -3058,7 +4199,10 @@ window.selectCardForRanking = function(cardId) {
         return;
     }
     
-    var country = window.GAME_DATA.countries[cardId];
+    var gameState = GameState.data;
+    var currentCategory = gameState.currentCategory || 'countries';
+    var categoryData = window.GAME_DATA.categories[currentCategory];
+    var item = categoryData.items[cardId];
     
     // Set processing guard
     if (window.automatedTestState) {
@@ -3069,7 +4213,7 @@ window.selectCardForRanking = function(cardId) {
     if (selectedCardsForRanking.includes(cardId)) {
         // In automated testing, prevent deselection to avoid bugs
         if (window.isAutomatedTestRunning) {
-            console.log('🤖 Automated test: preventing deselection of ' + country.name);
+            console.log('🤖 Automated test: preventing deselection of ' + item.name);
             if (window.automatedTestState) {
                 window.automatedTestState.isSelectingCards = false;
             }
@@ -3079,7 +4223,7 @@ window.selectCardForRanking = function(cardId) {
         // Deselect card (manual mode only)
         var updated = selectedCardsForRanking.filter(function(id) { return id !== cardId; });
         GameState.set('selectedCardsForRanking', updated);
-        console.log('Removed ' + country.name + ' from selection');
+        console.log('Removed ' + item.name + ' from selection');
     } else {
         // Select card
         var currentBid = GameState.get('currentBid');
@@ -3092,16 +4236,25 @@ window.selectCardForRanking = function(cardId) {
         }
         selectedCardsForRanking.push(cardId);
         GameState.set('selectedCardsForRanking', selectedCardsForRanking);
-        console.log('Selected ' + country.name + ' (' + selectedCardsForRanking.length + '/' + currentBid + ')');
+        console.log('Selected ' + item.name + ' (' + selectedCardsForRanking.length + '/' + currentBid + ')');
         
         // TOKEN OWNERSHIP: Remove owned card when used (consumed forever)
         var currentPlayer = GameState.get('highestBidder');
+        var gameState = GameState.data;
+        var currentCategory = gameState.currentCategory || 'countries';
+        var players = GameState.get('players');
+        
         if (ACTIVE_RULES.tokenOwnership && ACTIVE_RULES.allowOwnedInSelection && players.ownedCards && players.ownedCards[currentPlayer]) {
-            var ownedIndex = players.ownedCards[currentPlayer].indexOf(cardId);
-            if (ownedIndex > -1) {
-                players.ownedCards[currentPlayer].splice(ownedIndex, 1);
-                console.log('🔥 ' + currentPlayer + ' consumed owned card: ' + country.name + ' (gone forever)');
-                showNotification('Used owned ' + country.name + ' - now consumed!', 'info');
+            if (players.ownedCards[currentPlayer][currentCategory]) {
+                var ownedCards = GameState.get('players.ownedCards.' + currentPlayer + '.' + currentCategory);
+                var ownedIndex = ownedCards.indexOf(cardId);
+                if (ownedIndex > -1) {
+                    players.ownedCards[currentPlayer][currentCategory].splice(ownedIndex, 1);
+                    var categoryData = window.GAME_DATA.categories[currentCategory];
+                    var cardData = categoryData.items[cardId];
+                    console.log('🔥 ' + currentPlayer + ' consumed owned card: ' + cardData.name + ' (gone forever)');
+                    showNotification('Used owned ' + cardData.name + ' - now consumed!', 'info');
+                }
             }
         }
     }
@@ -3116,9 +4269,9 @@ window.selectCardForRanking = function(cardId) {
     
     // If we have the right number of cards, show ranking interface
     if (GameState.get('selectedCardsForRanking').length === currentBid) {
-        setTimeout(function() {
+        eventListenerManager.addTimeout(function() {
             showRankingInterface();
-        }, getTestDelay(1000));
+        }, getTestDelay(GAME_CONFIG.CARD_SELECTION_DELAY));
     }
 };
 
@@ -3155,7 +4308,7 @@ function showRankingInterface() {
                 challengeLabel: gameState.currentPrompt.label,
                 description: 'Drag cards to rank them from highest to lowest'
             };
-            scanInfo.innerHTML = TemplateEngine.render('scanInfo', scanData);
+            safeSetHTML(scanInfo, TemplateEngine.render('scanInfo', scanData));
         }
     } catch (error) {
         safeConsoleLog('Error updating scan info for ranking:', error);
@@ -3195,10 +4348,12 @@ function updateRankingInterface() {
     var cardsToRank = finalRanking.length > 0 ? finalRanking : selectedCardsForRanking.slice();
     
     cardsToRank.forEach(function(cardId, index) {
-        var country = window.GAME_DATA.countries[cardId];
-        html += '<div class="ranking-card" data-card-id="' + cardId + '" draggable="true">' +
+        var currentCategory = GameState.get('currentCategory') || 'countries';
+        var categoryData = window.GAME_DATA.categories[currentCategory];
+        var item = categoryData ? categoryData.items[cardId] : null;
+        html += '<div class="ranking-card" data-card-id="' + HTMLEscaper.escapeHTMLAttribute(cardId) + '" draggable="true">' +
                '<span class="rank-number">' + (index + 1) + '</span>' +
-               '<span class="country-name">' + country.name + '</span>' +
+               '<span class="country-name">' + sanitizeHTML(item ? item.name : cardId) + '<br><small>' + sanitizeHTML(item ? item.code : cardId) + '</small></span>' +
                '<span class="drag-handle">⋮⋮</span>' +
                '</div>';
     });
@@ -3210,7 +4365,7 @@ function updateRankingInterface() {
            '</div>' +
            '</div>';
     
-    rankingContainer.innerHTML = html;
+    safeSetHTML(rankingContainer, html);
     
     // Add drag and drop functionality
     setupDragAndDrop();
@@ -3318,6 +4473,7 @@ window.submitRanking = function() {
     }
     
     var currentBid = GameState.get('currentBid');
+    var currentBid = GameState.get('currentBid');
     if (finalRanking.length !== currentBid) {
         console.log('Error: Ranking is incomplete!');
         return;
@@ -3326,8 +4482,10 @@ window.submitRanking = function() {
     // Show confirmation
     var confirmMsg = 'Submit this ranking?\n\n';
     finalRanking.forEach(function(cardId, index) {
-        var country = window.GAME_DATA.countries[cardId];
-        confirmMsg += (index + 1) + '. ' + country.name + '\n';
+        var currentCategory = GameState.get('currentCategory') || 'countries';
+        var categoryData = window.GAME_DATA.categories[currentCategory];
+        var item = categoryData ? categoryData.items[cardId] : null;
+        confirmMsg += (index + 1) + '. ' + (item ? item.name : cardId) + '\n';
     });
     
     // Auto-confirm for automated testing
@@ -3343,7 +4501,7 @@ window.resetRanking = function() {
 
 // Reveal Phase Functions
 var correctRanking = [];
-var currentRevealIndex = 0;
+// currentRevealIndex moved to GameState
 var bidderSuccess = false;
 
 function showRevealPhase() {
@@ -3351,7 +4509,7 @@ function showRevealPhase() {
     var finalRanking = GameState.get('finalRanking');
     var currentPrompt = GameState.get('currentPrompt');
     correctRanking = calculateCorrectRanking(finalRanking, currentPrompt.challenge);
-    currentRevealIndex = 0;
+    GameState.set('currentRevealIndex', 0);
     bidderSuccess = false;
     
     // Update reveal screen
@@ -3363,7 +4521,7 @@ function showRevealPhase() {
                 challengeLabel: gameState.currentPrompt.label,
                 description: GameUtils.formatPlayerName(gameState.highestBidder) + ' bid ' + gameState.currentBid + ' cards. Let\'s see if they got it right!'
             };
-            revealInfo.innerHTML = TemplateEngine.render('revealInfo', revealData);
+            safeSetHTML(revealInfo, TemplateEngine.render('revealInfo', revealData));
         }
     } catch (error) {
         safeConsoleLog('Error updating reveal info:', error);
@@ -3377,8 +4535,12 @@ function showRevealPhase() {
 
 function calculateCorrectRanking(cardIds, challenge) {
     return cardIds.slice().sort(function(a, b) {
-        var valueA = window.GAME_DATA.countries[a][challenge];
-        var valueB = window.GAME_DATA.countries[b][challenge];
+        var currentCategory = GameState.get('currentCategory') || 'countries';
+        var categoryData = window.GAME_DATA.categories[currentCategory];
+        var itemA = categoryData ? categoryData.items[a] : null;
+        var itemB = categoryData ? categoryData.items[b] : null;
+        var valueA = itemA ? itemA[challenge] : 0;
+        var valueB = itemB ? itemB[challenge] : 0;
         
         // Sort from highest to lowest (descending order)
         return valueB - valueA;
@@ -3394,7 +4556,7 @@ function setupRevealInterface() {
               '<div class="ranking-list" id="bidderRankingList"></div>' +
               '</div>';
     
-    revealCards.innerHTML = html;
+    safeSetHTML(revealCards, html);
     
     // Show bidder's ranking
     updateBidderRankingDisplay();
@@ -3413,8 +4575,11 @@ function updateBidderRankingDisplay() {
     var sequenceBroken = false;
     
     finalRanking.forEach(function(cardId, index) {
-        var country = window.GAME_DATA.countries[cardId];
-        var value = country[currentPrompt.challenge];
+        var currentCategory = GameState.get('currentCategory') || 'countries';
+        var categoryData = window.GAME_DATA.categories[currentCategory];
+        var item = categoryData ? categoryData.items[cardId] : null;
+        var value = item ? item[currentPrompt.challenge] : 0;
+        var currentRevealIndex = GameState.get('currentRevealIndex') || 0;
         var isRevealed = index < currentRevealIndex;
         
         var statusClass = '';
@@ -3431,7 +4596,8 @@ function updateBidderRankingDisplay() {
             } else {
                 // Check against previous card
                 var prevCard = finalRanking[index - 1];
-                var prevValue = window.GAME_DATA.countries[prevCard][currentPrompt.challenge];
+                var prevItem = categoryData ? categoryData.items[prevCard] : null;
+                var prevValue = prevItem ? prevItem[currentPrompt.challenge] : 0;
                 
                 if (value > prevValue) {
                     // This card breaks the sequence
@@ -3452,14 +4618,14 @@ function updateBidderRankingDisplay() {
         html += '<div class="reveal-card bidder-card ' + statusClass + '">' +
                '<span class="rank-number">' + (index + 1) + '</span>' +
                '<span class="country-info">' +
-               '<span class="country-name">' + country.name + '</span>' +
+               '<span class="country-name">' + (item ? item.name : cardId) + '<br><small>' + (item ? item.code : cardId) + '</small></span>' +
                '<span class="country-value">' + (isRevealed ? formatValue(value, currentPrompt.challenge) : '???') + '</span>' +
                '</span>' +
                '<span class="status-icon">' + statusIcon + '</span>' +
                '</div>';
     });
     
-    container.innerHTML = html;
+    safeSetHTML(container, html);
 }
 
 
@@ -3479,11 +4645,13 @@ function formatValue(value, challenge) {
 function updateRevealProgress() {
     var progressElement = document.getElementById('revealProgress');
     if (progressElement) {
+        var currentRevealIndex = GameState.get('currentRevealIndex') || 0;
         progressElement.textContent = currentRevealIndex + ' of ' + correctRanking.length;
     }
     
     var progressBar = document.getElementById('revealProgressBar');
     if (progressBar) {
+        var currentRevealIndex = GameState.get('currentRevealIndex') || 0;
         var percentage = (currentRevealIndex / correctRanking.length) * 100;
         progressBar.style.width = percentage + '%';
     }
@@ -3492,6 +4660,7 @@ function updateRevealProgress() {
 // Override the existing revealNext function
 window.revealNext = function() {
     var finalRanking = GameState.get('finalRanking');
+    var currentRevealIndex = GameState.get('currentRevealIndex') || 0;
     if (currentRevealIndex >= finalRanking.length) {
         // All cards revealed, show final results
         showFinalResults();
@@ -3500,28 +4669,32 @@ window.revealNext = function() {
     
     // Reveal the next card
     currentRevealIndex++;
+    GameState.set('currentRevealIndex', currentRevealIndex);
     updateBidderRankingDisplay();
     updateRevealProgress();
     
     // If we've revealed at least 2 cards, check if current card is lower than previous
+    currentRevealIndex = GameState.get('currentRevealIndex') || 0;
     if (currentRevealIndex >= 2) {
         var finalRanking = GameState.get('finalRanking');
         var currentPrompt = GameState.get('currentPrompt');
         var prevCard = finalRanking[currentRevealIndex - 2];
         var currentCard = finalRanking[currentRevealIndex - 1];
         
-        var prevValue = window.GAME_DATA.countries[prevCard][currentPrompt.challenge];
-        var currentValue = window.GAME_DATA.countries[currentCard][currentPrompt.challenge];
+        var currentCategory = GameState.get('currentCategory') || 'countries';
+        var categoryData = window.GAME_DATA.categories[currentCategory];
+        var prevItem = categoryData ? categoryData.items[prevCard] : null;
+        var currentItem = categoryData ? categoryData.items[currentCard] : null;
+        var prevValue = prevItem ? prevItem[currentPrompt.challenge] : 0;
+        var currentValue = currentItem ? currentItem[currentPrompt.challenge] : 0;
         
         // Check if current value is lower than previous (should be descending)
         if (currentValue > prevValue) {
             // Sequence broken! Current card has higher value than previous
             bidderSuccess = false;
-            var prevCountry = window.GAME_DATA.countries[prevCard];
-            var currentCountry = window.GAME_DATA.countries[currentCard];
             
             // Delay failure message so players can see the problematic card first
-            setTimeout(function() {
+            eventListenerManager.addTimeout(function() {
                 console.log('SEQUENCE BROKEN!\n\n' + 
                       prevCountry.name + ': ' + formatValue(prevValue, currentPrompt.challenge) + '\n' +
                       currentCountry.name + ': ' + formatValue(currentValue, currentPrompt.challenge) + '\n\n' +
@@ -3534,10 +4707,10 @@ window.revealNext = function() {
                 updateBidderRankingDisplay();
                 updateRevealProgress();
                 
-                setTimeout(function() {
+                eventListenerManager.addTimeout(function() {
                     showFinalResults();
-                }, 1500);
-            }, 1000); // Wait 1 second to see the card that broke the sequence
+                }, GAME_CONFIG.FINAL_RESULTS_DELAY);
+            }, GAME_CONFIG.RANKING_REVEAL_FAILURE); // Wait 1 second to see the card that broke the sequence
             return;
         }
     }
@@ -3547,20 +4720,20 @@ window.revealNext = function() {
     if (currentRevealIndex >= finalRanking.length) {
         bidderSuccess = true;
         // Delay success message so players can see the final card first
-        setTimeout(function() {
+        eventListenerManager.addTimeout(function() {
             var gameState = GameState.data;
             console.log('SUCCESS! ' + gameState.highestBidder + ' ranked all ' + gameState.currentBid + ' cards correctly!');
-            setTimeout(function() {
+            eventListenerManager.addTimeout(function() {
                 showFinalResults();
-            }, 1000);
-        }, 1500); // Wait 1.5 seconds for celebration moment
+            }, GAME_CONFIG.RANKING_REVEAL_FAILURE);
+        }, GAME_CONFIG.RANKING_REVEAL_SUCCESS); // Wait 1.5 seconds for celebration moment
     }
 };
 
 function showFinalResults() {
     console.log('🏁 showFinalResults called');
     console.log('Bidder success:', bidderSuccess);
-    console.log('Current reveal index:', currentRevealIndex);
+    console.log('Current reveal index:', GameState.get('currentRevealIndex') || 0);
     
     // Get state from GameState
     var gameState = GameState.data;
@@ -3611,9 +4784,10 @@ function showFinalResults() {
     // For automated testing, continue to next round after showing interim screen
     if (window.isAutomatedTestRunning) {
         // Give more time for interim screen to properly display and log data
-        setTimeout(() => {
+        eventListenerManager.addTimeout(() => {
             console.log('📊 INTERIM SCREEN DATA:');
-            console.log('Current Round:', currentRound);
+            console.log('Current Round:', getCurrentRound());
+            var players = GameState.get('players');
             console.log('Current Scores:', players.scores);
             console.log('Current Tokens:', players.blockingTokens);
             console.log('Player Stats:', players.stats);
@@ -3622,31 +4796,31 @@ function showFinalResults() {
             console.log('🔄 Force updating interim displays...');
             updateInterimDisplay();
             
-            setTimeout(() => {
+            eventListenerManager.addTimeout(() => {
                 console.log('🔍 Checking round continuation conditions:');
-                console.log('Current Round:', currentRound);
-                console.log('Max Rounds:', maxRounds);
-                console.log('Current Round < Max Rounds:', currentRound < maxRounds);
+                console.log('Current Round:', getCurrentRound());
+                console.log('Max Rounds:', getMaxRounds());
+                console.log('Current Round < Max Rounds:', getCurrentRound() < maxRounds);
                 console.log('Win Condition:', checkWinCondition());
                 console.log('Automated Test Running:', window.isAutomatedTestRunning);
                 
-                if (currentRound < ACTIVE_RULES.maxRounds && !checkWinCondition()) {
+                if (getCurrentRound() < ACTIVE_RULES.maxRounds && !checkWinCondition()) {
                     console.log('▶️ Continuing to next round...');
                     continueToNextRound();
                     
-                    setTimeout(async () => {
+                    eventListenerManager.addTimeout(async () => {
                         try {
-                            console.log('🎮 Starting automated round:', currentRound);
-                            await automatedRound(currentRound);
+                            console.log('🎮 Starting automated round:', getCurrentRound());
+                            await automatedRound(getCurrentRound());
                         } catch (error) {
-                            console.error('❌ Error in automated round ' + currentRound + ':', error);
-                            console.error('❌ Automated test failed in round ' + currentRound);
+                            console.error('❌ Error in automated round ' + getCurrentRound() + ':', error);
+                            console.error('❌ Automated test failed in round ' + getCurrentRound());
                             window.isAutomatedTestRunning = false;
                         }
                     }, getTestDelay(1500)); // Use getTestDelay for fast mode
                 } else {
                     console.log('🏁 Game completed! Generating detailed test results...');
-                    console.log('Reason: currentRound (' + currentRound + ') >= maxRounds (' + ACTIVE_RULES.maxRounds + ') OR win condition met');
+                    console.log('Reason: currentRound (' + getCurrentRound() + ') >= maxRounds (' + ACTIVE_RULES.maxRounds + ') OR win condition met');
                     window.automatedTestResults.endTime = new Date();
                     generateDetailedTestResults();
                     window.isAutomatedTestRunning = false;
@@ -3659,7 +4833,7 @@ function showFinalResults() {
                     console.log('✅ Automated test completed successfully!');
                     
                     // Show the test results screen for fast test
-                    setTimeout(() => {
+                    eventListenerManager.addTimeout(() => {
                         console.log('📊 Showing test results screen...');
                         updateTestResultsDisplay(); // Populate the test results data
                         showScreen('testResultsScreen');
@@ -3681,21 +4855,40 @@ function showFinalResults() {
 }
 
 function calculateAndApplyScores() {
-    console.log('💰 Calculating scores - Round:', currentRound, 'Bidder:', highestBidder, 'Success:', bidderSuccess);
+    console.log('💰 Calculating scores - Round:', getCurrentRound(), 'Bidder:', getHighestBidder(), 'Success:', GameState.get('bidderSuccess'));
+    
+    // Prevent multiple executions per round
+    if (GameState.get('players.scoresCalculatedThisRound')) {
+        console.log('⚠️ Scores already calculated for this round, skipping...');
+        console.log('   Round:', getCurrentRound(), 'Bidder:', getHighestBidder());
+        console.log('   Stack:', new Error().stack.split('\n').slice(0,3).join('\n'));
+        return;
+    }
+    console.log('✅ Calculating scores for round', getCurrentRound(), 'for first time');
+    GameState.set('players.scoresCalculatedThisRound', true);
     
     // Track that this player won a bid
-    if (highestBidder && players.stats && players.stats[highestBidder]) {
+    var bidder = getHighestBidder();
+    var allStats = GameState.get('players.stats') || {};
+    if (bidder && allStats && allStats[bidder]) {
         console.log('🐛 DEBUG: About to increment bidsWon');
-        console.log('  Round:', currentRound);
-        console.log('  Player:', highestBidder);
-        console.log('  Current bidsWon:', players.stats[highestBidder].bidsWon);
+        console.log('  Round:', getCurrentRound());
+        console.log('  Player:', bidder);
+        console.log('  Current bidsWon:', allStats[bidder].bidsWon);
         console.log('  Function caller:', new Error().stack.split('\n')[2]);
         
-        players.stats[highestBidder].bidsWon++;
-        console.log('📊 Bid won:', highestBidder, '(Total:', players.stats[highestBidder].bidsWon + ')');
+        allStats[bidder].bidsWon++;
+        GameState.set('players.stats', allStats);
+        console.log('📊 Bid won:', bidder, '(Total:', allStats[bidder].bidsWon + ')');
     } else {
-        console.error('❌ Cannot track bid win for:', highestBidder);
+        console.error('❌ Cannot track bid win for:', bidder);
     }
+    
+    // Get players object from GameState for consistent access
+    var players = GameState.get('players');
+    var highestBidder = GameState.get('highestBidder');
+    var currentBid = GameState.get('currentBid');
+    var bidderSuccess = GameState.get('bidderSuccess');
     
     // Update test statistics for bid tracking
     updateTestStatistics('BID_WON', {player: highestBidder});
@@ -3712,18 +4905,28 @@ function calculateAndApplyScores() {
             console.log('📊 Tracking successful bid for', highestBidder, '- Total successful:', players.stats[highestBidder].bidsSuccessful);
         }
         
+        // Save changes to GameState
+        GameState.set('players', players);
+        
         // Update test statistics for successful bid
         updateTestStatistics('BID_SUCCESSFUL', {player: highestBidder});
         
         // Transfer blocking tokens from other players to bidder
+        console.log('🔄 Processing token transfers for blocks:', Object.keys(players.currentBlocks));
+        console.log('🎯 Current bidder:', highestBidder);
+        console.log('🛡️ Blockers:', Object.keys(players.currentBlocks));
         Object.keys(players.currentBlocks).forEach(function(playerName) {
             if (playerName !== highestBidder && players.currentBlocks[playerName]) {
                 var blockData = players.currentBlocks[playerName];
                 var tokenValue = blockData.tokenValue;
+                console.log('💰 Transferring', tokenValue, 'token from', playerName, 'to', highestBidder);
                 
                 // Remove token from blocker (decrease count)
+                console.log('🔍 Before transfer:', playerName, 'has', players.blockingTokens[playerName][tokenValue], tokenValue + '-point tokens');
                 if (players.blockingTokens[playerName] && players.blockingTokens[playerName][tokenValue] > 0) {
                     players.blockingTokens[playerName][tokenValue]--;
+                    console.log('🔍 After removal:', playerName, 'now has', players.blockingTokens[playerName][tokenValue], tokenValue + '-point tokens');
+                    
                     // Track tokens lost
                     if (players.stats[playerName]) {
                         players.stats[playerName].tokensLost++;
@@ -3735,7 +4938,9 @@ function calculateAndApplyScores() {
                     if (!players.blockingTokens[highestBidder]) {
                         players.blockingTokens[highestBidder] = {2: 0, 4: 0, 6: 0};
                     }
+                    console.log('🔍 Before addition:', highestBidder, 'has', players.blockingTokens[highestBidder][tokenValue], tokenValue + '-point tokens');
                     players.blockingTokens[highestBidder][tokenValue] = (players.blockingTokens[highestBidder][tokenValue] || 0) + 1;
+                    console.log('🔍 After addition:', highestBidder, 'now has', players.blockingTokens[highestBidder][tokenValue], tokenValue + '-point tokens');
                     // Track tokens gained
                     if (players.stats[highestBidder]) {
                         players.stats[highestBidder].tokensGained++;
@@ -3758,21 +4963,25 @@ function calculateAndApplyScores() {
         updateTestStatistics('BID_FAILED', {player: highestBidder});
         
         // Each blocking player gets points equal to their token value (and keeps their tokens)
-        Object.keys(players.currentBlocks).forEach(function(playerName) {
-            if (playerName !== highestBidder && players.currentBlocks[playerName]) {
-                var blockData = players.currentBlocks[playerName];
+        var currentBlocks = GameState.get('players.currentBlocks');
+        var highestBidder = GameState.get('highestBidder');
+        Object.keys(currentBlocks).forEach(function(playerName) {
+            if (playerName !== highestBidder && currentBlocks[playerName]) {
+                var blockData = currentBlocks[playerName];
                 var tokenValue = blockData.tokenValue;
                 var blockedCardId = blockData.cardId;
-                var currentScore = (typeof players.scores[playerName] === 'number') ? players.scores[playerName] : 0;
-                players.scores[playerName] = currentScore + tokenValue;
+                var currentScore = GameState.get('players.scores.' + playerName) || 0;
+                GameState.set('players.scores.' + playerName, currentScore + tokenValue);
                 console.log(playerName + ' earned ' + tokenValue + ' points for successful block and keeps their token!');
                 
                 // Track blocking points earned for breakdown display
+                var players = GameState.get('players');
                 if (players.stats[playerName]) {
                     if (!players.stats[playerName].blockingPointsEarned) {
                         players.stats[playerName].blockingPointsEarned = 0;
                     }
                     players.stats[playerName].blockingPointsEarned += tokenValue;
+                    GameState.set('players', players);
                 }
                 
                 // TOKEN OWNERSHIP: Give blocked card to player if rule is enabled
@@ -3786,15 +4995,23 @@ function calculateAndApplyScores() {
                             players.ownedCards = {};
                         }
                         if (!players.ownedCards[playerName]) {
-                            players.ownedCards[playerName] = [];
+                            players.ownedCards[playerName] = {
+                                countries: [],
+                                movies: []
+                            };
                         }
                         
-                        // Only add if not already owned
-                        if (!players.ownedCards[playerName].includes(blockedCardId)) {
-                            players.ownedCards[playerName].push(blockedCardId);
-                            var country = window.GAME_DATA.countries[blockedCardId];
-                            console.log('🏆 ' + playerName + ' now owns ' + country.name + ' (successful block)!');
-                            showNotification(playerName + ' now owns ' + country.name + '!', 'success');
+                        // Get current category and card data
+                        var gameState = GameState.data;
+                        var currentCategory = gameState.currentCategory || 'countries';
+                        var categoryData = window.GAME_DATA.categories[currentCategory];
+                        var cardData = categoryData.items[blockedCardId];
+                        
+                        // Only add if not already owned in this category
+                        if (!players.ownedCards[playerName][currentCategory].includes(blockedCardId)) {
+                            players.ownedCards[playerName][currentCategory].push(blockedCardId);
+                            console.log('🏆 ' + playerName + ' now owns ' + cardData.name + ' (successful block)!');
+                            showNotification(playerName + ' now owns ' + cardData.name + '!', 'success');
                         }
                     }
                 }
@@ -3802,17 +5019,21 @@ function calculateAndApplyScores() {
         });
     }
     
-    console.log('Current scores after calculation:', players.scores);
+    console.log('Current scores after calculation:', GameState.get('players.scores'));
     
     // Store blocking results for round summary before clearing
-    window.lastRoundBlocks = JSON.parse(JSON.stringify(players.currentBlocks));
+    window.lastRoundBlocks = JSON.parse(JSON.stringify(GameState.get('players.currentBlocks')));
     
     // Track cards used in this round for next round's notification
     // 1. Track selected cards (cards the bidder selected for ranking) - ALWAYS removed regardless of success
     // If selectedCards is empty but we have a bid, assume the bidder selected cards up to their bid amount
+    var selectedCards = GameState.get('selectedCards');
+    var currentBid = GameState.get('currentBid');
+    var drawnCards = GameState.get('drawnCards');
     if ((!selectedCards || selectedCards.length === 0) && currentBid > 0 && drawnCards) {
         // For now, track the first N unblocked cards as selected (where N = bid amount)
         selectedCards = [];
+        var blockedCards = GameState.get('blockedCards');
         var unblocked = drawnCards.filter(function(cardId) {
             return !blockedCards.includes(cardId);
         });
@@ -3824,11 +5045,13 @@ function calculateAndApplyScores() {
     window.lastRoundSelectedCards = selectedCards ? selectedCards.slice() : [];
     
     // Track total cards used by the bidder
+    var players = GameState.get('players');
     if (highestBidder && players.stats[highestBidder] && selectedCards && selectedCards.length > 0) {
         if (!players.stats[highestBidder].cardsUsed) {
             players.stats[highestBidder].cardsUsed = 0;
         }
         players.stats[highestBidder].cardsUsed += selectedCards.length;
+        GameState.set('players', players);
         console.log('📊 ' + highestBidder + ' used ' + selectedCards.length + ' cards (Total: ' + players.stats[highestBidder].cardsUsed + ')');
         
         // Update global card statistics
@@ -3855,15 +5078,19 @@ function calculateAndApplyScores() {
     
     // 2. Track newly owned cards from this round (cards that became owned through blocking)
     window.lastRoundNewlyOwnedCards = [];
+    window.lastRoundBlockedCards = [];
     if (!bidderSuccess && ACTIVE_RULES.tokenOwnership) {
-        Object.keys(players.currentBlocks).forEach(function(playerName) {
-            if (playerName !== highestBidder && players.currentBlocks[playerName]) {
-                var blockedCardId = players.currentBlocks[playerName].cardId;
+        var currentBlocks = GameState.get('players.currentBlocks');
+        Object.keys(currentBlocks).forEach(function(playerName) {
+            if (playerName !== highestBidder && currentBlocks[playerName]) {
+                var blockedCardId = currentBlocks[playerName].cardId;
                 if (blockedCardId && !window.lastRoundNewlyOwnedCards.includes(blockedCardId)) {
                     window.lastRoundNewlyOwnedCards.push(blockedCardId);
+                    window.lastRoundBlockedCards.push(blockedCardId);
                 }
             }
         });
+        console.log('🛡️ Tracking blocked cards for token replacement screen:', window.lastRoundBlockedCards);
     }
     
     console.log('📋 Tracking for next round - Selected cards (will be removed):', window.lastRoundSelectedCards);
@@ -3871,6 +5098,9 @@ function calculateAndApplyScores() {
     
     // Clear current blocks for next round
     players.currentBlocks = {};
+    
+    // Save final state changes
+    GameState.set('players', players);
 }
 
 function updateResultsDisplay() {
@@ -3901,7 +5131,7 @@ function updateResultsDisplay() {
                    '<strong>Blocking Results:</strong><br>' + blockingResults.join('<br>') + '</div>';
         }
         
-        resultsContent.innerHTML = html;
+        safeSetHTML(resultsContent, html);
     }
     
     if (finalRankingDiv) {
@@ -3910,11 +5140,13 @@ function updateResultsDisplay() {
         // Show bidder's ranking
         html += '<h4>' + highestBidder + '\'s Ranking:</h4>';
         finalRanking.forEach(function(cardId, index) {
-            var country = window.GAME_DATA.countries[cardId];
-            var value = country[currentPrompt.challenge];
+            var currentCategory = GameState.get('currentCategory') || 'countries';
+            var categoryData = window.GAME_DATA.categories[currentCategory];
+            var item = categoryData ? categoryData.items[cardId] : null;
+            var value = item ? item[currentPrompt.challenge] : 0;
             html += '<div class="ranking-item">' +
                    '<span class="rank-number">' + (index + 1) + '</span>' +
-                   '<span class="country-name">' + country.name + '</span>' +
+                   '<span class="country-name">' + (item ? item.name : cardId) + '<br><small>' + (item ? item.code : cardId) + '</small></span>' +
                    '<span class="country-value">' + formatValue(value, currentPrompt.challenge) + '</span>' +
                    '</div>';
         });
@@ -3922,17 +5154,19 @@ function updateResultsDisplay() {
         // Show correct ranking for comparison
         html += '<h4 style="margin-top: 20px;">Correct Ranking:</h4>';
         correctRanking.forEach(function(cardId, index) {
-            var country = window.GAME_DATA.countries[cardId];
-            var value = country[currentPrompt.challenge];
+            var currentCategory = GameState.get('currentCategory') || 'countries';
+            var categoryData = window.GAME_DATA.categories[currentCategory];
+            var item = categoryData ? categoryData.items[cardId] : null;
+            var value = item ? item[currentPrompt.challenge] : 0;
             html += '<div class="ranking-item correct-ranking">' +
                    '<span class="rank-number">' + (index + 1) + '</span>' +
-                   '<span class="country-name">' + country.name + '</span>' +
+                   '<span class="country-name">' + (item ? item.name : cardId) + '<br><small>' + (item ? item.code : cardId) + '</small></span>' +
                    '<span class="country-value">' + formatValue(value, currentPrompt.challenge) + '</span>' +
                    '</div>';
         });
         
         html += '</div>';
-        finalRankingDiv.innerHTML = html;
+        safeSetHTML(finalRankingDiv, html);
     }
 }
 
@@ -3984,7 +5218,7 @@ function updateInterimLeaderboard() {
     console.log('Interim leaderboard scores:', scores);
     if (scores.length === 0) {
         console.log('⚠️ No scores to display');
-        container.innerHTML = '<div class="no-scores-message">No scores yet!</div>';
+        safeSetHTML(container, '<div class="no-scores-message">No scores yet!</div>');
         return;
     }
     
@@ -3996,21 +5230,22 @@ function updateInterimLeaderboard() {
         var medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
         html += '<tr>' +
                '<td class="rank ' + rankClass + '">' + medal + ' ' + (index + 1) + '</td>' +
-               '<td>' + player.name + '</td>' +
-               '<td>' + (typeof player.score === 'number' ? player.score : 0) + '</td>' +
+               '<td>' + sanitizeHTML(player.name) + '</td>' +
+               '<td>' + sanitizeHTML(typeof player.score === 'number' ? player.score : 0) + '</td>' +
                '</tr>';
     });
     
     html += '</tbody></table>';
-    container.innerHTML = html;
+    safeSetHTML(container, html);
 }
 
 function updateInterimTokenInventory() {
     var container = document.getElementById('interimTokenInventory');
     if (!container) return;
     
+    var players = GameState.get('players');
     if (players.list.length === 0) {
-        container.innerHTML = '<div class="no-scores-message">No players!</div>';
+        safeSetHTML(container, '<div class="no-scores-message">No players!</div>');
         return;
     }
     
@@ -4021,7 +5256,7 @@ function updateInterimTokenInventory() {
     
     sortedPlayers.forEach(function(playerData) {
         var playerName = playerData.name;
-        var tokens = players.blockingTokens[playerName] || {2: 1, 4: 1, 6: 1};
+        var tokens = getPlayerTokens(playerName);
         var chipDisplay = '';
         
         // Display all token types with actual counts
@@ -4042,7 +5277,7 @@ function updateInterimTokenInventory() {
                '</div>';
     });
     
-    container.innerHTML = html;
+    safeSetHTML(container, html);
 }
 
 function updateInterimRoundSummary() {
@@ -4052,6 +5287,14 @@ function updateInterimRoundSummary() {
         console.error('❌ interimRoundSummary container not found!');
         return;
     }
+    
+    // Get state from GameState
+    var currentRound = getCurrentRound();
+    var maxRounds = getMaxRounds();
+    var highestBidder = GameState.get('highestBidder');
+    var currentBid = GameState.get('currentBid');
+    var currentPrompt = GameState.get('currentPrompt');
+    var bidderSuccess = GameState.get('bidderSuccess');
     
     console.log('Round summary data:', {
         currentRound: currentRound,
@@ -4103,46 +5346,52 @@ function updateInterimRoundSummary() {
     html += '</div>';
     
     html += '</div>';
-    container.innerHTML = html;
+    safeSetHTML(container, html);
     console.log('✅ Round summary updated successfully');
     console.log('HTML content length:', html.length);
 }
 
 window.continueToNextRound = function() {
     // Track round completion (before incrementing currentRound)
-    updateTestStatistics('ROUND_COMPLETE', {round: currentRound});
+    updateTestStatistics('ROUND_COMPLETE', {round: getCurrentRound()});
     nextRound();
 };
 
 // Round and game management functions
 window.nextRound = function() {
     // Check if game should end
-    if (currentRound >= ACTIVE_RULES.maxRounds || checkWinCondition()) {
+    if (getCurrentRound() >= ACTIVE_RULES.maxRounds || checkWinCondition()) {
         endGame();
         return;
     }
     
     // Advance to next round
-    currentRound++;
+    GameState.set('currentRound', getCurrentRound() + 1);
+    
+    // Reset the scores calculated flag for the new round
+    GameState.set('players.scoresCalculatedThisRound', false);
+    console.log('🔄 Advanced to round', getCurrentRound(), '- score flag reset');
     
     // Validate round completion tracking and provide detailed statistics
     var totalBidsWon = 0;
     var statsBreakdown = {};
     
+    var players = GameState.get('players');
     if (players.stats) {
         Object.keys(players.stats).forEach(function(playerName) {
-            var playerBidsWon = players.stats[playerName].bidsWon || 0;
+            var playerStats = getPlayerStats(playerName);
+            var playerBidsWon = playerStats.bidsWon || 0;
             totalBidsWon += playerBidsWon;
             statsBreakdown[playerName] = playerBidsWon;
         });
     }
     
-    console.log('📊 Round ' + (currentRound - 1) + ' Statistics Tracking:');
+    console.log('📊 Round ' + (getCurrentRound() - 1) + ' Statistics Tracking:');
     console.log('  Total bids won across all players:', totalBidsWon);
     console.log('  Individual player bids won:', statsBreakdown);
     
-    // Check for discrepancy (currentRound-1 because we just incremented)
-    var completedRounds = currentRound - 1;
+    // Check for discrepancy (getCurrentRound()-1 because we just incremented)
+    var completedRounds = getCurrentRound() - 1;
     if (totalBidsWon !== completedRounds) {
         console.error('❌ ROUND TRACKING ERROR: Completed rounds (' + completedRounds + ') != Total bids won (' + totalBidsWon + ')');
         console.error('Round', completedRounds, 'may have completed without a proper bid winner!');
@@ -4162,7 +5411,7 @@ window.nextRound = function() {
     // For automated testing, continue automatically
     // For manual play, go back to player setup
     if (window.isAutomatedTestRunning) {
-        console.log('🤖 Automated test: Starting round ' + currentRound + ' automatically...');
+        console.log('🤖 Automated test: Starting round ' + getCurrentRound() + ' automatically...');
         // Don't change screen, just continue with automation
     } else {
         // Clear UI elements from previous round before starting new round
@@ -4171,30 +5420,35 @@ window.nextRound = function() {
         
         // Go back to player setup for next round
         showScreen('playerScreen');
-        console.log('Round ' + currentRound + ' starting!\n\nAll players maintain their scores and blocking tokens from previous rounds.');
+        console.log('Round ' + getCurrentRound() + ' starting!\n\nAll players maintain their scores and blocking tokens from previous rounds.');
     }
 };
 
 window.newGame = function() {
-    // Reset all game state
-    currentRound = 1;
-    players.scores = {};
-    players.currentBlocks = {};
-    players.ownedCards = {}; // Clear owned cards from previous game
+    // Reset all game state using GameState
+    GameState.set('currentRound', 1);
+    GameState.set('players.scores', {});
+    GameState.set('players.currentBlocks', {});
+    GameState.set('players.ownedCards', {}); // Clear owned cards from previous game
+    GameState.set('players.scoresCalculatedThisRound', false); // Reset score calculation flag
     // NOTE: Preserve players.stats to accumulate statistics across games
     // Use resetAllStatistics() if you want to completely reset statistics
     
     // Reset all players' blocking tokens
-    players.list.forEach(function(playerName) {
-        players.blockingTokens[playerName] = {2: 1, 4: 1, 6: 1};
+    var playersList = getPlayersList();
+    playersList.forEach(function(playerName) {
+        GameState.set('players.blockingTokens.' + playerName, {2: 1, 4: 1, 6: 1});
     });
     
     // Clear tracking variables from previous game
     window.previousRoundCards = [];
     window.lastRoundSelectedCards = [];
     window.lastRoundNewlyOwnedCards = [];
+    window.lastRoundBlockedCards = [];
     window.cardsReplacedThisRound = [];
     window.newReplacementCards = [];
+    window.removedReplacementCards = [];
+    window.previousRoundCardsByCategory = {};
     
     resetRoundState();
     showScreen('titleScreen');
@@ -4203,32 +5457,32 @@ window.newGame = function() {
 // Function to completely reset all statistics (for new sessions)
 window.resetAllStatistics = function() {
     console.log('🔄 Resetting all player statistics...');
-    players.stats = {};
+    GameState.set('players.stats', {});
     showNotification('All player statistics have been reset', 'info');
 };
 
 function resetRoundState() {
     console.log('🔄 Resetting round state...');
     
-    currentPrompt = null;
-    drawnCards = [];
-    blockedCards = [];
-    selectedCards = [];
+    GameState.set('currentPrompt', null);
+    GameState.set('drawnCards', []);
+    GameState.set('blockedCards', []);
+    GameState.set('selectedCards', []);
     GameState.set('selectedCardsForRanking', []);
-    bidAmount = 0;
-    currentBid = 0;
-    highestBidder = '';
-    playerBids = {};
-    passedPlayers = {};
-    blockingTurn = 0;
-    blockingOrder = [];
+    GameState.set('bidAmount', 0);
+    GameState.set('currentBid', 0);
+    GameState.set('highestBidder', '');
+    GameState.set('playerBids', {});
+    GameState.set('passedPlayers', {});
+    GameState.set('blockingTurn', 0);
+    GameState.set('blockingOrder', []);
     GameState.set('usedBlockingTokens', {2: false, 4: false, 6: false});
-    revealIndex = 0;
-    currentRevealIndex = 0;
+    GameState.set('revealIndex', 0);
+    GameState.set('currentRevealIndex', 0);
     GameState.set('finalRanking', []);
-    correctRanking = [];
-    bidderSuccess = false;
-    players.currentBlocks = {};
+    GameState.set('correctRanking', []);
+    GameState.set('bidderSuccess', false);
+    GameState.set('players.currentBlocks', {});
     
     console.log('🧹 Clearing UI elements...');
     // Clear UI elements that might persist between rounds
@@ -4243,34 +5497,34 @@ function clearUIElements() {
     // Clear bidding interface
     var highBidderDisplay = document.getElementById('highBidderDisplay');
     if (highBidderDisplay) {
-        highBidderDisplay.innerHTML = '<div class="high-bid-amount">No bids yet</div><div class="high-bid-player">Waiting for first bid...</div>';
+        safeSetHTML(highBidderDisplay, '<div class="high-bid-amount">No bids yet</div><div class="high-bid-player">Waiting for first bid...</div>');
     }
     
     var playerBidding = document.getElementById('playerBidding');
     if (playerBidding) {
-        playerBidding.innerHTML = '';
+        safeSetHTML(playerBidding, '');
     }
     
     // Clear blocking interface
     var availableCards = document.getElementById('availableCards');
     if (availableCards) {
-        availableCards.innerHTML = '';
+        safeSetHTML(availableCards, '');
     }
     
     var blockingTokens = document.getElementById('blockingTokens');
     if (blockingTokens) {
-        blockingTokens.innerHTML = '';
+        safeSetHTML(blockingTokens, '');
     }
     
     // Clear card selection interface
     var availableCardsForSelection = document.getElementById('availableCardsForSelection');
     if (availableCardsForSelection) {
-        availableCardsForSelection.innerHTML = '';
+        safeSetHTML(availableCardsForSelection, '');
     }
     
     var scannedCards = document.getElementById('scannedCards');
     if (scannedCards) {
-        scannedCards.innerHTML = '';
+        safeSetHTML(scannedCards, '');
     }
     
     // Clear ranking interface (including dynamically created container)
@@ -4282,7 +5536,7 @@ function clearUIElements() {
     // Clear reveal interface
     var revealCards = document.getElementById('revealCards');
     if (revealCards) {
-        revealCards.innerHTML = '';
+        safeSetHTML(revealCards, '');
     }
     
     var revealProgress = document.getElementById('revealProgress');
@@ -4293,7 +5547,7 @@ function clearUIElements() {
     // Clear the drawn cards info display on bidding screen
     var drawnCardsInfo = document.getElementById('drawnCardsInfo');
     if (drawnCardsInfo) {
-        drawnCardsInfo.innerHTML = '';
+        safeSetHTML(drawnCardsInfo, '');
     }
     
     console.log('✅ clearUIElements complete');
@@ -4306,7 +5560,7 @@ function clearUIElements() {
     // Clear results interface
     var finalRankingDiv = document.getElementById('finalRanking');
     if (finalRankingDiv) {
-        finalRankingDiv.innerHTML = '';
+        safeSetHTML(finalRankingDiv, '');
     }
     
     // Hide finish button
@@ -4318,12 +5572,12 @@ function clearUIElements() {
     // Clear prompt info
     var promptInfo = document.getElementById('promptInfo');
     if (promptInfo) {
-        promptInfo.innerHTML = '<div class="card-title">Challenge Loading...</div><div class="card-description">Setting up the game...</div>';
+        safeSetHTML(promptInfo, '<div class="card-title">Challenge Loading...</div><div class="card-description">Setting up the game...</div>');
     }
     
     var drawnCardsInfo = document.getElementById('drawnCardsInfo');
     if (drawnCardsInfo) {
-        drawnCardsInfo.innerHTML = '';
+        safeSetHTML(drawnCardsInfo, '');
     }
 }
 
@@ -4332,8 +5586,9 @@ function checkWinCondition() {
     var winner = null;
     var highestScore = -Infinity;
     
+    var players = GameState.get('players');
     Object.keys(players.scores).forEach(function(playerName) {
-        var score = players.scores[playerName];
+        var score = getPlayerScore(playerName);
         if (score >= ACTIVE_RULES.winningScore && score > highestScore) {
             winner = playerName;
             highestScore = score;
@@ -4367,7 +5622,21 @@ function endGame() {
         if (ACTIVE_RULES.endGameTokenPoints && ACTIVE_RULES.endGameTokenPoints > 0) {
             var tokenCount = 0;
             if (ACTIVE_RULES.tokenOwnership && players.ownedCards && players.ownedCards[player.name]) {
-                tokenCount = players.ownedCards[player.name].length;
+                // Handle both new category-specific format and legacy format
+                if (typeof players.ownedCards[player.name] === 'object' && !Array.isArray(players.ownedCards[player.name])) {
+                    // New format: count all owned cards across all categories
+                    Object.keys(players.ownedCards[player.name]).forEach(function(category) {
+                        if (Array.isArray(players.ownedCards[player.name][category])) {
+                            tokenCount += getPlayerOwnedCards(player.name, category).length;
+                        }
+                    });
+                } else if (Array.isArray(players.ownedCards[player.name])) {
+                    // Legacy format: direct array
+                    var ownedCards = getPlayerOwnedCards(player.name);
+                    tokenCount = Object.keys(ownedCards).reduce(function(total, cat) {
+                        return total + (ownedCards[cat] ? ownedCards[cat].length : 0);
+                    }, 0);
+                }
             }
             if (tokenCount > 0) {
                 tokenBonus = ' (includes ' + (tokenCount * ACTIVE_RULES.endGameTokenPoints) + ' country token pts)';
@@ -4385,8 +5654,8 @@ function endGame() {
 }
 
 function getFinalScores() {
-    return Object.keys(players.scores).map(function(playerName) {
-        var scoreValue = players.scores[playerName];
+    return Object.keys(getPlayersScores()).map(function(playerName) {
+        var scoreValue = getPlayerScore(playerName);
         // Ensure score is always a number
         if (typeof scoreValue !== 'number') {
             scoreValue = 0;
@@ -4405,39 +5674,56 @@ function applyCountryTokenBonuses() {
     if (ACTIVE_RULES.endGameTokenPoints && ACTIVE_RULES.endGameTokenPoints > 0) {
         console.log('💎 Applying country token bonuses...');
         
-        Object.keys(players.scores).forEach(function(playerName) {
+        Object.keys(getPlayersScores()).forEach(function(playerName) {
             var tokenCount = 0;
             
             // Count country tokens (owned cards) if token ownership is enabled
-            if (ACTIVE_RULES.tokenOwnership && players.ownedCards && players.ownedCards[playerName]) {
-                tokenCount = players.ownedCards[playerName].length;
+            var allOwnedCards = GameState.get('players.ownedCards') || {};
+            if (ACTIVE_RULES.tokenOwnership && allOwnedCards && allOwnedCards[playerName]) {
+                // Handle both new category-specific format and legacy format
+                if (typeof allOwnedCards[playerName] === 'object' && !Array.isArray(allOwnedCards[playerName])) {
+                    // New format: count all owned cards across all categories
+                    Object.keys(allOwnedCards[playerName]).forEach(function(category) {
+                        if (Array.isArray(allOwnedCards[playerName][category])) {
+                            tokenCount += getPlayerOwnedCards(playerName, category).length;
+                        }
+                    });
+                } else if (Array.isArray(allOwnedCards[playerName])) {
+                    // Legacy format: direct array
+                    var ownedCards = getPlayerOwnedCards(playerName);
+                    tokenCount = Object.keys(ownedCards).reduce(function(total, cat) {
+                        return total + (ownedCards[cat] ? ownedCards[cat].length : 0);
+                    }, 0);
+                }
             }
             
             if (tokenCount > 0) {
                 var tokenPoints = tokenCount * ACTIVE_RULES.endGameTokenPoints;
                 
                 // Check if bonus already applied (avoid double-adding)
-                if (!players.countryTokenBonusApplied) {
-                    players.scores[playerName] = (players.scores[playerName] || 0) + tokenPoints;
+                if (!GameState.get('players.countryTokenBonusApplied')) {
+                    var currentScore = getPlayerScore(playerName) || 0;
+                    setPlayerScore(playerName, currentScore + tokenPoints);
                     console.log(playerName + ' receives ' + tokenPoints + ' points for ' + tokenCount + ' country tokens');
                 }
             }
         });
         
         // Mark as applied to avoid double-adding
-        players.countryTokenBonusApplied = true;
+        GameState.set('players.countryTokenBonusApplied', true);
     }
     
     // Apply end-game blocking token scoring if enabled
     if (ACTIVE_RULES.endGameBlockingTokenPoints && ACTIVE_RULES.endGameBlockingTokenPoints > 0) {
         console.log('🛡️ Applying blocking token bonuses...');
         
-        Object.keys(players.scores).forEach(function(playerName) {
+        Object.keys(getPlayersScores()).forEach(function(playerName) {
             var totalBlockingTokens = 0;
             
             // Count remaining blocking tokens
-            if (players.blockingTokens && players.blockingTokens[playerName]) {
-                var playerTokens = players.blockingTokens[playerName];
+            var allBlockingTokens = GameState.get('players.blockingTokens') || {};
+            if (allBlockingTokens && allBlockingTokens[playerName]) {
+                var playerTokens = GameState.get('players.blockingTokens.' + playerName);
                 totalBlockingTokens = (playerTokens[2] || 0) + (playerTokens[4] || 0) + (playerTokens[6] || 0);
             }
             
@@ -4445,27 +5731,31 @@ function applyCountryTokenBonuses() {
                 var blockingTokenPoints = totalBlockingTokens * ACTIVE_RULES.endGameBlockingTokenPoints;
                 
                 // Check if bonus already applied (avoid double-adding)
-                if (!players.blockingTokenBonusApplied) {
-                    players.scores[playerName] = (players.scores[playerName] || 0) + blockingTokenPoints;
+                if (!GameState.get('players.blockingTokenBonusApplied')) {
+                    var currentScore = getPlayerScore(playerName) || 0;
+                    setPlayerScore(playerName, currentScore + blockingTokenPoints);
                     console.log(playerName + ' receives ' + blockingTokenPoints + ' points for ' + totalBlockingTokens + ' blocking tokens');
                 }
             }
         });
         
         // Mark as applied to avoid double-adding
-        players.blockingTokenBonusApplied = true;
+        GameState.set('players.blockingTokenBonusApplied', true);
     }
 }
 
 function updateScoresDisplay() {
     console.log('🔍 Updating scores display...');
-    console.log('Players list:', players.list);
-    console.log('Players scores BEFORE country token bonus:', players.scores);
+    console.log('Players list:', getPlayersList());
+    console.log('Players scores BEFORE country token bonus:', getPlayersScores());
     
     // Apply country token bonuses for display (if not already applied)
     applyCountryTokenBonuses();
     
-    console.log('Players scores AFTER country token bonus:', players.scores);
+    console.log('Players scores AFTER country token bonus:', getPlayersScores());
+    
+    // Get players object for owned cards access
+    var players = GameState.get('players');
     
     var leaderboard = document.getElementById('leaderboard');
     var playerStats = document.getElementById('playerStats');
@@ -4476,9 +5766,10 @@ function updateScoresDisplay() {
         console.log('Final scores array:', scores);
         if (scores.length === 0) {
             console.log('⚠️ No scores found, showing empty message');
-            leaderboard.innerHTML = '<div class="no-scores-message">No games played yet!<br>Play some rounds to see the leaderboard.</div>';
+            safeSetHTML(leaderboard, '<div class="no-scores-message">No games played yet!<br>Play some rounds to see the leaderboard.</div>');
         } else {
             console.log('✅ Displaying scores for', scores.length, 'players');
+            console.log('🔍 MAIN LEADERBOARD: Rendering 4-column table with Total and Breakdown');
             var html = '<table class="scores-table">' +
                       '<thead><tr><th>Rank</th><th>Player</th><th>Total</th><th>Breakdown</th></tr></thead><tbody>';
             
@@ -4486,18 +5777,32 @@ function updateScoresDisplay() {
                 var rankClass = index === 0 ? 'first' : index === 1 ? 'second' : index === 2 ? 'third' : '';
                 
                 // Calculate score breakdown
-                var stats = players.stats[player.name] || {bidsSuccessful: 0, blocksMade: 0};
+                var stats = getPlayerStats(player.name);
                 
                 // Count country tokens (owned cards) for end-game scoring
                 var countryTokenCount = 0;
                 if (ACTIVE_RULES.tokenOwnership && players.ownedCards && players.ownedCards[player.name]) {
-                    countryTokenCount = players.ownedCards[player.name].length;
+                    // Handle both new category-specific format and legacy format
+                    if (typeof players.ownedCards[player.name] === 'object' && !Array.isArray(players.ownedCards[player.name])) {
+                        // New format: count all owned cards across all categories
+                        Object.keys(players.ownedCards[player.name]).forEach(function(category) {
+                            if (Array.isArray(players.ownedCards[player.name][category])) {
+                                countryTokenCount += getPlayerOwnedCards(player.name, category).length;
+                            }
+                        });
+                    } else if (Array.isArray(players.ownedCards[player.name])) {
+                        // Legacy format: direct array
+                        var ownedCards = getPlayerOwnedCards(player.name);
+                        countryTokenCount = Object.keys(ownedCards).reduce(function(total, cat) {
+                            return total + (ownedCards[cat] ? ownedCards[cat].length : 0);
+                        }, 0);
+                    }
                 }
                 
                 // Count blocking tokens for end-game scoring
                 var blockingTokenCount = 0;
                 if (players.blockingTokens && players.blockingTokens[player.name]) {
-                    var playerTokens = players.blockingTokens[player.name];
+                    var playerTokens = getPlayerTokens(player.name);
                     blockingTokenCount = (playerTokens[2] || 0) + (playerTokens[4] || 0) + (playerTokens[6] || 0);
                 }
                 
@@ -4505,35 +5810,58 @@ function updateScoresDisplay() {
                 var countryTokenPoints = countryTokenCount * (ACTIVE_RULES.endGameTokenPoints || 0);
                 var blockingTokenPoints = blockingTokenCount * (ACTIVE_RULES.endGameBlockingTokenPoints || 0);
                 var blockingPoints = stats.blockingPointsEarned || 0;
-                var biddingPoints = Math.max(0, player.score - blockingPoints - countryTokenPoints - blockingTokenPoints);
+                
+                // Calculate bidding points by subtracting known components from total score
+                // This isolates the points earned from successful rankings
+                var currentPlayerScore = getPlayerScore(player.name) || 0;
+                var biddingPoints = Math.max(0, currentPlayerScore - blockingPoints - countryTokenPoints - blockingTokenPoints);
+                
+                console.log('Debug for', player.name + ':');
+                console.log('  Total score:', currentPlayerScore);
+                console.log('  Blocking points:', blockingPoints);
+                console.log('  Country token points:', countryTokenPoints);
+                console.log('  Blocking token points:', blockingTokenPoints);
+                console.log('  Calculated bidding points:', biddingPoints);
                 
                 var breakdown = '📈' + biddingPoints + 
                                ' 🛡️' + blockingPoints + 
                                ' 🏆' + countryTokenPoints + 
                                ' 💎' + blockingTokenPoints;
                 
+                // Calculate total as sum of all earned points
+                var calculatedTotal = biddingPoints + blockingPoints + countryTokenPoints + blockingTokenPoints;
+                
+                // Debug logging
+                console.log('Leaderboard debug for', player.name + ':');
+                console.log('  biddingPoints:', biddingPoints);
+                console.log('  blockingPoints:', blockingPoints);
+                console.log('  countryTokenPoints:', countryTokenPoints);
+                console.log('  blockingTokenPoints:', blockingTokenPoints);
+                console.log('  calculatedTotal:', calculatedTotal);
+                console.log('  breakdown:', breakdown);
+                
                 html += '<tr>' +
                        '<td class="rank ' + rankClass + '">' + (index + 1) + '</td>' +
-                       '<td>' + player.name + '</td>' +
-                       '<td><strong>' + player.score + '</strong></td>' +
-                       '<td style="font-size: 12px;">' + breakdown + '</td>' +
+                       '<td>' + sanitizeHTML(player.name) + '</td>' +
+                       '<td><strong>' + calculatedTotal + '</strong></td>' +
+                       '<td style="font-size: 12px;">' + sanitizeHTML(breakdown) + '</td>' +
                        '</tr>';
             });
             
             html += '</tbody></table>';
-            leaderboard.innerHTML = html;
+            safeSetHTML(leaderboard, html);
         }
     }
     
     if (playerStats) {
         if (players.list.length === 0) {
-            playerStats.innerHTML = '<div class="no-scores-message">No statistics available yet!</div>';
+            safeSetHTML(playerStats, '<div class="no-scores-message">No statistics available yet!</div>');
         } else {
             var html = '';
             console.log('🔍 Displaying player stats:', players.stats);
             players.list.forEach(function(playerName) {
-                var score = players.scores[playerName] || 0;
-                var stats = players.stats[playerName] || {bidsWon: 0, bidsSuccessful: 0, bidAttempts: 0, bidsPassed: 0, blocksMade: 0, tokensGained: 0, tokensLost: 0, cardsUsed: 0};
+                var score = getPlayerScore(playerName);
+                var stats = getPlayerStats(playerName);
                 
                 console.log('📊 Stats for', playerName + ':', stats);
                 
@@ -4544,8 +5872,8 @@ function updateScoresDisplay() {
                 
                 html += '<div class="player-detailed-stats">' +
                        '<div class="player-stats-header">' +
-                       '<span class="player-stat-name">🎯 ' + playerName + '</span>' +
-                       '<span class="player-stat-score">' + score + ' points</span>' +
+                       '<span class="player-stat-name">🎯 ' + sanitizeHTML(playerName) + '</span>' +
+                       '<span class="player-stat-score">' + sanitizeHTML(score) + ' points</span>' +
                        '</div>' +
                        '<div class="player-stats-details">' +
                        '<div class="stat-row">🎯 Bid Attempts: <span>' + stats.bidAttempts + '</span></div>' +
@@ -4560,17 +5888,17 @@ function updateScoresDisplay() {
                        '</div>' +
                        '</div>';
             });
-            playerStats.innerHTML = html;
+            safeSetHTML(playerStats, html);
         }
     }
     
     if (chipInventory) {
         if (players.list.length === 0) {
-            chipInventory.innerHTML = '<div class="no-scores-message">No chip data available!</div>';
+            safeSetHTML(chipInventory, '<div class="no-scores-message">No chip data available!</div>');
         } else {
             var html = '';
             players.list.forEach(function(playerName) {
-                var tokens = players.blockingTokens[playerName] || {2: 1, 4: 1, 6: 1};
+                var tokens = getPlayerTokens(playerName);
                 var chipDisplay = '';
                 
                 Object.keys(tokens).forEach(function(tokenValue) {
@@ -4589,7 +5917,7 @@ function updateScoresDisplay() {
                        '<div class="chip-inventory-chips">' + chipDisplay + '</div>' +
                        '</div>';
             });
-            chipInventory.innerHTML = html;
+            safeSetHTML(chipInventory, html);
         }
     }
 }
@@ -4599,14 +5927,16 @@ window.clearScores = function() {
     console.log('Clearing all scores...');
     
     // Reset scores to 0 for all players
-    players.list.forEach(function(playerName) {
-        players.scores[playerName] = 0;
-        players.blockingTokens[playerName] = {2: 1, 4: 1, 6: 1};
+    var playersList = getPlayersList();
+    playersList.forEach(function(playerName) {
+        setPlayerScore(playerName, 0);
+        GameState.set('players.blockingTokens.' + playerName, {2: 1, 4: 1, 6: 1});
     });
     
     // Reset game state
-    currentRound = 1;
-    players.currentBlocks = {};
+    GameState.set('currentRound', 1);
+    GameState.set('players.currentBlocks', {});
+    GameState.set('players.scoresCalculatedThisRound', false); // Reset score calculation flag
     
     // Update the display immediately
     updateScoresDisplay();
@@ -4616,37 +5946,56 @@ window.clearScores = function() {
 
 // Quick setup function for 4 players
 window.quickSetup4Players = function() {
+    console.log('🔧 Setting up quick 4-player game...');
+    
     // Reset game state first
     newGame();
     
     // Navigate to player screen
     showScreen('playerScreen');
     
-    // Auto-fill 4 player names
-    var playerNames = ['Alice', 'Bob', 'Charlie', 'Diana'];
-    
-    // Make sure we have enough player input fields
-    while (nextPlayerNumber <= 4) {
-        if (nextPlayerNumber > 1) {
-            addPlayer();
-        } else {
-            nextPlayerNumber++;
+    // Wait for screen transition and DOM to be ready
+    setTimeout(function() {
+        try {
+            // Auto-fill 4 player names
+            var playerNames = ['Alice', 'Bob', 'Charlie', 'Diana'];
+            
+            // Reset nextPlayerNumber to ensure proper counting
+            nextPlayerNumber = 2;
+            
+            // Make sure we have enough player input fields
+            while (nextPlayerNumber <= 4) {
+                if (nextPlayerNumber > 1) {
+                    addPlayer();
+                } else {
+                    nextPlayerNumber++;
+                }
+            }
+            
+            // Wait a moment for DOM updates, then fill in the player names
+            setTimeout(function() {
+                for (var i = 0; i < 4; i++) {
+                    var playerInput = document.getElementById('player' + (i + 1));
+                    if (playerInput) {
+                        playerInput.value = playerNames[i];
+                        console.log('✅ Set player ' + (i + 1) + ' to: ' + playerNames[i]);
+                    } else {
+                        console.log('❌ Could not find player input ' + (i + 1));
+                    }
+                }
+                
+                // Update the display
+                updatePlayerCount();
+                
+                // Show confirmation
+                console.log('✅ 4-player game set up!\n\nPlayers: ' + playerNames.join(', ') + '\n\nClick "Start Round" when ready!');
+            }, 100); // Small delay for DOM updates
+            
+        } catch (error) {
+            console.error('❌ Error in quickSetup4Players:', error);
+            showNotification('Error setting up 4-player game', 'error');
         }
-    }
-    
-    // Fill in the player names
-    for (var i = 0; i < 4; i++) {
-        var playerInput = document.getElementById('player' + (i + 1));
-        if (playerInput) {
-            playerInput.value = playerNames[i];
-        }
-    }
-    
-    // Update the display
-    updatePlayerCount();
-    
-    // Show confirmation
-    console.log('4-player game set up!\n\nPlayers: ' + playerNames.join(', ') + '\n\nClick "Start Round" when ready!');
+    }, 200); // Wait for screen transition
 };
 
 // Simple test function first
@@ -4689,6 +6038,44 @@ window.testBlockingScreen = function() {
     showScreen('blockingScreen');
     
     console.log('✅ Test complete - check if blocking screen is visible');
+};
+
+// Continue from token replacement screen
+window.continueFromTokenReplacement = function() {
+    console.log('Continuing from token replacement screen...');
+    
+    // Hide the token replacement screen first
+    var tokenScreen = document.getElementById('tokenReplacementScreen');
+    if (tokenScreen) {
+        tokenScreen.classList.remove('active');
+    }
+    
+    // If automated test is running, don't do anything - let the test continue naturally
+    if (window.isAutomatedTestRunning) {
+        console.log('📱 Automated test: token screen dismissed, test will continue...');
+        // The automated test will continue on its own timing
+    } else {
+        // Manual game: go to bidding screen
+        console.log('📱 Manual game: returning to bidding screen...');
+        showScreen('biddingScreen');
+    }
+};
+
+// Test function to manually trigger token replacement screen
+window.testTokenReplacement = function() {
+    console.log('Testing token replacement screen...');
+    
+    // Create some test data
+    var removedTokens = ['USA', 'JPN', 'GBR'];
+    var addedTokens = ['FRA', 'GER', 'ITA'];
+    
+    // Set round to 2 so it shows
+    GameState.set('currentRound', 2);
+    
+    // Show the notification
+    showTokenReplacementNotification(removedTokens, addedTokens);
+    
+    console.log('Token replacement screen should be visible now!');
 };
 
 // Automated testing state management and execution guards
@@ -4900,15 +6287,19 @@ function runAutomatedTestWithMode(testName) {
         console.log('🔧 Setting up 4 players for automated test...');
         
         // Reset game state but preserve accumulated statistics
-        currentRound = 1;
-        players.scores = {};
-        players.currentBlocks = {};
+        GameState.set('currentRound', 1);
+        GameState.set('players.scores', {});
+        GameState.set('players.currentBlocks', {});
+        GameState.set('players.scoresCalculatedThisRound', false); // Reset score calculation flag
+        console.log('🔧 Test setup - reset score calculation flag to false');
         // NOTE: Do NOT reset players.stats to preserve accumulated statistics across tests
         
         // Reset all players' blocking tokens
-        players.list.forEach(function(playerName) {
-            if (players.blockingTokens[playerName]) {
-                players.blockingTokens[playerName] = {2: 1, 4: 1, 6: 1};
+        var playersList = getPlayersList();
+        playersList.forEach(function(playerName) {
+            var playerTokens = getPlayerTokens(playerName);
+            if (playerTokens) {
+                GameState.set('players.blockingTokens.' + playerName, {2: 1, 4: 1, 6: 1});
             }
         });
         
@@ -4916,20 +6307,18 @@ function runAutomatedTestWithMode(testName) {
         
         // Auto-fill 4 player names directly without screen navigation
         var playerNames = ['Alice', 'Bob', 'Charlie', 'Diana'];
-        players.list = playerNames.slice(); // Copy the array
+        GameState.set('players.list', playerNames.slice()); // Copy the array
         
         // Initialize scores and tokens for each player
         playerNames.forEach(function(playerName) {
-            players.scores[playerName] = 0;
-            players.blockingTokens[playerName] = {2: 1, 4: 1, 6: 1};
-            players.currentBlocks[playerName] = null;
+            setPlayerScore(playerName, 0);
+            GameState.set('players.blockingTokens.' + playerName, {2: 1, 4: 1, 6: 1});
+            GameState.set('players.currentBlocks.' + playerName, null);
             
             // Initialize player stats tracking (preserve existing stats if they exist)
-            if (!players.stats) {
-                players.stats = {};
-            }
-            if (!players.stats[playerName]) {
-                players.stats[playerName] = {
+            var allStats = GameState.get('players.stats') || {};
+            if (!allStats[playerName]) {
+                allStats[playerName] = {
                     bidsWon: 0,          // Number of rounds won (became the bidder)
                     bidsSuccessful: 0,   // Number of successful rankings after winning bid
                     bidAttempts: 0,      // Total number of bid attempts made
@@ -4940,6 +6329,7 @@ function runAutomatedTestWithMode(testName) {
                     tokensLost: 0,
                     cardsUsed: 0         // Total cards used in ranking attempts
                 };
+                GameState.set('players.stats', allStats);
             }
             
             // Initialize test stats
@@ -5037,13 +6427,25 @@ async function automatedRound(roundNum) {
         // Wait for UI to settle
         await sleep(500);
         
-        // Now use the normal startRoundWithBidder function
+        // First start the normal flow to set up category selection
         console.log('🚀 Starting round with bidder using normal flow...');
-        startRoundWithBidder(); // This will show bidding screen and setup game state
+        startRoundWithBidder(); // This will show category selection screen
+        
+        // Wait for category selection to be set up
+        await sleep(500);
+        
+        // Now automatically select a category for the automated test
+        var categories = ['countries', 'movies'];
+        var selectedCategory = categories[Math.floor(Math.random() * categories.length)];
+        console.log('🎯 Automated test selecting category:', selectedCategory);
+        console.log('🚨🚨🚨 AUTOMATED TEST ABOUT TO CALL SELECTCATEGORY! 🚨🚨🚨');
+        selectCategory(selectedCategory); // This will call showBiddingScreen()
+        console.log('🚨🚨🚨 AUTOMATED TEST FINISHED CALLING SELECTCATEGORY! 🚨🚨🚨');
         
         // Store round data after setup
+        var currentPrompt = GameState.get('currentPrompt');
         roundData.prompt = currentPrompt ? currentPrompt.label : 'Unknown';
-        roundData.drawnCards = drawnCards.slice();
+        roundData.drawnCards = getDrawnCards().slice();
         
         // Wait for bidding screen to fully load, then start automated bidding
         await sleep(1000);
@@ -5061,7 +6463,10 @@ async function automatedRound(roundNum) {
 async function automatedBidding(roundData) {
     try {
         // Set phase
-        setPhase('bidding', currentRound);
+        setPhase('bidding', getCurrentRound());
+        
+        // Reset passed players for new bidding round
+        GameState.set('passedPlayers', {});
         
         // Randomize final bidding outcome (3-6 cards)
         var playerNames = ['Alice', 'Bob', 'Charlie', 'Diana'];
@@ -5076,19 +6481,18 @@ async function automatedBidding(roundData) {
             roundData.bidAmount = finalBidAmount;
         }
         
-        // CRITICAL FIX: Set global highestBidder for calculateAndApplyScores()
-        highestBidder = randomWinner;
-        console.log('🔧 Pre-determined winner:', highestBidder, 'at', finalBidAmount, 'cards');
-        
-        // Reset bidding to start at 1 and build up competitively
-        currentBid = 0; // Reset to 0 so first bid will be 1
+        // CRITICAL FIX: Set GameState for calculateAndApplyScores()
+        GameState.set('highestBidder', randomWinner);
+        GameState.set('currentBid', finalBidAmount);
+        // State is now set above
+        console.log('🔧 Pre-determined winner:', randomWinner, 'at', finalBidAmount, 'cards');
         
         // Simulate competitive bidding with multiple players
         var currentBidder = 0;
         var targetBid = finalBidAmount;
         
         function simulateBiddingRound() {
-            if (currentBid >= targetBid) {
+            if (getCurrentBid() >= targetBid) {
                 // Target reached, others pass
                 var otherPlayers = playerNames.filter(name => name !== randomWinner);
                 var passDelay = 0;
@@ -5103,7 +6507,7 @@ async function automatedBidding(roundData) {
                 
                 // Finish bidding using the normal flow
                 setTimeout(() => {
-                    console.log('✅ Bidding complete, ' + randomWinner + ' won with ' + currentBid + ' cards');
+                    console.log('✅ Bidding complete, ' + randomWinner + ' won with ' + getCurrentBid() + ' cards');
                     console.log('🖼️ Calling finishBidding() to transition to blocking screen...');
                     finishBidding(); // This will show blocking screen
                     
@@ -5124,17 +6528,17 @@ async function automatedBidding(roundData) {
             
             if (currentPlayer === randomWinner) {
                 // Winner always bids until target is reached
-                shouldBid = currentBid < targetBid;
+                shouldBid = getCurrentBid() < targetBid;
             } else {
                 // Other players bid with probability based on how close we are to target
-                var remainingBids = targetBid - currentBid;
+                var remainingBids = targetBid - getCurrentBid();
                 var bidProbability = Math.max(0.3, remainingBids / targetBid); // 30% min, higher when far from target
-                shouldBid = currentBid < targetBid - 1 && Math.random() < bidProbability;
+                shouldBid = getCurrentBid() < targetBid - 1 && Math.random() < bidProbability;
             }
             
             if (shouldBid) {
                 setTimeout(() => {
-                    console.log('💰 ' + currentPlayer + ' bids ' + (currentBid + 1));
+                    console.log('💰 ' + currentPlayer + ' bids ' + (getCurrentBid() + 1));
                     placeBidForPlayer(currentPlayer);
                     
                     // Continue bidding
@@ -5164,7 +6568,7 @@ async function automatedBidding(roundData) {
         setTimeout(() => {
             var firstBidder = playerNames[Math.floor(Math.random() * playerNames.length)];
             console.log('🎯 ' + firstBidder + ' makes opening bid at 1 card');
-            currentBid = 0; // Set to 0 so placeBidForPlayer will make it 1
+            GameState.set('currentBid', 0); // Set to 0 so placeBidForPlayer will make it 1
             placeBidForPlayer(firstBidder);
             
             // Start competitive bidding round
@@ -5183,22 +6587,30 @@ async function automatedBidding(roundData) {
 function automatedBlocking() {
     try {
         console.log('🛡️ Simulating blocking phase...');
+        var highestBidder = GameState.get('highestBidder');
         console.log('Current highest bidder:', highestBidder);
         
+        // Get drawn cards from game state
+        var gameState = GameState.data;
+        var drawnCards = gameState.drawnCards || [];
+        console.log('🎴 Cards available for blocking:', drawnCards);
+        
         // Ensure blocking order is properly set up for automated testing
+        var blockingOrder = GameState.get('blockingOrder') || [];
         if (blockingOrder.length === 0) {
             console.log('⚠️ Blocking order is empty, setting it up...');
             blockingOrder = getPlayersByScore().filter(function(name) {
-                return name !== highestBidder;
+                return name !== getHighestBidder();
             }).reverse(); // Reverse to get lowest score first
-            blockingTurn = 0;
+            GameState.set('blockingOrder', blockingOrder);
+            GameState.set('blockingTurn', 0);
         }
         
         console.log('Current blocking order:', blockingOrder);
-        console.log('Current blocking turn:', blockingTurn);
+        console.log('Current blocking turn:', GameState.get('blockingTurn'));
         
         // Get the blocking order (non-bidders)
-        var nonBidders = players.list.filter(name => name !== highestBidder);
+        var nonBidders = getPlayersList().filter(name => name !== getHighestBidder());
         console.log('🎯 Non-bidders who can block:', nonBidders);
         
         if (nonBidders.length === 0) {
@@ -5210,6 +6622,8 @@ function automatedBlocking() {
         
         // Simple approach: randomly decide if each player will block or skip
         function processNextBlocker() {
+            var blockingTurn = GameState.get('blockingTurn');
+            var blockingOrder = GameState.get('blockingOrder');
             if (blockingTurn >= blockingOrder.length) {
                 console.log('✅ All blocking turns completed, finishing blocking...');
                 setTimeout(() => {
@@ -5232,19 +6646,24 @@ function automatedBlocking() {
                 // Randomly select token and card
                 var tokenValues = [2, 4, 6];
                 var randomToken = tokenValues[Math.floor(Math.random() * tokenValues.length)];
-                var randomCardIndex = Math.floor(Math.random() * Math.min(drawnCards.length, 3));
+                var currentDrawnCards = getDrawnCards();
+                var randomCardIndex = Math.floor(Math.random() * Math.min(currentDrawnCards.length, 3));
                 
                 setTimeout(() => {
                     console.log('🔘 ' + currentPlayer + ' selecting ' + randomToken + '-point token');
                     selectBlockingToken(randomToken, null);
                     
                     setTimeout(() => {
-                        if (drawnCards && drawnCards.length > randomCardIndex) {
-                            var cardToBlock = drawnCards[randomCardIndex];
+                        console.log('🐛 DEBUG: drawnCards:', currentDrawnCards, 'length:', currentDrawnCards ? currentDrawnCards.length : 'undefined');
+                        console.log('🐛 DEBUG: randomCardIndex:', randomCardIndex);
+                        if (currentDrawnCards && currentDrawnCards.length > randomCardIndex) {
+                            var cardToBlock = currentDrawnCards[randomCardIndex];
                             console.log('🚫 ' + currentPlayer + ' blocking card: ' + cardToBlock);
                             selectCardToBlock(cardToBlock);
                         } else {
                             console.log('⚠️ No valid card, skipping turn');
+                            console.log('   drawnCards:', currentDrawnCards);
+                            console.log('   randomCardIndex:', randomCardIndex);
                             skipCurrentBlocker();
                         }
                         
@@ -5276,8 +6695,12 @@ function automatedBlocking() {
 function skipCurrentBlocker() {
     try {
         // Skip the current player's blocking turn
-        if (blockingTurn < blockingOrder.length - 1) {
-            blockingTurn++;
+        var blockingTurn = GameState.get('blockingTurn');
+        var blockingOrder = GameState.get('blockingOrder');
+        blockingTurn++;
+        GameState.set('blockingTurn', blockingTurn);
+        
+        if (blockingTurn < blockingOrder.length) {
             console.log('⏭️ Skipping to next blocker:', blockingOrder[blockingTurn]);
             // Only call updateBlockingInterface if it exists (not in automated mode)
             if (typeof updateBlockingInterface === 'function' && !window.isAutomatedTestRunning) {
@@ -5312,6 +6735,7 @@ function automatedRanking() {
         console.log('Blocked cards:', blockedCards);
         
         // Auto-select cards (take first N cards available that aren't blocked)
+        var drawnCards = getDrawnCards();
         var availableCards = drawnCards.filter(function(cardId) {
             return !blockedCards.includes(cardId);
         });
@@ -5353,7 +6777,7 @@ function automatedRanking() {
             console.log('  Required bid:', currentBid);
             console.log('  Cards list:', selectedCardsForRanking);
             
-            if (selectedCardsForRanking.length >= currentBid) {
+            if (selectedCardsForRanking.length >= getCurrentBid()) {
                 console.log('✅ Ready for ranking phase...');
                 
                 // Wait longer for ranking interface to appear in fast mode
@@ -5364,7 +6788,7 @@ function automatedRanking() {
                 console.log('⚠️ Not enough cards selected (' + selectedCardsForRanking.length + '/' + currentBid + '), retrying...');
                 setTimeout(() => {
                     // Force trigger ranking interface if cards are actually selected
-                    if (GameState.get('selectedCardsForRanking').length === currentBid) {
+                    if (GameState.get('selectedCardsForRanking').length === getCurrentBid()) {
                         console.log('🔄 Cards are selected, manually triggering ranking interface...');
                         showRankingInterface();
                         setTimeout(() => handleRankingPhase(), getTestDelay(1000));
@@ -5411,6 +6835,12 @@ function handleRankingPhase() {
                     }, getTestDelay(1500));
                 } else {
                     console.log('🔧 Submit button not found, calling submitRanking() directly...');
+                    
+                    // For automated testing, populate finalRanking from selectedCardsForRanking
+                    var selectedCardsForRanking = GameState.get('selectedCardsForRanking') || [];
+                    console.log('🎯 Setting finalRanking for automated test:', selectedCardsForRanking);
+                    GameState.set('finalRanking', selectedCardsForRanking);
+                    
                     if (typeof window.submitRanking === 'function') {
                         window.submitRanking();
                         
@@ -5429,6 +6859,12 @@ function handleRankingPhase() {
                 setTimeout(() => {
                     if (typeof window.submitRanking === 'function') {
                         console.log('🔧 Calling submitRanking() directly...');
+                        
+                        // For automated testing, populate finalRanking from selectedCardsForRanking
+                        var selectedCardsForRanking = GameState.get('selectedCardsForRanking') || [];
+                        console.log('🎯 Setting finalRanking for automated test:', selectedCardsForRanking);
+                        GameState.set('finalRanking', selectedCardsForRanking);
+                        
                         window.submitRanking();
                         
                         // After submitting, wait for reveal screen to appear and start automation
@@ -5458,12 +6894,14 @@ function handleRankingPhase() {
 function automatedReveal() {
     try {
         console.log('🎭 Simulating reveal phase...');
+        var finalRanking = GameState.get('finalRanking') || [];
+        var selectedCards = GameState.get('selectedCards') || [];
         console.log('Final ranking:', finalRanking);
         console.log('Selected cards:', selectedCards);
         console.log('Current screen should be:', document.querySelector('.screen.active') ? document.querySelector('.screen.active').id : 'unknown');
         
         // Reset reveal completion flag for this round
-        revealCompletionHandled = false;
+        GameState.set('revealCompletionHandled', false);
         
         // Check if we're actually on the reveal screen
         var currentScreen = document.querySelector('.screen.active');
@@ -5507,7 +6945,7 @@ function automatedReveal() {
             if (index < revealCount) {
                 setTimeout(() => {
                     console.log('🎲 Revealing card ' + (index + 1) + ' of ' + revealCount);
-                    console.log('Current reveal index before:', currentRevealIndex);
+                    console.log('Current reveal index before:', GameState.get('currentRevealIndex') || 0);
                     
                     // For automated testing, use a simpler reveal process
                     var revealResult = null;
@@ -5529,7 +6967,7 @@ function automatedReveal() {
                         }
                     }
                     
-                    console.log('Current reveal index after:', currentRevealIndex);
+                    console.log('Current reveal index after:', GameState.get('currentRevealIndex') || 0);
                     
                     // Continue to next reveal only if not complete
                     if (revealResult !== 'complete') {
@@ -5556,19 +6994,20 @@ function automatedReveal() {
 }
 
 // Simplified reveal function for automated testing
-var revealCompletionHandled = false; // Prevent duplicate completion handling
+// revealCompletionHandled moved to GameState - Prevent duplicate completion handling
 
 function automatedRevealNext() {
     var finalRanking = GameState.get('finalRanking');
+    var currentRevealIndex = GameState.get('currentRevealIndex') || 0;
     console.log('🤖 Automated reveal next - index:', currentRevealIndex, 'of', finalRanking.length);
     
     if (currentRevealIndex >= finalRanking.length) {
         // All cards revealed, show final results
-        if (!revealCompletionHandled) {
+        if (!GameState.get('revealCompletionHandled')) {
             console.log('🏁 All cards revealed, showing final results');
             // Don't modify bidderSuccess here - it should already be set correctly
             // by the sequence checking logic below
-            revealCompletionHandled = true;
+            GameState.set('revealCompletionHandled', true);
             showFinalResults();
         }
         return 'complete';
@@ -5576,20 +7015,26 @@ function automatedRevealNext() {
     
     // Reveal the next card
     currentRevealIndex++;
+    GameState.set('currentRevealIndex', currentRevealIndex);
     updateBidderRankingDisplay();
     updateRevealProgress();
     
     console.log('✅ Card', currentRevealIndex, 'revealed');
     
     // Check for sequence break (simplified logic for automation)
+    currentRevealIndex = GameState.get('currentRevealIndex') || 0;
     if (currentRevealIndex >= 2) {
         var finalRanking = GameState.get('finalRanking');
         var currentPrompt = GameState.get('currentPrompt');
         var prevCard = finalRanking[currentRevealIndex - 2];
         var currentCard = finalRanking[currentRevealIndex - 1];
         
-        var prevValue = window.GAME_DATA.countries[prevCard][currentPrompt.challenge];
-        var currentValue = window.GAME_DATA.countries[currentCard][currentPrompt.challenge];
+        var currentCategory = GameState.get('currentCategory') || 'countries';
+        var categoryData = window.GAME_DATA.categories[currentCategory];
+        var prevItem = categoryData ? categoryData.items[prevCard] : null;
+        var currentItem = categoryData ? categoryData.items[currentCard] : null;
+        var prevValue = prevItem ? prevItem[currentPrompt.challenge] : 0;
+        var currentValue = currentItem ? currentItem[currentPrompt.challenge] : 0;
         
         // Check sequence based on challenge type - most challenges expect descending order (highest to lowest)
         var isDescendingChallenge = true; // Most challenges are "highest to lowest"
@@ -5603,11 +7048,11 @@ function automatedRevealNext() {
             console.log('💥 Sequence broken! Bidder fails.');
             bidderSuccess = false;
             // Reveal all remaining cards quickly
-            currentRevealIndex = finalRanking.length;
+            GameState.set('currentRevealIndex', finalRanking.length);
             updateBidderRankingDisplay();
             updateRevealProgress();
-            if (!revealCompletionHandled) {
-                revealCompletionHandled = true;
+            if (!GameState.get('revealCompletionHandled')) {
+                GameState.set('revealCompletionHandled', true);
                 showFinalResults();
             }
             return 'complete';
@@ -5615,11 +7060,12 @@ function automatedRevealNext() {
     }
     
     // If this was the last card and we haven't failed, bidder succeeds
+    currentRevealIndex = GameState.get('currentRevealIndex') || 0;
     if (currentRevealIndex >= finalRanking.length) {
-        if (!revealCompletionHandled) {
+        if (!GameState.get('revealCompletionHandled')) {
             console.log('🎉 All cards revealed successfully! Bidder succeeds.');
             bidderSuccess = true;
-            revealCompletionHandled = true;
+            GameState.set('revealCompletionHandled', true);
             showFinalResults();
         }
         return 'complete';
@@ -5632,23 +7078,25 @@ function validateStatistics() {
     
     // Calculate total bids won
     var totalBidsWon = 0;
-    Object.keys(players.stats).forEach(function(playerName) {
-        totalBidsWon += players.stats[playerName].bidsWon || 0;
+    var allStats = GameState.get('players.stats') || {};
+    Object.keys(allStats).forEach(function(playerName) {
+        var playerStats = getPlayerStats(playerName);
+        totalBidsWon += playerStats.bidsWon || 0;
     });
     
     console.log('📊 Statistics Validation:');
-    console.log('  🎯 Total bids won:', totalBidsWon, '(should equal', currentRound, 'rounds)');
-    console.log('  🎮 Current round:', currentRound);
-    console.log('  📋 Max rounds:', maxRounds);
+    console.log('  🎯 Total bids won:', totalBidsWon, '(should equal', getCurrentRound(), 'rounds)');
+    console.log('  🎮 Current round:', getCurrentRound());
+    console.log('  📋 Max rounds:', GAME_CONFIG.MAX_ROUNDS);
     
-    if (totalBidsWon !== currentRound) {
-        console.error('❌ STATISTICS ERROR: Total bids won (' + totalBidsWon + ') does not equal current round (' + currentRound + ')');
+    if (totalBidsWon !== getCurrentRound()) {
+        console.error('❌ STATISTICS ERROR: Total bids won (' + totalBidsWon + ') does not equal current round (' + getCurrentRound() + ')');
         return false;
     }
     
     // Validate individual player stats
-    Object.keys(players.stats).forEach(function(playerName) {
-        var stats = players.stats[playerName];
+    Object.keys(allStats).forEach(function(playerName) {
+        var stats = getPlayerStats(playerName);
         if (stats.bidsSuccessful > stats.bidsWon) {
             console.error('❌ STATISTICS ERROR: Player ' + playerName + ' has more successful bids (' + stats.bidsSuccessful + ') than total bids won (' + stats.bidsWon + ')');
             return false;
@@ -5667,15 +7115,16 @@ function generateDetailedTestResults() {
     var results = window.automatedTestResults;
     
     // Sync player stats from game state to test results
-    if (players.stats) {
-        console.log('🔄 Syncing player stats:', players.stats);
+    var allStats = GameState.get('players.stats') || {};
+    if (allStats && Object.keys(allStats).length > 0) {
+        console.log('🔄 Syncing player stats:', allStats);
         console.log('Current test results playerStats:', results.playerStats);
-        Object.keys(players.stats).forEach(function(playerName) {
+        Object.keys(allStats).forEach(function(playerName) {
             if (results.playerStats[playerName]) {
                 // Copy all stats from game state to test results
-                Object.assign(results.playerStats[playerName], players.stats[playerName]);
+                Object.assign(results.playerStats[playerName], allStats[playerName]);
                 // Also update total score
-                results.playerStats[playerName].totalScore = players.scores[playerName] || 0;
+                results.playerStats[playerName].totalScore = getPlayerScore(playerName);
                 console.log('✅ Synced stats for', playerName, ':', results.playerStats[playerName]);
             }
         });
@@ -5698,7 +7147,7 @@ function generateDetailedTestResults() {
     console.log('\n👥 PLAYER STATISTICS:');
     Object.keys(results.playerStats).forEach(function(playerName) {
         var stats = results.playerStats[playerName];
-        var finalScore = players.scores[playerName] || 0;
+        var finalScore = getPlayerScore(playerName);
         console.log('🎯 ' + playerName + ':');
         console.log('  📈 Final Score: ' + finalScore + ' points');
         console.log('  🏆 Bids Won: ' + stats.bidsWon);
@@ -5744,16 +7193,17 @@ window.viewTestResults = function() {
 
 function updateTestResultsDisplay() {
     var results = window.automatedTestResults;
+    var players = GameState.get('players');
     
     console.log('📊 updateTestResultsDisplay called');
     console.log('results:', results);
-    console.log('players.stats:', players.stats);
+    console.log('players.stats:', players ? players.stats : 'No players');
     
     // Test Overview
     var overviewDiv = document.getElementById('testOverview');
     console.log('overviewDiv found:', !!overviewDiv);
     if (!results || !results.startTime) {
-        overviewDiv.innerHTML = '<div class="no-scores-message">No automated tests have been run yet!<br>Click "Run Automated Test" to start testing.</div>';
+        safeSetHTML(overviewDiv, '<div class="no-scores-message">No automated tests have been run yet!<br>Click "Run Automated Test" to start testing.</div>');
         // Still show card statistics even if no tests have been run
         updateCardStatistics();
         displayCardStatistics();
@@ -5765,7 +7215,7 @@ function updateTestResultsDisplay() {
         if (players.stats) {
             console.log('📊 Calculating stats from players.stats:', players.stats);
             Object.keys(players.stats).forEach(function(playerName) {
-                var stats = players.stats[playerName];
+                var stats = getPlayerStats(playerName);
                 totalBidAttempts += stats.bidAttempts || 0;
                 totalRoundsWon += stats.bidsWon || 0;
                 successfulRankings += stats.bidsSuccessful || 0;
@@ -5781,9 +7231,9 @@ function updateTestResultsDisplay() {
         var bidWinRate = totalBidAttempts > 0 ? Math.round((totalRoundsWon / totalBidAttempts) * 100) : 0;
         var rankingSuccessRate = totalRoundsWon > 0 ? Math.round((successfulRankings / totalRoundsWon) * 100) : 0;
         
-        overviewDiv.innerHTML = 
+        var overviewHtml = 
             '<div class="player-stat-item"><span class="player-stat-name">⏱️ Test Duration</span><span class="player-stat-value">' + duration + ' min</span></div>' +
-            '<div class="player-stat-item"><span class="player-stat-name">🎮 Rounds Completed</span><span class="player-stat-value">' + currentRound + '</span></div>' +
+            '<div class="player-stat-item"><span class="player-stat-name">🎮 Rounds Completed</span><span class="player-stat-value">' + getCurrentRound() + '</span></div>' +
             '<div class="player-stat-item"><span class="player-stat-name">🎯 Total Bid Attempts</span><span class="player-stat-value">' + totalBidAttempts + '</span></div>' +
             '<div class="player-stat-item"><span class="player-stat-name">🏆 Rounds Won</span><span class="player-stat-value">' + totalRoundsWon + '</span></div>' +
             '<div class="player-stat-item"><span class="player-stat-name">✅ Successful Rankings</span><span class="player-stat-value">' + successfulRankings + '</span></div>' +
@@ -5792,12 +7242,14 @@ function updateTestResultsDisplay() {
             '<div class="player-stat-item"><span class="player-stat-name">❌ Failed Rankings</span><span class="player-stat-value">' + failedRankings + '</span></div>' +
             '<div class="player-stat-item"><span class="player-stat-name">🎲 Bid Win Rate</span><span class="player-stat-value">' + bidWinRate + '%</span></div>' +
             '<div class="player-stat-item"><span class="player-stat-name">📈 Ranking Success Rate</span><span class="player-stat-value">' + rankingSuccessRate + '%</span></div>';
+        
+        safeSetHTML(overviewDiv, overviewHtml);
     }
     
     // Player Performance
     var performanceDiv = document.getElementById('playerPerformance');
     if (!results || !results.playerStats || Object.keys(results.playerStats).length === 0) {
-        performanceDiv.innerHTML = '<div class="no-scores-message">No player data available!</div>';
+        safeSetHTML(performanceDiv, '<div class="no-scores-message">No player data available!</div>');
     } else {
         var html = '';
         Object.keys(results.playerStats).forEach(function(playerName) {
@@ -5816,17 +7268,18 @@ function updateTestResultsDisplay() {
                    '<span class="chip-badge chip-4">📈 ' + rankingSuccessRate + '% rank rate</span>' +
                    '</div></div>';
         });
-        performanceDiv.innerHTML = html;
+        safeSetHTML(performanceDiv, html);
     }
     
     // Player Statistics (unified with Scores Screen)
     var roundsDiv = document.getElementById('roundDetails');
-    if (!players.stats || Object.keys(players.stats).length === 0) {
-        roundsDiv.innerHTML = '<div class="no-scores-message">No player statistics available!</div>';
+    if (!players || !players.stats || Object.keys(players.stats).length === 0) {
+        safeSetHTML(roundsDiv, '<div class="no-scores-message">No player statistics available!</div>');
     } else {
-        var html = '<table class="scores-table"><thead><tr><th>Player</th><th>Bid Attempts</th><th>Rounds Won</th><th>Successful Rankings</th><th>Blocks Made</th><th>Bid Win Rate</th><th>Ranking Rate</th></tr></thead><tbody>';
+        console.log('🔍 STATS TABLE: Creating table with classes "scores-table stats-table"');
+        var html = '<table class="scores-table stats-table" style="font-size: 9px;"><thead><tr><th style="font-size: 9px;">Player</th><th style="font-size: 9px;">Bids</th><th style="font-size: 9px;">Won</th><th style="font-size: 9px;">Rank</th><th style="font-size: 9px;">Block</th><th style="font-size: 9px;">B%</th><th style="font-size: 9px;">R%</th></tr></thead><tbody>';
         Object.keys(players.stats).forEach(function(playerName) {
-            var stats = players.stats[playerName];
+            var stats = getPlayerStats(playerName);
             // Calculate ranking success rate (how often player succeeds after winning bid)
             var rankingSuccessRate = stats.bidsWon > 0 ? Math.round((stats.bidsSuccessful / stats.bidsWon) * 100) : 0;
             // Calculate bid success rate (how often bid attempts result in winning)
@@ -5834,17 +7287,17 @@ function updateTestResultsDisplay() {
             var bidSuccessClass = bidSuccessRate >= 50 ? 'first' : bidSuccessRate > 0 ? 'second' : 'third';
             var rankingSuccessClass = rankingSuccessRate >= 50 ? 'first' : rankingSuccessRate > 0 ? 'second' : 'third';
             html += '<tr>' +
-                   '<td>' + playerName + '</td>' +
-                   '<td class="rank">' + (stats.bidAttempts || 0) + '</td>' +
-                   '<td class="rank">' + stats.bidsWon + '</td>' +
-                   '<td class="rank">' + stats.bidsSuccessful + '</td>' +
-                   '<td class="rank">' + stats.blocksMade + '</td>' +
-                   '<td class="rank ' + bidSuccessClass + '">' + bidSuccessRate + '%</td>' +
-                   '<td class="rank ' + rankingSuccessClass + '">' + rankingSuccessRate + '%</td>' +
+                   '<td style="font-size: 9px;">' + playerName + '</td>' +
+                   '<td class="rank" style="font-size: 9px;">' + (stats.bidAttempts || 0) + '</td>' +
+                   '<td class="rank" style="font-size: 9px;">' + stats.bidsWon + '</td>' +
+                   '<td class="rank" style="font-size: 9px;">' + stats.bidsSuccessful + '</td>' +
+                   '<td class="rank" style="font-size: 9px;">' + stats.blocksMade + '</td>' +
+                   '<td class="rank ' + bidSuccessClass + '" style="font-size: 9px;">' + bidSuccessRate + '%</td>' +
+                   '<td class="rank ' + rankingSuccessClass + '" style="font-size: 9px;">' + rankingSuccessRate + '%</td>' +
                    '</tr>';
         });
         html += '</tbody></table>';
-        roundsDiv.innerHTML = html;
+        safeSetHTML(roundsDiv, html);
     }
     
     // Add card statistics to the overview
@@ -5854,6 +7307,8 @@ function updateTestResultsDisplay() {
 
 // Function to calculate current card statistics
 function updateCardStatistics() {
+    var players = GameState.get('players');
+    
     if (!window.automatedTestResults || !window.automatedTestResults.cardStats) {
         // Initialize if not exists
         if (!window.automatedTestResults) {
@@ -5880,19 +7335,40 @@ function updateCardStatistics() {
     
     // Calculate total cards owned by all players
     var totalCardsOwned = 0;
-    if (players.ownedCards) {
+    if (players && players.ownedCards) {
         Object.keys(players.ownedCards).forEach(function(playerName) {
             if (players.ownedCards[playerName]) {
-                totalCardsOwned += players.ownedCards[playerName].length;
+                // Handle both new category-specific format and legacy format
+                if (typeof players.ownedCards[playerName] === 'object' && !Array.isArray(players.ownedCards[playerName])) {
+                    // New format: count all owned cards across all categories
+                    Object.keys(players.ownedCards[playerName]).forEach(function(category) {
+                        if (Array.isArray(players.ownedCards[playerName][category])) {
+                            totalCardsOwned += getPlayerOwnedCards(playerName, category).length;
+                        }
+                    });
+                } else if (Array.isArray(players.ownedCards[playerName])) {
+                    // Legacy format: direct array
+                    var ownedCards = getPlayerOwnedCards(playerName);
+                    totalCardsOwned += Object.keys(ownedCards).reduce(function(total, cat) {
+                        return total + (ownedCards[cat] ? ownedCards[cat].length : 0);
+                    }, 0);
+                }
             }
         });
     }
     stats.totalCardsOwned = totalCardsOwned;
     window.globalCardStats.totalCardsOwned = totalCardsOwned;
     
-    // Calculate total cards in play (total countries minus ranked minus owned)
-    var totalCountries = window.GAME_DATA && window.GAME_DATA.countries ? Object.keys(window.GAME_DATA.countries).length : 194;
-    stats.totalCardsInPlay = totalCountries - stats.totalCardsRanked - stats.totalCardsOwned;
+    // Calculate total cards in play (total cards across all categories minus ranked minus owned)
+    var totalCards = 0;
+    if (window.GAME_DATA && window.GAME_DATA.categories) {
+        Object.keys(window.GAME_DATA.categories).forEach(function(category) {
+            if (window.GAME_DATA.categories[category].items) {
+                totalCards += Object.keys(window.GAME_DATA.categories[category].items).length;
+            }
+        });
+    }
+    stats.totalCardsInPlay = totalCards - stats.totalCardsRanked - stats.totalCardsOwned;
     window.globalCardStats.totalCardsInPlay = stats.totalCardsInPlay;
     
     console.log('📊 Card Statistics Updated:', stats);
@@ -5907,7 +7383,12 @@ function displayCardStatistics() {
     }
     
     var stats = window.automatedTestResults.cardStats;
-    var totalCountries = window.GAME_DATA && window.GAME_DATA.countries ? Object.keys(window.GAME_DATA.countries).length : 194;
+    var totalCountries = 0;
+    if (window.GAME_DATA && window.GAME_DATA.categories) {
+        var countries = window.GAME_DATA.categories.countries ? Object.keys(window.GAME_DATA.categories.countries.items).length : 0;
+        var movies = window.GAME_DATA.categories.movies ? Object.keys(window.GAME_DATA.categories.movies.items).length : 0;
+        totalCountries = countries + movies;
+    }
     
     // Add card statistics to the overview
     var existingCardStats = document.getElementById('cardStatsSection');
@@ -5918,11 +7399,13 @@ function displayCardStatistics() {
     var cardStatsDiv = document.createElement('div');
     cardStatsDiv.id = 'cardStatsSection';
     cardStatsDiv.style.cssText = 'margin-top: 15px; padding-top: 15px; border-top: 1px solid #dee2e6;';
-    cardStatsDiv.innerHTML = 
+    var cardStatsHtml = 
         '<div class="player-stat-item"><span class="player-stat-name">🃏 Total Cards Available</span><span class="player-stat-value">' + totalCountries + '</span></div>' +
         '<div class="player-stat-item"><span class="player-stat-name">📊 Total Cards Ranked</span><span class="player-stat-value">' + stats.totalCardsRanked + '</span></div>' +
         '<div class="player-stat-item"><span class="player-stat-name">👑 Total Cards Owned</span><span class="player-stat-value">' + stats.totalCardsOwned + '</span></div>' +
         '<div class="player-stat-item"><span class="player-stat-name">🎯 Total Cards Left in Play</span><span class="player-stat-value">' + stats.totalCardsInPlay + '</span></div>';
+    
+    safeSetHTML(cardStatsDiv, cardStatsHtml);
     
     overviewDiv.appendChild(cardStatsDiv);
     console.log('📊 Card statistics displayed:', stats);
@@ -5967,6 +7450,59 @@ document.addEventListener('DOMContentLoaded', initPage);
 window.addEventListener('load', initPage);
 
 // Debug function to check if everything loaded
+// State Management Migration Test Functions
+window.testStateMigration = function() {
+    console.log('🧪 Testing State Management Migration...');
+    
+    // Test 1: State validation
+    console.log('1. Testing state validation...');
+    var stateCheck = StateValidator.runStateCheck(true);
+    console.log('State validation result:', stateCheck);
+    
+    // Test 2: Helper functions
+    console.log('2. Testing helper functions...');
+    try {
+        var playersList = getPlayersList();
+        var currentBid = getCurrentBid();
+        var highestBidder = getHighestBidder();
+        console.log('✅ Helper functions working - Players:', playersList.length, 'Bid:', currentBid, 'Bidder:', highestBidder);
+    } catch (error) {
+        console.error('❌ Helper functions failed:', error);
+    }
+    
+    // Test 3: Business logic
+    console.log('3. Testing business logic...');
+    try {
+        var gameState = {
+            drawnCards: ['USA', 'CAN', 'MEX'],
+            blockedCards: [],
+            currentBid: 2,
+            highestBidder: 'TestPlayer'
+        };
+        var validation = BusinessLogic.validateBid(2, GAME_CONFIG, gameState);
+        console.log('✅ Business logic working - Bid validation:', validation);
+    } catch (error) {
+        console.error('❌ Business logic failed:', error);
+    }
+    
+    // Test 4: Token integrity
+    console.log('4. Testing token integrity...');
+    try {
+        var integrityResult = validateTokenIntegrity();
+        console.log('✅ Token integrity check:', integrityResult);
+    } catch (error) {
+        console.error('❌ Token integrity failed:', error);
+    }
+    
+    console.log('🧪 State migration test complete!');
+};
+
+window.resetStateForTesting = function() {
+    console.log('🔄 Resetting state for testing...');
+    GameState.reset();
+    console.log('✅ State reset complete');
+};
+
 window.checkGameLoaded = function() {
     console.log('Game functions loaded:', {
         showScreen: typeof window.showScreen,
@@ -6122,6 +7658,13 @@ function updateRulesPreview() {
 
 // Apply rules and start game
 function applyRulesAndStart() {
+    // Validate all rules inputs first
+    var formValidation = InputValidator.validateFormInputs('rulesScreen');
+    if (!formValidation.isValid) {
+        InputValidator.showValidationErrors(formValidation.errors);
+        return;
+    }
+    
     applyRulesFromUI();
     updateRulesPreview();
     
