@@ -10,6 +10,15 @@
 - Don't make assumptions without asking
 - Be innovative and think outside the box
 
+## Token Efficiency Guidelines
+- **Check conversation summary first** - Often contains needed context without file reads
+- **Search before reading** - Use Grep/Glob to find specific information
+- **Read only relevant sections** - Use offset/limit for large files
+- **Batch operations** - Use parallel tool calls when multiple searches needed
+- **Use Task tool for exploration** - Optimized for searching with fewer tokens
+- **Avoid unnecessary file reads** - Don't read files for simple questions
+- **For Know-It-All project**: CLAUDE.md has key context, use Grep for specific code sections
+
 ## Overview
 Outrank is a JavaScript-based trivia ranking game where players bid on how many cards they can rank correctly in various categories. Mobile-first web application with phone-like interface.
 
