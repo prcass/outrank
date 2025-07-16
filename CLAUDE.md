@@ -31,9 +31,13 @@ Outrank is a JavaScript-based trivia ranking game where players bid on how many 
 - End-game: 1 point per remaining token + owned cards
 
 ### Card Lifecycle
-- Used cards = permanently removed
-- Blocked cards = owned by blocker
+- Used cards = permanently removed from pool
+- Blocked cards = owned by blocker when bidder fails
 - Pool refreshes with new cards each round
+- Token replacement screen shows:
+  - Cards removed due to gameplay (ranking/blocking)
+  - Equal number of replacement cards added
+  - Clear categorization of removal reasons
 
 ## Project Architecture
 
@@ -53,17 +57,18 @@ Outrank is a JavaScript-based trivia ranking game where players bid on how many 
 - Global variables migrated to centralized system for consistency
 
 ### Key Systems
-- **Scoring**: `calculateAndApplyScores()` with end-game bonuses
-- **UI**: Screen switching, dynamic updates, error handling
+- **Scoring**: `calculateAndApplyScores()` with end-game bonuses, blocked token tracking
+- **UI**: Screen switching, dynamic updates, error handling, token replacement notifications
 - **Testing**: Built-in automated test system with visual console
-- **Cards**: Comprehensive lifecycle tracking with statistics
+- **Cards**: Comprehensive lifecycle tracking with statistics, 3-letter codes for identification
+- **Token Replacement**: `showTokenReplacementNotification()` categorizes gameplay events vs pool management
 
 ## Version History
 - **2025-07-14 v2.1** `outrank-v2.1`: All UI issues fixed, responsive design, leaderboard working
 - **2025-07-12 v2.0**: State management migration completed, Fast Automated Test functional  
 - **2025-07-06 v1.9**: Code quality improvements, security enhancements
 
-## Current State (July 2025 - Last Updated: July 14)
+## Current State (July 2025 - Last Updated: July 15)
 - ✅ Fully functional with all mechanics implemented
 - ✅ Movie category added with 47 comprehensive entries
 - ✅ End-game token scoring (1 point per remaining token)
@@ -83,6 +88,13 @@ Outrank is a JavaScript-based trivia ranking game where players bid on how many 
   - Consistent state access patterns throughout codebase
   - Fast Automated Test runs end-to-end successfully
   - Improved state consistency and debugging capability
+- ✅ **Token replacement screen improvements (July 15):**
+  - Shows only gameplay-related card removals (not all pool changes)
+  - Categorizes removed cards: "Used in Ranking" vs "Used in Block and Now Owned"
+  - Balanced 1:1 display of removed/added tokens
+  - Count numbers in brackets [X] for at-a-glance totals
+  - Tracks blocked tokens when bidder fails as removed cards
+  - 3-letter codes displayed on all token circles
 
 ## Technical Constraints
 - **Pure vanilla JavaScript** - No frameworks or dependencies
