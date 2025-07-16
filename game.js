@@ -1065,7 +1065,9 @@ var GameState = {
             if (!this.data.players.ownedCards[name]) {
                 this.data.players.ownedCards[name] = {
                     countries: [],
-                    movies: []
+                    movies: [],
+                    sports: [],
+                    companies: []
                 };
             }
             
@@ -1428,16 +1430,13 @@ function showTokenReplacementNotification(removedTokens, addedTokens) {
                     var foundItem = null;
                     var foundCategory = null;
                     
-                    // Check countries first
-                    if (window.GAME_DATA.categories.countries && window.GAME_DATA.categories.countries.items[tokenId]) {
-                        foundItem = window.GAME_DATA.categories.countries.items[tokenId];
-                        foundCategory = 'countries';
-                    }
-                    // Then check movies
-                    else if (window.GAME_DATA.categories.movies && window.GAME_DATA.categories.movies.items[tokenId]) {
-                        foundItem = window.GAME_DATA.categories.movies.items[tokenId];
-                        foundCategory = 'movies';
-                    }
+                    // Check all categories
+                    Object.keys(window.GAME_DATA.categories).forEach(function(categoryKey) {
+                        if (!foundItem && window.GAME_DATA.categories[categoryKey].items[tokenId]) {
+                            foundItem = window.GAME_DATA.categories[categoryKey].items[tokenId];
+                            foundCategory = categoryKey;
+                        }
+                    });
                     
                     var tokenData = {
                         id: tokenId,
@@ -1462,7 +1461,11 @@ function showTokenReplacementNotification(removedTokens, addedTokens) {
                     removedHtml += '<ul style="margin: 0; padding-left: 16px; font-size: 13px;">';
                     usedInRanking.forEach(function(tokenData) {
                         if (tokenData.item) {
-                            var categoryIcon = tokenData.category === 'countries' ? '🌍' : '🎬';
+                            var categoryIcon = '🌍';
+                            if (tokenData.category === 'countries') categoryIcon = '🌍';
+                            else if (tokenData.category === 'movies') categoryIcon = '🎬';
+                            else if (tokenData.category === 'sports') categoryIcon = '🏈';
+                            else if (tokenData.category === 'companies') categoryIcon = '🏢';
                             removedHtml += '<li style="margin: 3px 0;">' + tokenData.item.name + ' (' + (tokenData.item.code || tokenData.id) + ') ' + categoryIcon + '</li>';
                         } else {
                             removedHtml += '<li style="margin: 3px 0;">' + tokenData.id + '</li>';
@@ -1478,7 +1481,11 @@ function showTokenReplacementNotification(removedTokens, addedTokens) {
                     removedHtml += '<ul style="margin: 0; padding-left: 16px; font-size: 13px;">';
                     usedInBlockAndOwned.forEach(function(tokenData) {
                         if (tokenData.item) {
-                            var categoryIcon = tokenData.category === 'countries' ? '🌍' : '🎬';
+                            var categoryIcon = '🌍';
+                            if (tokenData.category === 'countries') categoryIcon = '🌍';
+                            else if (tokenData.category === 'movies') categoryIcon = '🎬';
+                            else if (tokenData.category === 'sports') categoryIcon = '🏈';
+                            else if (tokenData.category === 'companies') categoryIcon = '🏢';
                             removedHtml += '<li style="margin: 3px 0;">' + tokenData.item.name + ' (' + (tokenData.item.code || tokenData.id) + ') ' + categoryIcon + '</li>';
                         } else {
                             removedHtml += '<li style="margin: 3px 0;">' + tokenData.id + '</li>';
@@ -1505,19 +1512,20 @@ function showTokenReplacementNotification(removedTokens, addedTokens) {
                     var foundItem = null;
                     var foundCategory = null;
                     
-                    // Check countries first
-                    if (window.GAME_DATA.categories.countries && window.GAME_DATA.categories.countries.items[tokenId]) {
-                        foundItem = window.GAME_DATA.categories.countries.items[tokenId];
-                        foundCategory = 'countries';
-                    }
-                    // Then check movies
-                    else if (window.GAME_DATA.categories.movies && window.GAME_DATA.categories.movies.items[tokenId]) {
-                        foundItem = window.GAME_DATA.categories.movies.items[tokenId];
-                        foundCategory = 'movies';
-                    }
+                    // Check all categories
+                    Object.keys(window.GAME_DATA.categories).forEach(function(categoryKey) {
+                        if (!foundItem && window.GAME_DATA.categories[categoryKey].items[tokenId]) {
+                            foundItem = window.GAME_DATA.categories[categoryKey].items[tokenId];
+                            foundCategory = categoryKey;
+                        }
+                    });
                     
                     if (foundItem) {
-                        var categoryIcon = foundCategory === 'countries' ? '🌍' : '🎬';
+                        var categoryIcon = '🌍';
+                        if (foundCategory === 'countries') categoryIcon = '🌍';
+                        else if (foundCategory === 'movies') categoryIcon = '🎬';
+                        else if (foundCategory === 'sports') categoryIcon = '🏈';
+                        else if (foundCategory === 'companies') categoryIcon = '🏢';
                         addedHtml += '<li style="margin: 3px 0;">' + foundItem.name + ' (' + (foundItem.code || tokenId) + ') ' + categoryIcon + '</li>';
                     } else {
                         addedHtml += '<li style="margin: 3px 0;">' + tokenId + '</li>';
@@ -2832,19 +2840,29 @@ function getCurrentCategoryChooser() {
  */
 function startCategorySelection() {
     try {
-        // Pre-generate challenges for both categories
+        // Pre-generate challenges for all categories
         preGeneratedChallenges.countries = window.GAME_DATA.getRandomChallenge('countries');
         preGeneratedChallenges.movies = window.GAME_DATA.getRandomChallenge('movies');
+        preGeneratedChallenges.sports = window.GAME_DATA.getRandomChallenge('sports');
+        preGeneratedChallenges.companies = window.GAME_DATA.getRandomChallenge('companies');
         
         // Update UI with challenge descriptions
         var countryChallenge = document.getElementById('countryChallenge');
         var movieChallenge = document.getElementById('movieChallenge');
+        var sportsChallenge = document.getElementById('sportsChallenge');
+        var companiesChallenge = document.getElementById('companiesChallenge');
         
         if (countryChallenge) {
             countryChallenge.textContent = preGeneratedChallenges.countries.label;
         }
         if (movieChallenge) {
             movieChallenge.textContent = preGeneratedChallenges.movies.label;
+        }
+        if (sportsChallenge) {
+            sportsChallenge.textContent = preGeneratedChallenges.sports.label;
+        }
+        if (companiesChallenge) {
+            companiesChallenge.textContent = preGeneratedChallenges.companies.label;
         }
         
         // Show whose turn it is to choose
@@ -2880,8 +2898,13 @@ window.selectCategory = function(categoryId) {
         
         // Set current category and challenge
         var gameState = GameState.data;
+        
+        // Track previous category for token replacement logic
+        window.lastRoundCategory = gameState.currentCategory;
         gameState.currentCategory = categoryId;
         gameState.currentPrompt = preGeneratedChallenges[categoryId];
+        
+        console.log('🔄 Category tracking - Previous:', window.lastRoundCategory, 'Current:', categoryId);
         
         // Advance to next player for next round
         categoryChooserIndex++;
@@ -2960,28 +2983,33 @@ function showBiddingScreen() {
             var previousCategoryCards = window.previousRoundCardsByCategory && window.previousRoundCardsByCategory[currentCategory] || [];
             
             if (previousCategoryCards.length > 0) {
-                // Build removed tokens list from actual game events (not pool differences)
+                // Build removed tokens list from category-specific tracking
                 var removedTokens = [];
                 
-                // Add cards that were selected for ranking in previous round
-                var lastRoundSelectedCards = window.lastRoundSelectedCards || [];
-                lastRoundSelectedCards.forEach(function(cardId) {
-                    if (removedTokens.indexOf(cardId) === -1) {
-                        removedTokens.push(cardId);
+                // Initialize category-specific tracking if it doesn't exist
+                if (!window.categoryRemovedCards) {
+                    window.categoryRemovedCards = {};
+                }
+                if (!window.categoryRemovedCards[currentCategory]) {
+                    window.categoryRemovedCards[currentCategory] = [];
+                }
+                
+                // Get cards that were removed from this category ONLY in the last round it was used
+                // Clear accumulated history and only show the most recent removal
+                var lastRoundRemovedFromThisCategory = [];
+                
+                // Find cards that were in the previous draw but not in current draw
+                previousCategoryCards.forEach(function(cardId) {
+                    if (drawnCards.indexOf(cardId) === -1) {
+                        lastRoundRemovedFromThisCategory.push(cardId);
                     }
                 });
                 
-                // Add blocked cards from previous round to removed tokens (if token ownership is enabled)
-                var blockedCardsFromPreviousRound = window.lastRoundBlockedCards || [];
-                if (blockedCardsFromPreviousRound.length > 0) {
-                    console.log('🛡️ Adding blocked cards from previous round to removed tokens:', blockedCardsFromPreviousRound);
-                    blockedCardsFromPreviousRound.forEach(function(cardId) {
-                        if (removedTokens.indexOf(cardId) === -1) {
-                            removedTokens.push(cardId);
-                        }
-                    });
-                }
+                removedTokens = lastRoundRemovedFromThisCategory;
                 
+                console.log('🎯 Previously removed cards for ' + currentCategory + ':', removedTokens);
+                
+                var blockedCardsFromPreviousRound = window.lastRoundBlockedCards || [];
                 console.log('🎯 Cards used in ranking:', lastRoundSelectedCards);
                 console.log('🛡️ Cards blocked and owned:', blockedCardsFromPreviousRound);
                 console.log('📋 Total removed cards (gameplay only):', removedTokens);
@@ -2993,9 +3021,9 @@ function showBiddingScreen() {
                     return previousCategoryCards.indexOf(cardId) === -1;
                 });
                 
-                // Limit added tokens to match the number of gameplay-removed cards
-                // This shows the 1:1 replacement for cards that were actually used
-                for (var i = 0; i < Math.min(removedTokens.length, allPoolChanges.length); i++) {
+                // Show exactly the same number of added tokens as removed tokens (1:1 replacement)
+                var exactReplacementCount = removedTokens.length;
+                for (var i = 0; i < Math.min(exactReplacementCount, allPoolChanges.length); i++) {
                     addedTokens.push(allPoolChanges[i]);
                 }
                 
@@ -3115,19 +3143,45 @@ function showBiddingScreen() {
                 var removedCards = window.removedReplacementCards || [];
                 var addedCards = window.newReplacementCards || [];
                 
-                console.log('🔄 Removed cards for ' + currentCategory + ':', removedCards);
-                console.log('🔄 Added cards for ' + currentCategory + ':', addedCards);
-                console.log('🔄 Balance check - Removed:', removedCards.length, 'Added:', addedCards.length);
+                // Check if this category was used before (in any previous round)
+                var previousCategoryCards = window.previousRoundCardsByCategory && window.previousRoundCardsByCategory[currentCategory] || [];
+                var currentCategoryWasUsedBefore = (previousCategoryCards.length > 0);
+                
+                console.log('🔄 Previous cards for ' + currentCategory + ':', previousCategoryCards);
+                console.log('🔄 Current category:', currentCategory);
+                console.log('🔄 Category was used before:', currentCategoryWasUsedBefore);
+                
+                var filteredRemovedCards = [];
+                var filteredAddedCards = [];
+                
+                if (currentCategoryWasUsedBefore) {
+                    // This category was used before - show actual replacements within this category
+                    filteredRemovedCards = removedCards.filter(function(cardId) {
+                        return window.GAME_DATA.categories[currentCategory].items[cardId];
+                    });
+                    filteredAddedCards = addedCards.filter(function(cardId) {
+                        return window.GAME_DATA.categories[currentCategory].items[cardId];
+                    });
+                } else {
+                    // First time using this category - show ALL removed/added tokens from any category
+                    console.log('🔄 First time using ' + currentCategory + ' - showing all gameplay tokens');
+                    filteredRemovedCards = removedTokens || [];
+                    filteredAddedCards = addedTokens || [];
+                }
+                
+                console.log('🔄 Removed cards for ' + currentCategory + ':', filteredRemovedCards);
+                console.log('🔄 Added cards for ' + currentCategory + ':', filteredAddedCards);
+                console.log('🔄 Balance check - Filtered removed:', filteredRemovedCards.length, 'Filtered added:', filteredAddedCards.length);
                 
                 // Always show token replacement screen in Round 2+ (even if no specific cards tracked)
                 console.log('🔄 FORCING token replacement screen to show...');
-                console.log('  Removed cards array:', removedCards);
-                console.log('  Added cards array:', addedCards);
+                console.log('  Removed cards array:', filteredRemovedCards);
+                console.log('  Added cards array:', filteredAddedCards);
                 
                 // Show token replacement screen IMMEDIATELY before showScreen clears timeouts
                 console.log('🔧 Showing token replacement screen immediately...');
                 try {
-                    showTokenReplacementNotification(removedCards, addedCards);
+                    showTokenReplacementNotification(filteredRemovedCards, filteredAddedCards);
                     console.log('✅ Token replacement function called successfully');
                     
                     // For automated tests, return early to prevent bidding screen from immediately showing
@@ -4804,7 +4858,16 @@ function showFinalResults() {
                 console.log('Win Condition:', checkWinCondition());
                 console.log('Automated Test Running:', window.isAutomatedTestRunning);
                 
-                if (getCurrentRound() < ACTIVE_RULES.maxRounds && !checkWinCondition()) {
+                var winCondition = checkWinCondition();
+                console.log('🔍 Game continuation check:');
+                console.log('  - Current round:', getCurrentRound());
+                console.log('  - Max rounds:', ACTIVE_RULES.maxRounds);
+                console.log('  - Win condition met:', winCondition);
+                if (winCondition) {
+                    console.log('  - Winner:', winCondition, 'with score >=', ACTIVE_RULES.winningScore);
+                }
+                
+                if (getCurrentRound() < ACTIVE_RULES.maxRounds && !winCondition) {
                     console.log('▶️ Continuing to next round...');
                     continueToNextRound();
                     
@@ -4997,7 +5060,9 @@ function calculateAndApplyScores() {
                         if (!players.ownedCards[playerName]) {
                             players.ownedCards[playerName] = {
                                 countries: [],
-                                movies: []
+                                movies: [],
+                                sports: [],
+                                companies: []
                             };
                         }
                         
@@ -5006,6 +5071,11 @@ function calculateAndApplyScores() {
                         var currentCategory = gameState.currentCategory || 'countries';
                         var categoryData = window.GAME_DATA.categories[currentCategory];
                         var cardData = categoryData.items[blockedCardId];
+                        
+                        // Ensure category array exists
+                        if (!players.ownedCards[playerName][currentCategory]) {
+                            players.ownedCards[playerName][currentCategory] = [];
+                        }
                         
                         // Only add if not already owned in this category
                         if (!players.ownedCards[playerName][currentCategory].includes(blockedCardId)) {
@@ -5043,6 +5113,27 @@ function calculateAndApplyScores() {
         console.log('⚠️ selectedCards was empty, inferring from bid:', selectedCards);
     }
     window.lastRoundSelectedCards = selectedCards ? selectedCards.slice() : [];
+    
+    // Track cards removed from current category
+    var currentCategory = GameState.get('currentCategory');
+    if (currentCategory && selectedCards && selectedCards.length > 0) {
+        if (!window.categoryRemovedCards) {
+            window.categoryRemovedCards = {};
+        }
+        if (!window.categoryRemovedCards[currentCategory]) {
+            window.categoryRemovedCards[currentCategory] = [];
+        }
+        
+        // Add selected cards to the category's removed cards list
+        selectedCards.forEach(function(cardId) {
+            if (window.categoryRemovedCards[currentCategory].indexOf(cardId) === -1) {
+                window.categoryRemovedCards[currentCategory].push(cardId);
+            }
+        });
+        
+        console.log('🔄 Added to removed cards for ' + currentCategory + ':', selectedCards);
+        console.log('🔄 Total removed cards for ' + currentCategory + ':', window.categoryRemovedCards[currentCategory]);
+    }
     
     // Track total cards used by the bidder
     var players = GameState.get('players');
@@ -5334,6 +5425,7 @@ function updateInterimRoundSummary() {
                '• ' + highestBidder + ': 0 points (no penalty)<br>';
         
         // Use saved blocking data from before it was cleared
+        var players = GameState.get('players');
         var blocksToCheck = window.lastRoundBlocks || players.currentBlocks;
         Object.keys(blocksToCheck).forEach(function(playerName) {
             if (playerName !== highestBidder && blocksToCheck[playerName]) {
@@ -5448,7 +5540,9 @@ window.newGame = function() {
     window.cardsReplacedThisRound = [];
     window.newReplacementCards = [];
     window.removedReplacementCards = [];
+    window.lastRoundCategory = null;
     window.previousRoundCardsByCategory = {};
+    window.categoryRemovedCards = {};
     
     resetRoundState();
     showScreen('titleScreen');
@@ -6268,6 +6362,11 @@ function runAutomatedTestWithMode(testName) {
     // Set automated test flag
     window.isAutomatedTestRunning = true;
     
+    // Apply rules from UI before starting test
+    console.log('⚙️ Applying rules from UI for automated test...');
+    applyRulesFromUI();
+    console.log('✅ Rules applied - Max rounds:', ACTIVE_RULES.maxRounds, 'Winning score:', ACTIVE_RULES.winningScore);
+    
     // Initialize automated test state
     window.automatedTestState = {
         isProcessingBid: false,
@@ -6435,7 +6534,7 @@ async function automatedRound(roundNum) {
         await sleep(500);
         
         // Now automatically select a category for the automated test
-        var categories = ['countries', 'movies'];
+        var categories = Object.keys(window.GAME_DATA.categories);
         var selectedCategory = categories[Math.floor(Math.random() * categories.length)];
         console.log('🎯 Automated test selecting category:', selectedCategory);
         console.log('🚨🚨🚨 AUTOMATED TEST ABOUT TO CALL SELECTCATEGORY! 🚨🚨🚨');
@@ -7385,9 +7484,11 @@ function displayCardStatistics() {
     var stats = window.automatedTestResults.cardStats;
     var totalCountries = 0;
     if (window.GAME_DATA && window.GAME_DATA.categories) {
-        var countries = window.GAME_DATA.categories.countries ? Object.keys(window.GAME_DATA.categories.countries.items).length : 0;
-        var movies = window.GAME_DATA.categories.movies ? Object.keys(window.GAME_DATA.categories.movies.items).length : 0;
-        totalCountries = countries + movies;
+        Object.keys(window.GAME_DATA.categories).forEach(function(categoryKey) {
+            if (window.GAME_DATA.categories[categoryKey].items) {
+                totalCountries += Object.keys(window.GAME_DATA.categories[categoryKey].items).length;
+            }
+        });
     }
     
     // Add card statistics to the overview
@@ -7400,7 +7501,7 @@ function displayCardStatistics() {
     cardStatsDiv.id = 'cardStatsSection';
     cardStatsDiv.style.cssText = 'margin-top: 15px; padding-top: 15px; border-top: 1px solid #dee2e6;';
     var cardStatsHtml = 
-        '<div class="player-stat-item"><span class="player-stat-name">🃏 Total Cards Available</span><span class="player-stat-value">' + totalCountries + '</span></div>' +
+        '<div class="player-stat-item"><span class="player-stat-name">🃏 Total Cards in Game</span><span class="player-stat-value">' + totalCountries + '</span></div>' +
         '<div class="player-stat-item"><span class="player-stat-name">📊 Total Cards Ranked</span><span class="player-stat-value">' + stats.totalCardsRanked + '</span></div>' +
         '<div class="player-stat-item"><span class="player-stat-name">👑 Total Cards Owned</span><span class="player-stat-value">' + stats.totalCardsOwned + '</span></div>' +
         '<div class="player-stat-item"><span class="player-stat-name">🎯 Total Cards Left in Play</span><span class="player-stat-value">' + stats.totalCardsInPlay + '</span></div>';

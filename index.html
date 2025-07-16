@@ -94,6 +94,8 @@
                             <option value="">🎯 Quick Category</option>
                             <option value="countries">🌍 Countries</option>
                             <option value="movies">🎬 Movies</option>
+                            <option value="sports">🏈 Sports Teams</option>
+                            <option value="companies">🏢 Companies</option>
                         </select>
                     </div>
                 </div>
@@ -173,6 +175,28 @@
                             Movies: Loading challenge...
                         </div>
                         <button class="btn primary" onclick="selectCategory('movies')">🎬 Choose Movies</button>
+                    </div>
+                    
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">🏈</div>
+                            <div class="section-title">Sports Teams</div>
+                        </div>
+                        <div class="category-challenge" id="sportsChallenge">
+                            Sports Teams: Loading challenge...
+                        </div>
+                        <button class="btn primary" onclick="selectCategory('sports')">🏈 Choose Sports Teams</button>
+                    </div>
+                    
+                    <div class="form-card">
+                        <div class="section-header">
+                            <div class="section-icon">🏢</div>
+                            <div class="section-title">Companies</div>
+                        </div>
+                        <div class="category-challenge" id="companiesChallenge">
+                            Companies: Loading challenge...
+                        </div>
+                        <button class="btn primary" onclick="selectCategory('companies')">🏢 Choose Companies</button>
                     </div>
                     
                     <div class="button-group">
@@ -741,7 +765,7 @@
     </div>
     
     <!-- IMPORTANT: Load data.js FIRST, then game.js -->
- <script src="data.js?v=33"></script>
-    <script src="game.js?v=33"></script>
+ <script src="data.js?v=34"></script>
+    <script src="game.js?v=34"></script>
 </body>
 </html>
