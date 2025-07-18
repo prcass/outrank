@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Data Methods</title>
+</head>
+<body>
+    <h1>Testing GAME_DATA Methods</h1>
+    <button onclick="testMethods()">Test Methods</button>
+    <div id="output"></div>
+    
+    <script src="data.js"></script>
+    <script>
+        function testMethods() {
+            const output = document.getElementById('output');
+            let results = '<h2>Method Test Results:</h2>';
+            
+            try {
+                // Test if GAME_DATA exists
+                if (typeof window.GAME_DATA !== 'undefined') {
+                    results += '<p>✅ GAME_DATA exists</p>';
+                    
+                    // Test getRandomChallenge method
+                    if (typeof window.GAME_DATA.getRandomChallenge === 'function') {
+                        results += '<p>✅ getRandomChallenge method exists</p>';
+                        
+                        try {
+                            const challenge = window.GAME_DATA.getRandomChallenge();
+                            results += `<p>✅ getRandomChallenge() works: ${challenge.label}</p>`;
+                        } catch (e) {
+                            results += `<p>❌ getRandomChallenge() error: ${e.message}</p>`;
+                        }
+                        
+                        try {
+                            const countryChallenge = window.GAME_DATA.getRandomChallenge('countries');
+                            results += `<p>✅ getRandomChallenge('countries') works: ${countryChallenge.label}</p>`;
+                        } catch (e) {
+                            results += `<p>❌ getRandomChallenge('countries') error: ${e.message}</p>`;
+                        }
+                    } else {
+                        results += `<p>❌ getRandomChallenge method missing. Type: ${typeof window.GAME_DATA.getRandomChallenge}</p>`;
+                    }
+                    
+                    // Test getRandomCountries method
+                    if (typeof window.GAME_DATA.getRandomCountries === 'function') {
+                        results += '<p>✅ getRandomCountries method exists</p>';
+                        
+                        try {
+                            const countries = window.GAME_DATA.getRandomCountries(3);
+                            results += `<p>✅ getRandomCountries(3) works: ${countries.join(', ')}</p>`;
+                        } catch (e) {
+                            results += `<p>❌ getRandomCountries(3) error: ${e.message}</p>`;
+                        }
+                    } else {
+                        results += `<p>❌ getRandomCountries method missing. Type: ${typeof window.GAME_DATA.getRandomCountries}</p>`;
+                    }
+                    
+                    // Test backward compatibility
+                    if (typeof window.GAME_DATA.countries !== 'undefined') {
+                        results += '<p>✅ Backward compatibility: countries property exists</p>';
+                    } else {
+                        results += '<p>❌ Backward compatibility: countries property missing</p>';
+                    }
+                    
+                    if (typeof window.GAME_DATA.prompts !== 'undefined') {
+                        results += '<p>✅ Backward compatibility: prompts property exists</p>';
+                    } else {
+                        results += '<p>❌ Backward compatibility: prompts property missing</p>';
+                    }
+                    
+                } else {
+                    results += '<p>❌ GAME_DATA not found</p>';
+                }
+                
+            } catch (e) {
+                results += `<p>❌ General error: ${e.message}</p>`;
+            }
+            
+            output.innerHTML = results;
+        }
+    </script>
+</body>
+</html>

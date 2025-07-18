@@ -1,0 +1,38 @@
+{
+  "USA": {
+    "coffee_consumption": 4.2,
+    "happiness_ranking": 19,
+    "life_expectancy": 79.2,
+    "internet_penetration": 92.5
+  },
+  "CHN": {
+    "coffee_consumption": 0.38,
+    "happiness_ranking": 84,
+    "life_expectancy": 77.8,
+    "population_density": 155
+  },
+  "JPN": {
+    "coffee_consumption": 3.6,
+    "happiness_ranking": 54,
+    "life_expectancy": 84.5,
+    "birth_rate": 6.8
+  },
+  "AVATAR": {
+    "imdb_rating": 8.2,
+    "box_office_gross": 2923.7,
+    "production_budget": 240,
+    "runtime_minutes": 162
+  },
+  "TITANIC": {
+    "imdb_rating": 8.0,
+    "box_office_gross": 2265.2,
+    "oscar_wins": 11,
+    "oscar_nominations": 14
+  },
+  "DALLAS_COWBOYS": {
+    "team_value": 9.5,
+    "annual_revenue": 1.15,
+    "championship_count": 5,
+    "fan_base_size": 8.8
+  }
+}

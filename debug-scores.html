@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Scores Issue</title>
+</head>
+<body>
+    <h1>Debug Scores Issue</h1>
+    <button onclick="testScores()">Test Scores</button>
+    <div id="output"></div>
+    
+    <script src="game.js"></script>
+    <script src="data.js"></script>
+    <script>
+        function testScores() {
+            const output = document.getElementById('output');
+            let results = '<h2>Score Debug Results:</h2>';
+            
+            try {
+                // Test 1: Check if GameState is working
+                results += '<h3>Test 1: GameState Basic Test</h3>';
+                GameState.set('test', 'value');
+                results += '<p>GameState.set/get test: ' + GameState.get('test') + '</p>';
+                
+                // Test 2: Simulate the exact flow that the game uses
+                results += '<h3>Test 2: Simulate newGame() Flow</h3>';
+                
+                // First, set up players like quickSetup4Players does
+                var playerNames = ['Alice', 'Bob', 'Charlie', 'Diana'];
+                GameState.set('players.list', playerNames.slice());
+                GameState.set('players.scores', {});
+                
+                // Initialize scores like newGame() does
+                playerNames.forEach(function(playerName) {
+                    setPlayerScore(playerName, 0);
+                    results += '<p>Initialized ' + playerName + ' score to: ' + getPlayerScore(playerName) + '</p>';
+                });
+                
+                results += '<p>After initialization:</p>';
+                results += '<p>Players list: ' + JSON.stringify(GameState.get('players.list')) + '</p>';
+                results += '<p>Scores object: ' + JSON.stringify(GameState.get('players.scores')) + '</p>';
+                
+                // Test 3: Test getFinalScores with zero scores
+                results += '<h3>Test 3: getFinalScores with Zero Scores</h3>';
+                const finalScores = getFinalScores();
+                results += '<p>getFinalScores result: ' + JSON.stringify(finalScores) + '</p>';
+                results += '<p>Length: ' + finalScores.length + '</p>';
+                
+                // Test 4: Test getPlayersScores
+                results += '<h3>Test 4: getPlayersScores Function</h3>';
+                const playersScores = getPlayersScores();
+                results += '<p>getPlayersScores result: ' + JSON.stringify(playersScores) + '</p>';
+                results += '<p>Object.keys(playersScores): ' + JSON.stringify(Object.keys(playersScores)) + '</p>';
+                
+                // Test 5: Set some actual scores
+                results += '<h3>Test 5: Set Actual Scores</h3>';
+                setPlayerScore('Alice', 5);
+                setPlayerScore('Bob', 10);
+                setPlayerScore('Charlie', 3);
+                setPlayerScore('Diana', 8);
+                results += '<p>After setting scores:</p>';
+                results += '<p>Alice: ' + getPlayerScore('Alice') + '</p>';
+                results += '<p>Bob: ' + getPlayerScore('Bob') + '</p>';
+                results += '<p>Charlie: ' + getPlayerScore('Charlie') + '</p>';
+                results += '<p>Diana: ' + getPlayerScore('Diana') + '</p>';
+                
+                // Test 6: Test getFinalScores again
+                results += '<h3>Test 6: getFinalScores After Setting Scores</h3>';
+                const finalScores2 = getFinalScores();
+                results += '<p>getFinalScores result: ' + JSON.stringify(finalScores2) + '</p>';
+                
+                // Test 7: Test the updateInterimLeaderboard function
+                results += '<h3>Test 7: Test updateInterimLeaderboard</h3>';
+                
+                // Add the interim leaderboard div to the page
+                if (!document.getElementById('interimLeaderboard')) {
+                    const div = document.createElement('div');
+                    div.id = 'interimLeaderboard';
+                    document.body.appendChild(div);
+                }
+                
+                // Call updateInterimLeaderboard
+                updateInterimLeaderboard();
+                
+                const leaderboardContent = document.getElementById('interimLeaderboard').innerHTML;
+                results += '<p>Leaderboard HTML: ' + leaderboardContent.substring(0, 200) + '...</p>';
+                
+            } catch (e) {
+                results += '<p>❌ Error: ' + e.message + '</p>';
+                results += '<p>Stack: ' + e.stack + '</p>';
+            }
+            
+            output.innerHTML = results;
+        }
+    </script>
+</body>
+</html>

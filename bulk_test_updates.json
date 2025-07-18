@@ -1,0 +1,522 @@
+{
+  "USA": {
+    "coffee_consumption": 8.46,
+    "happiness_ranking": 31,
+    "life_expectancy": 89.9,
+    "internet_penetration": 78.1,
+    "population_density": 304
+  },
+  "CHN": {
+    "coffee_consumption": 2.74,
+    "happiness_ranking": 27,
+    "life_expectancy": 71.1,
+    "internet_penetration": 77.6,
+    "population_density": 334
+  },
+  "JPN": {
+    "coffee_consumption": 8.18,
+    "happiness_ranking": 55,
+    "life_expectancy": 84.5,
+    "internet_penetration": 84.1,
+    "population_density": 246
+  },
+  "GER": {
+    "coffee_consumption": 10.55,
+    "happiness_ranking": 36,
+    "life_expectancy": 77.5,
+    "internet_penetration": 63.4,
+    "population_density": 377
+  },
+  "GBR": {
+    "coffee_consumption": 4.14,
+    "happiness_ranking": 12,
+    "life_expectancy": 85,
+    "internet_penetration": 67,
+    "population_density": 161
+  },
+  "FRA": {
+    "coffee_consumption": 7.17,
+    "happiness_ranking": 100,
+    "life_expectancy": 80.2,
+    "internet_penetration": 67.6,
+    "population_density": 168
+  },
+  "IND": {
+    "coffee_consumption": 7.08,
+    "happiness_ranking": 25,
+    "life_expectancy": 72.7,
+    "internet_penetration": 94.6,
+    "population_density": 381
+  },
+  "ITA": {
+    "coffee_consumption": 3.43,
+    "happiness_ranking": 98,
+    "life_expectancy": 74.7,
+    "internet_penetration": 86.6,
+    "population_density": 280
+  },
+  "BRA": {
+    "coffee_consumption": 10.08,
+    "happiness_ranking": 1,
+    "life_expectancy": 72.8,
+    "internet_penetration": 76.7,
+    "population_density": 284
+  },
+  "CAN": {
+    "coffee_consumption": 2.61,
+    "happiness_ranking": 36,
+    "life_expectancy": 79.9,
+    "internet_penetration": 70.4,
+    "population_density": 315
+  },
+  "RUS": {
+    "coffee_consumption": 6.84,
+    "happiness_ranking": 133,
+    "life_expectancy": 79.8,
+    "internet_penetration": 97.2,
+    "population_density": 474
+  },
+  "KOR": {
+    "coffee_consumption": 7.57,
+    "happiness_ranking": 140,
+    "life_expectancy": 73,
+    "internet_penetration": 70.4,
+    "population_density": 192
+  },
+  "AUS": {
+    "coffee_consumption": 7.45,
+    "happiness_ranking": 99,
+    "life_expectancy": 77.4,
+    "internet_penetration": 79.6,
+    "population_density": 390
+  },
+  "ESP": {
+    "coffee_consumption": 7.37,
+    "happiness_ranking": 88,
+    "life_expectancy": 89.1,
+    "internet_penetration": 70.7,
+    "population_density": 206
+  },
+  "MEX": {
+    "coffee_consumption": 10.53,
+    "happiness_ranking": 83,
+    "life_expectancy": 83.6,
+    "internet_penetration": 79.6,
+    "population_density": 35
+  },
+  "IDN": {
+    "coffee_consumption": 5.47,
+    "happiness_ranking": 3,
+    "life_expectancy": 83.2,
+    "internet_penetration": 65.9,
+    "population_density": 438
+  },
+  "NLD": {
+    "coffee_consumption": 3.85,
+    "happiness_ranking": 54,
+    "life_expectancy": 70.1,
+    "internet_penetration": 63.3,
+    "population_density": 44
+  },
+  "SAU": {
+    "coffee_consumption": 6.54,
+    "happiness_ranking": 27,
+    "life_expectancy": 76.8,
+    "internet_penetration": 93.5,
+    "population_density": 506
+  },
+  "TUR": {
+    "coffee_consumption": 1.48,
+    "happiness_ranking": 47,
+    "life_expectancy": 74.4,
+    "internet_penetration": 72.1,
+    "population_density": 275
+  },
+  "TWN": {
+    "coffee_consumption": 8.4,
+    "happiness_ranking": 116,
+    "life_expectancy": 75,
+    "internet_penetration": 87.2,
+    "population_density": 153
+  },
+  "BEL": {
+    "coffee_consumption": 9.5,
+    "happiness_ranking": 28,
+    "life_expectancy": 87.7,
+    "internet_penetration": 66.1,
+    "population_density": 196
+  },
+  "ARG": {
+    "coffee_consumption": 4.37,
+    "happiness_ranking": 63,
+    "life_expectancy": 81.2,
+    "internet_penetration": 82.9,
+    "population_density": 22
+  },
+  "IRL": {
+    "coffee_consumption": 1.21,
+    "happiness_ranking": 10,
+    "life_expectancy": 87.8,
+    "internet_penetration": 92.1,
+    "population_density": 349
+  },
+  "ISR": {
+    "coffee_consumption": 10.09,
+    "happiness_ranking": 102,
+    "life_expectancy": 80.4,
+    "internet_penetration": 78.5,
+    "population_density": 246
+  },
+  "THA": {
+    "coffee_consumption": 8.45,
+    "happiness_ranking": 99,
+    "life_expectancy": 75,
+    "internet_penetration": 70.2,
+    "population_density": 450
+  },
+  "EGY": {
+    "coffee_consumption": 4.32,
+    "happiness_ranking": 72,
+    "life_expectancy": 86.8,
+    "internet_penetration": 70.1,
+    "population_density": 134
+  },
+  "ZAF": {
+    "coffee_consumption": 10.57,
+    "happiness_ranking": 29,
+    "life_expectancy": 70.4,
+    "internet_penetration": 83,
+    "population_density": 234
+  },
+  "POL": {
+    "coffee_consumption": 8.35,
+    "happiness_ranking": 37,
+    "life_expectancy": 87.5,
+    "internet_penetration": 75.2,
+    "population_density": 506
+  },
+  "SWE": {
+    "coffee_consumption": 2.51,
+    "happiness_ranking": 147,
+    "life_expectancy": 81.6,
+    "internet_penetration": 83.2,
+    "population_density": 224
+  },
+  "PHL": {
+    "coffee_consumption": 7.69,
+    "happiness_ranking": 10,
+    "life_expectancy": 79.7,
+    "internet_penetration": 74.4,
+    "population_density": 132
+  },
+  "NGA": {
+    "coffee_consumption": 6.2,
+    "happiness_ranking": 4,
+    "life_expectancy": 75.3,
+    "internet_penetration": 86.5,
+    "population_density": 174
+  },
+  "MYS": {
+    "coffee_consumption": 2.67,
+    "happiness_ranking": 99,
+    "life_expectancy": 79.3,
+    "internet_penetration": 84.9,
+    "population_density": 227
+  },
+  "CHL": {
+    "coffee_consumption": 6.65,
+    "happiness_ranking": 16,
+    "life_expectancy": 77.6,
+    "internet_penetration": 89.5,
+    "population_density": 220
+  },
+  "PER": {
+    "coffee_consumption": 6.56,
+    "happiness_ranking": 132,
+    "life_expectancy": 84.7,
+    "internet_penetration": 87.8,
+    "population_density": 389
+  },
+  "BGD": {
+    "coffee_consumption": 1.5,
+    "happiness_ranking": 138,
+    "life_expectancy": 73.3,
+    "internet_penetration": 66.2,
+    "population_density": 326
+  },
+  "VNM": {
+    "coffee_consumption": 9.37,
+    "happiness_ranking": 115,
+    "life_expectancy": 79.6,
+    "internet_penetration": 64.1,
+    "population_density": 292
+  },
+  "GRC": {
+    "coffee_consumption": 3.59,
+    "happiness_ranking": 87,
+    "life_expectancy": 76.5,
+    "internet_penetration": 79.5,
+    "population_density": 28
+  },
+  "PRT": {
+    "coffee_consumption": 1.11,
+    "happiness_ranking": 111,
+    "life_expectancy": 85.3,
+    "internet_penetration": 81,
+    "population_density": 22
+  },
+  "NOR": {
+    "coffee_consumption": 5.91,
+    "happiness_ranking": 60,
+    "life_expectancy": 73.9,
+    "internet_penetration": 71.7,
+    "population_density": 54
+  },
+  "NZL": {
+    "coffee_consumption": 8.72,
+    "happiness_ranking": 28,
+    "life_expectancy": 84.9,
+    "internet_penetration": 95.2,
+    "population_density": 120
+  },
+  "AVATAR": {
+    "imdb_rating": 7.2,
+    "box_office_gross": 1131.2,
+    "production_budget": 142,
+    "runtime_minutes": 175
+  },
+  "TITANIC": {
+    "imdb_rating": 6.6,
+    "box_office_gross": 993.2,
+    "production_budget": 112,
+    "runtime_minutes": 138
+  },
+  "AVENGERS_ENDGAME": {
+    "imdb_rating": 6.4,
+    "box_office_gross": 2446.2,
+    "production_budget": 86,
+    "runtime_minutes": 144
+  },
+  "STAR_WARS": {
+    "imdb_rating": 7.2,
+    "box_office_gross": 504.5,
+    "production_budget": 126,
+    "runtime_minutes": 141
+  },
+  "JURASSIC_PARK": {
+    "imdb_rating": 7.5,
+    "box_office_gross": 1295.7,
+    "production_budget": 222,
+    "runtime_minutes": 145
+  },
+  "LION_KING": {
+    "imdb_rating": 6.8,
+    "box_office_gross": 1289.8,
+    "production_budget": 150,
+    "runtime_minutes": 178
+  },
+  "AVENGERS_INFINITY_WAR": {
+    "imdb_rating": 8.2,
+    "box_office_gross": 1373.2,
+    "production_budget": 152,
+    "runtime_minutes": 172
+  },
+  "FROZEN_2": {
+    "imdb_rating": 7.7,
+    "box_office_gross": 577.9,
+    "production_budget": 52,
+    "runtime_minutes": 142
+  },
+  "BLACK_PANTHER": {
+    "imdb_rating": 6.8,
+    "box_office_gross": 1989.5,
+    "production_budget": 153,
+    "runtime_minutes": 122
+  },
+  "HARRY_POTTER_1": {
+    "imdb_rating": 6.4,
+    "box_office_gross": 1348.6,
+    "production_budget": 241,
+    "runtime_minutes": 150
+  },
+  "STAR_WARS_LAST_JEDI": {
+    "imdb_rating": 6.7,
+    "box_office_gross": 1586.4,
+    "production_budget": 191,
+    "runtime_minutes": 150
+  },
+  "ROGUE_ONE": {
+    "imdb_rating": 7,
+    "box_office_gross": 1922.4,
+    "production_budget": 54,
+    "runtime_minutes": 148
+  },
+  "BEAUTY_AND_BEAST": {
+    "imdb_rating": 7.4,
+    "box_office_gross": 629.8,
+    "production_budget": 120,
+    "runtime_minutes": 138
+  },
+  "FINDING_DORY": {
+    "imdb_rating": 8,
+    "box_office_gross": 626.6,
+    "production_budget": 228,
+    "runtime_minutes": 163
+  },
+  "STAR_WARS_FORCE_AWAKENS": {
+    "imdb_rating": 8.9,
+    "box_office_gross": 830.2,
+    "production_budget": 85,
+    "runtime_minutes": 148
+  },
+  "INCREDIBLES_2": {
+    "imdb_rating": 7.5,
+    "box_office_gross": 1576,
+    "production_budget": 155,
+    "runtime_minutes": 151
+  },
+  "IRON_MAN_3": {
+    "imdb_rating": 6.2,
+    "box_office_gross": 1143.6,
+    "production_budget": 233,
+    "runtime_minutes": 160
+  },
+  "MINIONS": {
+    "imdb_rating": 8.1,
+    "box_office_gross": 2356.9,
+    "production_budget": 66,
+    "runtime_minutes": 177
+  },
+  "CAPTAIN_AMERICA_CIVIL_WAR": {
+    "imdb_rating": 8.6,
+    "box_office_gross": 608.7,
+    "production_budget": 83,
+    "runtime_minutes": 139
+  },
+  "AQUAMAN": {
+    "imdb_rating": 8.8,
+    "box_office_gross": 2299.1,
+    "production_budget": 97,
+    "runtime_minutes": 155
+  },
+  "SPIDER_MAN_HOMECOMING": {
+    "imdb_rating": 9,
+    "box_office_gross": 2085.8,
+    "production_budget": 52,
+    "runtime_minutes": 178
+  },
+  "CAPTAIN_MARVEL": {
+    "imdb_rating": 8.7,
+    "box_office_gross": 2233.3,
+    "production_budget": 85,
+    "runtime_minutes": 123
+  },
+  "TRANSFORMERS_3": {
+    "imdb_rating": 8.6,
+    "box_office_gross": 1448.2,
+    "production_budget": 215,
+    "runtime_minutes": 140
+  },
+  "IRON_MAN": {
+    "imdb_rating": 8.3,
+    "box_office_gross": 1149.3,
+    "production_budget": 136,
+    "runtime_minutes": 141
+  },
+  "HARRY_POTTER_8": {
+    "imdb_rating": 7.5,
+    "box_office_gross": 1393.6,
+    "production_budget": 195,
+    "runtime_minutes": 159
+  },
+  "FROZEN": {
+    "imdb_rating": 6.7,
+    "box_office_gross": 2209.5,
+    "production_budget": 191,
+    "runtime_minutes": 140
+  },
+  "IRON_MAN_2": {
+    "imdb_rating": 6.1,
+    "box_office_gross": 957.1,
+    "production_budget": 176,
+    "runtime_minutes": 141
+  },
+  "MINIONS_RISE_OF_GRU": {
+    "imdb_rating": 6.3,
+    "box_office_gross": 1676.9,
+    "production_budget": 190,
+    "runtime_minutes": 121
+  },
+  "CAPTAIN_AMERICA_WINTER_SOLDIER": {
+    "imdb_rating": 8.1,
+    "box_office_gross": 1983.5,
+    "production_budget": 161,
+    "runtime_minutes": 162
+  },
+  "DESPICABLE_ME_2": {
+    "imdb_rating": 7.8,
+    "box_office_gross": 545.3,
+    "production_budget": 123,
+    "runtime_minutes": 149
+  },
+  "THOR_RAGNAROK": {
+    "imdb_rating": 7.8,
+    "box_office_gross": 531.9,
+    "production_budget": 131,
+    "runtime_minutes": 126
+  },
+  "WONDER_WOMAN": {
+    "imdb_rating": 8.1,
+    "box_office_gross": 1684.4,
+    "production_budget": 90,
+    "runtime_minutes": 166
+  },
+  "DESPICABLE_ME_3": {
+    "imdb_rating": 8.3,
+    "box_office_gross": 1713.4,
+    "production_budget": 56,
+    "runtime_minutes": 145
+  },
+  "JURASSIC_WORLD_FALLEN_KINGDOM": {
+    "imdb_rating": 6.6,
+    "box_office_gross": 613.5,
+    "production_budget": 76,
+    "runtime_minutes": 146
+  },
+  "GUARDIANS_2": {
+    "imdb_rating": 6.7,
+    "box_office_gross": 1902.4,
+    "production_budget": 90,
+    "runtime_minutes": 176
+  },
+  "SPIDER_MAN_2": {
+    "imdb_rating": 7.6,
+    "box_office_gross": 2104.6,
+    "production_budget": 125,
+    "runtime_minutes": 129
+  },
+  "FINDING_NEMO": {
+    "imdb_rating": 6.5,
+    "box_office_gross": 1940,
+    "production_budget": 104,
+    "runtime_minutes": 122
+  },
+  "SHREK_2": {
+    "imdb_rating": 8.4,
+    "box_office_gross": 902.7,
+    "production_budget": 146,
+    "runtime_minutes": 148
+  },
+  "HARRY_POTTER_4": {
+    "imdb_rating": 6,
+    "box_office_gross": 2049.6,
+    "production_budget": 108,
+    "runtime_minutes": 161
+  },
+  "SPIDER_MAN_3": {
+    "imdb_rating": 6.4,
+    "box_office_gross": 871.2,
+    "production_budget": 155,
+    "runtime_minutes": 121
+  }
+}

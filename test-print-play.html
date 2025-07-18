@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Print-and-Play</title>
+</head>
+<body>
+    <h1>Testing Print-and-Play Generator</h1>
+    <button onclick="testNavigation()">Test Navigation</button>
+    <button onclick="testDataLoad()">Test Data Load</button>
+    <div id="output"></div>
+    
+    <script src="data.js"></script>
+    <script>
+        function testNavigation() {
+            console.log('Testing navigation...');
+            document.getElementById('output').innerHTML = '<p>Navigation test - check console</p>';
+            
+            // Test if showSection function exists
+            const generator = window.open('print-and-play-generator.html', '_blank');
+            setTimeout(() => {
+                if (generator && generator.showSection) {
+                    console.log('✅ showSection function exists');
+                    generator.showSection('tokens');
+                } else {
+                    console.log('❌ showSection function not found');
+                }
+            }, 2000);
+        }
+        
+        function testDataLoad() {
+            console.log('Testing data load...');
+            const output = document.getElementById('output');
+            
+            if (typeof window.GAME_DATA !== 'undefined') {
+                const countries = Object.keys(window.GAME_DATA.categories.countries.items);
+                output.innerHTML = `
+                    <h2>✅ Data Loaded Successfully!</h2>
+                    <p>Countries: ${countries.length} items</p>
+                    <p>First country: ${countries[0]} = ${window.GAME_DATA.categories.countries.items[countries[0]].name}</p>
+                    <p>All codes are numeric: ${countries.every(code => /^\d{3}$/.test(code)) ? 'Yes' : 'No'}</p>
+                `;
+            } else {
+                output.innerHTML = '<h2>❌ Data not loaded</h2>';
+            }
+        }
+    </script>
+</body>
+</html>
