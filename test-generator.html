@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Print-and-Play Generator</title>
+</head>
+<body>
+    <h1>Testing Board Game Generator</h1>
+    <div id="output"></div>
+    
+    <script src="data.js"></script>
+    <script src="board-game-data.js"></script>
+    <script>
+        // Test if data loads
+        window.addEventListener('load', function() {
+            const output = document.getElementById('output');
+            
+            if (typeof window.GAME_DATA !== 'undefined') {
+                const countries = Object.keys(window.GAME_DATA.categories.countries.items);
+                const movies = Object.keys(window.GAME_DATA.categories.movies.items);
+                
+                output.innerHTML = `
+                    <h2>✅ Data Loaded Successfully!</h2>
+                    <p>Countries: ${countries.length} items</p>
+                    <p>Movies: ${movies.length} items</p>
+                    <p>Sample country: ${countries[0]}</p>
+                    <p>Sample movie: ${movies[0]}</p>
+                `;
+            } else {
+                output.innerHTML = '<h2>❌ Data not loaded</h2>';
+            }
+        });
+    </script>
+</body>
+</html>

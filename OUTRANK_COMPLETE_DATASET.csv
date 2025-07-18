@@ -1,0 +1,201 @@
+Category,Code,Name,Type,Data_Source
+Countries,001,United States,Country,Global Rankings
+Countries,002,China,Country,Global Rankings
+Countries,003,Japan,Country,Global Rankings
+Countries,004,Germany,Country,Global Rankings
+Countries,005,United Kingdom,Country,Global Rankings
+Countries,006,France,Country,Global Rankings
+Countries,007,India,Country,Global Rankings
+Countries,008,Italy,Country,Global Rankings
+Countries,009,Brazil,Country,Global Rankings
+Countries,010,Canada,Country,Global Rankings
+Countries,011,Russia,Country,Global Rankings
+Countries,012,South Korea,Country,Global Rankings
+Countries,013,Spain,Country,Global Rankings
+Countries,014,Australia,Country,Global Rankings
+Countries,015,Mexico,Country,Global Rankings
+Countries,016,Indonesia,Country,Global Rankings
+Countries,017,Netherlands,Country,Global Rankings
+Countries,018,Saudi Arabia,Country,Global Rankings
+Countries,019,Turkey,Country,Global Rankings
+Countries,020,Taiwan,Country,Global Rankings
+Countries,021,Belgium,Country,Global Rankings
+Countries,022,Argentina,Country,Global Rankings
+Countries,023,Thailand,Country,Global Rankings
+Countries,024,Ireland,Country,Global Rankings
+Countries,025,Austria,Country,Global Rankings
+Countries,026,Nigeria,Country,Global Rankings
+Countries,027,Israel,Country,Global Rankings
+Countries,028,Norway,Country,Global Rankings
+Countries,029,United Arab Emirates,Country,Global Rankings
+Countries,030,Egypt,Country,Global Rankings
+Countries,031,South Africa,Country,Global Rankings
+Countries,032,Philippines,Country,Global Rankings
+Countries,033,Bangladesh,Country,Global Rankings
+Countries,034,Vietnam,Country,Global Rankings
+Countries,035,Chile,Country,Global Rankings
+Countries,036,Finland,Country,Global Rankings
+Countries,037,Denmark,Country,Global Rankings
+Countries,038,Singapore,Country,Global Rankings
+Countries,039,New Zealand,Country,Global Rankings
+Countries,040,Switzerland,Country,Global Rankings
+Movies,001,Avatar,Movie,Box Office Data
+Movies,002,Avengers: Endgame,Movie,Box Office Data
+Movies,003,Avatar: The Way of Water,Movie,Box Office Data
+Movies,004,Titanic,Movie,Box Office Data
+Movies,005,Star Wars: The Force Awakens,Movie,Box Office Data
+Movies,006,Avengers: Infinity War,Movie,Box Office Data
+Movies,007,Spider-Man: No Way Home,Movie,Box Office Data
+Movies,008,Jurassic World,Movie,Box Office Data
+Movies,009,The Lion King (2019),Movie,Box Office Data
+Movies,010,The Avengers,Movie,Box Office Data
+Movies,011,Furious 7,Movie,Box Office Data
+Movies,012,Top Gun: Maverick,Movie,Box Office Data
+Movies,013,Avengers: Age of Ultron,Movie,Box Office Data
+Movies,014,Black Panther,Movie,Box Office Data
+Movies,015,Harry Potter and the Deathly Hallows – Part 2,Movie,Box Office Data
+Movies,016,Star Wars: The Last Jedi,Movie,Box Office Data
+Movies,017,Jurassic World: Fallen Kingdom,Movie,Box Office Data
+Movies,018,Frozen II,Movie,Box Office Data
+Movies,019,Beauty and the Beast (2017),Movie,Box Office Data
+Movies,020,Incredibles 2,Movie,Box Office Data
+Movies,021,The Fate of the Furious,Movie,Box Office Data
+Movies,022,Iron Man 3,Movie,Box Office Data
+Movies,023,Minions,Movie,Box Office Data
+Movies,024,Captain America: Civil War,Movie,Box Office Data
+Movies,025,Aquaman,Movie,Box Office Data
+Movies,026,Lord of the Rings: The Return of the King,Movie,Box Office Data
+Movies,027,Spider-Man: Far From Home,Movie,Box Office Data
+Movies,028,Captain Marvel,Movie,Box Office Data
+Movies,029,Transformers: Dark of the Moon,Movie,Box Office Data
+Movies,030,Lord of the Rings: The Two Towers,Movie,Box Office Data
+Movies,031,Shrek 2,Movie,Box Office Data
+Movies,032,The Dark Knight,Movie,Box Office Data
+Movies,033,Star Wars: Revenge of the Sith,Movie,Box Office Data
+Movies,034,Transformers: Revenge of the Fallen,Movie,Box Office Data
+Movies,035,The Dark Knight Rises,Movie,Box Office Data
+Movies,036,Toy Story 4,Movie,Box Office Data
+Movies,037,Toy Story 3,Movie,Box Office Data
+Movies,038,Pirates of the Caribbean: Dead Man's Chest,Movie,Box Office Data
+Movies,039,Rogue One: A Star Wars Story,Movie,Box Office Data
+Movies,040,Pirates of the Caribbean: On Stranger Tides,Movie,Box Office Data
+Movies,041,Despicable Me 3,Movie,Box Office Data
+Movies,042,Jurassic Park,Movie,Box Office Data
+Movies,043,Finding Dory,Movie,Box Office Data
+Movies,044,Star Wars,Movie,Box Office Data
+Movies,045,Independence Day,Movie,Box Office Data
+Movies,046,Shrek the Third,Movie,Box Office Data
+Movies,047,E.T. the Extra-Terrestrial,Movie,Box Office Data
+Sports,001,Football (Soccer),Sport,Global Participation
+Sports,002,Basketball,Sport,Global Participation
+Sports,003,Tennis,Sport,Global Participation
+Sports,004,Baseball,Sport,Global Participation
+Sports,005,American Football,Sport,Global Participation
+Sports,006,Golf,Sport,Global Participation
+Sports,007,Swimming,Sport,Global Participation
+Sports,008,Track and Field,Sport,Global Participation
+Sports,009,Boxing,Sport,Global Participation
+Sports,010,Ice Hockey,Sport,Global Participation
+Sports,011,Volleyball,Sport,Global Participation
+Sports,012,Cricket,Sport,Global Participation
+Sports,013,Rugby,Sport,Global Participation
+Sports,014,Badminton,Sport,Global Participation
+Sports,015,Table Tennis,Sport,Global Participation
+Sports,016,Cycling,Sport,Global Participation
+Sports,017,Gymnastics,Sport,Global Participation
+Sports,018,Wrestling,Sport,Global Participation
+Sports,019,Martial Arts,Sport,Global Participation
+Sports,020,Skiing,Sport,Global Participation
+Sports,021,Snowboarding,Sport,Global Participation
+Sports,022,Surfing,Sport,Global Participation
+Sports,023,Skateboarding,Sport,Global Participation
+Sports,024,Rock Climbing,Sport,Global Participation
+Sports,025,Hiking,Sport,Global Participation
+Sports,026,Running,Sport,Global Participation
+Sports,027,Triathlon,Sport,Global Participation
+Sports,028,Rowing,Sport,Global Participation
+Sports,029,Sailing,Sport,Global Participation
+Sports,030,Water Polo,Sport,Global Participation
+Sports,031,Diving,Sport,Global Participation
+Sports,032,Synchronized Swimming,Sport,Global Participation
+Sports,033,Archery,Sport,Global Participation
+Sports,034,Shooting,Sport,Global Participation
+Sports,035,Equestrian,Sport,Global Participation
+Sports,036,Fencing,Sport,Global Participation
+Sports,037,Weightlifting,Sport,Global Participation
+Sports,038,Powerlifting,Sport,Global Participation
+Sports,039,Bodybuilding,Sport,Global Participation
+Sports,040,CrossFit,Sport,Global Participation
+Sports,041,Yoga,Sport,Global Participation
+Sports,042,Pilates,Sport,Global Participation
+Sports,043,Dance,Sport,Global Participation
+Sports,044,Cheerleading,Sport,Global Participation
+Sports,045,Figure Skating,Sport,Global Participation
+Sports,046,Speed Skating,Sport,Global Participation
+Sports,047,Curling,Sport,Global Participation
+Sports,048,Bobsled,Sport,Global Participation
+Sports,049,Luge,Sport,Global Participation
+Sports,050,Skeleton,Sport,Global Participation
+Sports,051,Biathlon,Sport,Global Participation
+Sports,052,Nordic Combined,Sport,Global Participation
+Sports,053,Ski Jumping,Sport,Global Participation
+Sports,054,Freestyle Skiing,Sport,Global Participation
+Sports,055,Alpine Skiing,Sport,Global Participation
+Sports,056,Cross-Country Skiing,Sport,Global Participation
+Sports,057,Snowshoeing,Sport,Global Participation
+Sports,058,Ice Climbing,Sport,Global Participation
+Sports,059,Mountaineering,Sport,Global Participation
+Sports,060,Bouldering,Sport,Global Participation
+Sports,061,Sport Climbing,Sport,Global Participation
+Sports,062,Paragliding,Sport,Global Participation
+Sports,063,Hang Gliding,Sport,Global Participation
+Sports,064,Skydiving,Sport,Global Participation
+Sports,065,Bungee Jumping,Sport,Global Participation
+Sports,066,Base Jumping,Sport,Global Participation
+Sports,067,Wingsuit Flying,Sport,Global Participation
+Sports,068,Kitesurfing,Sport,Global Participation
+Sports,069,Windsurfing,Sport,Global Participation
+Sports,070,Stand-up Paddleboarding,Sport,Global Participation
+Sports,071,Kayaking,Sport,Global Participation
+Sports,072,Canoeing,Sport,Global Participation
+Sports,073,Whitewater Rafting,Sport,Global Participation
+Companies,001,Apple,Company,Corporate Data
+Companies,002,Saudi Aramco,Company,Corporate Data
+Companies,003,Microsoft,Company,Corporate Data
+Companies,004,Alphabet (Google),Company,Corporate Data
+Companies,005,Amazon,Company,Corporate Data
+Companies,006,Tesla,Company,Corporate Data
+Companies,007,Berkshire Hathaway,Company,Corporate Data
+Companies,008,Meta (Facebook),Company,Corporate Data
+Companies,009,TSMC,Company,Corporate Data
+Companies,010,NVIDIA,Company,Corporate Data
+Companies,011,Samsung,Company,Corporate Data
+Companies,012,JPMorgan Chase,Company,Corporate Data
+Companies,013,Johnson & Johnson,Company,Corporate Data
+Companies,014,Visa,Company,Corporate Data
+Companies,015,Procter & Gamble,Company,Corporate Data
+Companies,016,Mastercard,Company,Corporate Data
+Companies,017,UnitedHealth Group,Company,Corporate Data
+Companies,018,Home Depot,Company,Corporate Data
+Companies,019,Bank of America,Company,Corporate Data
+Companies,020,Pfizer,Company,Corporate Data
+Companies,021,Chevron,Company,Corporate Data
+Companies,022,AbbVie,Company,Corporate Data
+Companies,023,Coca-Cola,Company,Corporate Data
+Companies,024,PepsiCo,Company,Corporate Data
+Companies,025,Costco,Company,Corporate Data
+Companies,026,Netflix,Company,Corporate Data
+Companies,027,Walmart,Company,Corporate Data
+Companies,028,Disney,Company,Corporate Data
+Companies,029,Adobe,Company,Corporate Data
+Companies,030,Salesforce,Company,Corporate Data
+Companies,031,Intel,Company,Corporate Data
+Companies,032,Cisco,Company,Corporate Data
+Companies,033,Oracle,Company,Corporate Data
+Companies,034,Comcast,Company,Corporate Data
+Companies,035,Toyota,Company,Corporate Data
+Companies,036,Verizon,Company,Corporate Data
+Companies,037,AT&T,Company,Corporate Data
+Companies,038,McDonald's,Company,Corporate Data
+Companies,039,IBM,Company,Corporate Data
+Companies,040,Nike,Company,Corporate Data

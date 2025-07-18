@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Score Test</title>
+</head>
+<body>
+    <h1>Simple Score Test</h1>
+    <button onclick="testScoreSystem()">Test Score System</button>
+    <button onclick="testInterimDisplay()">Test Interim Display</button>
+    <div id="output"></div>
+    <div id="interimLeaderboard" style="border: 1px solid #ccc; margin: 20px 0; padding: 10px;">
+        <h3>Interim Leaderboard (should populate when tested):</h3>
+    </div>
+    
+    <script src="game.js"></script>
+    <script src="data.js"></script>
+    <script>
+        function testScoreSystem() {
+            const output = document.getElementById('output');
+            let results = '<h2>Score System Test:</h2>';
+            
+            try {
+                // Step 1: Initialize players
+                results += '<h3>Step 1: Initialize Players</h3>';
+                GameState.set('players.list', ['Alice', 'Bob', 'Charlie']);
+                GameState.set('players.scores', {});
+                
+                // Initialize each player
+                ['Alice', 'Bob', 'Charlie'].forEach(function(name) {
+                    setPlayerScore(name, 0);
+                    results += '<p>Initialized ' + name + ' to score: ' + getPlayerScore(name) + '</p>';
+                });
+                
+                results += '<p>Scores object: ' + JSON.stringify(GameState.get('players.scores')) + '</p>';
+                
+                // Step 2: Award some points
+                results += '<h3>Step 2: Award Points</h3>';
+                setPlayerScore('Alice', 5);
+                setPlayerScore('Bob', 10);
+                setPlayerScore('Charlie', 3);
+                
+                results += '<p>After awarding points:</p>';
+                results += '<p>Alice: ' + getPlayerScore('Alice') + '</p>';
+                results += '<p>Bob: ' + getPlayerScore('Bob') + '</p>';
+                results += '<p>Charlie: ' + getPlayerScore('Charlie') + '</p>';
+                results += '<p>Scores object: ' + JSON.stringify(GameState.get('players.scores')) + '</p>';
+                
+                // Step 3: Test getFinalScores
+                results += '<h3>Step 3: Test getFinalScores</h3>';
+                const finalScores = getFinalScores();
+                results += '<p>getFinalScores result: ' + JSON.stringify(finalScores) + '</p>';
+                
+                // Step 4: Test getPlayersScores
+                results += '<h3>Step 4: Test getPlayersScores</h3>';
+                const playersScores = getPlayersScores();
+                results += '<p>getPlayersScores result: ' + JSON.stringify(playersScores) + '</p>';
+                
+            } catch (e) {
+                results += '<p>❌ Error: ' + e.message + '</p>';
+                results += '<p>Stack: ' + e.stack + '</p>';
+            }
+            
+            output.innerHTML = results;
+        }
+        
+        function testInterimDisplay() {
+            const output = document.getElementById('output');
+            let results = '<h2>Interim Display Test:</h2>';
+            
+            try {
+                // Make sure we have some scores set up
+                GameState.set('players.list', ['Alice', 'Bob', 'Charlie']);
+                setPlayerScore('Alice', 5);
+                setPlayerScore('Bob', 10);
+                setPlayerScore('Charlie', 3);
+                
+                // Test what getFinalScores returns
+                results += '<h3>Testing getFinalScores():</h3>';
+                const finalScores = getFinalScores();
+                results += '<p>getFinalScores() returned: ' + JSON.stringify(finalScores) + '</p>';
+                
+                // Check each player individually
+                finalScores.forEach(function(player, index) {
+                    results += '<p>Player ' + index + ': name="' + player.name + '", score=' + player.score + ' (type: ' + typeof player.score + ')</p>';
+                });
+                
+                results += '<p>Calling updateInterimLeaderboard()...</p>';
+                
+                // Call the function that should update the leaderboard
+                updateInterimLeaderboard();
+                
+                // Check what was populated
+                const leaderboardContent = document.getElementById('interimLeaderboard').innerHTML;
+                results += '<p>Leaderboard content length: ' + leaderboardContent.length + '</p>';
+                results += '<p>Leaderboard preview: ' + leaderboardContent.substring(0, 500) + '...</p>';
+                
+            } catch (e) {
+                results += '<p>❌ Error: ' + e.message + '</p>';
+                results += '<p>Stack: ' + e.stack + '</p>';
+            }
+            
+            output.innerHTML = results;
+        }
+    </script>
+</body>
+</html>

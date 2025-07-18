@@ -1,0 +1,12 @@
+{
+  "countries": {
+    "USA": {
+      "coffee_consumption": 4.2,
+      "happiness_ranking": 19
+    },
+    "CHN": {
+      "coffee_consumption": 0.4,
+      "happiness_ranking": 84
+    }
+  }
+}

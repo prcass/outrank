@@ -1,0 +1,90 @@
+{
+  "USA": {
+    "coffee_consumption": 4.2,
+    "happiness_ranking": 19,
+    "life_expectancy": 79.2,
+    "internet_penetration": 92.5,
+    "big_mac_price": 5.50,
+    "population_density": 38
+  },
+  "CHN": {
+    "coffee_consumption": 0.38,
+    "happiness_ranking": 84,
+    "life_expectancy": 77.8,
+    "population_density": 155,
+    "urban_population": 64.2,
+    "birth_rate": 7.52
+  },
+  "JPN": {
+    "coffee_consumption": 3.6,
+    "happiness_ranking": 54,
+    "life_expectancy": 84.5,
+    "birth_rate": 6.8,
+    "literacy_rate": 99.9,
+    "retirement_age": 65
+  },
+  "DEU": {
+    "coffee_consumption": 7.2,
+    "happiness_ranking": 16,
+    "life_expectancy": 81.3,
+    "vacation_days": 35,
+    "working_hours": 26.4,
+    "recycling_rate": 67.1
+  },
+  "GBR": {
+    "coffee_consumption": 2.8,
+    "happiness_ranking": 20,
+    "life_expectancy": 81.8,
+    "big_mac_price": 4.89,
+    "internet_penetration": 96.4,
+    "social_media_usage": 74
+  },
+  "AVATAR": {
+    "imdb_rating": 8.2,
+    "box_office_gross": 2923.7,
+    "production_budget": 240,
+    "runtime_minutes": 162,
+    "oscar_wins": 3,
+    "oscar_nominations": 9
+  },
+  "TITANIC": {
+    "imdb_rating": 8.0,
+    "box_office_gross": 2265.2,
+    "oscar_wins": 11,
+    "oscar_nominations": 14,
+    "runtime_minutes": 194,
+    "production_budget": 200
+  },
+  "AVENGERS_ENDGAME": {
+    "imdb_rating": 8.5,
+    "box_office_gross": 2798.5,
+    "production_budget": 356,
+    "runtime_minutes": 181,
+    "oscar_nominations": 1,
+    "rotten_tomatoes": 94
+  },
+  "STAR_WARS": {
+    "imdb_rating": 8.6,
+    "box_office_gross": 775.4,
+    "production_budget": 25,
+    "runtime_minutes": 121,
+    "oscar_wins": 7,
+    "oscar_nominations": 10
+  },
+  "DALLAS_COWBOYS": {
+    "team_value": 9.5,
+    "annual_revenue": 1.15,
+    "championship_count": 5,
+    "fan_base_size": 8.8,
+    "stadium_capacity": 80000,
+    "social_media_followers": 12.8
+  },
+  "NEW_ENGLAND_PATRIOTS": {
+    "team_value": 7.0,
+    "annual_revenue": 0.65,
+    "championship_count": 6,
+    "fan_base_size": 7.2,
+    "payroll_total": 195.6,
+    "ticket_price_average": 142
+  }
+}

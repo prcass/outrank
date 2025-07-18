@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Download Outrank Dataset</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .download-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 5px;
+        }
+        .download-btn:hover {
+            background-color: #45a049;
+        }
+        .info {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .category-section {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .category-section h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Outrank Dataset Downloads</h1>
+    
+    <div class="info">
+        <h3>Complete Dataset with All Ranking Values</h3>
+        <p>Download individual category files containing all items and their values for each of the 33 ranking challenges.</p>
+        <p><strong>Format:</strong> CSV files with item names in first column, followed by 33 data columns</p>
+    </div>
+    
+    <div class="category-section">
+        <h3>Countries (40 items x 33 data points)</h3>
+        <p>Includes: coffee consumption, happiness ranking, GDP per capita, internet penetration, etc.</p>
+        <a href="countries_data.csv" download="countries_data.csv" class="download-btn">
+            Download Countries Data
+        </a>
+    </div>
+    
+    <div class="category-section">
+        <h3>Movies (40 items x 33 data points)</h3>
+        <p>Includes: box office gross, production budget, runtime, IMDb rating, Rotten Tomatoes score, etc.</p>
+        <a href="movies_data.csv" download="movies_data.csv" class="download-btn">
+            Download Movies Data
+        </a>
+    </div>
+    
+    <div class="category-section">
+        <h3>Sports Teams (40 items x 33 data points)</h3>
+        <p>Includes: team value, annual revenue, championships, stadium capacity, social media followers, etc.</p>
+        <a href="sports_teams_data.csv" download="sports_teams_data.csv" class="download-btn">
+            Download Sports Teams Data
+        </a>
+    </div>
+    
+    <div class="category-section">
+        <h3>Companies (40 items x 33 data points)</h3>
+        <p>Includes: market cap, annual revenue, employee count, profit margin, stock price, etc.</p>
+        <a href="companies_data.csv" download="companies_data.csv" class="download-btn">
+            Download Companies Data
+        </a>
+    </div>
+    
+    <hr style="margin: 30px 0;">
+    
+    <div class="info">
+        <h3>Prompts/Challenges List</h3>
+        <p>CSV file containing all 132 ranking prompts across all categories:</p>
+    </div>
+    
+    <a href="prompts_data.csv" download="prompts_data.csv" class="download-btn" style="background-color: #17a2b8;">
+        Download Prompts Data (132 prompts)
+    </a>
+    
+    <p><strong>To update prompts:</strong> Use <code>node update_prompts.js &lt;category&gt; &lt;challenge_id&gt; "&lt;new_prompt&gt;"</code></p>
+    
+    <hr style="margin: 30px 0;">
+    
+    <div class="info">
+        <h3>Simple Item Lists (Names Only)</h3>
+        <p>Basic CSV files with just category, code, and item names:</p>
+    </div>
+    
+    <a href="OUTRANK_CORRECTED_DATASET.csv" download="OUTRANK_CORRECTED_DATASET.csv" class="download-btn" style="background-color: #6c757d;">
+        Download Simple Item List (160 items)
+    </a>
+    
+    <p><small>All data extracted from game.js data file</small></p>
+</body>
+</html>

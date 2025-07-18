@@ -1,0 +1,17 @@
+{
+  "AVATAR": {
+    "imdb_rating": 8.2,
+    "box_office_gross": 2923.7,
+    "production_budget": 240
+  },
+  "TITANIC": {
+    "imdb_rating": 8.0,
+    "box_office_gross": 2265.2,
+    "oscar_wins": 11
+  },
+  "AVENGERS_ENDGAME": {
+    "imdb_rating": 8.5,
+    "box_office_gross": 2798.5,
+    "runtime_minutes": 181
+  }
+}

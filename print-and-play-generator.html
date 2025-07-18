@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outrank - Print and Play Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .nav {
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .nav-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .nav-button.active {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .component-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .component-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .controls {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .control-group select,
+        .control-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .control-group select:focus,
+        .control-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .generate-btn {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .output {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #ddd;
+            min-height: 200px;
+        }
+
+        .print-area {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .print-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-area, .print-area * {
+                visibility: visible;
+            }
+            .print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                box-shadow: none;
+            }
+            @page {
+                margin: 0.5in;
+                size: auto;
+            }
+            
+            /* Full-size board printing */
+            .fullsize-board {
+                width: 406mm !important;
+                height: 406mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            @media print {
+                .fullsize-board {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 406mm !important;
+                    height: 406mm !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+                
+                @page {
+                    size: 406mm 406mm;
+                    margin: 0;
+                }
+            }
+        }
+
+        .component-preview {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .token {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            margin: 10px;
+        }
+
+        .token.countries { background: white; border: 4px solid #4ECDC4; color: #333; }
+        .token.movies { background: white; border: 4px solid #FF6B6B; color: #333; }
+        .token.sports { background: white; border: 4px solid #667eea; color: #333; }
+        .token.companies { background: white; border: 4px solid #f093fb; color: #333; }
+
+        .card {
+            width: 250px;
+            height: 350px;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            margin: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            z-index: 1;
+        }
+        
+        .card.countries::before {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+        }
+        
+        .card.movies::before {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+        }
+        
+        .card.sports::before {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+        
+        .card.companies::before {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-header {
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .card-body {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎲 OUTRANK</h1>
+            <p>Print and Play Generator</p>
+        </div>
+
+        <div class="nav">
+            <button class="nav-button active" onclick="showSection('overview')">Overview</button>
+            <button class="nav-button" onclick="showSection('tokens')">Category Tokens</button>
+            <button class="nav-button" onclick="showSection('challenges')">Challenge Cards</button>
+            <button class="nav-button" onclick="showSection('blocking')">Blocking Tokens</button>
+            <button class="nav-button" onclick="showSection('board')">Game Board</button>
+            <button class="nav-button" onclick="showSection('aids')">Player Aids</button>
+        </div>
+
+        <div class="content">
+            <!-- Overview Section -->
+            <div class="component-section active" id="overview">
+                <h2 class="section-title">📊 Game Overview</h2>
+                
+                <div class="stats" id="gameStats">
+                    <div class="stat-card">
+                        <div class="stat-number">162</div>
+                        <div class="stat-label">Category Tokens</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">132</div>
+                        <div class="stat-label">Challenge Cards</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">18</div>
+                        <div class="stat-label">Blocking Tokens</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Categories</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;" id="gameDetails">
+                    <h3 style="color: #333; margin-bottom: 15px;">🎯 What You'll Generate:</h3>
+                    <ul style="color: #666; line-height: 1.6;">
+                        <li><strong>Category Tokens:</strong> 40 Countries, 40 Movies, 42 Sports, 40 Companies</li>
+                        <li><strong>Challenge Cards:</strong> 33 different challenges per category</li>
+                        <li><strong>Blocking Tokens:</strong> 6 sets of 2, 4, and 6-point tokens</li>
+                        <li><strong>Game Board:</strong> Central play area with scoring tracks</li>
+                        <li><strong>Player Aids:</strong> Reference cards and scoring sheets</li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 20px; padding: 20px; background: #e3f2fd; border-radius: 10px; border-left: 4px solid #2196f3;">
+                    <h3 style="color: #1976d2; margin-bottom: 10px;">📋 Printing Instructions:</h3>
+                    <p style="color: #666; line-height: 1.6;">
+                        All components are designed for standard home printing on 8.5" x 11" paper. 
+                        For best results, use cardstock (110gsm) for tokens and cards. 
+                        Game board can be printed on regular paper or posterboard.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Category Tokens Section -->
+            <div class="component-section" id="tokens">
+                <h2 class="section-title">🌍 Category Tokens</h2>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="tokenCategory">Select Category:</label>
+                        <select id="tokenCategory">
+                            <option value="all">All Categories</option>
+                            <option value="countries">🌍 Countries (40 tokens)</option>
+                            <option value="movies">🎬 Movies (40 tokens)</option>
+                            <option value="sports">🏈 Sports (42 tokens)</option>
+                            <option value="companies">🏢 Companies (40 tokens)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="tokenSize">Token Size:</label>
+                        <select id="tokenSize">
+                            <option value="small">Small (1 inch diameter)</option>
+                            <option value="medium">Medium (1.5 inch diameter)</option>
+                            <option value="board" selected>Board Game Size (35mm diameter)</option>
+                            <option value="large">Large (2 inch diameter)</option>
+                        </select>
+                    </div>
+                    
+                    <button class="generate-btn" onclick="generateTokens()">Generate Tokens</button>
+                </div>
+
+                <div class="output" id="tokenOutput">
+                    <p style="text-align: center; color: #666; font-style: italic;">
+                        Select options and click "Generate Tokens" to create printable token sheets
+                    </p>
+                </div>
+            </div>
+
+            <!-- Challenge Cards Section -->
+            <div class="component-section" id="challenges">
+                <h2 class="section-title">🎴 Challenge Cards</h2>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="challengeCategory">Select Category:</label>
+                        <select id="challengeCategory">
+                            <option value="all">All Categories</option>
+                            <option value="countries">🌍 Countries (33 cards)</option>
+                            <option value="movies">🎬 Movies (33 cards)</option>
+                            <option value="sports">🏈 Sports (33 cards)</option>
+                            <option value="companies">🏢 Companies (33 cards)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="cardSize">Card Size:</label>
+                        <select id="cardSize">
+                            <option value="poker">Poker Size (2.5" x 3.5")</option>
+                            <option value="bridge">Bridge Size (2.25" x 3.5")</option>
+                            <option value="board" selected>Board Game Size (64mm x 64mm)</option>
+                            <option value="mini">Mini Size (1.75" x 2.75")</option>
+                        </select>
+                    </div>
+                    
+                    <button class="generate-btn" onclick="generateChallengeCards()">Generate Challenge Cards</button>
+                </div>
+
+                <div class="output" id="challengeOutput">
+                    <p style="text-align: center; color: #666; font-style: italic;">
+                        Select options and click "Generate Challenge Cards" to create printable card sheets
+                    </p>
+                </div>
+            </div>
+
+            <!-- Blocking Tokens Section -->
+            <div class="component-section" id="blocking">
+                <h2 class="section-title">🛡️ Blocking Tokens</h2>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="playerCount">Number of Players:</label>
+                        <select id="playerCount">
+                            <option value="2">2 Players</option>
+                            <option value="3">3 Players</option>
+                            <option value="4" selected>4 Players</option>
+                            <option value="5">5 Players</option>
+                            <option value="6">6 Players</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="blockingTokenSize">Token Size:</label>
+                        <select id="blockingTokenSize">
+                            <option value="small">Small (0.75 inch)</option>
+                            <option value="medium">Medium (1 inch)</option>
+                            <option value="board" selected>Board Game Size (30mm diameter)</option>
+                            <option value="large">Large (1.25 inch)</option>
+                        </select>
+                    </div>
+                    
+                    <button class="generate-btn" onclick="generateBlockingTokens()">Generate Blocking Tokens</button>
+                </div>
+
+                <div class="output" id="blockingOutput">
+                    <p style="text-align: center; color: #666; font-style: italic;">
+                        Select options and click "Generate Blocking Tokens" to create printable token sheets
+                    </p>
+                </div>
+            </div>
+
+            <!-- Game Board Section -->
+            <div class="component-section" id="board">
+                <h2 class="section-title">🎲 Game Board</h2>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="boardSize">Board Size:</label>
+                        <select id="boardSize">
+                            <option value="letter">Letter Size (8.5" x 11")</option>
+                            <option value="legal">Legal Size (8.5" x 14")</option>
+                            <option value="tabloid">Tabloid Size (11" x 17")</option>
+                            <option value="a3">A3 Size (11.7" x 16.5")</option>
+                            <option value="fullsize" selected>Full Size (406mm x 406mm)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="boardStyle">Board Style:</label>
+                        <select id="boardStyle">
+                            <option value="classic" selected>Classic Layout</option>
+                            <option value="modern">Modern Layout</option>
+                            <option value="minimal">Minimal Layout</option>
+                        </select>
+                    </div>
+                    
+                    <button class="generate-btn" onclick="generateGameBoard()">Generate Game Board</button>
+                </div>
+
+                <div class="output" id="boardOutput">
+                    <p style="text-align: center; color: #666; font-style: italic;">
+                        Select options and click "Generate Game Board" to create printable board
+                    </p>
+                </div>
+            </div>
+
+            <!-- Player Aids Section -->
+            <div class="component-section" id="aids">
+                <h2 class="section-title">📋 Player Aids</h2>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="aidType">Aid Type:</label>
+                        <select id="aidType">
+                            <option value="all">All Player Aids</option>
+                            <option value="reference">Reference Cards</option>
+                            <option value="scoring">Scoring Sheets</option>
+                            <option value="bidding">Bidding Dials</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="aidPlayers">Number of Players:</label>
+                        <select id="aidPlayers">
+                            <option value="2">2 Players</option>
+                            <option value="3">3 Players</option>
+                            <option value="4" selected>4 Players</option>
+                            <option value="5">5 Players</option>
+                            <option value="6">6 Players</option>
+                        </select>
+                    </div>
+                    
+                    <button class="generate-btn" onclick="generatePlayerAids()">Generate Player Aids</button>
+                </div>
+
+                <div class="output" id="aidsOutput">
+                    <p style="text-align: center; color: #666; font-style: italic;">
+                        Select options and click "Generate Player Aids" to create printable aids
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="board-game-data.js"></script>
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            console.log('Showing section:', sectionId);
+            
+            // Hide all sections
+            document.querySelectorAll('.component-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.nav-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                console.log('✅ Section activated:', sectionId);
+            } else {
+                console.error('❌ Section not found:', sectionId);
+            }
+            
+            // Add active class to clicked button
+            const clickedButton = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
+            if (clickedButton) {
+                clickedButton.classList.add('active');
+                console.log('✅ Button activated');
+            } else {
+                console.error('❌ Button not found');
+            }
+        }
+
+        // Helper function to extract keyword from challenge text
+        function extractKeyword(challengeText) {
+            // Special cases - look for common multi-word terms FIRST (more specific matching)
+            const specialTerms = {
+                'box office': /box\s+office/i,
+                'market cap': /market\s+cap/i,
+                'life expectancy': /life\s+expectancy/i,
+                'social media': /social\s+media/i,
+                'big mac': /big\s+mac/i,
+                'working hours': /working\s+hours/i,
+                'birth rate': /birth\s+rate/i,
+                'forest coverage': /forest\s+coverage/i,
+                'minimum wage': /minimum\s+wage/i,
+                'recycling rate': /recycling\s+rate/i,
+                'production budget': /production\s+budget/i,
+                'opening weekend': /opening\s+weekend/i,
+                'oscar wins': /oscar\s+wins/i,
+                'imdb rating': /imdb\s+rating/i,
+                'rotten tomatoes': /rotten\s+tomatoes/i,
+                'team value': /team\s+value/i,
+                'championship count': /championship\s+count/i,
+                'fan base': /fan\s+base/i,
+                'stadium capacity': /stadium\s+capacity/i,
+                'annual revenue': /annual\s+revenue/i,
+                'profit margin': /profit\s+margin/i,
+                'brand value': /brand\s+value/i,
+                'employee count': /employee\s+count/i,
+                'coffee consumption': /coffee\s+consumption/i,
+                'chocolate consumption': /chocolate\s+consumption/i,
+                'wine consumption': /wine\s+consumption/i,
+                'sleep hours': /sleep\s+hours/i,
+                'happiness ranking': /happiness\s+ranking/i,
+                'vacation days': /vacation\s+days/i,
+                'retirement age': /retirement\s+age/i,
+                'internet penetration': /internet\s+penetration/i,
+                'daily internet usage': /daily\s+internet\s+usage/i,
+                'digital payment': /digital\s+payment/i,
+                'cost of living': /cost\s+of\s+living/i,
+                'nobel prizes': /nobel\s+prizes/i,
+                'olympic medals': /olympic\s+medals/i,
+                'unesco sites': /unesco\s+sites/i,
+                'population density': /population\s+density/i,
+                'urban population': /urban\s+population/i,
+                'land area': /land\s+area/i,
+                'water area': /water\s+area/i,
+                'agricultural land': /agricultural\s+land/i,
+                'mobile subscriptions': /mobile\s+subscriptions/i,
+                'average rainfall': /average\s+rainfall/i,
+                'average temperature': /average\s+temperature/i,
+                'literacy rate': /literacy\s+rate/i
+            };
+            
+            // Check special terms first (most specific)
+            for (let [term, pattern] of Object.entries(specialTerms)) {
+                if (pattern.test(challengeText)) {
+                    return term.toUpperCase();
+                }
+            }
+            
+            // Multi-word patterns with "by" 
+            const multiWordByPatterns = [
+                /by ([a-zA-Z]+\s+[a-zA-Z]+\s+[a-zA-Z]+)/i,  // "by box office gross" -> "box office gross"
+                /by ([a-zA-Z]+\s+[a-zA-Z]+)/i,  // "by box office" -> "box office"
+            ];
+            
+            for (let pattern of multiWordByPatterns) {
+                const match = challengeText.match(pattern);
+                if (match) {
+                    return match[1].toUpperCase();
+                }
+            }
+            
+            // Single word patterns with "by"
+            const singleWordPatterns = [
+                /by ([a-zA-Z]+)/i,  // "by coffee" -> "coffee"
+            ];
+            
+            for (let pattern of singleWordPatterns) {
+                const match = challengeText.match(pattern);
+                if (match) {
+                    return match[1].toUpperCase();
+                }
+            }
+            
+            // Fallback: try to extract first meaningful word
+            const words = challengeText.split(' ');
+            for (let word of words) {
+                if (word.length > 3 && !['rank', 'these', 'highest', 'lowest', 'most', 'least'].includes(word.toLowerCase())) {
+                    return word.toUpperCase();
+                }
+            }
+            
+            return 'CHALLENGE';
+        }
+
+        // Generate Functions
+        function generateTokens() {
+            const category = document.getElementById('tokenCategory').value;
+            const size = document.getElementById('tokenSize').value;
+            
+            let tokens = [];
+            
+            if (category === 'all' || category === 'countries') {
+                tokens = tokens.concat(generateCountryTokens());
+            }
+            if (category === 'all' || category === 'movies') {
+                tokens = tokens.concat(generateMovieTokens());
+            }
+            if (category === 'all' || category === 'sports') {
+                tokens = tokens.concat(generateSportsTokens());
+            }
+            if (category === 'all' || category === 'companies') {
+                tokens = tokens.concat(generateCompanyTokens());
+            }
+            
+            displayTokens(tokens, size);
+        }
+
+        function generateCountryTokens() {
+            // Load from actual game data if available
+            if (typeof window !== 'undefined' && window.GAME_DATA) {
+                const countries = window.GAME_DATA.categories.countries.items;
+                return Object.keys(countries).map(code => ({
+                    code: code, // Use the numeric code directly from game data
+                    name: countries[code].name,
+                    category: 'countries',
+                    icon: '🌍'
+                }));
+            }
+            
+            // Fallback data
+            const countries = [
+                'USA', 'CHN', 'JPN', 'DEU', 'GBR', 'FRA', 'IND', 'ITA', 'BRA', 'CAN',
+                'RUS', 'KOR', 'AUS', 'ESP', 'MEX', 'IDN', 'NLD', 'SAU', 'TUR', 'TWN',
+                'BEL', 'ARG', 'IRL', 'ISR', 'THA', 'EGY', 'ZAF', 'POL', 'SWE', 'PHL',
+                'NGA', 'MYS', 'CHL', 'PER', 'BGD', 'VNM', 'GRC', 'PRT', 'NOR', 'NZL'
+            ];
+            
+            return countries.map((originalCode, index) => ({
+                code: String(index + 1).padStart(3, '0'),
+                originalCode: originalCode,
+                category: 'countries',
+                icon: '🌍'
+            }));
+        }
+
+        function generateMovieTokens() {
+            // Load from actual game data if available
+            if (typeof window !== 'undefined' && window.GAME_DATA) {
+                const movies = window.GAME_DATA.categories.movies.items;
+                return Object.keys(movies).map(code => ({
+                    code: code, // Use the numeric code directly from game data
+                    name: movies[code].name,
+                    category: 'movies',
+                    icon: '🎬'
+                }));
+            }
+            
+            // Fallback data
+            const movies = [
+                'AVT', 'TIT', 'AEG', 'SWA', 'JP1', 'LK1', 'AIW', 'FR2', 'BP1', 'HP1',
+                'SL1', 'RO1', 'BAB', 'FD1', 'FA1', 'IC2', 'IM3', 'MIN', 'CW1', 'AQM',
+                'SH1', 'CM1', 'TR3', 'IM1', 'HP8', 'FRZ', 'IM2', 'MR1', 'WS1', 'DM2',
+                'TR1', 'WW1', 'DM3', 'JF1', 'G2', 'SM2', 'FN1', 'SH2', 'HP4', 'SM3'
+            ];
+            
+            return movies.map((originalCode, index) => ({
+                code: String(index + 1).padStart(3, '0'),
+                originalCode: originalCode,
+                category: 'movies',
+                icon: '🎬'
+            }));
+        }
+
+        function generateSportsTokens() {
+            // Load from actual game data if available
+            if (typeof window !== 'undefined' && window.GAME_DATA) {
+                const sports = window.GAME_DATA.categories.sports.items;
+                return Object.keys(sports).map(code => ({
+                    code: code, // Use the numeric code directly from game data
+                    name: sports[code].name,
+                    category: 'sports',
+                    icon: '🏈'
+                }));
+            }
+            
+            // Fallback data
+            const sports = [
+                'DAL', 'NE', 'GB', 'PIT', 'SF', 'NYG', 'DEN', 'SEA', 'KC', 'NO',
+                'LAL', 'BOS', 'GS', 'MIA', 'CHI', 'SA', 'HOU', 'PHX', 'LAC', 'DAL',
+                'NYY', 'BOS', 'LAD', 'SF', 'STL', 'ATL', 'PHI', 'MIA', 'CLE', 'TEX',
+                'TOR', 'EDM', 'PIT', 'TB', 'WSH', 'VGK', 'COL', 'CAR', 'NYR', 'BOS',
+                'MU', 'FCB'
+            ];
+            
+            return sports.map((originalCode, index) => ({
+                code: String(index + 1).padStart(3, '0'),
+                originalCode: originalCode,
+                category: 'sports',
+                icon: '🏈'
+            }));
+        }
+
+        function generateCompanyTokens() {
+            // Load from actual game data if available
+            if (typeof window !== 'undefined' && window.GAME_DATA) {
+                const companies = window.GAME_DATA.categories.companies.items;
+                return Object.keys(companies).map(code => ({
+                    code: code, // Use the numeric code directly from game data
+                    name: companies[code].name,
+                    category: 'companies',
+                    icon: '🏢'
+                }));
+            }
+            
+            // Fallback data
+            const companies = [
+                'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NFLX', 'NVDA', 'ORCL', 'ADBE',
+                'CRM', 'INTC', 'CSCO', 'PYPL', 'NFLX', 'UBER', 'SPOT', 'TWTR', 'SNAP', 'ZOOM',
+                'WMT', 'TGT', 'COST', 'HD', 'LOW', 'MCD', 'SBUX', 'NKE', 'DIS', 'COCA',
+                'JPM', 'BAC', 'WFC', 'GS', 'MS', 'C', 'AXP', 'V', 'MA', 'BRK'
+            ];
+            
+            return companies.map((originalCode, index) => ({
+                code: String(index + 1).padStart(3, '0'),
+                originalCode: originalCode,
+                category: 'companies',
+                icon: '🏢'
+            }));
+        }
+
+        function displayTokens(tokens, size) {
+            const output = document.getElementById('tokenOutput');
+            // Convert 35mm to pixels (1mm ≈ 3.78px at 96dpi)
+            const mmToPx = 3.78;
+            const tokenSize = size === 'small' ? '60px' : 
+                             size === 'medium' ? '80px' : 
+                             size === 'board' ? `${35 * mmToPx}px` : '100px';
+            const fontSize = size === 'small' ? '0.7rem' : 
+                            size === 'medium' ? '0.9rem' : 
+                            size === 'board' ? '0.8rem' : '1.1rem';
+            
+            let html = `
+                <div class="print-area">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(${tokenSize}, 1fr)); gap: 10px; justify-items: center;">
+            `;
+            
+            tokens.forEach(token => {
+                const displayName = token.name || token.code;
+                const codeInfo = `Digital Game Code: ${token.code}`;
+                
+                // Calculate responsive font sizes based on token size and text length
+                const tokenSizePx = parseInt(tokenSize);
+                const textLength = displayName.length;
+                
+                // Adjust font size based on text length - favor line breaks over tiny text
+                let nameFontMultiplier = 0.11; // Base size
+                if (textLength > 20) nameFontMultiplier = 0.09;
+                else if (textLength > 15) nameFontMultiplier = 0.10;
+                
+                const nameFontSize = `${Math.max(8, tokenSizePx * nameFontMultiplier)}px`;
+                const codeFontSize = `${Math.max(10, tokenSizePx * 0.12)}px`;
+                
+                html += `
+                    <div class="token ${token.category}" style="
+                        width: ${tokenSize}; 
+                        height: ${tokenSize}; 
+                        display: flex; 
+                        flex-direction: column; 
+                        align-items: center; 
+                        justify-content: center; 
+                        padding: 8px; 
+                        text-align: center; 
+                        box-sizing: border-box;
+                        overflow: hidden;
+                    " title="${displayName} - ${codeInfo}">
+                        <div style="
+                            font-size: ${nameFontSize}; 
+                            line-height: 1.1; 
+                            font-weight: bold; 
+                            word-wrap: break-word; 
+                            hyphens: auto; 
+                            overflow: hidden; 
+                            text-align: center; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            flex-grow: 1;
+                            max-width: 100%;
+                            padding: 2px;
+                        ">
+                            ${displayName}
+                        </div>
+                        <div style="
+                            font-size: ${codeFontSize}; 
+                            font-weight: bold; 
+                            color: #333; 
+                            text-align: center; 
+                            margin-top: 4px;
+                            flex-shrink: 0;
+                        ">
+                            ${token.code}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                    
+                    <div style="margin-top: 30px; padding: 20px; background: #e3f2fd; border-radius: 10px; border-left: 4px solid #2196f3;">
+                        <h3 style="color: #1976d2; margin-bottom: 15px;">📱 Digital Game Integration</h3>
+                        <p style="color: #666; line-height: 1.6; margin-bottom: 10px;">
+                            <strong>To use these tokens with the digital game:</strong>
+                        </p>
+                        <ol style="color: #666; line-height: 1.6; margin-left: 20px;">
+                            <li>Open the digital game at localhost:8000</li>
+                            <li>When ranking cards, use the exact numeric codes printed on these tokens</li>
+                            <li>The codes match exactly between physical and digital versions</li>
+                            <li>Example: Token "001" in physical game = "001" in digital game</li>
+                            <li><strong>35mm tokens match the board game circles exactly</strong></li>
+                        </ol>
+                    </div>
+                </div>
+                <button class="print-btn" onclick="window.print()">🖨️ Print Tokens</button>
+            `;
+            
+            output.innerHTML = html;
+        }
+
+        function generateChallengeCards() {
+            const category = document.getElementById('challengeCategory').value;
+            const size = document.getElementById('cardSize').value;
+            
+            let challenges = [];
+            
+            if (category === 'all' || category === 'countries') {
+                challenges = challenges.concat(generateCountryChallenges());
+            }
+            if (category === 'all' || category === 'movies') {
+                challenges = challenges.concat(generateMovieChallenges());
+            }
+            if (category === 'all' || category === 'sports') {
+                challenges = challenges.concat(generateSportsChallenges());
+            }
+            if (category === 'all' || category === 'companies') {
+                challenges = challenges.concat(generateCompanyChallenges());
+            }
+            
+            displayChallengeCards(challenges, size);
+        }
+
+        function generateCountryChallenges() {
+            // Load from actual game data if available
+            if (typeof window !== 'undefined' && window.GAME_DATA) {
+                const prompts = window.GAME_DATA.categories.countries.prompts;
+                return prompts.map((prompt, index) => ({
+                    category: 'countries',
+                    icon: '🌍',
+                    number: String(index + 1).padStart(3, '0'), // 001, 002, etc.
+                    text: prompt.label,
+                    challenge: prompt.challenge,
+                    keyword: extractKeyword(prompt.label)
+                }));
+            }
+            
+            // Fallback data
+            return [
+                {category: 'countries', icon: '🌍', number: 1, text: 'Rank by coffee consumption (highest to lowest)'},
+                {category: 'countries', icon: '🌍', number: 2, text: 'Rank by happiness ranking (happiest to least happy)'},
+                {category: 'countries', icon: '🌍', number: 3, text: 'Rank by life expectancy (highest to lowest)'},
+                {category: 'countries', icon: '🌍', number: 4, text: 'Rank by population density (highest to lowest)'},
+                {category: 'countries', icon: '🌍', number: 5, text: 'Rank by GDP per capita (highest to lowest)'},
+            ];
+        }
+
+        function generateMovieChallenges() {
+            // Load from actual game data if available
+            if (typeof window !== 'undefined' && window.GAME_DATA) {
+                const prompts = window.GAME_DATA.categories.movies.prompts;
+                return prompts.map((prompt, index) => ({
+                    category: 'movies',
+                    icon: '🎬',
+                    number: String(index + 1).padStart(3, '0'), // 001, 002, etc.
+                    text: prompt.label,
+                    challenge: prompt.challenge,
+                    keyword: extractKeyword(prompt.label)
+                }));
+            }
+            
+            // Fallback data
+            return [
+                {category: 'movies', icon: '🎬', number: 1, text: 'Rank by worldwide box office (highest to lowest)'},
+                {category: 'movies', icon: '🎬', number: 2, text: 'Rank by IMDb rating (highest to lowest)'},
+                {category: 'movies', icon: '🎬', number: 3, text: 'Rank by production budget (highest to lowest)'},
+                {category: 'movies', icon: '🎬', number: 4, text: 'Rank by runtime (longest to shortest)'},
+                {category: 'movies', icon: '🎬', number: 5, text: 'Rank by Oscar wins (highest to lowest)'},
+            ];
+        }
+
+        function generateSportsChallenges() {
+            // Load from actual game data if available
+            if (typeof window !== 'undefined' && window.GAME_DATA) {
+                const prompts = window.GAME_DATA.categories.sports.prompts;
+                return prompts.map((prompt, index) => ({
+                    category: 'sports',
+                    icon: '🏈',
+                    number: String(index + 1).padStart(3, '0'), // 001, 002, etc.
+                    text: prompt.label,
+                    challenge: prompt.challenge,
+                    keyword: extractKeyword(prompt.label)
+                }));
+            }
+            
+            // Fallback data
+            return [
+                {category: 'sports', icon: '🏈', number: 1, text: 'Rank by team value (highest to lowest)'},
+                {category: 'sports', icon: '🏈', number: 2, text: 'Rank by championship count (highest to lowest)'},
+                {category: 'sports', icon: '🏈', number: 3, text: 'Rank by fan base size (highest to lowest)'},
+                {category: 'sports', icon: '🏈', number: 4, text: 'Rank by annual revenue (highest to lowest)'},
+                {category: 'sports', icon: '🏈', number: 5, text: 'Rank by stadium capacity (highest to lowest)'},
+            ];
+        }
+
+        function generateCompanyChallenges() {
+            // Load from actual game data if available
+            if (typeof window !== 'undefined' && window.GAME_DATA) {
+                const prompts = window.GAME_DATA.categories.companies.prompts;
+                return prompts.map((prompt, index) => ({
+                    category: 'companies',
+                    icon: '🏢',
+                    number: String(index + 1).padStart(3, '0'), // 001, 002, etc.
+                    text: prompt.label,
+                    challenge: prompt.challenge,
+                    keyword: extractKeyword(prompt.label)
+                }));
+            }
+            
+            // Fallback data
+            return [
+                {category: 'companies', icon: '🏢', number: 1, text: 'Rank by annual revenue (highest to lowest)'},
+                {category: 'companies', icon: '🏢', number: 2, text: 'Rank by market capitalization (highest to lowest)'},
+                {category: 'companies', icon: '🏢', number: 3, text: 'Rank by number of employees (highest to lowest)'},
+                {category: 'companies', icon: '🏢', number: 4, text: 'Rank by brand value (highest to lowest)'},
+                {category: 'companies', icon: '🏢', number: 5, text: 'Rank by profit margin (highest to lowest)'},
+            ];
+        }
+
+        function displayChallengeCards(challenges, size) {
+            const output = document.getElementById('challengeOutput');
+            // Convert 64mm to pixels (1mm ≈ 3.78px at 96dpi)
+            const mmToPx = 3.78;
+            const cardWidth = size === 'poker' ? '250px' : 
+                             size === 'bridge' ? '225px' : 
+                             size === 'board' ? `${64 * mmToPx}px` : '175px';
+            const cardHeight = size === 'poker' ? '350px' : 
+                              size === 'bridge' ? '350px' : 
+                              size === 'board' ? `${64 * mmToPx}px` : '275px';
+            
+            let html = `
+                <div class="print-area">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(${cardWidth}, 1fr)); gap: 20px; justify-items: center;">
+            `;
+            
+            challenges.forEach(challenge => {
+                html += `
+                    <div class="card ${challenge.category}" style="width: ${cardWidth}; height: ${cardHeight}; position: relative;">
+                        <div class="card-content">
+                            <div class="card-header">
+                                ${challenge.icon} ${challenge.keyword || 'CHALLENGE'}
+                            </div>
+                            <div class="card-body">
+                                ${challenge.text}
+                            </div>
+                            <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 1.2rem; font-weight: bold; color: #333;">
+                                ${challenge.number}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+                <button class="print-btn" onclick="window.print()">🖨️ Print Challenge Cards</button>
+            `;
+            
+            output.innerHTML = html;
+        }
+
+        function generateBlockingTokens() {
+            const playerCount = parseInt(document.getElementById('playerCount').value);
+            const size = document.getElementById('blockingTokenSize').value;
+            
+            displayBlockingTokens(playerCount, size);
+        }
+
+        function displayBlockingTokens(playerCount, size) {
+            const output = document.getElementById('blockingOutput');
+            // Convert 30mm to pixels (1mm ≈ 3.78px at 96dpi)
+            const mmToPx = 3.78;
+            const tokenSize = size === 'small' ? '50px' : 
+                             size === 'medium' ? '70px' : 
+                             size === 'board' ? `${30 * mmToPx}px` : '90px';
+            const fontSize = size === 'small' ? '1rem' : 
+                            size === 'medium' ? '1.2rem' : 
+                            size === 'board' ? '1.1rem' : '1.5rem';
+            
+            let html = `
+                <div class="print-area">
+                    <h3 style="text-align: center; margin-bottom: 20px;">Blocking Tokens for ${playerCount} Players</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(${tokenSize}, 1fr)); gap: 15px; justify-items: center;">
+            `;
+            
+            // Generate tokens for each player
+            const borderColors = ['#8B4513', '#FF8C00', '#32CD32', '#9370DB', '#FFD700', '#20B2AA']; // Brown, Orange, Green, Purple, Gold, Teal
+            for (let player = 1; player <= playerCount; player++) {
+                const borderColor = borderColors[player - 1];
+                
+                // Each player gets one of each: 2, 4, 6 point tokens
+                [2, 4, 6].forEach(points => {
+                    html += `
+                        <div style="
+                            width: ${tokenSize}; 
+                            height: ${tokenSize}; 
+                            border-radius: 50%; 
+                            background: black; 
+                            border: 4px solid ${borderColor};
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            font-weight: bold; 
+                            font-size: ${fontSize}; 
+                            color: red; 
+                            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                            text-align: center;
+                            margin: 5px;
+                            box-sizing: border-box;
+                        ">
+                            ${points}
+                        </div>
+                    `;
+                });
+            }
+            
+            html += `
+                    </div>
+                    <div style="margin-top: 20px; text-align: center; color: #666;">
+                        Each player gets one token of each value: 2, 4, and 6 points
+                    </div>
+                </div>
+                <button class="print-btn" onclick="window.print()">🖨️ Print Blocking Tokens</button>
+            `;
+            
+            output.innerHTML = html;
+        }
+
+        function generateGameBoard() {
+            const size = document.getElementById('boardSize').value;
+            const style = document.getElementById('boardStyle').value;
+            
+            displayGameBoard(size, style);
+        }
+
+        function displayGameBoard(size, style) {
+            const output = document.getElementById('boardOutput');
+            
+            // Scale to fit paper size
+            let scaleFactor = 1;
+            let boardWidth = 750; // Base width in pixels
+            let boardHeight = 750; // Base height in pixels
+            
+            if (size === 'letter') {
+                // Letter: 8.5" x 11" = 612px x 792px at 72dpi
+                boardWidth = 580; // Leave margins
+                boardHeight = 580;
+                scaleFactor = 0.6;
+            } else if (size === 'legal') {
+                // Legal: 8.5" x 14" = 612px x 1008px at 72dpi
+                boardWidth = 580;
+                boardHeight = 750;
+                scaleFactor = 0.7;
+            } else if (size === 'tabloid') {
+                // Tabloid: 11" x 17" = 792px x 1224px at 72dpi
+                boardWidth = 750;
+                boardHeight = 750;
+                scaleFactor = 1.0;
+            } else if (size === 'fullsize') {
+                // Full Size: 406mm x 406mm at actual size
+                const mmToPx = 3.78; // 96dpi conversion
+                boardWidth = 406 * mmToPx;
+                boardHeight = 406 * mmToPx;
+                scaleFactor = 1.0;
+            }
+            
+            const tokenSize = size === 'fullsize' ? 35 * 3.78 : 35 * scaleFactor; // 35mm in pixels
+            const cardSize = size === 'fullsize' ? 64 * 3.78 : 64 * scaleFactor; // 64mm in pixels
+            const rightPanelWidth = size === 'fullsize' ? 86 * 3.78 : 86 * scaleFactor; // 86mm in pixels
+            const leftPanelWidth = boardWidth - rightPanelWidth;
+            
+            const fullSizeClass = size === 'fullsize' ? 'fullsize-board' : '';
+            let html = `
+                <div class="print-area">
+                    <div class="${fullSizeClass}" style="
+                        width: ${boardWidth}px; 
+                        height: ${boardHeight}px; 
+                        border: 3px solid #333; 
+                        border-radius: 10px; 
+                        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+                        position: relative;
+                        margin: 0 auto;
+                        display: flex;
+                        font-family: Arial, sans-serif;
+                    ">
+                        
+                        <!-- Left Panel (320mm wide) -->
+                        <div style="
+                            width: ${leftPanelWidth}px; 
+                            height: 100%; 
+                            padding: 20px; 
+                            display: flex; 
+                            flex-direction: column;
+                        ">
+                            
+                            <!-- Game Title -->
+                            <div style="text-align: center; margin-bottom: 20px;">
+                                <h1 style="font-size: 2rem; color: #333; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+                                    🎲 OUTRANK
+                                </h1>
+                                <p style="font-size: 1rem; color: #666; margin: 5px 0 0 0;">The Ultimate Ranking Challenge</p>
+                            </div>
+                            
+                            <!-- Token Stacks (4 across) -->
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; justify-items: center;">
+                                <!-- Countries Stack -->
+                                <div style="text-align: center;">
+                                    <div style="
+                                        width: ${tokenSize}px; 
+                                        height: ${tokenSize}px; 
+                                        border-radius: 50%; 
+                                        background: linear-gradient(45deg, #4ECDC4, #44A08D); 
+                                        display: flex; 
+                                        align-items: center; 
+                                        justify-content: center; 
+                                        color: white; 
+                                        font-weight: bold;
+                                        font-size: 0.8rem;
+                                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                                        margin-bottom: 5px;
+                                    ">
+                                        🌍
+                                    </div>
+                                    <div style="font-size: 0.7rem; color: #333; font-weight: bold;">COUNTRIES</div>
+                                </div>
+                                
+                                <!-- Movies Stack -->
+                                <div style="text-align: center;">
+                                    <div style="
+                                        width: ${tokenSize}px; 
+                                        height: ${tokenSize}px; 
+                                        border-radius: 50%; 
+                                        background: linear-gradient(45deg, #FF6B6B, #FF8E53); 
+                                        display: flex; 
+                                        align-items: center; 
+                                        justify-content: center; 
+                                        color: white; 
+                                        font-weight: bold;
+                                        font-size: 0.8rem;
+                                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                                        margin-bottom: 5px;
+                                    ">
+                                        🎬
+                                    </div>
+                                    <div style="font-size: 0.7rem; color: #333; font-weight: bold;">MOVIES</div>
+                                </div>
+                                
+                                <!-- Sports Stack -->
+                                <div style="text-align: center;">
+                                    <div style="
+                                        width: ${tokenSize}px; 
+                                        height: ${tokenSize}px; 
+                                        border-radius: 50%; 
+                                        background: linear-gradient(45deg, #667eea, #764ba2); 
+                                        display: flex; 
+                                        align-items: center; 
+                                        justify-content: center; 
+                                        color: white; 
+                                        font-weight: bold;
+                                        font-size: 0.8rem;
+                                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                                        margin-bottom: 5px;
+                                    ">
+                                        🏈
+                                    </div>
+                                    <div style="font-size: 0.7rem; color: #333; font-weight: bold;">SPORTS</div>
+                                </div>
+                                
+                                <!-- Companies Stack -->
+                                <div style="text-align: center;">
+                                    <div style="
+                                        width: ${tokenSize}px; 
+                                        height: ${tokenSize}px; 
+                                        border-radius: 50%; 
+                                        background: linear-gradient(45deg, #f093fb, #f5576c); 
+                                        display: flex; 
+                                        align-items: center; 
+                                        justify-content: center; 
+                                        color: white; 
+                                        font-weight: bold;
+                                        font-size: 0.8rem;
+                                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                                        margin-bottom: 5px;
+                                    ">
+                                        🏢
+                                    </div>
+                                    <div style="font-size: 0.7rem; color: #333; font-weight: bold;">COMPANIES</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Prompt Cards (4 across) -->
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; justify-items: center;">
+                                ${Array(4).fill(0).map((_, i) => `
+                                    <div style="
+                                        width: ${cardSize}px; 
+                                        height: ${cardSize}px; 
+                                        border: 2px solid #ddd; 
+                                        border-radius: 8px; 
+                                        background: #f9f9f9; 
+                                        display: flex; 
+                                        align-items: center; 
+                                        justify-content: center; 
+                                        font-size: 0.7rem; 
+                                        color: #666;
+                                        text-align: center;
+                                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                                    ">
+                                        Challenge<br>Card ${i + 1}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <!-- Active Prompt -->
+                            <div style="text-align: center; margin-bottom: 20px;">
+                                <div style="font-size: 0.8rem; color: #333; font-weight: bold; margin-bottom: 5px;">ACTIVE PROMPT</div>
+                                <div style="
+                                    width: ${cardSize}px; 
+                                    height: ${cardSize}px; 
+                                    border: 3px solid #667eea; 
+                                    border-radius: 8px; 
+                                    background: rgba(102, 126, 234, 0.1); 
+                                    display: flex; 
+                                    align-items: center; 
+                                    justify-content: center; 
+                                    font-size: 0.7rem; 
+                                    color: #667eea;
+                                    text-align: center;
+                                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                                    margin: 0 auto;
+                                ">
+                                    Current<br>Challenge
+                                </div>
+                            </div>
+                            
+                            <!-- Dotted Line -->
+                            <div style="
+                                width: 100%; 
+                                height: 2px; 
+                                border-top: 2px dashed #999; 
+                                margin-bottom: 20px;
+                            "></div>
+                            
+                            <!-- Token Pool -->
+                            <div style="
+                                flex-grow: 1; 
+                                background: rgba(255,255,255,0.5); 
+                                border-radius: 8px; 
+                                padding: 15px;
+                                text-align: center;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 1.2rem;
+                                color: #666;
+                                font-weight: bold;
+                            ">
+                                TOKEN POOL
+                            </div>
+                        </div>
+                        
+                        <!-- Right Panel - Ranking Area (86mm wide) -->
+                        <div style="
+                            width: ${rightPanelWidth}px; 
+                            height: 100%; 
+                            border-left: 3px solid #333; 
+                            padding: 20px 15px; 
+                            display: flex; 
+                            flex-direction: column;
+                            align-items: center;
+                            background: rgba(255,255,255,0.3);
+                        ">
+                            
+                            <!-- Ranking Title -->
+                            <div style="
+                                text-align: center; 
+                                margin-bottom: 20px; 
+                                font-size: 0.9rem; 
+                                color: #333; 
+                                font-weight: bold;
+                                writing-mode: horizontal-tb;
+                            ">
+                                RANK YOUR<br>TOKENS
+                            </div>
+                            
+                            <!-- Ranking Slots (1-10) -->
+                            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+                                ${Array(10).fill(0).map((_, i) => `
+                                    <div style="
+                                        width: ${tokenSize}px; 
+                                        height: ${tokenSize}px; 
+                                        border: 2px dashed #999; 
+                                        border-radius: 50%; 
+                                        background: rgba(255,255,255,0.5); 
+                                        display: flex; 
+                                        align-items: center; 
+                                        justify-content: center; 
+                                        font-size: 1rem; 
+                                        color: #999;
+                                        font-weight: bold;
+                                        position: relative;
+                                    ">
+                                        ${i + 1}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <button class="print-btn" onclick="window.print()">🖨️ Print Game Board</button>
+            `;
+            
+            output.innerHTML = html;
+        }
+
+        function generatePlayerAids() {
+            const aidType = document.getElementById('aidType').value;
+            const playerCount = parseInt(document.getElementById('aidPlayers').value);
+            
+            displayPlayerAids(aidType, playerCount);
+        }
+
+        function displayPlayerAids(aidType, playerCount) {
+            const output = document.getElementById('aidsOutput');
+            
+            let html = `
+                <div class="print-area">
+                    <h2 style="text-align: center; margin-bottom: 30px; color: #333;">📋 Player Aids</h2>
+            `;
+            
+            if (aidType === 'all' || aidType === 'reference') {
+                html += `
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                        <h3 style="color: #333; margin-bottom: 15px;">🎯 Quick Reference</h3>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                            <div>
+                                <h4 style="color: #667eea; margin-bottom: 10px;">Game Flow</h4>
+                                <ol style="color: #666; line-height: 1.6;">
+                                    <li>Category Selection</li>
+                                    <li>Bidding Phase</li>
+                                    <li>Blocking Phase</li>
+                                    <li>Ranking Phase</li>
+                                    <li>Scoring & Cleanup</li>
+                                </ol>
+                            </div>
+                            <div>
+                                <h4 style="color: #667eea; margin-bottom: 10px;">Scoring</h4>
+                                <ul style="color: #666; line-height: 1.6;">
+                                    <li>All or Nothing: 1 pt per token ranked</li>
+                                    <li>Blocking: Token value if bidder fails</li>
+                                    <li>End Game: 1 pt per token + owned cards</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (aidType === 'all' || aidType === 'scoring') {
+                html += `
+                    <div style="background: #e3f2fd; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                        <h3 style="color: #333; margin-bottom: 15px;">📊 Scoring Sheet</h3>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #667eea; color: white;">
+                                    <th style="padding: 10px; border: 1px solid #ddd;">Round</th>
+                                    ${Array(playerCount).fill(0).map((_, i) => `<th style="padding: 10px; border: 1px solid #ddd;">Player ${i + 1}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Array(10).fill(0).map((_, round) => `
+                                    <tr style="background: ${round % 2 === 0 ? '#f9f9f9' : 'white'};">
+                                        <td style="padding: 10px; border: 1px solid #ddd; text-align: center; font-weight: bold;">${round + 1}</td>
+                                        ${Array(playerCount).fill(0).map(() => `<td style="padding: 10px; border: 1px solid #ddd; text-align: center; height: 40px;"></td>`).join('')}
+                                    </tr>
+                                `).join('')}
+                                <tr style="background: #667eea; color: white; font-weight: bold;">
+                                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">TOTAL</td>
+                                    ${Array(playerCount).fill(0).map(() => `<td style="padding: 10px; border: 1px solid #ddd; text-align: center;"></td>`).join('')}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+            
+            if (aidType === 'all' || aidType === 'bidding') {
+                html += `
+                    <div style="background: #f1f8e9; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                        <h3 style="color: #333; margin-bottom: 15px;">🎯 Bidding Dials</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px;">
+                            ${Array(playerCount).fill(0).map((_, i) => `
+                                <div style="text-align: center;">
+                                    <h4 style="color: #4ECDC4; margin-bottom: 10px;">Player ${i + 1}</h4>
+                                    <div style="width: 120px; height: 120px; border: 3px solid #4ECDC4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background: white; position: relative;">
+                                        <div style="font-size: 2rem; font-weight: bold; color: #333;">?</div>
+                                        ${Array(10).fill(0).map((_, num) => `
+                                            <div style="position: absolute; font-size: 0.8rem; color: #666; transform: rotate(${num * 36}deg) translateY(-40px);">
+                                                ${num + 1}
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += `
+                </div>
+                <button class="print-btn" onclick="window.print()">🖨️ Print Player Aids</button>
+            `;
+            
+            output.innerHTML = html;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('overview');
+            updateGameStats();
+        });
+        
+        // Update game statistics with actual data
+        function updateGameStats() {
+            if (typeof window !== 'undefined' && window.GAME_DATA) {
+                const categories = window.GAME_DATA.categories;
+                
+                // Count actual tokens
+                let totalTokens = 0;
+                let totalChallenges = 0;
+                let categoryDetails = [];
+                
+                Object.keys(categories).forEach(category => {
+                    const tokenCount = Object.keys(categories[category].items).length;
+                    const challengeCount = categories[category].prompts.length;
+                    totalTokens += tokenCount;
+                    totalChallenges += challengeCount;
+                    
+                    const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+                    categoryDetails.push(`<strong>${categoryName}:</strong> ${tokenCount} tokens, ${challengeCount} challenges`);
+                });
+                
+                // Update stats display
+                const statsDiv = document.getElementById('gameStats');
+                if (statsDiv) {
+                    statsDiv.innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-number">${totalTokens}</div>
+                            <div class="stat-label">Category Tokens</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${totalChallenges}</div>
+                            <div class="stat-label">Challenge Cards</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">18</div>
+                            <div class="stat-label">Blocking Tokens</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${Object.keys(categories).length}</div>
+                            <div class="stat-label">Categories</div>
+                        </div>
+                    `;
+                }
+                
+                // Update game details
+                const detailsDiv = document.getElementById('gameDetails');
+                if (detailsDiv) {
+                    detailsDiv.innerHTML = `
+                        <h3 style="color: #333; margin-bottom: 15px;">🎯 What You'll Generate:</h3>
+                        <ul style="color: #666; line-height: 1.6;">
+                            ${categoryDetails.map(detail => `<li>${detail}</li>`).join('')}
+                            <li><strong>Blocking Tokens:</strong> 6 sets of 2, 4, and 6-point tokens</li>
+                            <li><strong>Game Board:</strong> 406mm x 406mm with precise measurements</li>
+                            <li><strong>Player Aids:</strong> Reference cards and scoring sheets</li>
+                        </ul>
+                    `;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
