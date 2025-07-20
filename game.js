@@ -4694,7 +4694,16 @@ function updateBidderRankingDisplay() {
                 var prevItem = categoryData ? categoryData.items[prevCard] : null;
                 var prevValue = prevItem ? prevItem[currentPrompt.challenge] : 0;
                 
-                if (value > prevValue) {
+                // Detect if this is ascending or descending challenge
+                var promptText = currentPrompt.label || '';
+                var isDescendingChallenge = promptText.includes('highest to lowest');
+                var isAscendingChallenge = promptText.includes('lowest to highest');
+                
+                var sequenceCorrect = isDescendingChallenge ? 
+                    (value <= prevValue) :  // Descending: current should be <= previous
+                    (value >= prevValue);   // Ascending: current should be >= previous
+                    
+                if (!sequenceCorrect) {
                     // This card breaks the sequence
                     statusClass = 'revealed wrong';
                     statusIcon = ' ✗';
