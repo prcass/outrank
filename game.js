@@ -1412,7 +1412,10 @@ function showNotification(message, type) {
 function showTokenReplacementNotification(removedTokens, addedTokens) {
     try {
         // Always show screen in Round 2+ even if no specific tokens tracked
-        if (getCurrentRound() < 2) {
+        var currentRound = getCurrentRound();
+        console.log('🔍 Token replacement check: currentRound =', currentRound);
+        if (currentRound < 2) {
+            console.log('⏭️  Skipping token replacement (round < 2)');
             return;
         }
         
@@ -5552,7 +5555,9 @@ window.nextRound = function() {
     }
     
     // Advance to next round
-    GameState.set('currentRound', getCurrentRound() + 1);
+    var newRound = getCurrentRound() + 1;
+    console.log('🔄 Advancing to round:', newRound);
+    GameState.set('currentRound', newRound);
     
     // Reset the scores calculated flag for the new round
     GameState.set('players.scoresCalculatedThisRound', false);
@@ -5817,16 +5822,17 @@ function endGame() {
         var tokenBonus = '';
         if (ACTIVE_RULES.endGameTokenPoints && ACTIVE_RULES.endGameTokenPoints > 0) {
             var tokenCount = 0;
-            if (ACTIVE_RULES.tokenOwnership && players.ownedCards && players.ownedCards[player.name]) {
+            var playersData = GameState.get('players');
+            if (ACTIVE_RULES.tokenOwnership && playersData.ownedCards && playersData.ownedCards[player.name]) {
                 // Handle both new category-specific format and legacy format
-                if (typeof players.ownedCards[player.name] === 'object' && !Array.isArray(players.ownedCards[player.name])) {
+                if (typeof playersData.ownedCards[player.name] === 'object' && !Array.isArray(playersData.ownedCards[player.name])) {
                     // New format: count all owned cards across all categories
-                    Object.keys(players.ownedCards[player.name]).forEach(function(category) {
-                        if (Array.isArray(players.ownedCards[player.name][category])) {
+                    Object.keys(playersData.ownedCards[player.name]).forEach(function(category) {
+                        if (Array.isArray(playersData.ownedCards[player.name][category])) {
                             tokenCount += getPlayerOwnedCards(player.name, category).length;
                         }
                     });
-                } else if (Array.isArray(players.ownedCards[player.name])) {
+                } else if (Array.isArray(playersData.ownedCards[player.name])) {
                     // Legacy format: direct array
                     var ownedCards = getPlayerOwnedCards(player.name);
                     tokenCount = Object.keys(ownedCards).reduce(function(total, cat) {
@@ -5862,10 +5868,11 @@ function getFinalScores() {
         
         // Count owned cards for country token points
         var countryTokenCount = 0;
-        if (ACTIVE_RULES.tokenOwnership && players.ownedCards && players.ownedCards[playerName]) {
-            if (typeof players.ownedCards[playerName] === 'object' && !Array.isArray(players.ownedCards[playerName])) {
-                Object.keys(players.ownedCards[playerName]).forEach(function(category) {
-                    if (Array.isArray(players.ownedCards[playerName][category])) {
+        var playersData = GameState.get('players');
+        if (ACTIVE_RULES.tokenOwnership && playersData.ownedCards && playersData.ownedCards[playerName]) {
+            if (typeof playersData.ownedCards[playerName] === 'object' && !Array.isArray(playersData.ownedCards[playerName])) {
+                Object.keys(playersData.ownedCards[playerName]).forEach(function(category) {
+                    if (Array.isArray(playersData.ownedCards[playerName][category])) {
                         countryTokenCount += getPlayerOwnedCards(playerName, category).length;
                     }
                 });
@@ -6027,16 +6034,17 @@ function updateScoresDisplay() {
                 
                 // Count country tokens (owned cards) for end-game scoring
                 var countryTokenCount = 0;
-                if (ACTIVE_RULES.tokenOwnership && players.ownedCards && players.ownedCards[player.name]) {
+                var playersData = GameState.get('players');
+                if (ACTIVE_RULES.tokenOwnership && playersData.ownedCards && playersData.ownedCards[player.name]) {
                     // Handle both new category-specific format and legacy format
-                    if (typeof players.ownedCards[player.name] === 'object' && !Array.isArray(players.ownedCards[player.name])) {
+                    if (typeof playersData.ownedCards[player.name] === 'object' && !Array.isArray(playersData.ownedCards[player.name])) {
                         // New format: count all owned cards across all categories
-                        Object.keys(players.ownedCards[player.name]).forEach(function(category) {
-                            if (Array.isArray(players.ownedCards[player.name][category])) {
+                        Object.keys(playersData.ownedCards[player.name]).forEach(function(category) {
+                            if (Array.isArray(playersData.ownedCards[player.name][category])) {
                                 countryTokenCount += getPlayerOwnedCards(player.name, category).length;
                             }
                         });
-                    } else if (Array.isArray(players.ownedCards[player.name])) {
+                    } else if (Array.isArray(playersData.ownedCards[player.name])) {
                         // Legacy format: direct array
                         var ownedCards = getPlayerOwnedCards(player.name);
                         countryTokenCount = Object.keys(ownedCards).reduce(function(total, cat) {

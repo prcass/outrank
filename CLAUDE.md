@@ -144,6 +144,18 @@ Outrank is a JavaScript-based trivia ranking game where players bid on how many 
 - **Session commands** → `source session-commands.sh` for easy git operations
 - **Emergency rollback** → `git checkout outrank-v2.1` always available
 
+## Repository Structure & Recovery
+- **Clean repository** → Core game files in root, research archived (July 2025)
+- **Research archive** → All 270+ development/research files preserved in `research-archive/`
+  - `data-extraction/` - Python scripts, CSV files, JSON datasets
+  - `validation-scripts/` - JavaScript update/test tools 
+  - `test-files/` - HTML test pages and debugging tools
+  - `backups-old/` - Historical backup files
+- **Fallback recovery options:**
+  1. **Git tag backup:** `git checkout repository-backup-pre-cleanup-20250720-145957`
+  2. **Research files:** All preserved in `research-archive/` directory structure
+  3. **Core game focus:** Repository now optimized for game development/maintenance
+
 ## Known Edge Cases
 - Token distribution must always sum correctly
 - Card IDs are country codes ("USA") or movie keys ("AVATAR")
