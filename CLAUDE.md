@@ -30,20 +30,39 @@ Outrank is a JavaScript-based trivia ranking game where players bid on how many 
 ## Core Game Mechanics
 
 ### Gameplay Flow
-1. **Bidding**: Players bid 1-10 cards they can rank correctly
-2. **Blocking**: Use tokens to block opponent's cards
-3. **Ranking**: Winner attempts to rank selected cards
+1. **Bidding**: Players bid 1-10 tokens they can rank correctly
+2. **Blocking**: Use block chips to block opponent's tokens
+3. **Ranking**: Winner attempts to rank selected tokens
 4. **Scoring**: Points for correct rankings + blocking bonuses
 
-### Token Economy
-- Start with blocking tokens: 2-point, 4-point, 6-point
-- Block cards = earn token value + own that card
-- End-game: 1 point per remaining token + owned cards
+### Token Economy & Terminology
+**IMPORTANT DISTINCTION:**
+- **Block Chips**: The 2-point, 4-point, 6-point chips you use to block
+- **Tokens**: The items you block (countries, movies, sports) - also called "cards" in code
 
-### Card Lifecycle
-- Used cards = permanently removed from pool
-- Blocked cards = owned by blocker when bidder fails
-- Pool refreshes with new cards each round
+**Game Mechanics:**
+- Start with 3 block chips: one 2-point, one 4-point, one 6-point
+
+**When bidder SUCCEEDS:**
+- Bidder gets points for ranking + receives all block chips that were bet against them
+- Blockers lose their block chips (transferred to bidder), get no points, get no tokens
+
+**When bidder FAILS:**
+- Blockers get points equal to their block chip value (2, 4, or 6 points)
+- Blockers keep their block chips (no transfer)
+- Blockers get ownership of the tokens they blocked
+- End-game: 1 point per remaining block chip + owned tokens
+
+**Statistics Tracking:**
+- `blocksMade` = number of times you used a block chip
+- `tokensGained` = number of tokens (items) you gained ownership of
+- When bidder fails: `blocksMade` = `tokensGained` (each block gives you a token)
+- When bidder succeeds: `blocksMade` > `tokensGained` (you lose chips, get no tokens)
+
+### Token Lifecycle  
+- Used tokens = permanently removed from pool
+- Blocked tokens = owned by blocker when bidder fails
+- Pool refreshes with new tokens each round
 - Token replacement screen shows:
   - Cards removed due to gameplay (ranking/blocking)
   - Equal number of replacement cards added
