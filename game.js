@@ -7276,6 +7276,12 @@ function automatedReveal() {
 // revealCompletionHandled moved to GameState - Prevent duplicate completion handling
 
 function automatedRevealNext() {
+    // Prevent infinite loop - if completion already handled, return immediately
+    if (GameState.get('revealCompletionHandled')) {
+        console.log('🔄 Reveal already completed, skipping');
+        return 'complete';
+    }
+    
     var finalRanking = GameState.get('finalRanking');
     var currentRevealIndex = GameState.get('currentRevealIndex') || 0;
     console.log('🤖 Automated reveal next - index:', currentRevealIndex, 'of', finalRanking.length);
