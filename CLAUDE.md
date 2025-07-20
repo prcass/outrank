@@ -101,6 +101,7 @@ Outrank is a JavaScript-based trivia ranking game where players bid on how many 
   - `summarize_changes.js` - Concise change summaries
 
 ## Version History
+- **2025-07-20 v2.3** `outrank-v2.3`: Critical scoring system fixes - performance optimization, statistics consistency, token transfer repairs, game mechanics clarification
 - **2025-07-20 v2.2** `outrank-v2.2`: Major dataset expansion - 40 countries, 32 comprehensive challenges with Crime Index, Pollution Index, Airports, Unemployment Rate, and complete World Bank indicators
 - **2025-07-14 v2.1** `outrank-v2.1`: All UI issues fixed, responsive design, leaderboard working
 - **2025-07-12 v2.0**: State management migration completed, Fast Automated Test functional  
