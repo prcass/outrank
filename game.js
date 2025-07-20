@@ -3596,7 +3596,19 @@ window.passPlayer = function(playerName) {
                 return !passedPlayers[name];
             });
             
-            if (activePlayers.length <= 1) {
+            // Fix: Check if all players except high bidder have passed
+            var nonBidderPassed = playersList.filter(function(name) {
+                return name !== highestBidder && passedPlayers[name];
+            });
+            var shouldEndBidding = (nonBidderPassed.length === playersList.length - 1) && 
+                                  validateInput(currentBid, 'number') && currentBid > 0;
+            
+            console.log('🔍 Bidding check: activePlayers=' + activePlayers.length + 
+                       ', nonBidderPassed=' + nonBidderPassed.length + 
+                       ', shouldEnd=' + shouldEndBidding + 
+                       ', highestBidder=' + highestBidder);
+                                  
+            if (activePlayers.length <= 1 || shouldEndBidding) {
                 if (!validateInput(currentBid, 'number') || currentBid === 0) {
                     safeConsoleLog('All players passed! Someone must make a bid.');
                     showNotification('All players passed! Someone must make a bid.', 'info');
