@@ -57,4 +57,4 @@ Press `Ctrl+C` in the terminal to stop the server.
 
 ## Production Deployment
 
-For production deployment, the files in the `outrank-deploy/` directory are ready to be served by any static web hosting service.
+For production deployment, the files in the `outrank-deploy/` directory are ready to be served by any static web hosting service.# Repository information added
