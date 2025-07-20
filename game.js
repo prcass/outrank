@@ -4374,9 +4374,22 @@ function showRankingInterface() {
         var scanInfo = DOMCache.get('scanInfo');
         if (scanInfo) {
             var gameState = GameState.data;
+            
+            // Determine ranking order from prompt text
+            var promptText = gameState.currentPrompt.label || '';
+            var isDescendingChallenge = promptText.includes('highest to lowest');
+            var isAscendingChallenge = promptText.includes('lowest to highest');
+            
+            // Default to descending if neither is specified
+            if (!isDescendingChallenge && !isAscendingChallenge) {
+                isDescendingChallenge = true;
+            }
+            
+            var rankingDirection = isAscendingChallenge ? 'lowest to highest' : 'highest to lowest';
+            
             var scanData = {
                 challengeLabel: gameState.currentPrompt.label,
-                description: 'Drag cards to rank them from highest to lowest'
+                description: 'Drag cards to rank them from ' + rankingDirection
             };
             safeSetHTML(scanInfo, TemplateEngine.render('scanInfo', scanData));
         }
@@ -4770,9 +4783,32 @@ window.revealNext = function() {
         var prevValue = prevItem ? prevItem[currentPrompt.challenge] : 0;
         var currentValue = currentItem ? currentItem[currentPrompt.challenge] : 0;
         
-        // Check if current value is lower than previous (should be descending)
-        if (currentValue > prevValue) {
-            // Sequence broken! Current card has higher value than previous
+        // Check sequence based on challenge type by examining the prompt text
+        var promptText = currentPrompt.label || '';
+        var isDescendingChallenge = promptText.includes('highest to lowest');
+        var isAscendingChallenge = promptText.includes('lowest to highest');
+        
+        // Default to descending if neither is specified (most challenges are highest to lowest)
+        if (!isDescendingChallenge && !isAscendingChallenge) {
+            isDescendingChallenge = true;
+        }
+        
+        console.log('🔍 Manual reveal order check:', {
+            challenge: currentPrompt.challenge,
+            isDescending: isDescendingChallenge,
+            isAscending: isAscendingChallenge,
+            prevValue: prevValue,
+            currentValue: currentValue,
+            prevCard: prevItem.name,
+            currentCard: currentItem.name
+        });
+        
+        var sequenceBroken = isDescendingChallenge ? 
+            (currentValue > prevValue) :  // Descending: current should be <= previous
+            (currentValue < prevValue);   // Ascending: current should be >= previous
+            
+        if (sequenceBroken) {
+            // Sequence broken!
             bidderSuccess = false;
             GameState.set('bidderSuccess', false);
             
@@ -7267,9 +7303,22 @@ function automatedRevealNext() {
         var prevValue = prevItem ? prevItem[currentPrompt.challenge] : 0;
         var currentValue = currentItem ? currentItem[currentPrompt.challenge] : 0;
         
-        // Check sequence based on challenge type - most challenges expect descending order (highest to lowest)
-        var isDescendingChallenge = true; // Most challenges are "highest to lowest"
-        // Exception challenges that expect ascending order would need special handling here
+        // Check sequence based on challenge type by examining the prompt text
+        var promptText = currentPrompt.label || '';
+        var isDescendingChallenge = promptText.includes('highest to lowest');
+        var isAscendingChallenge = promptText.includes('lowest to highest');
+        
+        // Default to descending if neither is specified (most challenges are highest to lowest)
+        if (!isDescendingChallenge && !isAscendingChallenge) {
+            isDescendingChallenge = true;
+        }
+        
+        console.log('🔍 Challenge order check:', {
+            challenge: currentPrompt.challenge,
+            isDescending: isDescendingChallenge,
+            isAscending: isAscendingChallenge,
+            promptText: promptText.substring(promptText.indexOf('Rank'), promptText.indexOf('</div>', promptText.indexOf('Rank')) + 6)
+        });
         
         var sequenceBroken = isDescendingChallenge ? 
             (currentValue > prevValue) :  // Descending: current should be <= previous
