@@ -1,0 +1,275 @@
+{
+  "creation_date": "2025-07-18",
+  "methodology": "User-selected 20 indicators from 36 with complete World Bank data coverage",
+  "coverage": "100% - All indicators have data for all 40 countries",
+  "countries": [
+    [
+      "DEU",
+      "Germany"
+    ],
+    [
+      "DNK",
+      "Denmark"
+    ],
+    [
+      "AUT",
+      "Austria"
+    ],
+    [
+      "LUX",
+      "Luxembourg"
+    ],
+    [
+      "TUR",
+      "Turkey"
+    ],
+    [
+      "USA",
+      "United States"
+    ],
+    [
+      "CHN",
+      "China"
+    ],
+    [
+      "JPN",
+      "Japan"
+    ],
+    [
+      "GBR",
+      "United Kingdom"
+    ],
+    [
+      "FRA",
+      "France"
+    ],
+    [
+      "ITA",
+      "Italy"
+    ],
+    [
+      "CAN",
+      "Canada"
+    ],
+    [
+      "AUS",
+      "Australia"
+    ],
+    [
+      "ESP",
+      "Spain"
+    ],
+    [
+      "NLD",
+      "Netherlands"
+    ],
+    [
+      "SWE",
+      "Sweden"
+    ],
+    [
+      "NOR",
+      "Norway"
+    ],
+    [
+      "FIN",
+      "Finland"
+    ],
+    [
+      "ISL",
+      "Iceland"
+    ],
+    [
+      "CHE",
+      "Switzerland"
+    ],
+    [
+      "BEL",
+      "Belgium"
+    ],
+    [
+      "NZL",
+      "New Zealand"
+    ],
+    [
+      "SGP",
+      "Singapore"
+    ],
+    [
+      "ISR",
+      "Israel"
+    ],
+    [
+      "IRL",
+      "Ireland"
+    ],
+    [
+      "BRA",
+      "Brazil"
+    ],
+    [
+      "MEX",
+      "Mexico"
+    ],
+    [
+      "ARG",
+      "Argentina"
+    ],
+    [
+      "CHL",
+      "Chile"
+    ],
+    [
+      "COL",
+      "Colombia"
+    ],
+    [
+      "POL",
+      "Poland"
+    ],
+    [
+      "CZE",
+      "Czech Republic"
+    ],
+    [
+      "THA",
+      "Thailand"
+    ],
+    [
+      "MYS",
+      "Malaysia"
+    ],
+    [
+      "PHL",
+      "Philippines"
+    ],
+    [
+      "IDN",
+      "Indonesia"
+    ],
+    [
+      "VNM",
+      "Vietnam"
+    ],
+    [
+      "IND",
+      "India"
+    ],
+    [
+      "ZAF",
+      "South Africa"
+    ],
+    [
+      "EGY",
+      "Egypt"
+    ]
+  ],
+  "indicators": [
+    {
+      "code": "SP.DYN.CBRT.IN",
+      "name": "Birth rate, crude (per 1,000 people)",
+      "category": "Demographics"
+    },
+    {
+      "code": "SP.DYN.LE00.IN",
+      "name": "Life expectancy at birth, total (years)",
+      "category": "Demographics"
+    },
+    {
+      "code": "SP.POP.0014.TO.ZS",
+      "name": "Population ages 0-14 (% of total population)",
+      "category": "Demographics"
+    },
+    {
+      "code": "SP.POP.65UP.TO.ZS",
+      "name": "Population ages 65 and above (% of total population)",
+      "category": "Demographics"
+    },
+    {
+      "code": "SP.POP.TOTL",
+      "name": "Population, total",
+      "category": "Demographics"
+    },
+    {
+      "code": "NY.GDP.MKTP.CD",
+      "name": "GDP (current US$)",
+      "category": "Economy"
+    },
+    {
+      "code": "NY.GDP.MKTP.KD.ZG",
+      "name": "GDP growth (annual %)",
+      "category": "Economy"
+    },
+    {
+      "code": "IT.NET.BBND.P2",
+      "name": "Fixed broadband subscriptions (per 100 people)",
+      "category": "Technology"
+    },
+    {
+      "code": "IT.CEL.SETS.P2",
+      "name": "Mobile cellular subscriptions (per 100 people)",
+      "category": "Technology"
+    },
+    {
+      "code": "IT.NET.SECR.P6",
+      "name": "Secure Internet servers (per 1 million people)",
+      "category": "Technology"
+    },
+    {
+      "code": "EG.ELC.COAL.ZS",
+      "name": "Electricity production from coal sources (% of total)",
+      "category": "Energy & Environment"
+    },
+    {
+      "code": "EG.ELC.PETR.ZS",
+      "name": "Electricity production from oil sources (% of total)",
+      "category": "Energy & Environment"
+    },
+    {
+      "code": "AG.LND.FRST.ZS",
+      "name": "Forest area (% of land area)",
+      "category": "Energy & Environment"
+    },
+    {
+      "code": "EG.FEC.RNEW.ZS",
+      "name": "Renewable energy consumption (% of total final energy consumption)",
+      "category": "Energy & Environment"
+    },
+    {
+      "code": "SH.XPD.CHEX.GD.ZS",
+      "name": "Current health expenditure (% of GDP)",
+      "category": "Health"
+    },
+    {
+      "code": "SE.TER.ENRR",
+      "name": "School enrollment, tertiary (% gross)",
+      "category": "Education"
+    },
+    {
+      "code": "SL.TLF.CACT.FE.ZS",
+      "name": "Labor force participation rate, female (% of female population ages 15+)",
+      "category": "Social & Innovation"
+    },
+    {
+      "code": "IP.PAT.RESD",
+      "name": "Patent applications, residents",
+      "category": "Social & Innovation"
+    },
+    {
+      "code": "SP.RUR.TOTL.ZS",
+      "name": "Rural population (% of total population)",
+      "category": "Social & Innovation"
+    },
+    {
+      "code": "SL.UEM.TOTL.ZS",
+      "name": "Unemployment, total (% of total labor force)",
+      "category": "Social & Innovation"
+    }
+  ],
+  "summary": {
+    "total_countries": 40,
+    "total_indicators": 20,
+    "total_combinations": 800,
+    "verified_coverage": "100%"
+  }
+}

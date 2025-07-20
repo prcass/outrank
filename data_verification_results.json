@@ -1,0 +1,256 @@
+{
+  "test_date": "2025-07-18 21:45:06",
+  "countries_tested": 5,
+  "indicators_tested": 9,
+  "data_matrix": {
+    "DEU": {
+      "SP.POP.TOTL": {
+        "value": 83510950,
+        "year": "2024"
+      },
+      "NY.GDP.PCAP.CD": {
+        "value": 55800.2194549412,
+        "year": "2024"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 80.5414634146342,
+        "year": "2023"
+      },
+      "IT.NET.USER.ZS": {
+        "value": 93.5,
+        "year": "2024"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 55.637,
+        "year": "2024"
+      },
+      "SH.DYN.MORT": {
+        "value": 3.7,
+        "year": "2023"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 32.685482024273,
+        "year": "2022"
+      }
+    },
+    "DNK": {
+      "SP.POP.TOTL": {
+        "value": 5976992,
+        "year": "2024"
+      },
+      "NY.GDP.PCAP.CD": {
+        "value": 71851.7562131368,
+        "year": "2024"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 81.8536585365854,
+        "year": "2023"
+      },
+      "IT.NET.USER.ZS": {
+        "value": 99.8,
+        "year": "2024"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 59.769,
+        "year": "2024"
+      },
+      "SH.DYN.MORT": {
+        "value": 3.4,
+        "year": "2023"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 15.758,
+        "year": "2022"
+      }
+    },
+    "AUT": {
+      "SP.POP.TOTL": {
+        "value": 9178482,
+        "year": "2024"
+      },
+      "NY.GDP.PCAP.CD": {
+        "value": 56833.1960472053,
+        "year": "2024"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 81.5414634146342,
+        "year": "2023"
+      },
+      "IT.NET.USER.ZS": {
+        "value": 94.9,
+        "year": "2024"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 55.551,
+        "year": "2024"
+      },
+      "SH.DYN.MORT": {
+        "value": 3.1,
+        "year": "2023"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 47.206131846825,
+        "year": "2022"
+      }
+    },
+    "LUX": {
+      "SP.POP.TOTL": {
+        "value": 677717,
+        "year": "2024"
+      },
+      "NY.GDP.PCAP.CD": {
+        "value": 137516.587324367,
+        "year": "2024"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 83.3585365853659,
+        "year": "2023"
+      },
+      "IT.NET.USER.ZS": {
+        "value": 98.8,
+        "year": "2024"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 57.096,
+        "year": "2024"
+      },
+      "SH.DYN.MORT": {
+        "value": 2.3,
+        "year": "2023"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 34.4538272103664,
+        "year": "2022"
+      }
+    },
+    "TUR": {
+      "SP.POP.TOTL": {
+        "value": 85518661,
+        "year": "2024"
+      },
+      "NY.GDP.PCAP.CD": {
+        "value": 15473.2872636856,
+        "year": "2024"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 77.156,
+        "year": "2023"
+      },
+      "IT.NET.USER.ZS": {
+        "value": 87.3,
+        "year": "2024"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 36.311,
+        "year": "2024"
+      },
+      "SH.DYN.MORT": {
+        "value": 12.8,
+        "year": "2023"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 29.2768733027559,
+        "year": "2022"
+      }
+    }
+  },
+  "missing_data": [
+    {
+      "country": "Germany",
+      "iso3": "DEU",
+      "indicator": "ST.INT.ARVL"
+    },
+    {
+      "country": "Germany",
+      "iso3": "DEU",
+      "indicator": "EN.ATM.CO2E.PC"
+    },
+    {
+      "country": "Denmark",
+      "iso3": "DNK",
+      "indicator": "ST.INT.ARVL"
+    },
+    {
+      "country": "Denmark",
+      "iso3": "DNK",
+      "indicator": "EN.ATM.CO2E.PC"
+    },
+    {
+      "country": "Austria",
+      "iso3": "AUT",
+      "indicator": "ST.INT.ARVL"
+    },
+    {
+      "country": "Austria",
+      "iso3": "AUT",
+      "indicator": "EN.ATM.CO2E.PC"
+    },
+    {
+      "country": "Luxembourg",
+      "iso3": "LUX",
+      "indicator": "ST.INT.ARVL"
+    },
+    {
+      "country": "Luxembourg",
+      "iso3": "LUX",
+      "indicator": "EN.ATM.CO2E.PC"
+    },
+    {
+      "country": "Turkey",
+      "iso3": "TUR",
+      "indicator": "ST.INT.ARVL"
+    },
+    {
+      "country": "Turkey",
+      "iso3": "TUR",
+      "indicator": "EN.ATM.CO2E.PC"
+    }
+  ],
+  "challenge_mappings": {
+    "Which country has the most people?": "SP.POP.TOTL",
+    "Which country has the youngest population?": "SP.POP.65UP.TO.ZS",
+    "Which country has the oldest population?": "SP.POP.65UP.TO.ZS",
+    "Which country has the highest life expectancy?": "SP.DYN.LE00.IN",
+    "Which country has the most women in the workforce?": "SL.TLF.CACT.FE.ZS",
+    "Which country has the lowest child mortality?": "SH.DYN.MORT",
+    "Which country has the highest birth rate?": "SP.DYN.CBRT.IN",
+    "Which country has the most urban population?": "SP.URB.TOTL.IN.ZS",
+    "Which country has the most rural population?": "SP.RUR.TOTL.ZS",
+    "Which country has the most refugees?": "SM.POP.REFG",
+    "Which country has the highest GDP per person?": "NY.GDP.PCAP.CD",
+    "Which country has the fastest economic growth?": "NY.GDP.MKTP.KD.ZG",
+    "Which country has the highest unemployment?": "SL.UEM.TOTL.ZS",
+    "Which country has the worst inflation?": "FP.CPI.TOTL.ZG",
+    "Which country is easiest to start a business?": "IC.BUS.EASE.XQ",
+    "Which country exports the most?": "NE.EXP.GNFS.CD",
+    "Which country imports the most?": "NE.IMP.GNFS.CD",
+    "Which country has the most income inequality?": "SI.POV.GINI",
+    "Which country has the highest minimum wage?": "NY.GDP.PCAP.CD",
+    "Which country has the most billionaires per capita?": "NY.GDP.PCAP.CD",
+    "Which country is most connected to the internet?": "IT.NET.USER.ZS",
+    "Which country has the most mobile phones per person?": "IT.CEL.SETS.P2",
+    "Which country has the fastest internet?": "IT.NET.BBND.P2",
+    "Which country spends most on research & development?": "GB.XPD.RSDV.GD.ZS",
+    "Which country has the most tech patents?": "IP.PAT.RESD",
+    "Which country pollutes the most CO2 per person?": "EN.ATM.CO2E.PC",
+    "Which country has the most renewable energy?": "EG.FEC.RNEW.ZS",
+    "Which country has the most forest coverage?": "AG.LND.FRST.ZS",
+    "Which country uses the most electricity per person?": "EG.USE.ELEC.KH.PC",
+    "Which country has the cleanest air?": "EN.ATM.PM25.MC.M3",
+    "Which country has the most overweight people?": "SH.STA.OWGH.ZS",
+    "Which country drinks the most alcohol?": "SH.ALC.PCAP.LI",
+    "Which country has the most smokers?": "SH.PRV.SMOK",
+    "Which country spends most on healthcare?": "SH.XPD.CHEX.GD.ZS",
+    "Which country has the most doctors per person?": "SH.MED.PHYS.ZS",
+    "Which country gets the most tourists?": "ST.INT.ARVL",
+    "Which country makes the most from tourism?": "ST.INT.RCPT.CD",
+    "Which country has the most airports?": "IS.AIR.DPRT",
+    "Which country has the strongest passport?": "NY.GDP.PCAP.CD",
+    "Which country has the most UNESCO sites?": "NY.GDP.PCAP.CD"
+  },
+  "coverage_analysis": {
+    "total_possible": 1600,
+    "estimated_missing": 44.44444444444444,
+    "estimated_coverage_percent": 97.22222222222223
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "038": {
+    "life_expectancy_value": 78.4,
+    "life_expectancy_year": "2023",
+    "internet_penetration_value": 93.1,
+    "internet_penetration_year": "2023"
+  },
+  "008": {
+    "life_expectancy_value": 78.0,
+    "life_expectancy_year": "2023",
+    "internet_penetration_value": 77.5,
+    "internet_penetration_year": "2023"
+  },
+  "022": {
+    "life_expectancy_value": 84.0,
+    "life_expectancy_year": "2023",
+    "internet_penetration_value": 87.0,
+    "internet_penetration_year": "2023"
+  },
+  "009": {
+    "life_expectancy_value": 80.5,
+    "life_expectancy_year": "2023",
+    "internet_penetration_value": 93.5,
+    "internet_penetration_year": "2024"
+  },
+  "015": {
+    "life_expectancy_value": 81.2,
+    "life_expectancy_year": "2023",
+    "internet_penetration_value": 96.3,
+    "internet_penetration_year": "2023"
+  }
+}

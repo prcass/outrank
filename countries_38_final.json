@@ -1,0 +1,411 @@
+{
+  "timestamp": "2025-07-18 21:43:44",
+  "selected_countries": [
+    {
+      "rank": 1,
+      "iso3": "DEU",
+      "name": "Germany",
+      "data_score": 60.0
+    },
+    {
+      "rank": 2,
+      "iso3": "DNK",
+      "name": "Denmark",
+      "data_score": 60.0
+    },
+    {
+      "rank": 3,
+      "iso3": "AUT",
+      "name": "Austria",
+      "data_score": 60.0
+    },
+    {
+      "rank": 5,
+      "iso3": "TUR",
+      "name": "Turkey",
+      "data_score": 60.0
+    },
+    {
+      "rank": 6,
+      "iso3": "USA",
+      "name": "United States",
+      "data_score": 40.0
+    },
+    {
+      "rank": 7,
+      "iso3": "CHN",
+      "name": "China",
+      "data_score": 40.0
+    },
+    {
+      "rank": 8,
+      "iso3": "JPN",
+      "name": "Japan",
+      "data_score": 40.0
+    },
+    {
+      "rank": 9,
+      "iso3": "GBR",
+      "name": "United Kingdom",
+      "data_score": 40.0
+    },
+    {
+      "rank": 10,
+      "iso3": "FRA",
+      "name": "France",
+      "data_score": 40.0
+    },
+    {
+      "rank": 11,
+      "iso3": "ITA",
+      "name": "Italy",
+      "data_score": 40.0
+    },
+    {
+      "rank": 12,
+      "iso3": "CAN",
+      "name": "Canada",
+      "data_score": 40.0
+    },
+    {
+      "rank": 13,
+      "iso3": "AUS",
+      "name": "Australia",
+      "data_score": 40.0
+    },
+    {
+      "rank": 14,
+      "iso3": "ESP",
+      "name": "Spain",
+      "data_score": 40.0
+    },
+    {
+      "rank": 15,
+      "iso3": "NLD",
+      "name": "Netherlands",
+      "data_score": 40.0
+    },
+    {
+      "rank": 16,
+      "iso3": "SWE",
+      "name": "Sweden",
+      "data_score": 40.0
+    },
+    {
+      "rank": 17,
+      "iso3": "NOR",
+      "name": "Norway",
+      "data_score": 40.0
+    },
+    {
+      "rank": 18,
+      "iso3": "FIN",
+      "name": "Finland",
+      "data_score": 40.0
+    },
+    {
+      "rank": 19,
+      "iso3": "ISL",
+      "name": "Iceland",
+      "data_score": 40.0
+    },
+    {
+      "rank": 20,
+      "iso3": "CHE",
+      "name": "Switzerland",
+      "data_score": 40.0
+    },
+    {
+      "rank": 21,
+      "iso3": "BEL",
+      "name": "Belgium",
+      "data_score": 40.0
+    },
+    {
+      "rank": 22,
+      "iso3": "NZL",
+      "name": "New Zealand",
+      "data_score": 40.0
+    },
+    {
+      "rank": 23,
+      "iso3": "SGP",
+      "name": "Singapore",
+      "data_score": 40.0
+    },
+    {
+      "rank": 24,
+      "iso3": "ISR",
+      "name": "Israel",
+      "data_score": 40.0
+    },
+    {
+      "rank": 25,
+      "iso3": "IRL",
+      "name": "Ireland",
+      "data_score": 40.0
+    },
+    {
+      "rank": 26,
+      "iso3": "BRA",
+      "name": "Brazil",
+      "data_score": 40.0
+    },
+    {
+      "rank": 27,
+      "iso3": "MEX",
+      "name": "Mexico",
+      "data_score": 40.0
+    },
+    {
+      "rank": 28,
+      "iso3": "ARG",
+      "name": "Argentina",
+      "data_score": 40.0
+    },
+    {
+      "rank": 29,
+      "iso3": "CHL",
+      "name": "Chile",
+      "data_score": 40.0
+    },
+    {
+      "rank": 30,
+      "iso3": "COL",
+      "name": "Colombia",
+      "data_score": 40.0
+    },
+    {
+      "rank": 31,
+      "iso3": "POL",
+      "name": "Poland",
+      "data_score": 40.0
+    },
+    {
+      "rank": 32,
+      "iso3": "CZE",
+      "name": "Czech Republic",
+      "data_score": 40.0
+    },
+    {
+      "rank": 33,
+      "iso3": "THA",
+      "name": "Thailand",
+      "data_score": 40.0
+    },
+    {
+      "rank": 34,
+      "iso3": "MYS",
+      "name": "Malaysia",
+      "data_score": 40.0
+    },
+    {
+      "rank": 35,
+      "iso3": "PHL",
+      "name": "Philippines",
+      "data_score": 40.0
+    },
+    {
+      "rank": 36,
+      "iso3": "IDN",
+      "name": "Indonesia",
+      "data_score": 40.0
+    },
+    {
+      "rank": 37,
+      "iso3": "VNM",
+      "name": "Vietnam",
+      "data_score": 40.0
+    },
+    {
+      "rank": 38,
+      "iso3": "IND",
+      "name": "India",
+      "data_score": 40.0
+    },
+    {
+      "rank": 39,
+      "iso3": "ZAF",
+      "name": "South Africa",
+      "data_score": 40.0
+    }
+  ],
+  "proposed_challenges": [
+    {
+      "id": 1,
+      "challenge": "Which country has the most people?"
+    },
+    {
+      "id": 2,
+      "challenge": "Which country has the youngest population?"
+    },
+    {
+      "id": 3,
+      "challenge": "Which country has the oldest population?"
+    },
+    {
+      "id": 4,
+      "challenge": "Which country has the highest life expectancy?"
+    },
+    {
+      "id": 5,
+      "challenge": "Which country has the most women in the workforce?"
+    },
+    {
+      "id": 6,
+      "challenge": "Which country has the lowest child mortality?"
+    },
+    {
+      "id": 7,
+      "challenge": "Which country has the highest birth rate?"
+    },
+    {
+      "id": 8,
+      "challenge": "Which country has the most urban population?"
+    },
+    {
+      "id": 9,
+      "challenge": "Which country has the most rural population?"
+    },
+    {
+      "id": 10,
+      "challenge": "Which country has the most refugees?"
+    },
+    {
+      "id": 11,
+      "challenge": "Which country has the highest GDP per person?"
+    },
+    {
+      "id": 12,
+      "challenge": "Which country has the fastest economic growth?"
+    },
+    {
+      "id": 13,
+      "challenge": "Which country has the highest unemployment?"
+    },
+    {
+      "id": 14,
+      "challenge": "Which country has the worst inflation?"
+    },
+    {
+      "id": 15,
+      "challenge": "Which country is easiest to start a business?"
+    },
+    {
+      "id": 16,
+      "challenge": "Which country exports the most?"
+    },
+    {
+      "id": 17,
+      "challenge": "Which country imports the most?"
+    },
+    {
+      "id": 18,
+      "challenge": "Which country has the most income inequality?"
+    },
+    {
+      "id": 19,
+      "challenge": "Which country has the highest minimum wage?"
+    },
+    {
+      "id": 20,
+      "challenge": "Which country has the most billionaires per capita?"
+    },
+    {
+      "id": 21,
+      "challenge": "Which country is most connected to the internet?"
+    },
+    {
+      "id": 22,
+      "challenge": "Which country has the most mobile phones per person?"
+    },
+    {
+      "id": 23,
+      "challenge": "Which country has the fastest internet?"
+    },
+    {
+      "id": 24,
+      "challenge": "Which country spends most on research & development?"
+    },
+    {
+      "id": 25,
+      "challenge": "Which country has the most tech patents?"
+    },
+    {
+      "id": 26,
+      "challenge": "Which country pollutes the most CO2 per person?"
+    },
+    {
+      "id": 27,
+      "challenge": "Which country has the most renewable energy?"
+    },
+    {
+      "id": 28,
+      "challenge": "Which country has the most forest coverage?"
+    },
+    {
+      "id": 29,
+      "challenge": "Which country uses the most electricity per person?"
+    },
+    {
+      "id": 30,
+      "challenge": "Which country has the cleanest air?"
+    },
+    {
+      "id": 31,
+      "challenge": "Which country has the most overweight people?"
+    },
+    {
+      "id": 32,
+      "challenge": "Which country drinks the most alcohol?"
+    },
+    {
+      "id": 33,
+      "challenge": "Which country has the most smokers?"
+    },
+    {
+      "id": 34,
+      "challenge": "Which country spends most on healthcare?"
+    },
+    {
+      "id": 35,
+      "challenge": "Which country has the most doctors per person?"
+    },
+    {
+      "id": 36,
+      "challenge": "Which country gets the most tourists?"
+    },
+    {
+      "id": 37,
+      "challenge": "Which country makes the most from tourism?"
+    },
+    {
+      "id": 38,
+      "challenge": "Which country has the most airports?"
+    },
+    {
+      "id": 39,
+      "challenge": "Which country has the strongest passport?"
+    },
+    {
+      "id": 40,
+      "challenge": "Which country has the most UNESCO sites?"
+    }
+  ],
+  "method": "Tested 5 core World Bank indicators for data availability",
+  "total_tested": 47,
+  "country_count_updated": 38,
+  "removed_countries": [
+    {
+      "name": "Luxembourg",
+      "iso3": "LUX",
+      "reason": "Missing data in happiness indicators"
+    },
+    {
+      "name": "Egypt",
+      "iso3": "EGY",
+      "reason": "Missing data in happiness indicators"
+    }
+  ],
+  "update_date": "2025-07-19 00:03:43"
+}

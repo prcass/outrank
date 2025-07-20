@@ -1,0 +1,293 @@
+{
+  "extraction_date": "2025-07-19 13:52:36",
+  "methodology": "Wikipedia curated sources",
+  "example_extraction": {
+    "ranking_name": "Apple Production",
+    "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_apple_production",
+    "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+    "source_url": "https://www.fao.org/faostat/en/#data/QCL",
+    "year": 2022,
+    "unit": "tonnes",
+    "total_world_production": 95835965,
+    "extraction_date": "2025-07-19 13:52:36",
+    "countries_data": {
+      "China": {
+        "rank": 1,
+        "production": 47571800,
+        "percentage_of_world": 49.6
+      },
+      "Turkey": {
+        "rank": 2,
+        "production": 4817500,
+        "percentage_of_world": 5.0
+      },
+      "United States": {
+        "rank": 3,
+        "production": 4429330,
+        "percentage_of_world": 4.6
+      },
+      "Poland": {
+        "rank": 4,
+        "production": 4264700,
+        "percentage_of_world": 4.4
+      },
+      "India": {
+        "rank": 5,
+        "production": 2589000,
+        "percentage_of_world": 2.7
+      },
+      "Italy": {
+        "rank": 6,
+        "production": 2304620,
+        "percentage_of_world": 2.4
+      },
+      "France": {
+        "rank": 7,
+        "production": 2155400,
+        "percentage_of_world": 2.2
+      },
+      "Chile": {
+        "rank": 8,
+        "production": 1759421,
+        "percentage_of_world": 1.8
+      },
+      "Germany": {
+        "rank": 9,
+        "production": 1023800,
+        "percentage_of_world": 1.1
+      },
+      "South Africa": {
+        "rank": 10,
+        "production": 1009830,
+        "percentage_of_world": 1.1
+      },
+      "Brazil": {
+        "rank": 11,
+        "production": 987952,
+        "percentage_of_world": 1.0
+      },
+      "Japan": {
+        "rank": 12,
+        "production": 762100,
+        "percentage_of_world": 0.8
+      },
+      "New Zealand": {
+        "rank": 13,
+        "production": 555500,
+        "percentage_of_world": 0.6
+      },
+      "Spain": {
+        "rank": 14,
+        "production": 552670,
+        "percentage_of_world": 0.6
+      },
+      "Canada": {
+        "rank": 15,
+        "production": 394894,
+        "percentage_of_world": 0.4
+      },
+      "Argentina": {
+        "rank": 16,
+        "production": 559149,
+        "percentage_of_world": 0.6
+      },
+      "Netherlands": {
+        "rank": 17,
+        "production": 280000,
+        "percentage_of_world": 0.3
+      },
+      "Australia": {
+        "rank": 18,
+        "production": 276361,
+        "percentage_of_world": 0.3
+      },
+      "Belgium": {
+        "rank": 19,
+        "production": 218440,
+        "percentage_of_world": 0.2
+      },
+      "Austria": {
+        "rank": 20,
+        "production": 213149,
+        "percentage_of_world": 0.2
+      }
+    },
+    "total_countries_ranked": 95,
+    "coverage_notes": "Complete ranking from 1-95 available on Wikipedia"
+  },
+  "coverage_analysis": {
+    "countries_found": 20,
+    "countries_missing": 18,
+    "coverage_percent": 52.63157894736842,
+    "found_details": [
+      {
+        "country": "Germany",
+        "rank": 9,
+        "value": 1023800
+      },
+      {
+        "country": "Austria",
+        "rank": 20,
+        "value": 213149
+      },
+      {
+        "country": "Turkey",
+        "rank": 2,
+        "value": 4817500
+      },
+      {
+        "country": "United States",
+        "rank": 3,
+        "value": 4429330
+      },
+      {
+        "country": "China",
+        "rank": 1,
+        "value": 47571800
+      },
+      {
+        "country": "Japan",
+        "rank": 12,
+        "value": 762100
+      },
+      {
+        "country": "France",
+        "rank": 7,
+        "value": 2155400
+      },
+      {
+        "country": "Italy",
+        "rank": 6,
+        "value": 2304620
+      },
+      {
+        "country": "Canada",
+        "rank": 15,
+        "value": 394894
+      },
+      {
+        "country": "Australia",
+        "rank": 18,
+        "value": 276361
+      },
+      {
+        "country": "Spain",
+        "rank": 14,
+        "value": 552670
+      },
+      {
+        "country": "Netherlands",
+        "rank": 17,
+        "value": 280000
+      },
+      {
+        "country": "Belgium",
+        "rank": 19,
+        "value": 218440
+      },
+      {
+        "country": "New Zealand",
+        "rank": 13,
+        "value": 555500
+      },
+      {
+        "country": "Brazil",
+        "rank": 11,
+        "value": 987952
+      },
+      {
+        "country": "Argentina",
+        "rank": 16,
+        "value": 559149
+      },
+      {
+        "country": "Chile",
+        "rank": 8,
+        "value": 1759421
+      },
+      {
+        "country": "Poland",
+        "rank": 4,
+        "value": 4264700
+      },
+      {
+        "country": "India",
+        "rank": 5,
+        "value": 2589000
+      },
+      {
+        "country": "South Africa",
+        "rank": 10,
+        "value": 1009830
+      }
+    ],
+    "missing_countries": [
+      "Denmark",
+      "United Kingdom",
+      "Sweden",
+      "Norway",
+      "Finland",
+      "Iceland",
+      "Switzerland",
+      "Singapore",
+      "Israel",
+      "Ireland",
+      "Mexico",
+      "Colombia",
+      "Czech Republic",
+      "Thailand",
+      "Malaysia",
+      "Philippines",
+      "Indonesia",
+      "Vietnam"
+    ]
+  },
+  "extraction_template": {
+    "methodology": "Follow Wikipedia's curated links to original sources",
+    "process": [
+      "1. Visit Wikipedia ranking page (e.g., List of countries by X production)",
+      "2. Identify the source (usually FAO, World Bank, UN, etc.)",
+      "3. Note the data year",
+      "4. Extract complete ranking table (all countries)",
+      "5. Preserve source citations and external links",
+      "6. Calculate coverage for our 38 countries"
+    ],
+    "agriculture_rankings_to_extract": [
+      {
+        "name": "Apple production",
+        "url": "https://en.wikipedia.org/wiki/List_of_countries_by_apple_production",
+        "expected_source": "FAO"
+      },
+      {
+        "name": "Apricot production",
+        "url": "https://en.wikipedia.org/wiki/List_of_countries_by_apricot_production",
+        "expected_source": "FAO"
+      },
+      {
+        "name": "Coffee production",
+        "url": "https://en.wikipedia.org/wiki/List_of_countries_by_coffee_production",
+        "expected_source": "International Coffee Organization"
+      },
+      {
+        "name": "Wine production",
+        "url": "https://en.wikipedia.org/wiki/List_of_wine-producing_countries",
+        "expected_source": "International Organisation of Vine and Wine"
+      },
+      {
+        "name": "Wheat production",
+        "url": "https://en.wikipedia.org/wiki/International_wheat_production_statistics",
+        "expected_source": "FAO"
+      },
+      {
+        "name": "Rice production",
+        "url": "https://en.wikipedia.org/wiki/List_of_countries_by_rice_production",
+        "expected_source": "FAO"
+      },
+      {
+        "name": "Forest area",
+        "url": "https://en.wikipedia.org/wiki/List_of_countries_by_forest_area",
+        "expected_source": "FAO/World Bank"
+      }
+    ]
+  }
+}

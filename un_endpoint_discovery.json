@@ -1,0 +1,10 @@
+{
+  "test_date": "2025-07-18 23:12:42",
+  "working_data_endpoints": [],
+  "working_base_endpoints": [
+    "https://unstats.un.org/SDGAPI/swagger/",
+    "https://unstats.un.org/sdgapi/swagger/"
+  ],
+  "status": "no_data_endpoints_found",
+  "next_steps": "Research UN API documentation"
+}

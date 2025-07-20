@@ -1,0 +1,1054 @@
+{
+  "test_date": "2025-07-18 21:59:33",
+  "countries_tested": 10,
+  "indicators_tested": 40,
+  "average_coverage": 69.5,
+  "country_results": {
+    "DEU": {
+      "name": "Germany",
+      "available": 27,
+      "missing": 13,
+      "coverage_percent": 67.5,
+      "missing_indicators": [
+        {
+          "challenge_id": 10,
+          "wb_code": "SM.POP.REFG",
+          "description": "Refugee population"
+        },
+        {
+          "challenge_id": 15,
+          "wb_code": "IC.BUS.EASE.XQ",
+          "description": "Ease of doing business"
+        },
+        {
+          "challenge_id": 18,
+          "wb_code": "SI.POV.GINI",
+          "description": "Gini coefficient"
+        },
+        {
+          "challenge_id": 25,
+          "wb_code": "IP.PAT.RESD",
+          "description": "Patent applications"
+        },
+        {
+          "challenge_id": 26,
+          "wb_code": "EN.ATM.CO2E.PC",
+          "description": "CO2 emissions per capita"
+        },
+        {
+          "challenge_id": 27,
+          "wb_code": "EG.FEC.RNEW.ZS",
+          "description": "Renewable energy %"
+        },
+        {
+          "challenge_id": 30,
+          "wb_code": "EN.ATM.PM25.MC.M3",
+          "description": "PM2.5 air pollution"
+        },
+        {
+          "challenge_id": 31,
+          "wb_code": "SH.STA.OWGH.ZS",
+          "description": "Overweight prevalence"
+        },
+        {
+          "challenge_id": 32,
+          "wb_code": "SH.ALC.PCAP.LI",
+          "description": "Alcohol consumption"
+        },
+        {
+          "challenge_id": 35,
+          "wb_code": "SH.MED.PHYS.ZS",
+          "description": "Physicians per 1000"
+        },
+        {
+          "challenge_id": 36,
+          "wb_code": "ST.INT.ARVL",
+          "description": "Tourist arrivals"
+        },
+        {
+          "challenge_id": 37,
+          "wb_code": "ST.INT.RCPT.CD",
+          "description": "Tourism receipts"
+        },
+        {
+          "challenge_id": 38,
+          "wb_code": "IS.AIR.DPRT",
+          "description": "Air transport departures"
+        }
+      ]
+    },
+    "DNK": {
+      "name": "Denmark",
+      "available": 28,
+      "missing": 12,
+      "coverage_percent": 70.0,
+      "missing_indicators": [
+        {
+          "challenge_id": 10,
+          "wb_code": "SM.POP.REFG",
+          "description": "Refugee population"
+        },
+        {
+          "challenge_id": 15,
+          "wb_code": "IC.BUS.EASE.XQ",
+          "description": "Ease of doing business"
+        },
+        {
+          "challenge_id": 25,
+          "wb_code": "IP.PAT.RESD",
+          "description": "Patent applications"
+        },
+        {
+          "challenge_id": 26,
+          "wb_code": "EN.ATM.CO2E.PC",
+          "description": "CO2 emissions per capita"
+        },
+        {
+          "challenge_id": 27,
+          "wb_code": "EG.FEC.RNEW.ZS",
+          "description": "Renewable energy %"
+        },
+        {
+          "challenge_id": 30,
+          "wb_code": "EN.ATM.PM25.MC.M3",
+          "description": "PM2.5 air pollution"
+        },
+        {
+          "challenge_id": 31,
+          "wb_code": "SH.STA.OWGH.ZS",
+          "description": "Overweight prevalence"
+        },
+        {
+          "challenge_id": 32,
+          "wb_code": "SH.ALC.PCAP.LI",
+          "description": "Alcohol consumption"
+        },
+        {
+          "challenge_id": 35,
+          "wb_code": "SH.MED.PHYS.ZS",
+          "description": "Physicians per 1000"
+        },
+        {
+          "challenge_id": 36,
+          "wb_code": "ST.INT.ARVL",
+          "description": "Tourist arrivals"
+        },
+        {
+          "challenge_id": 37,
+          "wb_code": "ST.INT.RCPT.CD",
+          "description": "Tourism receipts"
+        },
+        {
+          "challenge_id": 38,
+          "wb_code": "IS.AIR.DPRT",
+          "description": "Air transport departures"
+        }
+      ]
+    },
+    "AUT": {
+      "name": "Austria",
+      "available": 29,
+      "missing": 11,
+      "coverage_percent": 72.5,
+      "missing_indicators": [
+        {
+          "challenge_id": 10,
+          "wb_code": "SM.POP.REFG",
+          "description": "Refugee population"
+        },
+        {
+          "challenge_id": 15,
+          "wb_code": "IC.BUS.EASE.XQ",
+          "description": "Ease of doing business"
+        },
+        {
+          "challenge_id": 25,
+          "wb_code": "IP.PAT.RESD",
+          "description": "Patent applications"
+        },
+        {
+          "challenge_id": 26,
+          "wb_code": "EN.ATM.CO2E.PC",
+          "description": "CO2 emissions per capita"
+        },
+        {
+          "challenge_id": 27,
+          "wb_code": "EG.FEC.RNEW.ZS",
+          "description": "Renewable energy %"
+        },
+        {
+          "challenge_id": 30,
+          "wb_code": "EN.ATM.PM25.MC.M3",
+          "description": "PM2.5 air pollution"
+        },
+        {
+          "challenge_id": 31,
+          "wb_code": "SH.STA.OWGH.ZS",
+          "description": "Overweight prevalence"
+        },
+        {
+          "challenge_id": 32,
+          "wb_code": "SH.ALC.PCAP.LI",
+          "description": "Alcohol consumption"
+        },
+        {
+          "challenge_id": 36,
+          "wb_code": "ST.INT.ARVL",
+          "description": "Tourist arrivals"
+        },
+        {
+          "challenge_id": 37,
+          "wb_code": "ST.INT.RCPT.CD",
+          "description": "Tourism receipts"
+        },
+        {
+          "challenge_id": 38,
+          "wb_code": "IS.AIR.DPRT",
+          "description": "Air transport departures"
+        }
+      ]
+    },
+    "LUX": {
+      "name": "Luxembourg",
+      "available": 28,
+      "missing": 12,
+      "coverage_percent": 70.0,
+      "missing_indicators": [
+        {
+          "challenge_id": 10,
+          "wb_code": "SM.POP.REFG",
+          "description": "Refugee population"
+        },
+        {
+          "challenge_id": 15,
+          "wb_code": "IC.BUS.EASE.XQ",
+          "description": "Ease of doing business"
+        },
+        {
+          "challenge_id": 25,
+          "wb_code": "IP.PAT.RESD",
+          "description": "Patent applications"
+        },
+        {
+          "challenge_id": 26,
+          "wb_code": "EN.ATM.CO2E.PC",
+          "description": "CO2 emissions per capita"
+        },
+        {
+          "challenge_id": 27,
+          "wb_code": "EG.FEC.RNEW.ZS",
+          "description": "Renewable energy %"
+        },
+        {
+          "challenge_id": 30,
+          "wb_code": "EN.ATM.PM25.MC.M3",
+          "description": "PM2.5 air pollution"
+        },
+        {
+          "challenge_id": 31,
+          "wb_code": "SH.STA.OWGH.ZS",
+          "description": "Overweight prevalence"
+        },
+        {
+          "challenge_id": 32,
+          "wb_code": "SH.ALC.PCAP.LI",
+          "description": "Alcohol consumption"
+        },
+        {
+          "challenge_id": 35,
+          "wb_code": "SH.MED.PHYS.ZS",
+          "description": "Physicians per 1000"
+        },
+        {
+          "challenge_id": 36,
+          "wb_code": "ST.INT.ARVL",
+          "description": "Tourist arrivals"
+        },
+        {
+          "challenge_id": 37,
+          "wb_code": "ST.INT.RCPT.CD",
+          "description": "Tourism receipts"
+        },
+        {
+          "challenge_id": 38,
+          "wb_code": "IS.AIR.DPRT",
+          "description": "Air transport departures"
+        }
+      ]
+    },
+    "TUR": {
+      "name": "Turkey",
+      "available": 28,
+      "missing": 12,
+      "coverage_percent": 70.0,
+      "missing_indicators": [
+        {
+          "challenge_id": 10,
+          "wb_code": "SM.POP.REFG",
+          "description": "Refugee population"
+        },
+        {
+          "challenge_id": 15,
+          "wb_code": "IC.BUS.EASE.XQ",
+          "description": "Ease of doing business"
+        },
+        {
+          "challenge_id": 25,
+          "wb_code": "IP.PAT.RESD",
+          "description": "Patent applications"
+        },
+        {
+          "challenge_id": 26,
+          "wb_code": "EN.ATM.CO2E.PC",
+          "description": "CO2 emissions per capita"
+        },
+        {
+          "challenge_id": 27,
+          "wb_code": "EG.FEC.RNEW.ZS",
+          "description": "Renewable energy %"
+        },
+        {
+          "challenge_id": 30,
+          "wb_code": "EN.ATM.PM25.MC.M3",
+          "description": "PM2.5 air pollution"
+        },
+        {
+          "challenge_id": 31,
+          "wb_code": "SH.STA.OWGH.ZS",
+          "description": "Overweight prevalence"
+        },
+        {
+          "challenge_id": 32,
+          "wb_code": "SH.ALC.PCAP.LI",
+          "description": "Alcohol consumption"
+        },
+        {
+          "challenge_id": 35,
+          "wb_code": "SH.MED.PHYS.ZS",
+          "description": "Physicians per 1000"
+        },
+        {
+          "challenge_id": 36,
+          "wb_code": "ST.INT.ARVL",
+          "description": "Tourist arrivals"
+        },
+        {
+          "challenge_id": 37,
+          "wb_code": "ST.INT.RCPT.CD",
+          "description": "Tourism receipts"
+        },
+        {
+          "challenge_id": 38,
+          "wb_code": "IS.AIR.DPRT",
+          "description": "Air transport departures"
+        }
+      ]
+    },
+    "USA": {
+      "name": "United States",
+      "available": 29,
+      "missing": 11,
+      "coverage_percent": 72.5,
+      "missing_indicators": [
+        {
+          "challenge_id": 10,
+          "wb_code": "SM.POP.REFG",
+          "description": "Refugee population"
+        },
+        {
+          "challenge_id": 15,
+          "wb_code": "IC.BUS.EASE.XQ",
+          "description": "Ease of doing business"
+        },
+        {
+          "challenge_id": 25,
+          "wb_code": "IP.PAT.RESD",
+          "description": "Patent applications"
+        },
+        {
+          "challenge_id": 26,
+          "wb_code": "EN.ATM.CO2E.PC",
+          "description": "CO2 emissions per capita"
+        },
+        {
+          "challenge_id": 27,
+          "wb_code": "EG.FEC.RNEW.ZS",
+          "description": "Renewable energy %"
+        },
+        {
+          "challenge_id": 30,
+          "wb_code": "EN.ATM.PM25.MC.M3",
+          "description": "PM2.5 air pollution"
+        },
+        {
+          "challenge_id": 32,
+          "wb_code": "SH.ALC.PCAP.LI",
+          "description": "Alcohol consumption"
+        },
+        {
+          "challenge_id": 35,
+          "wb_code": "SH.MED.PHYS.ZS",
+          "description": "Physicians per 1000"
+        },
+        {
+          "challenge_id": 36,
+          "wb_code": "ST.INT.ARVL",
+          "description": "Tourist arrivals"
+        },
+        {
+          "challenge_id": 37,
+          "wb_code": "ST.INT.RCPT.CD",
+          "description": "Tourism receipts"
+        },
+        {
+          "challenge_id": 38,
+          "wb_code": "IS.AIR.DPRT",
+          "description": "Air transport departures"
+        }
+      ]
+    },
+    "CHN": {
+      "name": "China",
+      "available": 27,
+      "missing": 13,
+      "coverage_percent": 67.5,
+      "missing_indicators": [
+        {
+          "challenge_id": 10,
+          "wb_code": "SM.POP.REFG",
+          "description": "Refugee population"
+        },
+        {
+          "challenge_id": 15,
+          "wb_code": "IC.BUS.EASE.XQ",
+          "description": "Ease of doing business"
+        },
+        {
+          "challenge_id": 18,
+          "wb_code": "SI.POV.GINI",
+          "description": "Gini coefficient"
+        },
+        {
+          "challenge_id": 25,
+          "wb_code": "IP.PAT.RESD",
+          "description": "Patent applications"
+        },
+        {
+          "challenge_id": 26,
+          "wb_code": "EN.ATM.CO2E.PC",
+          "description": "CO2 emissions per capita"
+        },
+        {
+          "challenge_id": 27,
+          "wb_code": "EG.FEC.RNEW.ZS",
+          "description": "Renewable energy %"
+        },
+        {
+          "challenge_id": 30,
+          "wb_code": "EN.ATM.PM25.MC.M3",
+          "description": "PM2.5 air pollution"
+        },
+        {
+          "challenge_id": 31,
+          "wb_code": "SH.STA.OWGH.ZS",
+          "description": "Overweight prevalence"
+        },
+        {
+          "challenge_id": 32,
+          "wb_code": "SH.ALC.PCAP.LI",
+          "description": "Alcohol consumption"
+        },
+        {
+          "challenge_id": 35,
+          "wb_code": "SH.MED.PHYS.ZS",
+          "description": "Physicians per 1000"
+        },
+        {
+          "challenge_id": 36,
+          "wb_code": "ST.INT.ARVL",
+          "description": "Tourist arrivals"
+        },
+        {
+          "challenge_id": 37,
+          "wb_code": "ST.INT.RCPT.CD",
+          "description": "Tourism receipts"
+        },
+        {
+          "challenge_id": 38,
+          "wb_code": "IS.AIR.DPRT",
+          "description": "Air transport departures"
+        }
+      ]
+    },
+    "JPN": {
+      "name": "Japan",
+      "available": 27,
+      "missing": 13,
+      "coverage_percent": 67.5,
+      "missing_indicators": [
+        {
+          "challenge_id": 10,
+          "wb_code": "SM.POP.REFG",
+          "description": "Refugee population"
+        },
+        {
+          "challenge_id": 15,
+          "wb_code": "IC.BUS.EASE.XQ",
+          "description": "Ease of doing business"
+        },
+        {
+          "challenge_id": 18,
+          "wb_code": "SI.POV.GINI",
+          "description": "Gini coefficient"
+        },
+        {
+          "challenge_id": 25,
+          "wb_code": "IP.PAT.RESD",
+          "description": "Patent applications"
+        },
+        {
+          "challenge_id": 26,
+          "wb_code": "EN.ATM.CO2E.PC",
+          "description": "CO2 emissions per capita"
+        },
+        {
+          "challenge_id": 27,
+          "wb_code": "EG.FEC.RNEW.ZS",
+          "description": "Renewable energy %"
+        },
+        {
+          "challenge_id": 30,
+          "wb_code": "EN.ATM.PM25.MC.M3",
+          "description": "PM2.5 air pollution"
+        },
+        {
+          "challenge_id": 31,
+          "wb_code": "SH.STA.OWGH.ZS",
+          "description": "Overweight prevalence"
+        },
+        {
+          "challenge_id": 32,
+          "wb_code": "SH.ALC.PCAP.LI",
+          "description": "Alcohol consumption"
+        },
+        {
+          "challenge_id": 35,
+          "wb_code": "SH.MED.PHYS.ZS",
+          "description": "Physicians per 1000"
+        },
+        {
+          "challenge_id": 36,
+          "wb_code": "ST.INT.ARVL",
+          "description": "Tourist arrivals"
+        },
+        {
+          "challenge_id": 37,
+          "wb_code": "ST.INT.RCPT.CD",
+          "description": "Tourism receipts"
+        },
+        {
+          "challenge_id": 38,
+          "wb_code": "IS.AIR.DPRT",
+          "description": "Air transport departures"
+        }
+      ]
+    },
+    "GBR": {
+      "name": "United Kingdom",
+      "available": 27,
+      "missing": 13,
+      "coverage_percent": 67.5,
+      "missing_indicators": [
+        {
+          "challenge_id": 10,
+          "wb_code": "SM.POP.REFG",
+          "description": "Refugee population"
+        },
+        {
+          "challenge_id": 15,
+          "wb_code": "IC.BUS.EASE.XQ",
+          "description": "Ease of doing business"
+        },
+        {
+          "challenge_id": 18,
+          "wb_code": "SI.POV.GINI",
+          "description": "Gini coefficient"
+        },
+        {
+          "challenge_id": 24,
+          "wb_code": "GB.XPD.RSDV.GD.ZS",
+          "description": "R&D expenditure"
+        },
+        {
+          "challenge_id": 25,
+          "wb_code": "IP.PAT.RESD",
+          "description": "Patent applications"
+        },
+        {
+          "challenge_id": 26,
+          "wb_code": "EN.ATM.CO2E.PC",
+          "description": "CO2 emissions per capita"
+        },
+        {
+          "challenge_id": 27,
+          "wb_code": "EG.FEC.RNEW.ZS",
+          "description": "Renewable energy %"
+        },
+        {
+          "challenge_id": 30,
+          "wb_code": "EN.ATM.PM25.MC.M3",
+          "description": "PM2.5 air pollution"
+        },
+        {
+          "challenge_id": 31,
+          "wb_code": "SH.STA.OWGH.ZS",
+          "description": "Overweight prevalence"
+        },
+        {
+          "challenge_id": 32,
+          "wb_code": "SH.ALC.PCAP.LI",
+          "description": "Alcohol consumption"
+        },
+        {
+          "challenge_id": 36,
+          "wb_code": "ST.INT.ARVL",
+          "description": "Tourist arrivals"
+        },
+        {
+          "challenge_id": 37,
+          "wb_code": "ST.INT.RCPT.CD",
+          "description": "Tourism receipts"
+        },
+        {
+          "challenge_id": 38,
+          "wb_code": "IS.AIR.DPRT",
+          "description": "Air transport departures"
+        }
+      ]
+    },
+    "FRA": {
+      "name": "France",
+      "available": 28,
+      "missing": 12,
+      "coverage_percent": 70.0,
+      "missing_indicators": [
+        {
+          "challenge_id": 10,
+          "wb_code": "SM.POP.REFG",
+          "description": "Refugee population"
+        },
+        {
+          "challenge_id": 15,
+          "wb_code": "IC.BUS.EASE.XQ",
+          "description": "Ease of doing business"
+        },
+        {
+          "challenge_id": 25,
+          "wb_code": "IP.PAT.RESD",
+          "description": "Patent applications"
+        },
+        {
+          "challenge_id": 26,
+          "wb_code": "EN.ATM.CO2E.PC",
+          "description": "CO2 emissions per capita"
+        },
+        {
+          "challenge_id": 27,
+          "wb_code": "EG.FEC.RNEW.ZS",
+          "description": "Renewable energy %"
+        },
+        {
+          "challenge_id": 30,
+          "wb_code": "EN.ATM.PM25.MC.M3",
+          "description": "PM2.5 air pollution"
+        },
+        {
+          "challenge_id": 31,
+          "wb_code": "SH.STA.OWGH.ZS",
+          "description": "Overweight prevalence"
+        },
+        {
+          "challenge_id": 32,
+          "wb_code": "SH.ALC.PCAP.LI",
+          "description": "Alcohol consumption"
+        },
+        {
+          "challenge_id": 35,
+          "wb_code": "SH.MED.PHYS.ZS",
+          "description": "Physicians per 1000"
+        },
+        {
+          "challenge_id": 36,
+          "wb_code": "ST.INT.ARVL",
+          "description": "Tourist arrivals"
+        },
+        {
+          "challenge_id": 37,
+          "wb_code": "ST.INT.RCPT.CD",
+          "description": "Tourism receipts"
+        },
+        {
+          "challenge_id": 38,
+          "wb_code": "IS.AIR.DPRT",
+          "description": "Air transport departures"
+        }
+      ]
+    }
+  },
+  "overall_missing_patterns": {
+    "SM.POP.REFG": {
+      "count": 10,
+      "countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Luxembourg",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "France"
+      ]
+    },
+    "IC.BUS.EASE.XQ": {
+      "count": 10,
+      "countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Luxembourg",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "France"
+      ]
+    },
+    "SI.POV.GINI": {
+      "count": 4,
+      "countries": [
+        "Germany",
+        "China",
+        "Japan",
+        "United Kingdom"
+      ]
+    },
+    "IP.PAT.RESD": {
+      "count": 10,
+      "countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Luxembourg",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "France"
+      ]
+    },
+    "EN.ATM.CO2E.PC": {
+      "count": 10,
+      "countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Luxembourg",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "France"
+      ]
+    },
+    "EG.FEC.RNEW.ZS": {
+      "count": 10,
+      "countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Luxembourg",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "France"
+      ]
+    },
+    "EN.ATM.PM25.MC.M3": {
+      "count": 10,
+      "countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Luxembourg",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "France"
+      ]
+    },
+    "SH.STA.OWGH.ZS": {
+      "count": 9,
+      "countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Luxembourg",
+        "Turkey",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "France"
+      ]
+    },
+    "SH.ALC.PCAP.LI": {
+      "count": 10,
+      "countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Luxembourg",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "France"
+      ]
+    },
+    "SH.MED.PHYS.ZS": {
+      "count": 8,
+      "countries": [
+        "Germany",
+        "Denmark",
+        "Luxembourg",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "France"
+      ]
+    },
+    "ST.INT.ARVL": {
+      "count": 10,
+      "countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Luxembourg",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "France"
+      ]
+    },
+    "ST.INT.RCPT.CD": {
+      "count": 10,
+      "countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Luxembourg",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "France"
+      ]
+    },
+    "IS.AIR.DPRT": {
+      "count": 10,
+      "countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Luxembourg",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "France"
+      ]
+    },
+    "GB.XPD.RSDV.GD.ZS": {
+      "count": 1,
+      "countries": [
+        "United Kingdom"
+      ]
+    }
+  },
+  "challenge_indicators": {
+    "1": [
+      "SP.POP.TOTL",
+      "Population"
+    ],
+    "2": [
+      "SP.POP.65UP.TO.ZS",
+      "Population 65+ %"
+    ],
+    "3": [
+      "SP.POP.65UP.TO.ZS",
+      "Population 65+ %"
+    ],
+    "4": [
+      "SP.DYN.LE00.IN",
+      "Life expectancy"
+    ],
+    "5": [
+      "SL.TLF.CACT.FE.ZS",
+      "Female labor participation"
+    ],
+    "6": [
+      "SH.DYN.MORT",
+      "Child mortality"
+    ],
+    "7": [
+      "SP.DYN.CBRT.IN",
+      "Birth rate"
+    ],
+    "8": [
+      "SP.URB.TOTL.IN.ZS",
+      "Urban population %"
+    ],
+    "9": [
+      "SP.RUR.TOTL.ZS",
+      "Rural population %"
+    ],
+    "10": [
+      "SM.POP.REFG",
+      "Refugee population"
+    ],
+    "11": [
+      "NY.GDP.PCAP.CD",
+      "GDP per capita"
+    ],
+    "12": [
+      "NY.GDP.MKTP.KD.ZG",
+      "GDP growth"
+    ],
+    "13": [
+      "SL.UEM.TOTL.ZS",
+      "Unemployment rate"
+    ],
+    "14": [
+      "FP.CPI.TOTL.ZG",
+      "Inflation rate"
+    ],
+    "15": [
+      "IC.BUS.EASE.XQ",
+      "Ease of doing business"
+    ],
+    "16": [
+      "NE.EXP.GNFS.CD",
+      "Exports"
+    ],
+    "17": [
+      "NE.IMP.GNFS.CD",
+      "Imports"
+    ],
+    "18": [
+      "SI.POV.GINI",
+      "Gini coefficient"
+    ],
+    "19": [
+      "NY.GDP.PCAP.CD",
+      "GDP per capita (proxy)"
+    ],
+    "20": [
+      "NY.GDP.PCAP.CD",
+      "GDP per capita (proxy)"
+    ],
+    "21": [
+      "IT.NET.USER.ZS",
+      "Internet users %"
+    ],
+    "22": [
+      "IT.CEL.SETS.P2",
+      "Mobile subscriptions"
+    ],
+    "23": [
+      "IT.NET.BBND.P2",
+      "Broadband subscriptions"
+    ],
+    "24": [
+      "GB.XPD.RSDV.GD.ZS",
+      "R&D expenditure"
+    ],
+    "25": [
+      "IP.PAT.RESD",
+      "Patent applications"
+    ],
+    "26": [
+      "EN.ATM.CO2E.PC",
+      "CO2 emissions per capita"
+    ],
+    "27": [
+      "EG.FEC.RNEW.ZS",
+      "Renewable energy %"
+    ],
+    "28": [
+      "AG.LND.FRST.ZS",
+      "Forest area %"
+    ],
+    "29": [
+      "EG.USE.ELEC.KH.PC",
+      "Electric power consumption"
+    ],
+    "30": [
+      "EN.ATM.PM25.MC.M3",
+      "PM2.5 air pollution"
+    ],
+    "31": [
+      "SH.STA.OWGH.ZS",
+      "Overweight prevalence"
+    ],
+    "32": [
+      "SH.ALC.PCAP.LI",
+      "Alcohol consumption"
+    ],
+    "33": [
+      "SH.PRV.SMOK",
+      "Smoking prevalence"
+    ],
+    "34": [
+      "SH.XPD.CHEX.GD.ZS",
+      "Health expenditure"
+    ],
+    "35": [
+      "SH.MED.PHYS.ZS",
+      "Physicians per 1000"
+    ],
+    "36": [
+      "ST.INT.ARVL",
+      "Tourist arrivals"
+    ],
+    "37": [
+      "ST.INT.RCPT.CD",
+      "Tourism receipts"
+    ],
+    "38": [
+      "IS.AIR.DPRT",
+      "Air transport departures"
+    ],
+    "39": [
+      "NY.GDP.PCAP.CD",
+      "GDP per capita (proxy)"
+    ],
+    "40": [
+      "NY.GDP.PCAP.CD",
+      "GDP per capita (proxy)"
+    ]
+  }
+}

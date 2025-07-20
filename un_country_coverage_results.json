@@ -1,0 +1,420 @@
+{
+  "test_date": "2025-07-18 23:03:28",
+  "source": "UN Statistics Division",
+  "coverage_summary": {
+    "total_our_countries": 40,
+    "direct_matches": 34,
+    "close_matches": 3,
+    "missing": 3,
+    "coverage_percent": 92.5
+  },
+  "matches": [
+    [
+      "Germany",
+      "DEU",
+      "276"
+    ],
+    [
+      "Denmark",
+      "DNK",
+      "208"
+    ],
+    [
+      "Austria",
+      "AUT",
+      "40"
+    ],
+    [
+      "Luxembourg",
+      "LUX",
+      "442"
+    ],
+    [
+      "China",
+      "CHN",
+      "156"
+    ],
+    [
+      "Japan",
+      "JPN",
+      "392"
+    ],
+    [
+      "France",
+      "FRA",
+      "250"
+    ],
+    [
+      "Italy",
+      "ITA",
+      "380"
+    ],
+    [
+      "Canada",
+      "CAN",
+      "124"
+    ],
+    [
+      "Australia",
+      "AUS",
+      "36"
+    ],
+    [
+      "Spain",
+      "ESP",
+      "724"
+    ],
+    [
+      "Sweden",
+      "SWE",
+      "752"
+    ],
+    [
+      "Norway",
+      "NOR",
+      "578"
+    ],
+    [
+      "Finland",
+      "FIN",
+      "246"
+    ],
+    [
+      "Iceland",
+      "ISL",
+      "352"
+    ],
+    [
+      "Switzerland",
+      "CHE",
+      "756"
+    ],
+    [
+      "Belgium",
+      "BEL",
+      "56"
+    ],
+    [
+      "New Zealand",
+      "NZL",
+      "554"
+    ],
+    [
+      "Singapore",
+      "SGP",
+      "702"
+    ],
+    [
+      "Israel",
+      "ISR",
+      "376"
+    ],
+    [
+      "Ireland",
+      "IRL",
+      "372"
+    ],
+    [
+      "Brazil",
+      "BRA",
+      "76"
+    ],
+    [
+      "Mexico",
+      "MEX",
+      "484"
+    ],
+    [
+      "Argentina",
+      "ARG",
+      "32"
+    ],
+    [
+      "Chile",
+      "CHL",
+      "152"
+    ],
+    [
+      "Colombia",
+      "COL",
+      "170"
+    ],
+    [
+      "Poland",
+      "POL",
+      "616"
+    ],
+    [
+      "Thailand",
+      "THA",
+      "764"
+    ],
+    [
+      "Malaysia",
+      "MYS",
+      "458"
+    ],
+    [
+      "Philippines",
+      "PHL",
+      "608"
+    ],
+    [
+      "Indonesia",
+      "IDN",
+      "360"
+    ],
+    [
+      "India",
+      "IND",
+      "356"
+    ],
+    [
+      "South Africa",
+      "ZAF",
+      "710"
+    ],
+    [
+      "Egypt",
+      "EGY",
+      "818"
+    ]
+  ],
+  "close_matches": [
+    [
+      "United States",
+      "USA",
+      "United States of America",
+      "840"
+    ],
+    [
+      "United Kingdom",
+      "GBR",
+      "United Kingdom of Great Britain and Northern Ireland",
+      "826"
+    ],
+    [
+      "Netherlands",
+      "NLD",
+      "Netherlands (Kingdom of the)",
+      "528"
+    ]
+  ],
+  "missing": [
+    [
+      "Turkey",
+      "TUR"
+    ],
+    [
+      "Czech Republic",
+      "CZE"
+    ],
+    [
+      "Vietnam",
+      "VNM"
+    ]
+  ],
+  "interesting_indicators_count": 159,
+  "top_10_interesting": [
+    {
+      "indicator": {
+        "goal": [
+          "3"
+        ],
+        "target": [
+          "3.b"
+        ],
+        "indicator": [
+          "3.b.2"
+        ],
+        "release": "2025.Q2.G.01",
+        "code": "DC_TOF_HLTHNT",
+        "description": "Total official development assistance to medical research and basic health sectors, net disbursement, by recipient countries (millions of constant 2023 United States dollars)",
+        "uri": "/v1/sdg/Series/DC_TOF_HLTHNT"
+      },
+      "keyword_match": "research",
+      "description": "Total official development assistance to medical research and basic health sectors, net disbursement, by recipient countries (millions of constant 2023 United States dollars)",
+      "code": "DC_TOF_HLTHNT"
+    },
+    {
+      "indicator": {
+        "goal": [
+          "9"
+        ],
+        "target": [
+          "9.a"
+        ],
+        "indicator": [
+          "9.a.1"
+        ],
+        "release": "2025.Q2.G.01",
+        "code": "DC_TOF_INFRAL",
+        "description": "Total official flows for infrastructure, by recipient countries (millions of constant 2023 United States dollars)",
+        "uri": "/v1/sdg/Series/DC_TOF_INFRAL"
+      },
+      "keyword_match": "infrastructure",
+      "description": "Total official flows for infrastructure, by recipient countries (millions of constant 2023 United States dollars)",
+      "code": "DC_TOF_INFRAL"
+    },
+    {
+      "indicator": {
+        "goal": [
+          "7"
+        ],
+        "target": [
+          "7.1"
+        ],
+        "indicator": [
+          "7.1.2"
+        ],
+        "release": "2025.Q2.G.01",
+        "code": "EG_EGY_CLEAN",
+        "description": "Proportion of population with primary reliance on clean fuels and technology (%)",
+        "uri": "/v1/sdg/Series/EG_EGY_CLEAN"
+      },
+      "keyword_match": "technology",
+      "description": "Proportion of population with primary reliance on clean fuels and technology (%)",
+      "code": "EG_EGY_CLEAN"
+    },
+    {
+      "indicator": {
+        "goal": [
+          "15"
+        ],
+        "target": [
+          "15.6"
+        ],
+        "indicator": [
+          "15.6.1"
+        ],
+        "release": "2025.Q2.G.01",
+        "code": "ER_CBD_SMTA",
+        "description": "Total reported number of Standard Material Transfer Agreements (SMTAs) transferring plant genetic resources for food and agriculture to the country (number)",
+        "uri": "/v1/sdg/Series/ER_CBD_SMTA"
+      },
+      "keyword_match": "food",
+      "description": "Total reported number of Standard Material Transfer Agreements (SMTAs) transferring plant genetic resources for food and agriculture to the country (number)",
+      "code": "ER_CBD_SMTA"
+    },
+    {
+      "indicator": {
+        "goal": [
+          "5"
+        ],
+        "target": [
+          "5.5"
+        ],
+        "indicator": [
+          "5.5.2"
+        ],
+        "release": "2025.Q2.G.01",
+        "code": "IC_GEN_MGTL",
+        "description": "Proportion of women in managerial positions - 13th ICLS (%)",
+        "uri": "/v1/sdg/Series/IC_GEN_MGTL"
+      },
+      "keyword_match": "women",
+      "description": "Proportion of women in managerial positions - 13th ICLS (%)",
+      "code": "IC_GEN_MGTL"
+    },
+    {
+      "indicator": {
+        "goal": [
+          "5"
+        ],
+        "target": [
+          "5.5"
+        ],
+        "indicator": [
+          "5.5.2"
+        ],
+        "release": "2025.Q2.G.01",
+        "code": "IC_GEN_MGTN",
+        "description": "Proportion of women in senior and middle management positions - 13th ICLS (%)",
+        "uri": "/v1/sdg/Series/IC_GEN_MGTN"
+      },
+      "keyword_match": "women",
+      "description": "Proportion of women in senior and middle management positions - 13th ICLS (%)",
+      "code": "IC_GEN_MGTN"
+    },
+    {
+      "indicator": {
+        "goal": [
+          "16"
+        ],
+        "target": [
+          "16.a"
+        ],
+        "indicator": [
+          "16.a.1"
+        ],
+        "release": "2025.Q2.G.01",
+        "code": "SG_NHR_IMPL",
+        "description": "Proportion of countries with independent National Human Rights Institutions in compliance with the Paris Principles (%)",
+        "uri": "/v1/sdg/Series/SG_NHR_IMPL"
+      },
+      "keyword_match": "rights",
+      "description": "Proportion of countries with independent National Human Rights Institutions in compliance with the Paris Principles (%)",
+      "code": "SG_NHR_IMPL"
+    },
+    {
+      "indicator": {
+        "goal": [
+          "6"
+        ],
+        "target": [
+          "6.1"
+        ],
+        "indicator": [
+          "6.1.1"
+        ],
+        "release": "2025.Q2.G.01",
+        "code": "SH_H2O_SAFE",
+        "description": "Proportion of population using safely managed drinking water services, by urban/rural (%)",
+        "uri": "/v1/sdg/Series/SH_H2O_SAFE"
+      },
+      "keyword_match": "urban",
+      "description": "Proportion of population using safely managed drinking water services, by urban/rural (%)",
+      "code": "SH_H2O_SAFE"
+    },
+    {
+      "indicator": {
+        "goal": [
+          "3"
+        ],
+        "target": [
+          "3.9"
+        ],
+        "indicator": [
+          "3.9.1"
+        ],
+        "release": "2025.Q2.G.01",
+        "code": "SH_HAP_ASMORT",
+        "description": "Age-standardized mortality rate attributed to household air pollution (deaths per 100,000 population)",
+        "uri": "/v1/sdg/Series/SH_HAP_ASMORT"
+      },
+      "keyword_match": "pollution",
+      "description": "Age-standardized mortality rate attributed to household air pollution (deaths per 100,000 population)",
+      "code": "SH_HAP_ASMORT"
+    },
+    {
+      "indicator": {
+        "goal": [
+          "3"
+        ],
+        "target": [
+          "3.9"
+        ],
+        "indicator": [
+          "3.9.1"
+        ],
+        "release": "2025.Q2.G.01",
+        "code": "SH_STA_ASAIRP",
+        "description": "Age-standardized mortality rate attributed to household and ambient air pollution (deaths per 100,000 population)",
+        "uri": "/v1/sdg/Series/SH_STA_ASAIRP"
+      },
+      "keyword_match": "pollution",
+      "description": "Age-standardized mortality rate attributed to household and ambient air pollution (deaths per 100,000 population)",
+      "code": "SH_STA_ASAIRP"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "update_date": "2025-07-19 14:21:51",
+  "indicator_added": "Cost of a Healthy Diet",
+  "new_total_indicators": 33,
+  "coverage": {
+    "countries_with_data": 37,
+    "coverage_percent": 97.4,
+    "missing": [
+      "Argentina"
+    ]
+  },
+  "most_affordable": [
+    {
+      "country": "United Kingdom",
+      "cost": 2.12
+    },
+    {
+      "country": "Ireland",
+      "cost": 2.48
+    },
+    {
+      "country": "Belgium",
+      "cost": 2.56
+    },
+    {
+      "country": "United States",
+      "cost": 2.63
+    },
+    {
+      "country": "Denmark",
+      "cost": 2.73
+    }
+  ],
+  "least_affordable": [
+    {
+      "country": "Japan",
+      "cost": 6.54
+    },
+    {
+      "country": "Thailand",
+      "cost": 4.93
+    },
+    {
+      "country": "Indonesia",
+      "cost": 4.64
+    },
+    {
+      "country": "Chile",
+      "cost": 4.54
+    },
+    {
+      "country": "Turkey",
+      "cost": 4.5
+    }
+  ],
+  "source": "FAO SOFI Report July 2024",
+  "year": 2022,
+  "unit": "PPP dollar per person per day"
+}

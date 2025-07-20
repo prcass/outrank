@@ -1,0 +1,268 @@
+{
+  "extraction_date": "2025-07-18 23:26:01",
+  "source": "UNESCO World Heritage Sites List",
+  "data_verified": true,
+  "coverage": {
+    "total_countries": 40,
+    "countries_with_data": 11,
+    "countries_missing": 29,
+    "coverage_percent": 27.500000000000004
+  },
+  "matches": [
+    {
+      "country": "United States",
+      "iso3": "USA",
+      "cultural_sites": 13,
+      "natural_sites": 12,
+      "mixed_sites": 1,
+      "total_sites": 26,
+      "shared_sites": 3,
+      "unesco_region": "Europe and North America"
+    },
+    {
+      "country": "China",
+      "iso3": "CHN",
+      "cultural_sites": 41,
+      "natural_sites": 15,
+      "mixed_sites": 4,
+      "total_sites": 60,
+      "shared_sites": 1,
+      "unesco_region": "Asia and the Pacific"
+    },
+    {
+      "country": "United Kingdom",
+      "iso3": "GBR",
+      "cultural_sites": 29,
+      "natural_sites": 5,
+      "mixed_sites": 1,
+      "total_sites": 35,
+      "shared_sites": 3,
+      "unesco_region": "Europe and North America"
+    },
+    {
+      "country": "France",
+      "iso3": "FRA",
+      "cultural_sites": 45,
+      "natural_sites": 7,
+      "mixed_sites": 2,
+      "total_sites": 54,
+      "shared_sites": 7,
+      "unesco_region": "Europe and North America"
+    },
+    {
+      "country": "Canada",
+      "iso3": "CAN",
+      "cultural_sites": 10,
+      "natural_sites": 11,
+      "mixed_sites": 1,
+      "total_sites": 22,
+      "shared_sites": 2,
+      "unesco_region": "Europe and North America"
+    },
+    {
+      "country": "Spain",
+      "iso3": "ESP",
+      "cultural_sites": 44,
+      "natural_sites": 4,
+      "mixed_sites": 2,
+      "total_sites": 50,
+      "shared_sites": 4,
+      "unesco_region": "Europe and North America"
+    },
+    {
+      "country": "Sweden",
+      "iso3": "SWE",
+      "cultural_sites": 13,
+      "natural_sites": 1,
+      "mixed_sites": 1,
+      "total_sites": 15,
+      "shared_sites": 2,
+      "unesco_region": "Europe and North America"
+    },
+    {
+      "country": "Brazil",
+      "iso3": "BRA",
+      "cultural_sites": 15,
+      "natural_sites": 9,
+      "mixed_sites": 1,
+      "total_sites": 25,
+      "shared_sites": 1,
+      "unesco_region": "Latin America & the Caribbean"
+    },
+    {
+      "country": "Colombia",
+      "iso3": "COL",
+      "cultural_sites": 6,
+      "natural_sites": 2,
+      "mixed_sites": 1,
+      "total_sites": 9,
+      "shared_sites": 1,
+      "unesco_region": "Latin America & the Caribbean"
+    },
+    {
+      "country": "India",
+      "iso3": "IND",
+      "cultural_sites": 36,
+      "natural_sites": 7,
+      "mixed_sites": 1,
+      "total_sites": 44,
+      "shared_sites": 1,
+      "unesco_region": "Asia and the Pacific"
+    },
+    {
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "cultural_sites": 7,
+      "natural_sites": 4,
+      "mixed_sites": 1,
+      "total_sites": 12,
+      "shared_sites": 1,
+      "unesco_region": "Africa"
+    }
+  ],
+  "missing_countries": [
+    {
+      "country": "Germany",
+      "iso3": "DEU"
+    },
+    {
+      "country": "Denmark",
+      "iso3": "DNK"
+    },
+    {
+      "country": "Austria",
+      "iso3": "AUT"
+    },
+    {
+      "country": "Luxembourg",
+      "iso3": "LUX"
+    },
+    {
+      "country": "Turkey",
+      "iso3": "TUR"
+    },
+    {
+      "country": "Japan",
+      "iso3": "JPN"
+    },
+    {
+      "country": "Italy",
+      "iso3": "ITA"
+    },
+    {
+      "country": "Australia",
+      "iso3": "AUS"
+    },
+    {
+      "country": "Netherlands",
+      "iso3": "NLD"
+    },
+    {
+      "country": "Norway",
+      "iso3": "NOR"
+    },
+    {
+      "country": "Finland",
+      "iso3": "FIN"
+    },
+    {
+      "country": "Iceland",
+      "iso3": "ISL"
+    },
+    {
+      "country": "Switzerland",
+      "iso3": "CHE"
+    },
+    {
+      "country": "Belgium",
+      "iso3": "BEL"
+    },
+    {
+      "country": "New Zealand",
+      "iso3": "NZL"
+    },
+    {
+      "country": "Singapore",
+      "iso3": "SGP"
+    },
+    {
+      "country": "Israel",
+      "iso3": "ISR"
+    },
+    {
+      "country": "Ireland",
+      "iso3": "IRL"
+    },
+    {
+      "country": "Mexico",
+      "iso3": "MEX"
+    },
+    {
+      "country": "Argentina",
+      "iso3": "ARG"
+    },
+    {
+      "country": "Chile",
+      "iso3": "CHL"
+    },
+    {
+      "country": "Poland",
+      "iso3": "POL"
+    },
+    {
+      "country": "Czech Republic",
+      "iso3": "CZE"
+    },
+    {
+      "country": "Thailand",
+      "iso3": "THA"
+    },
+    {
+      "country": "Malaysia",
+      "iso3": "MYS"
+    },
+    {
+      "country": "Philippines",
+      "iso3": "PHL"
+    },
+    {
+      "country": "Indonesia",
+      "iso3": "IDN"
+    },
+    {
+      "country": "Vietnam",
+      "iso3": "VNM"
+    },
+    {
+      "country": "Egypt",
+      "iso3": "EGY"
+    }
+  ],
+  "potential_indicators": [
+    {
+      "name": "Total UNESCO World Heritage Sites",
+      "description": "Which country has the most UNESCO World Heritage Sites?",
+      "data_field": "total_sites",
+      "type": "higher_better"
+    },
+    {
+      "name": "Cultural UNESCO Sites",
+      "description": "Which country has the most UNESCO cultural heritage sites?",
+      "data_field": "cultural_sites",
+      "type": "higher_better"
+    },
+    {
+      "name": "Natural UNESCO Sites",
+      "description": "Which country has the most UNESCO natural heritage sites?",
+      "data_field": "natural_sites",
+      "type": "higher_better"
+    },
+    {
+      "name": "Mixed UNESCO Sites",
+      "description": "Which country has the most UNESCO mixed heritage sites?",
+      "data_field": "mixed_sites",
+      "type": "higher_better"
+    }
+  ],
+  "recommendation": "LIMITED data source"
+}

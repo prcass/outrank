@@ -1,0 +1,42 @@
+{
+  "correction_date": "2025-07-19 14:18:53",
+  "corrections_made": [
+    {
+      "country": "United Kingdom",
+      "changed_from": "0",
+      "changed_to": "missing",
+      "reason": "Not in FAO data"
+    },
+    {
+      "country": "Belgium",
+      "changed_from": "50",
+      "changed_to": "missing",
+      "reason": "Not in FAO data"
+    }
+  ],
+  "updated_statistics": {
+    "countries_with_data": 32,
+    "coverage_percent": 84.2,
+    "countries_with_production": 24,
+    "countries_with_zero": 8,
+    "missing": [
+      "United Kingdom",
+      "Belgium",
+      "Singapore",
+      "New Zealand",
+      "Chile",
+      "Malaysia"
+    ]
+  },
+  "countries_with_zero_production": [
+    "Denmark",
+    "Finland",
+    "Ireland",
+    "Netherlands",
+    "Sweden",
+    "Norway",
+    "Iceland",
+    "Israel"
+  ],
+  "status": "Still suitable for dataset (84.2% > 75% threshold)"
+}

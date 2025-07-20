@@ -1,0 +1,51 @@
+{
+  "analysis_date": "2025-07-18 23:15:17",
+  "sources_tested": [
+    {
+      "name": "World Bank",
+      "status": "\u2705 WORKING",
+      "coverage": "100%",
+      "indicators": 20
+    },
+    {
+      "name": "UN Statistics",
+      "status": "\u274c DATA API BLOCKED",
+      "coverage": "92% countries",
+      "indicators": 0
+    },
+    {
+      "name": "OECD",
+      "status": "\u274c API BLOCKED",
+      "coverage": "Unknown",
+      "indicators": 0
+    },
+    {
+      "name": "WHO",
+      "status": "\u274c DATA ISSUES",
+      "coverage": "0%",
+      "indicators": 0
+    },
+    {
+      "name": "Heritage Foundation",
+      "status": "\u274c API BLOCKED",
+      "coverage": "Unknown",
+      "indicators": 0
+    },
+    {
+      "name": "Transparency Intl",
+      "status": "\u274c API BLOCKED",
+      "coverage": "Unknown",
+      "indicators": 0
+    },
+    {
+      "name": "Freedom House",
+      "status": "\u274c API BLOCKED",
+      "coverage": "Unknown",
+      "indicators": 0
+    }
+  ],
+  "recommendation": "Use World Bank (20 indicators) + Static downloads (10-15 indicators)",
+  "viable_approach": "Mixed API + static file downloads",
+  "target_total": "30-35 indicators total",
+  "confidence": "High - World Bank verified, static files reliable"
+}

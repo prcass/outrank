@@ -1,0 +1,1610 @@
+{
+  "extraction_date": "2025-07-19 13:47:59",
+  "source": "World Bank Open Data API",
+  "automated": true,
+  "manual_steps": "NONE",
+  "assumptions": "NONE - all data from official API",
+  "agriculture_indicators": [
+    {
+      "indicator": "Crop production index",
+      "code": "AG.PRD.CROP.XD",
+      "source": "World Bank Open Data",
+      "data": {
+        "ARG": {
+          "name": "Argentina",
+          "latest_value": 107.33,
+          "year": "2022"
+        },
+        "AUS": {
+          "name": "Australia",
+          "latest_value": 146.08,
+          "year": "2022"
+        },
+        "AUT": {
+          "name": "Austria",
+          "latest_value": 100.31,
+          "year": "2022"
+        },
+        "BEL": {
+          "name": "Belgium",
+          "latest_value": 95.86,
+          "year": "2022"
+        },
+        "BRA": {
+          "name": "Brazil",
+          "latest_value": 115.91,
+          "year": "2022"
+        },
+        "CAN": {
+          "name": "Canada",
+          "latest_value": 107.97,
+          "year": "2022"
+        },
+        "CHE": {
+          "name": "Switzerland",
+          "latest_value": 97.36,
+          "year": "2022"
+        },
+        "CHL": {
+          "name": "Chile",
+          "latest_value": 106.37,
+          "year": "2022"
+        },
+        "CHN": {
+          "name": "China",
+          "latest_value": 111.85,
+          "year": "2022"
+        },
+        "COL": {
+          "name": "Colombia",
+          "latest_value": 111.63,
+          "year": "2022"
+        },
+        "CZE": {
+          "name": "Czechia",
+          "latest_value": 93.98,
+          "year": "2022"
+        },
+        "DEU": {
+          "name": "Germany",
+          "latest_value": 91.48,
+          "year": "2022"
+        },
+        "DNK": {
+          "name": "Denmark",
+          "latest_value": 107.01,
+          "year": "2022"
+        },
+        "ESP": {
+          "name": "Spain",
+          "latest_value": 87.04,
+          "year": "2022"
+        },
+        "FIN": {
+          "name": "Finland",
+          "latest_value": 98.69,
+          "year": "2022"
+        },
+        "FRA": {
+          "name": "France",
+          "latest_value": 94.72,
+          "year": "2022"
+        },
+        "GBR": {
+          "name": "United Kingdom",
+          "latest_value": 94.33,
+          "year": "2022"
+        },
+        "IDN": {
+          "name": "Indonesia",
+          "latest_value": 111.41,
+          "year": "2022"
+        },
+        "IND": {
+          "name": "India",
+          "latest_value": 123.29,
+          "year": "2022"
+        },
+        "IRL": {
+          "name": "Ireland",
+          "latest_value": 99.43,
+          "year": "2022"
+        },
+        "ISL": {
+          "name": "Iceland",
+          "latest_value": 117.58,
+          "year": "2022"
+        },
+        "ISR": {
+          "name": "Israel",
+          "latest_value": 99.92,
+          "year": "2022"
+        },
+        "ITA": {
+          "name": "Italy",
+          "latest_value": 93.95,
+          "year": "2022"
+        },
+        "JPN": {
+          "name": "Japan",
+          "latest_value": 94.6,
+          "year": "2022"
+        },
+        "MEX": {
+          "name": "Mexico",
+          "latest_value": 115.12,
+          "year": "2022"
+        },
+        "MYS": {
+          "name": "Malaysia",
+          "latest_value": 97.93,
+          "year": "2022"
+        },
+        "NLD": {
+          "name": "Netherlands",
+          "latest_value": 100.37,
+          "year": "2022"
+        },
+        "NOR": {
+          "name": "Norway",
+          "latest_value": 101.79,
+          "year": "2022"
+        },
+        "NZL": {
+          "name": "New Zealand",
+          "latest_value": 108.2,
+          "year": "2022"
+        },
+        "PHL": {
+          "name": "Philippines",
+          "latest_value": 103.98,
+          "year": "2022"
+        },
+        "POL": {
+          "name": "Poland",
+          "latest_value": 110.01,
+          "year": "2022"
+        },
+        "SGP": {
+          "name": "Singapore",
+          "latest_value": 90.86,
+          "year": "2022"
+        },
+        "SWE": {
+          "name": "Sweden",
+          "latest_value": 103.06,
+          "year": "2022"
+        },
+        "THA": {
+          "name": "Thailand",
+          "latest_value": 106.6,
+          "year": "2022"
+        },
+        "TUR": {
+          "name": "Turkiye",
+          "latest_value": 125.29,
+          "year": "2022"
+        },
+        "USA": {
+          "name": "United States",
+          "latest_value": 92.96,
+          "year": "2022"
+        },
+        "VNM": {
+          "name": "Viet Nam",
+          "latest_value": 109.55,
+          "year": "2022"
+        },
+        "ZAF": {
+          "name": "South Africa",
+          "latest_value": 124.13,
+          "year": "2022"
+        }
+      },
+      "coverage": 38,
+      "our_coverage": 38,
+      "our_coverage_pct": 100.0
+    },
+    {
+      "indicator": "Food production index",
+      "code": "AG.PRD.FOOD.XD",
+      "source": "World Bank Open Data",
+      "data": {
+        "ARG": {
+          "name": "Argentina",
+          "latest_value": 109.39,
+          "year": "2022"
+        },
+        "AUS": {
+          "name": "Australia",
+          "latest_value": 112.1,
+          "year": "2022"
+        },
+        "AUT": {
+          "name": "Austria",
+          "latest_value": 100.45,
+          "year": "2022"
+        },
+        "BEL": {
+          "name": "Belgium",
+          "latest_value": 100,
+          "year": "2022"
+        },
+        "BRA": {
+          "name": "Brazil",
+          "latest_value": 113.77,
+          "year": "2022"
+        },
+        "CAN": {
+          "name": "Canada",
+          "latest_value": 111.63,
+          "year": "2022"
+        },
+        "CHE": {
+          "name": "Switzerland",
+          "latest_value": 97.39,
+          "year": "2022"
+        },
+        "CHL": {
+          "name": "Chile",
+          "latest_value": 105.36,
+          "year": "2022"
+        },
+        "CHN": {
+          "name": "China",
+          "latest_value": 111.75,
+          "year": "2022"
+        },
+        "COL": {
+          "name": "Colombia",
+          "latest_value": 110.64,
+          "year": "2022"
+        },
+        "CZE": {
+          "name": "Czechia",
+          "latest_value": 97.66,
+          "year": "2022"
+        },
+        "DEU": {
+          "name": "Germany",
+          "latest_value": 92.71,
+          "year": "2022"
+        },
+        "DNK": {
+          "name": "Denmark",
+          "latest_value": 103.83,
+          "year": "2022"
+        },
+        "ESP": {
+          "name": "Spain",
+          "latest_value": 98.83,
+          "year": "2022"
+        },
+        "FIN": {
+          "name": "Finland",
+          "latest_value": 98.15,
+          "year": "2022"
+        },
+        "FRA": {
+          "name": "France",
+          "latest_value": 94.02,
+          "year": "2022"
+        },
+        "GBR": {
+          "name": "United Kingdom",
+          "latest_value": 101.24,
+          "year": "2022"
+        },
+        "IDN": {
+          "name": "Indonesia",
+          "latest_value": 117.14,
+          "year": "2022"
+        },
+        "IND": {
+          "name": "India",
+          "latest_value": 127.82,
+          "year": "2022"
+        },
+        "IRL": {
+          "name": "Ireland",
+          "latest_value": 121.51,
+          "year": "2022"
+        },
+        "ISL": {
+          "name": "Iceland",
+          "latest_value": 102.07,
+          "year": "2022"
+        },
+        "ISR": {
+          "name": "Israel",
+          "latest_value": 105.48,
+          "year": "2022"
+        },
+        "ITA": {
+          "name": "Italy",
+          "latest_value": 96.97,
+          "year": "2022"
+        },
+        "JPN": {
+          "name": "Japan",
+          "latest_value": 100.27,
+          "year": "2022"
+        },
+        "MEX": {
+          "name": "Mexico",
+          "latest_value": 117.03,
+          "year": "2022"
+        },
+        "MYS": {
+          "name": "Malaysia",
+          "latest_value": 102.8,
+          "year": "2022"
+        },
+        "NLD": {
+          "name": "Netherlands",
+          "latest_value": 101,
+          "year": "2022"
+        },
+        "NOR": {
+          "name": "Norway",
+          "latest_value": 102.72,
+          "year": "2022"
+        },
+        "NZL": {
+          "name": "New Zealand",
+          "latest_value": 100.57,
+          "year": "2022"
+        },
+        "PHL": {
+          "name": "Philippines",
+          "latest_value": 100.51,
+          "year": "2022"
+        },
+        "POL": {
+          "name": "Poland",
+          "latest_value": 111.71,
+          "year": "2022"
+        },
+        "SGP": {
+          "name": "Singapore",
+          "latest_value": 131.01,
+          "year": "2022"
+        },
+        "SWE": {
+          "name": "Sweden",
+          "latest_value": 101.15,
+          "year": "2022"
+        },
+        "THA": {
+          "name": "Thailand",
+          "latest_value": 104.2,
+          "year": "2022"
+        },
+        "TUR": {
+          "name": "Turkiye",
+          "latest_value": 128.92,
+          "year": "2022"
+        },
+        "USA": {
+          "name": "United States",
+          "latest_value": 100.86,
+          "year": "2022"
+        },
+        "VNM": {
+          "name": "Viet Nam",
+          "latest_value": 113.65,
+          "year": "2022"
+        },
+        "ZAF": {
+          "name": "South Africa",
+          "latest_value": 113.24,
+          "year": "2022"
+        }
+      },
+      "coverage": 38,
+      "our_coverage": 38,
+      "our_coverage_pct": 100.0
+    },
+    {
+      "indicator": "Livestock production index",
+      "code": "AG.PRD.LVSK.XD",
+      "source": "World Bank Open Data",
+      "data": {
+        "ARG": {
+          "name": "Argentina",
+          "latest_value": 113.91,
+          "year": "2022"
+        },
+        "AUS": {
+          "name": "Australia",
+          "latest_value": 87.48,
+          "year": "2022"
+        },
+        "AUT": {
+          "name": "Austria",
+          "latest_value": 100.45,
+          "year": "2022"
+        },
+        "BEL": {
+          "name": "Belgium",
+          "latest_value": 102.29,
+          "year": "2022"
+        },
+        "BRA": {
+          "name": "Brazil",
+          "latest_value": 112.15,
+          "year": "2022"
+        },
+        "CAN": {
+          "name": "Canada",
+          "latest_value": 119.08,
+          "year": "2022"
+        },
+        "CHE": {
+          "name": "Switzerland",
+          "latest_value": 97.4,
+          "year": "2022"
+        },
+        "CHL": {
+          "name": "Chile",
+          "latest_value": 103.4,
+          "year": "2022"
+        },
+        "CHN": {
+          "name": "China",
+          "latest_value": 109.5,
+          "year": "2022"
+        },
+        "COL": {
+          "name": "Colombia",
+          "latest_value": 110.33,
+          "year": "2022"
+        },
+        "CZE": {
+          "name": "Czechia",
+          "latest_value": 102.33,
+          "year": "2022"
+        },
+        "DEU": {
+          "name": "Germany",
+          "latest_value": 93.35,
+          "year": "2022"
+        },
+        "DNK": {
+          "name": "Denmark",
+          "latest_value": 102.21,
+          "year": "2022"
+        },
+        "ESP": {
+          "name": "Spain",
+          "latest_value": 118.7,
+          "year": "2022"
+        },
+        "FIN": {
+          "name": "Finland",
+          "latest_value": 97.85,
+          "year": "2022"
+        },
+        "FRA": {
+          "name": "France",
+          "latest_value": 93.18,
+          "year": "2022"
+        },
+        "GBR": {
+          "name": "United Kingdom",
+          "latest_value": 105.24,
+          "year": "2022"
+        },
+        "IDN": {
+          "name": "Indonesia",
+          "latest_value": 189.99,
+          "year": "2022"
+        },
+        "IND": {
+          "name": "India",
+          "latest_value": 132.52,
+          "year": "2022"
+        },
+        "IRL": {
+          "name": "Ireland",
+          "latest_value": 123.24,
+          "year": "2022"
+        },
+        "ISL": {
+          "name": "Iceland",
+          "latest_value": 101.26,
+          "year": "2022"
+        },
+        "ISR": {
+          "name": "Israel",
+          "latest_value": 109.45,
+          "year": "2022"
+        },
+        "ITA": {
+          "name": "Italy",
+          "latest_value": 102.34,
+          "year": "2022"
+        },
+        "JPN": {
+          "name": "Japan",
+          "latest_value": 104.84,
+          "year": "2022"
+        },
+        "MEX": {
+          "name": "Mexico",
+          "latest_value": 120.13,
+          "year": "2022"
+        },
+        "MYS": {
+          "name": "Malaysia",
+          "latest_value": 99.69,
+          "year": "2022"
+        },
+        "NLD": {
+          "name": "Netherlands",
+          "latest_value": 101.16,
+          "year": "2022"
+        },
+        "NOR": {
+          "name": "Norway",
+          "latest_value": 102.79,
+          "year": "2022"
+        },
+        "NZL": {
+          "name": "New Zealand",
+          "latest_value": 99,
+          "year": "2022"
+        },
+        "PHL": {
+          "name": "Philippines",
+          "latest_value": 90.42,
+          "year": "2022"
+        },
+        "POL": {
+          "name": "Poland",
+          "latest_value": 113.33,
+          "year": "2022"
+        },
+        "SGP": {
+          "name": "Singapore",
+          "latest_value": 139.04,
+          "year": "2022"
+        },
+        "SWE": {
+          "name": "Sweden",
+          "latest_value": 99.81,
+          "year": "2022"
+        },
+        "THA": {
+          "name": "Thailand",
+          "latest_value": 103.25,
+          "year": "2022"
+        },
+        "TUR": {
+          "name": "Turkiye",
+          "latest_value": 137.31,
+          "year": "2022"
+        },
+        "USA": {
+          "name": "United States",
+          "latest_value": 110.55,
+          "year": "2022"
+        },
+        "VNM": {
+          "name": "Viet Nam",
+          "latest_value": 135.42,
+          "year": "2022"
+        },
+        "ZAF": {
+          "name": "South Africa",
+          "latest_value": 103.24,
+          "year": "2022"
+        }
+      },
+      "coverage": 38,
+      "our_coverage": 38,
+      "our_coverage_pct": 100.0
+    },
+    {
+      "indicator": "Agricultural land (sq. km)",
+      "code": "AG.LND.AGRI.K2",
+      "source": "World Bank Open Data",
+      "data": {
+        "ARG": {
+          "name": "Argentina",
+          "latest_value": 1179577.597,
+          "year": "2021"
+        },
+        "AUS": {
+          "name": "Australia",
+          "latest_value": 3635190,
+          "year": "2021"
+        },
+        "AUT": {
+          "name": "Austria",
+          "latest_value": 25974.594,
+          "year": "2021"
+        },
+        "BEL": {
+          "name": "Belgium",
+          "latest_value": 13656.7,
+          "year": "2021"
+        },
+        "BRA": {
+          "name": "Brazil",
+          "latest_value": 2393695.61,
+          "year": "2021"
+        },
+        "CAN": {
+          "name": "Canada",
+          "latest_value": 569910,
+          "year": "2021"
+        },
+        "CHE": {
+          "name": "Switzerland",
+          "latest_value": 14993.783,
+          "year": "2021"
+        },
+        "CHL": {
+          "name": "Chile",
+          "latest_value": 105955.37,
+          "year": "2021"
+        },
+        "CHN": {
+          "name": "China",
+          "latest_value": 5206950,
+          "year": "2021"
+        },
+        "COL": {
+          "name": "Colombia",
+          "latest_value": 427180,
+          "year": "2021"
+        },
+        "CZE": {
+          "name": "Czechia",
+          "latest_value": 35297.97,
+          "year": "2021"
+        },
+        "DEU": {
+          "name": "Germany",
+          "latest_value": 165910,
+          "year": "2021"
+        },
+        "DNK": {
+          "name": "Denmark",
+          "latest_value": 26180,
+          "year": "2021"
+        },
+        "ESP": {
+          "name": "Spain",
+          "latest_value": 262284.464,
+          "year": "2021"
+        },
+        "FIN": {
+          "name": "Finland",
+          "latest_value": 22680,
+          "year": "2021"
+        },
+        "FRA": {
+          "name": "France",
+          "latest_value": 285537.54,
+          "year": "2021"
+        },
+        "GBR": {
+          "name": "United Kingdom",
+          "latest_value": 172151.41,
+          "year": "2021"
+        },
+        "IDN": {
+          "name": "Indonesia",
+          "latest_value": 646000,
+          "year": "2021"
+        },
+        "IND": {
+          "name": "India",
+          "latest_value": 1785279.48,
+          "year": "2021"
+        },
+        "IRL": {
+          "name": "Ireland",
+          "latest_value": 43370,
+          "year": "2021"
+        },
+        "ISL": {
+          "name": "Iceland",
+          "latest_value": 18720,
+          "year": "2021"
+        },
+        "ISR": {
+          "name": "Israel",
+          "latest_value": 6435,
+          "year": "2021"
+        },
+        "ITA": {
+          "name": "Italy",
+          "latest_value": 124030.309,
+          "year": "2021"
+        },
+        "JPN": {
+          "name": "Japan",
+          "latest_value": 46590,
+          "year": "2021"
+        },
+        "MEX": {
+          "name": "Mexico",
+          "latest_value": 971260,
+          "year": "2021"
+        },
+        "MYS": {
+          "name": "Malaysia",
+          "latest_value": 85710,
+          "year": "2021"
+        },
+        "NLD": {
+          "name": "Netherlands",
+          "latest_value": 18120,
+          "year": "2021"
+        },
+        "NOR": {
+          "name": "Norway",
+          "latest_value": 9850,
+          "year": "2021"
+        },
+        "NZL": {
+          "name": "New Zealand",
+          "latest_value": 101750,
+          "year": "2021"
+        },
+        "PHL": {
+          "name": "Philippines",
+          "latest_value": 126830,
+          "year": "2021"
+        },
+        "POL": {
+          "name": "Poland",
+          "latest_value": 144994.6,
+          "year": "2021"
+        },
+        "SGP": {
+          "name": "Singapore",
+          "latest_value": 6.6,
+          "year": "2021"
+        },
+        "SWE": {
+          "name": "Sweden",
+          "latest_value": 30029.1,
+          "year": "2021"
+        },
+        "THA": {
+          "name": "Thailand",
+          "latest_value": 235000,
+          "year": "2021"
+        },
+        "TUR": {
+          "name": "Turkiye",
+          "latest_value": 380890,
+          "year": "2021"
+        },
+        "USA": {
+          "name": "United States",
+          "latest_value": 4058103.538,
+          "year": "2021"
+        },
+        "VNM": {
+          "name": "Viet Nam",
+          "latest_value": 123600,
+          "year": "2021"
+        },
+        "ZAF": {
+          "name": "South Africa",
+          "latest_value": 963410,
+          "year": "2021"
+        }
+      },
+      "coverage": 38,
+      "our_coverage": 38,
+      "our_coverage_pct": 100.0
+    },
+    {
+      "indicator": "Arable land (% of land area)",
+      "code": "AG.LND.ARBL.ZS",
+      "source": "World Bank Open Data",
+      "data": {
+        "ARG": {
+          "name": "Argentina",
+          "latest_value": 15.7487245541146,
+          "year": "2022"
+        },
+        "AUS": {
+          "name": "Australia",
+          "latest_value": 4.0646020161154,
+          "year": "2022"
+        },
+        "AUT": {
+          "name": "Austria",
+          "latest_value": 16.0033082888997,
+          "year": "2022"
+        },
+        "BEL": {
+          "name": "Belgium",
+          "latest_value": 28.3186856430773,
+          "year": "2022"
+        },
+        "BRA": {
+          "name": "Brazil",
+          "latest_value": 6.65722995786144,
+          "year": "2022"
+        },
+        "CAN": {
+          "name": "Canada",
+          "latest_value": 4.3631026204103,
+          "year": "2022"
+        },
+        "CHE": {
+          "name": "Switzerland",
+          "latest_value": 10.0380287033819,
+          "year": "2022"
+        },
+        "CHL": {
+          "name": "Chile",
+          "latest_value": 1.74424234599183,
+          "year": "2022"
+        },
+        "CHN": {
+          "name": "China",
+          "latest_value": 11.4901499859931,
+          "year": "2022"
+        },
+        "COL": {
+          "name": "Colombia",
+          "latest_value": 2.17997115817936,
+          "year": "2022"
+        },
+        "CZE": {
+          "name": "Czechia",
+          "latest_value": 32.1272569631392,
+          "year": "2022"
+        },
+        "DEU": {
+          "name": "Germany",
+          "latest_value": 33.3667277307076,
+          "year": "2022"
+        },
+        "DNK": {
+          "name": "Denmark",
+          "latest_value": 59,
+          "year": "2022"
+        },
+        "ESP": {
+          "name": "Spain",
+          "latest_value": 23.3945131872425,
+          "year": "2022"
+        },
+        "FIN": {
+          "name": "Finland",
+          "latest_value": 7.37297896973723,
+          "year": "2022"
+        },
+        "FRA": {
+          "name": "France",
+          "latest_value": 34.0661136648787,
+          "year": "2022"
+        },
+        "GBR": {
+          "name": "United Kingdom",
+          "latest_value": 24.7897189269623,
+          "year": "2022"
+        },
+        "IDN": {
+          "name": "Indonesia",
+          "latest_value": 9.47977498382121,
+          "year": "2022"
+        },
+        "IND": {
+          "name": "India",
+          "latest_value": 51.9468812958472,
+          "year": "2022"
+        },
+        "IRL": {
+          "name": "Ireland",
+          "latest_value": 6.47408912759472,
+          "year": "2022"
+        },
+        "ISL": {
+          "name": "Iceland",
+          "latest_value": 1.20003967073292,
+          "year": "2022"
+        },
+        "ISR": {
+          "name": "Israel",
+          "latest_value": 17.4214417744917,
+          "year": "2021"
+        },
+        "ITA": {
+          "name": "Italy",
+          "latest_value": 23.9567056675233,
+          "year": "2022"
+        },
+        "JPN": {
+          "name": "Japan",
+          "latest_value": 11.1550068587106,
+          "year": "2022"
+        },
+        "MEX": {
+          "name": "Mexico",
+          "latest_value": 9.76722652331593,
+          "year": "2022"
+        },
+        "MYS": {
+          "name": "Malaysia",
+          "latest_value": 2.51197686805661,
+          "year": "2022"
+        },
+        "NLD": {
+          "name": "Netherlands",
+          "latest_value": 29.8188298188298,
+          "year": "2022"
+        },
+        "NOR": {
+          "name": "Norway",
+          "latest_value": 2.20715403409559,
+          "year": "2022"
+        },
+        "NZL": {
+          "name": "New Zealand",
+          "latest_value": 2.02422999506285,
+          "year": "2022"
+        },
+        "PHL": {
+          "name": "Philippines",
+          "latest_value": 18.7476942683704,
+          "year": "2022"
+        },
+        "POL": {
+          "name": "Poland",
+          "latest_value": 36.4761998105133,
+          "year": "2022"
+        },
+        "SGP": {
+          "name": "Singapore",
+          "latest_value": 0.779944289693593,
+          "year": "2022"
+        },
+        "SWE": {
+          "name": "Sweden",
+          "latest_value": 6.20703201728541,
+          "year": "2022"
+        },
+        "THA": {
+          "name": "Thailand",
+          "latest_value": 33.568870011157,
+          "year": "2022"
+        },
+        "TUR": {
+          "name": "Turkiye",
+          "latest_value": 26.2385821758507,
+          "year": "2022"
+        },
+        "USA": {
+          "name": "United States",
+          "latest_value": 16.5720915624296,
+          "year": "2022"
+        },
+        "VNM": {
+          "name": "Viet Nam",
+          "latest_value": 21.5487399060074,
+          "year": "2022"
+        },
+        "ZAF": {
+          "name": "South Africa",
+          "latest_value": 9.89209374407505,
+          "year": "2022"
+        }
+      },
+      "coverage": 38,
+      "our_coverage": 38,
+      "our_coverage_pct": 100.0
+    },
+    {
+      "indicator": "Forest area (sq. km)",
+      "code": "AG.LND.FRST.K2",
+      "source": "World Bank Open Data",
+      "data": {
+        "ARG": {
+          "name": "Argentina",
+          "latest_value": 283552.222,
+          "year": "2022"
+        },
+        "AUS": {
+          "name": "Australia",
+          "latest_value": 1340051,
+          "year": "2022"
+        },
+        "AUT": {
+          "name": "Austria",
+          "latest_value": 38954.5,
+          "year": "2022"
+        },
+        "BEL": {
+          "name": "Belgium",
+          "latest_value": 6893,
+          "year": "2022"
+        },
+        "BRA": {
+          "name": "Brazil",
+          "latest_value": 4941960.222,
+          "year": "2022"
+        },
+        "CAN": {
+          "name": "Canada",
+          "latest_value": 3468541.311,
+          "year": "2022"
+        },
+        "CHE": {
+          "name": "Switzerland",
+          "latest_value": 12759.9,
+          "year": "2022"
+        },
+        "CHL": {
+          "name": "Chile",
+          "latest_value": 184565.266,
+          "year": "2022"
+        },
+        "CHN": {
+          "name": "China",
+          "latest_value": 2237373.2,
+          "year": "2022"
+        },
+        "COL": {
+          "name": "Colombia",
+          "latest_value": 587433.389,
+          "year": "2022"
+        },
+        "CZE": {
+          "name": "Czechia",
+          "latest_value": 26807.1,
+          "year": "2022"
+        },
+        "DEU": {
+          "name": "Germany",
+          "latest_value": 114190,
+          "year": "2022"
+        },
+        "DNK": {
+          "name": "Denmark",
+          "latest_value": 6303.2,
+          "year": "2022"
+        },
+        "ESP": {
+          "name": "Spain",
+          "latest_value": 185807.5,
+          "year": "2022"
+        },
+        "FIN": {
+          "name": "Finland",
+          "latest_value": 224090,
+          "year": "2022"
+        },
+        "FRA": {
+          "name": "France",
+          "latest_value": 174198,
+          "year": "2022"
+        },
+        "GBR": {
+          "name": "United Kingdom",
+          "latest_value": 32069,
+          "year": "2022"
+        },
+        "IDN": {
+          "name": "Indonesia",
+          "latest_value": 909221.311,
+          "year": "2022"
+        },
+        "IND": {
+          "name": "India",
+          "latest_value": 726928,
+          "year": "2022"
+        },
+        "IRL": {
+          "name": "Ireland",
+          "latest_value": 7900.2,
+          "year": "2022"
+        },
+        "ISL": {
+          "name": "Iceland",
+          "latest_value": 526.6,
+          "year": "2022"
+        },
+        "ISR": {
+          "name": "Israel",
+          "latest_value": 1400,
+          "year": "2021"
+        },
+        "ITA": {
+          "name": "Italy",
+          "latest_value": 96737.5,
+          "year": "2022"
+        },
+        "JPN": {
+          "name": "Japan",
+          "latest_value": 249350,
+          "year": "2022"
+        },
+        "MEX": {
+          "name": "Mexico",
+          "latest_value": 654365.489,
+          "year": "2022"
+        },
+        "MYS": {
+          "name": "Malaysia",
+          "latest_value": 190137.4,
+          "year": "2022"
+        },
+        "NLD": {
+          "name": "Netherlands",
+          "latest_value": 3713.689,
+          "year": "2022"
+        },
+        "NOR": {
+          "name": "Norway",
+          "latest_value": 121956,
+          "year": "2022"
+        },
+        "NZL": {
+          "name": "New Zealand",
+          "latest_value": 99318.856,
+          "year": "2022"
+        },
+        "PHL": {
+          "name": "Philippines",
+          "latest_value": 72583.7,
+          "year": "2022"
+        },
+        "POL": {
+          "name": "Poland",
+          "latest_value": 95070,
+          "year": "2022"
+        },
+        "SGP": {
+          "name": "Singapore",
+          "latest_value": 152.1,
+          "year": "2022"
+        },
+        "SWE": {
+          "name": "Sweden",
+          "latest_value": 279800,
+          "year": "2022"
+        },
+        "THA": {
+          "name": "Thailand",
+          "latest_value": 198010,
+          "year": "2022"
+        },
+        "TUR": {
+          "name": "Turkiye",
+          "latest_value": 225323.6,
+          "year": "2022"
+        },
+        "USA": {
+          "name": "United States",
+          "latest_value": 3097950,
+          "year": "2022"
+        },
+        "VNM": {
+          "name": "Viet Nam",
+          "latest_value": 147948.9,
+          "year": "2022"
+        },
+        "ZAF": {
+          "name": "South Africa",
+          "latest_value": 169772.9,
+          "year": "2022"
+        }
+      },
+      "coverage": 38,
+      "our_coverage": 38,
+      "our_coverage_pct": 100.0
+    },
+    {
+      "indicator": "Forest area (% of land area)",
+      "code": "AG.LND.FRST.ZS",
+      "source": "World Bank Open Data",
+      "data": {
+        "ARG": {
+          "name": "Argentina",
+          "latest_value": 10.3611377978507,
+          "year": "2022"
+        },
+        "AUS": {
+          "name": "Australia",
+          "latest_value": 17.4213145571644,
+          "year": "2022"
+        },
+        "AUT": {
+          "name": "Austria",
+          "latest_value": 47.206131846825,
+          "year": "2022"
+        },
+        "BEL": {
+          "name": "Belgium",
+          "latest_value": 22.604446776415,
+          "year": "2022"
+        },
+        "BRA": {
+          "name": "Brazil",
+          "latest_value": 59.1275118866159,
+          "year": "2022"
+        },
+        "CAN": {
+          "name": "Canada",
+          "latest_value": 39.4659199995449,
+          "year": "2022"
+        },
+        "CHE": {
+          "name": "Switzerland",
+          "latest_value": 32.2956707010417,
+          "year": "2022"
+        },
+        "CHL": {
+          "name": "Chile",
+          "latest_value": 24.8227737340155,
+          "year": "2022"
+        },
+        "CHN": {
+          "name": "China",
+          "latest_value": 23.8317336318638,
+          "year": "2022"
+        },
+        "COL": {
+          "name": "Colombia",
+          "latest_value": 52.9457763857593,
+          "year": "2022"
+        },
+        "CZE": {
+          "name": "Czechia",
+          "latest_value": 34.7369431785448,
+          "year": "2022"
+        },
+        "DEU": {
+          "name": "Germany",
+          "latest_value": 32.685482024273,
+          "year": "2022"
+        },
+        "DNK": {
+          "name": "Denmark",
+          "latest_value": 15.758,
+          "year": "2022"
+        },
+        "ESP": {
+          "name": "Spain",
+          "latest_value": 37.1827922798055,
+          "year": "2022"
+        },
+        "FIN": {
+          "name": "Finland",
+          "latest_value": 73.7264996576714,
+          "year": "2022"
+        },
+        "FRA": {
+          "name": "France",
+          "latest_value": 31.8136741928238,
+          "year": "2022"
+        },
+        "GBR": {
+          "name": "United Kingdom",
+          "latest_value": 13.2554871243748,
+          "year": "2022"
+        },
+        "IDN": {
+          "name": "Indonesia",
+          "latest_value": 48.0419900717626,
+          "year": "2022"
+        },
+        "IND": {
+          "name": "India",
+          "latest_value": 24.4494297370837,
+          "year": "2022"
+        },
+        "IRL": {
+          "name": "Ireland",
+          "latest_value": 11.4678472927856,
+          "year": "2022"
+        },
+        "ISL": {
+          "name": "Iceland",
+          "latest_value": 0.522265198849549,
+          "year": "2022"
+        },
+        "ISR": {
+          "name": "Israel",
+          "latest_value": 6.46950092421442,
+          "year": "2021"
+        },
+        "ITA": {
+          "name": "Italy",
+          "latest_value": 32.7125321249831,
+          "year": "2022"
+        },
+        "JPN": {
+          "name": "Japan",
+          "latest_value": 68.4087791495199,
+          "year": "2022"
+        },
+        "MEX": {
+          "name": "Mexico",
+          "latest_value": 33.6616419660999,
+          "year": "2022"
+        },
+        "MYS": {
+          "name": "Malaysia",
+          "latest_value": 57.871678587734,
+          "year": "2022"
+        },
+        "NLD": {
+          "name": "Netherlands",
+          "latest_value": 11.0296673596674,
+          "year": "2022"
+        },
+        "NOR": {
+          "name": "Norway",
+          "latest_value": 33.4795618634529,
+          "year": "2022"
+        },
+        "NZL": {
+          "name": "New Zealand",
+          "latest_value": 37.719363487904,
+          "year": "2022"
+        },
+        "PHL": {
+          "name": "Philippines",
+          "latest_value": 24.3430593285709,
+          "year": "2022"
+        },
+        "POL": {
+          "name": "Poland",
+          "latest_value": 31.0594923061845,
+          "year": "2022"
+        },
+        "SGP": {
+          "name": "Singapore",
+          "latest_value": 21.1838440111421,
+          "year": "2022"
+        },
+        "SWE": {
+          "name": "Sweden",
+          "latest_value": 68.6996660773915,
+          "year": "2022"
+        },
+        "THA": {
+          "name": "Thailand",
+          "latest_value": 38.7578539411615,
+          "year": "2022"
+        },
+        "TUR": {
+          "name": "Turkiye",
+          "latest_value": 29.2768733027559,
+          "year": "2022"
+        },
+        "USA": {
+          "name": "United States",
+          "latest_value": 33.8669264120375,
+          "year": "2022"
+        },
+        "VNM": {
+          "name": "Viet Nam",
+          "latest_value": 47.203321964464,
+          "year": "2022"
+        },
+        "ZAF": {
+          "name": "South Africa",
+          "latest_value": 13.9950786833623,
+          "year": "2022"
+        }
+      },
+      "coverage": 38,
+      "our_coverage": 38,
+      "our_coverage_pct": 100.0
+    },
+    {
+      "indicator": "Employment in agriculture (% of total employment)",
+      "code": "SL.AGR.EMPL.ZS",
+      "source": "World Bank Open Data",
+      "data": {
+        "ARG": {
+          "name": "Argentina",
+          "latest_value": 0.612884087432253,
+          "year": "2023"
+        },
+        "AUS": {
+          "name": "Australia",
+          "latest_value": 2.14756517038717,
+          "year": "2023"
+        },
+        "AUT": {
+          "name": "Austria",
+          "latest_value": 3.11719371426899,
+          "year": "2023"
+        },
+        "BEL": {
+          "name": "Belgium",
+          "latest_value": 1.08982994739094,
+          "year": "2023"
+        },
+        "BRA": {
+          "name": "Brazil",
+          "latest_value": 8.202818535193,
+          "year": "2023"
+        },
+        "CAN": {
+          "name": "Canada",
+          "latest_value": 1.27154402496483,
+          "year": "2023"
+        },
+        "CHE": {
+          "name": "Switzerland",
+          "latest_value": 1.90581356437486,
+          "year": "2023"
+        },
+        "CHL": {
+          "name": "Chile",
+          "latest_value": 6.20836443013518,
+          "year": "2023"
+        },
+        "CHN": {
+          "name": "China",
+          "latest_value": 22.3337098676163,
+          "year": "2023"
+        },
+        "COL": {
+          "name": "Colombia",
+          "latest_value": 14.4388855774159,
+          "year": "2023"
+        },
+        "CZE": {
+          "name": "Czechia",
+          "latest_value": 2.74489137813669,
+          "year": "2023"
+        },
+        "DEU": {
+          "name": "Germany",
+          "latest_value": 1.19870655264497,
+          "year": "2023"
+        },
+        "DNK": {
+          "name": "Denmark",
+          "latest_value": 2.02176194757079,
+          "year": "2023"
+        },
+        "ESP": {
+          "name": "Spain",
+          "latest_value": 3.62236443804078,
+          "year": "2023"
+        },
+        "FIN": {
+          "name": "Finland",
+          "latest_value": 3.60736729165815,
+          "year": "2023"
+        },
+        "FRA": {
+          "name": "France",
+          "latest_value": 2.50540941600709,
+          "year": "2023"
+        },
+        "GBR": {
+          "name": "United Kingdom",
+          "latest_value": 0.986473795910372,
+          "year": "2023"
+        },
+        "IDN": {
+          "name": "Indonesia",
+          "latest_value": 28.7684839044504,
+          "year": "2023"
+        },
+        "IND": {
+          "name": "India",
+          "latest_value": 43.5135829283351,
+          "year": "2023"
+        },
+        "IRL": {
+          "name": "Ireland",
+          "latest_value": 4.02688861655514,
+          "year": "2023"
+        },
+        "ISL": {
+          "name": "Iceland",
+          "latest_value": 3.70861968092074,
+          "year": "2023"
+        },
+        "ISR": {
+          "name": "Israel",
+          "latest_value": 0.762244941986571,
+          "year": "2023"
+        },
+        "ITA": {
+          "name": "Italy",
+          "latest_value": 3.59457152248348,
+          "year": "2023"
+        },
+        "JPN": {
+          "name": "Japan",
+          "latest_value": 3.00513476523112,
+          "year": "2023"
+        },
+        "MEX": {
+          "name": "Mexico",
+          "latest_value": 11.9647552173961,
+          "year": "2023"
+        },
+        "MYS": {
+          "name": "Malaysia",
+          "latest_value": 9.83787449991082,
+          "year": "2023"
+        },
+        "NLD": {
+          "name": "Netherlands",
+          "latest_value": 1.90740610981294,
+          "year": "2023"
+        },
+        "NOR": {
+          "name": "Norway",
+          "latest_value": 2.50261328761417,
+          "year": "2023"
+        },
+        "NZL": {
+          "name": "New Zealand",
+          "latest_value": 5.62063145756489,
+          "year": "2023"
+        },
+        "PHL": {
+          "name": "Philippines",
+          "latest_value": 22.3650044333363,
+          "year": "2023"
+        },
+        "POL": {
+          "name": "Poland",
+          "latest_value": 7.60169405464749,
+          "year": "2023"
+        },
+        "SGP": {
+          "name": "Singapore",
+          "latest_value": 0.0912979836973316,
+          "year": "2023"
+        },
+        "SWE": {
+          "name": "Sweden",
+          "latest_value": 1.77000108662705,
+          "year": "2023"
+        },
+        "THA": {
+          "name": "Thailand",
+          "latest_value": 30.1095681583813,
+          "year": "2023"
+        },
+        "TUR": {
+          "name": "Turkiye",
+          "latest_value": 14.6427031709779,
+          "year": "2023"
+        },
+        "USA": {
+          "name": "United States",
+          "latest_value": 1.5696099166759,
+          "year": "2023"
+        },
+        "VNM": {
+          "name": "Viet Nam",
+          "latest_value": 32.9841882562675,
+          "year": "2023"
+        },
+        "ZAF": {
+          "name": "South Africa",
+          "latest_value": 18.7930832437202,
+          "year": "2023"
+        }
+      },
+      "coverage": 38,
+      "our_coverage": 38,
+      "our_coverage_pct": 100.0
+    }
+  ],
+  "indicators_with_100_coverage": 8
+}

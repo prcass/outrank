@@ -1,0 +1,1592 @@
+{
+  "DEU": {
+    "country_name": "Germany",
+    "country_code": "DEU",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 8.3,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 80.5414634146342,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 13.9101604189277,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 23.1955871731941,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 83510950,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 4659929336890.62,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": -0.238526858256165,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 45.3805,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 124.663,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 152124.122644994,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 26.6158079857232,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 0.862495024067169,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 32.685482024273,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 17.6,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 11.79903221,
+        "year": "2023",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 77.3656997680664,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 55.637,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 39822,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 22.105,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 3.406,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "DNK": {
+    "country_name": "Denmark",
+    "country_code": "DNK",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 9.7,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 81.8536585365854,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 15.6963833177301,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 20.8660704666167,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 5976992,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 429457372071.869,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 3.67619734971929,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 44.0345,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 126.919,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 246545.586810222,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 7.43402450518379,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 0.918944392082941,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 15.758,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 39.5,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 9.41784573,
+        "year": "2023",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 84.5866088867188,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 59.769,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 1090,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 11.374,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 5.587,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "AUT": {
+    "country_name": "Austria",
+    "country_code": "AUT",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 8.5,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 81.5414634146342,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 14.2280024817963,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 20.6064031791903,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 9178482,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 521642466921.745,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": -1.17354053552188,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 29.3725,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 121.746,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 47129.4708645722,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 2.60009979636148,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 1.05325619344311,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 47.206131846825,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 36,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 10.87779903,
+        "year": "2023",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 94.5116882324219,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 55.551,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 1872,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 40.181,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 5.439,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "TUR": {
+    "country_name": "Turkey",
+    "country_code": "TUR",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 11.2,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 77.156,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 21.4489074757866,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 10.2841810756946,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 85518661,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 1323254808058.74,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 3.18402435479221,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 22.4592,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 105.684,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 11103.4011629345,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 36.3051293131189,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 0.3699038617718,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 29.2768733027559,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 12,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 3.70338893,
+        "year": "2022",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 127.577972412109,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 36.311,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 8234,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 22.107,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 8.449,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "USA": {
+    "country_name": "United States",
+    "country_code": "USA",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 10.7,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 78.3853658536585,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 17.3245769214436,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 17.9287302134033,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 340110988,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 29184890000000,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 2.79619035621393,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 38.1475,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 112.411,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 196554.134852003,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 16.7739969225661,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 0.72777639746516,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 33.8669264120375,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 10.9,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 16.49613953,
+        "year": "2022",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 79.361930847168,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 56.51,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 262244,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 16.485,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 4.106,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "CHN": {
+    "country_name": "China",
+    "country_code": "CHN",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 6.39,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 77.953,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 16.0078123326803,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 14.665268836569,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 1408975000,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 18743803170827.2,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 4.9773565917572,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 44.7289,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 128.247,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 1413.32103124612,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 61.7186608827991,
+        "year": "2022",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 0.0974119959873274,
+        "year": "2022",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 23.8317336318638,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 15.2,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 5.36948681,
+        "year": "2022",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 74.823600769043,
+        "year": "2023",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 59.562,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 1426644,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 34.456,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 4.571,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "JPN": {
+    "country_name": "Japan",
+    "country_code": "JPN",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 6,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 84.0412195121951,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 11.4361015985054,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 29.7807703973917,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 123975371,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 4026210821146.81,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 0.0836985643852159,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 38.6312,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 178.432,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 32928.7580837326,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 28.5471557677759,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 3.13859988774373,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 68.4087791495199,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 8.8,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 11.42183685,
+        "year": "2022",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 64.6288299560547,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 55.298,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 222452,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 7.866,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 2.563,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "GBR": {
+    "country_name": "United Kingdom",
+    "country_code": "GBR",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 10.023,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 81.2380975609756,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 17.1850467046133,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 19.4997673608515,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 69226000,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 3643834188782.91,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 1.10066786639271,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 41.4368,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 122.796,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 68449.1953890157,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 1.56579891808617,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 0.826316065895205,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 13.2554871243748,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 12.2,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 10.872015,
+        "year": "2023",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 80.1511001586914,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 57.279,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 11592,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 15.116,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 4.111,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "FRA": {
+    "country_name": "France",
+    "country_code": "FRA",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 9.9,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 82.9292682926829,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 16.5051210259256,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 22.1465618989138,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 68516699,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 3162079073495.78,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 1.16613851497229,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 48.6688,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 116.688,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 57303.8552251328,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 0.58785467200252,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 1.10701877226039,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 31.8136741928238,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 16.2,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 11.8819046,
+        "year": "2022",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 71.4203109741211,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 51.678,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 13386,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 17.956,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 7.37,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "ITA": {
+    "country_name": "Italy",
+    "country_code": "ITA",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 6.4,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 83.7,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 11.892304596608,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 24.624776723376,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 58986023,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 2372774547793.12,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 0.725792380234424,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 31.8411,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 131.872,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 30629.849379742,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 5.43982926746206,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 3.8562395704442,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 32.7125321249831,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 17.5,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 8.51808929,
+        "year": "2023",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 73.8962097167969,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 41.277,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 10281,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 27.708,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 6.778,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "CAN": {
+    "country_name": "Canada",
+    "country_code": "CAN",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 8.8,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 81.6465853658537,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 15.1113205709867,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 19.7995907648324,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 41288599,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 2241253230970.34,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 1.5280811085284,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 42.5242,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 94.1497,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 39712.7546032744,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 4.33069295873517,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 0.885442841074976,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 39.4659199995449,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 23.8,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 11.22370815,
+        "year": "2023",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 77.3137588500977,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 61.033,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 4710,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 18.02,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 6.45,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "AUS": {
+    "country_name": "Australia",
+    "country_code": "AUS",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 10.8,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 83.0512195121951,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 17.8418482544494,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 17.7300159228367,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 27204809,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 1752193307380.34,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 1.4311125201703,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 36.6047,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 112.513,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 44282.1708470734,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 46.5005792898417,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 1.77211684895473,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 17.4213145571644,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 12.3,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 9.92687893,
+        "year": "2022",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 106.240760803223,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 62.356,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 2966,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 13.25,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 4.072,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "ESP": {
+    "country_name": "Spain",
+    "country_code": "ESP",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 6.7,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 83.8829268292683,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 12.9217448695747,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 21.1454438932121,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 48807137,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 1722745978335.16,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 3.15019564517223,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 37.2148,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 127.715,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 30012.0041870106,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 1.55855436202591,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 3.30588643217136,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 37.1827922798055,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 19,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 9.73828793,
+        "year": "2022",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 94.5131072998047,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 52.598,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 1308,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 18.198,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 11.394,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "NLD": {
+    "country_name": "Netherlands",
+    "country_code": "NLD",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 9.2,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 81.9146341463415,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 15.0256450781311,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 20.4960775816586,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 17994237,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 1227543925316.41,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 0.979674921515965,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 43.2644,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 117.352,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 198674.108827176,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 8.82379606201218,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 1.26183745291805,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 11.0296673596674,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 12.2,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 10.10068321,
+        "year": "2022",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 89.3898620605469,
+        "year": "2021",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 62.879,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 2080,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 6.547,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 3.599,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  },
+  "SWE": {
+    "country_name": "Sweden",
+    "country_code": "SWE",
+    "data": {
+      "SP.DYN.CBRT.IN": {
+        "value": 9.5,
+        "year": "2023",
+        "name": "Birth rate, crude (per 1,000 people)"
+      },
+      "SP.DYN.LE00.IN": {
+        "value": 83.309756097561,
+        "year": "2023",
+        "name": "Life expectancy at birth, total (years)"
+      },
+      "SP.POP.0014.TO.ZS": {
+        "value": 16.9857798610144,
+        "year": "2024",
+        "name": "Population ages 0-14 (% of total population)"
+      },
+      "SP.POP.65UP.TO.ZS": {
+        "value": 20.7467682423653,
+        "year": "2024",
+        "name": "Population ages 65 and above (% of total population)"
+      },
+      "SP.POP.TOTL": {
+        "value": 10569709,
+        "year": "2024",
+        "name": "Population, total"
+      },
+      "NY.GDP.MKTP.CD": {
+        "value": 610117791237.089,
+        "year": "2024",
+        "name": "GDP (current US$)"
+      },
+      "NY.GDP.MKTP.KD.ZG": {
+        "value": 0.973832212948594,
+        "year": "2024",
+        "name": "GDP growth (annual %)"
+      },
+      "IT.NET.BBND.P2": {
+        "value": 40.734,
+        "year": "2023",
+        "name": "Fixed broadband subscriptions (per 100 people)"
+      },
+      "IT.CEL.SETS.P2": {
+        "value": 140.266,
+        "year": "2023",
+        "name": "Mobile cellular subscriptions (per 100 people)"
+      },
+      "IT.NET.SECR.P6": {
+        "value": 55097.2595366627,
+        "year": "2024",
+        "name": "Secure Internet servers (per 1 million people)"
+      },
+      "EG.ELC.COAL.ZS": {
+        "value": 0.317207608158145,
+        "year": "2023",
+        "name": "Electricity production from coal sources (% of total)"
+      },
+      "EG.ELC.PETR.ZS": {
+        "value": 0.156191578921977,
+        "year": "2023",
+        "name": "Electricity production from oil sources (% of total)"
+      },
+      "AG.LND.FRST.ZS": {
+        "value": 68.6996660773915,
+        "year": "2022",
+        "name": "Forest area (% of land area)"
+      },
+      "EG.FEC.RNEW.ZS": {
+        "value": 57.9,
+        "year": "2021",
+        "name": "Renewable energy consumption (% of total final energy consumption)"
+      },
+      "SH.XPD.CHEX.GD.ZS": {
+        "value": 10.88682365,
+        "year": "2023",
+        "name": "Current health expenditure (% of GDP)"
+      },
+      "SE.TER.ENRR": {
+        "value": 83.8976135253906,
+        "year": "2022",
+        "name": "School enrollment, tertiary (% gross)"
+      },
+      "SL.TLF.CACT.FE.ZS": {
+        "value": 61.679,
+        "year": "2024",
+        "name": "Labor force participation rate, female (% of female population ages 15+)"
+      },
+      "IP.PAT.RESD": {
+        "value": 1771,
+        "year": "2021",
+        "name": "Patent applications, residents"
+      },
+      "SP.RUR.TOTL.ZS": {
+        "value": 11.024,
+        "year": "2024",
+        "name": "Rural population (% of total population)"
+      },
+      "SL.UEM.TOTL.ZS": {
+        "value": 8.528,
+        "year": "2024",
+        "name": "Unemployment, total (% of total labor force)"
+      }
+    }
+  }
+}

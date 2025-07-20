@@ -1,0 +1,11 @@
+{
+  "test_date": "2025-07-18 23:14:33",
+  "series_analyzed": 708,
+  "working_data_endpoints": [],
+  "working_alternatives": [
+    "https://unstats.un.org/SDGAPI/v1/sdg/Goal/List",
+    "https://unstats.un.org/SDGAPI/v1/sdg/Target/List"
+  ],
+  "status": "no_data_access_found",
+  "next_steps": "Research alternative approaches"
+}

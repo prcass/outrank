@@ -1,0 +1,516 @@
+🌍 Complete World Bank Data Fetcher
+============================================================
+📊 Fetching 20 indicators for 38 countries
+⏱️  Estimated time: ~15 minutes
+
+
+🌍 Processing Germany (DEU)...
+    SP.DYN.CBRT.IN... ✓ 8.3 (2023)
+    Progress: 0.1%
+    SP.DYN.LE00.IN... ✓ 80.5414634146342 (2023)
+    Progress: 0.3%
+    SP.POP.0014.TO.ZS... ✓ 13.9101604189277 (2024)
+    Progress: 0.4%
+    SP.POP.65UP.TO.ZS... ✓ 23.1955871731941 (2024)
+    Progress: 0.5%
+    SP.POP.TOTL... ✓ 83510950 (2024)
+    Progress: 0.7%
+    NY.GDP.MKTP.CD... ✓ 4659929336890.62 (2024)
+    Progress: 0.8%
+    NY.GDP.MKTP.KD.ZG... ✓ -0.238526858256165 (2024)
+    Progress: 0.9%
+    IT.NET.BBND.P2... ✓ 45.3805 (2023)
+    Progress: 1.1%
+    IT.CEL.SETS.P2... ✓ 124.663 (2023)
+    Progress: 1.2%
+    IT.NET.SECR.P6... ✓ 152124.122644994 (2024)
+    Progress: 1.3%
+    EG.ELC.COAL.ZS... ✓ 26.6158079857232 (2023)
+    Progress: 1.4%
+    EG.ELC.PETR.ZS... ✓ 0.862495024067169 (2023)
+    Progress: 1.6%
+    AG.LND.FRST.ZS... ✓ 32.685482024273 (2022)
+    Progress: 1.7%
+    EG.FEC.RNEW.ZS... ✓ 17.6 (2021)
+    Progress: 1.8%
+    SH.XPD.CHEX.GD.ZS... ✓ 11.79903221 (2023)
+    Progress: 2.0%
+    SE.TER.ENRR... ✓ 77.3656997680664 (2022)
+    Progress: 2.1%
+    SL.TLF.CACT.FE.ZS... ✓ 55.637 (2024)
+    Progress: 2.2%
+    IP.PAT.RESD... ✓ 39822 (2021)
+    Progress: 2.4%
+    SP.RUR.TOTL.ZS... ✓ 22.105 (2024)
+    Progress: 2.5%
+    SL.UEM.TOTL.ZS... ✓ 3.406 (2024)
+    Progress: 2.6%
+
+🌍 Processing Denmark (DNK)...
+    SP.DYN.CBRT.IN... ✓ 9.7 (2023)
+    Progress: 2.8%
+    SP.DYN.LE00.IN... ✓ 81.8536585365854 (2023)
+    Progress: 2.9%
+    SP.POP.0014.TO.ZS... ✓ 15.6963833177301 (2024)
+    Progress: 3.0%
+    SP.POP.65UP.TO.ZS... ✓ 20.8660704666167 (2024)
+    Progress: 3.2%
+    SP.POP.TOTL... ✓ 5976992 (2024)
+    Progress: 3.3%
+    NY.GDP.MKTP.CD... ✓ 429457372071.869 (2024)
+    Progress: 3.4%
+    NY.GDP.MKTP.KD.ZG... ✓ 3.67619734971929 (2024)
+    Progress: 3.6%
+    IT.NET.BBND.P2... ✓ 44.0345 (2023)
+    Progress: 3.7%
+    IT.CEL.SETS.P2... ✓ 126.919 (2023)
+    Progress: 3.8%
+    IT.NET.SECR.P6... ✓ 246545.586810222 (2024)
+    Progress: 3.9%
+    EG.ELC.COAL.ZS... ✓ 7.43402450518379 (2023)
+    Progress: 4.1%
+    EG.ELC.PETR.ZS... ✓ 0.918944392082941 (2023)
+    Progress: 4.2%
+    AG.LND.FRST.ZS... ✓ 15.758 (2022)
+    Progress: 4.3%
+    EG.FEC.RNEW.ZS... ✓ 39.5 (2021)
+    Progress: 4.5%
+    SH.XPD.CHEX.GD.ZS... ✓ 9.41784573 (2023)
+    Progress: 4.6%
+    SE.TER.ENRR... ✓ 84.5866088867188 (2022)
+    Progress: 4.7%
+    SL.TLF.CACT.FE.ZS... ✓ 59.769 (2024)
+    Progress: 4.9%
+    IP.PAT.RESD... ✓ 1090 (2021)
+    Progress: 5.0%
+    SP.RUR.TOTL.ZS... ✓ 11.374 (2024)
+    Progress: 5.1%
+    SL.UEM.TOTL.ZS... ✓ 5.587 (2024)
+    Progress: 5.3%
+
+🌍 Processing Austria (AUT)...
+    SP.DYN.CBRT.IN... ✓ 8.5 (2023)
+    Progress: 5.4%
+    SP.DYN.LE00.IN... ✓ 81.5414634146342 (2023)
+    Progress: 5.5%
+    SP.POP.0014.TO.ZS... ✓ 14.2280024817963 (2024)
+    Progress: 5.7%
+    SP.POP.65UP.TO.ZS... ✓ 20.6064031791903 (2024)
+    Progress: 5.8%
+    SP.POP.TOTL... ✓ 9178482 (2024)
+    Progress: 5.9%
+    NY.GDP.MKTP.CD... ✓ 521642466921.745 (2024)
+    Progress: 6.1%
+    NY.GDP.MKTP.KD.ZG... ✓ -1.17354053552188 (2024)
+    Progress: 6.2%
+    IT.NET.BBND.P2... ✓ 29.3725 (2023)
+    Progress: 6.3%
+    IT.CEL.SETS.P2... ✓ 121.746 (2023)
+    Progress: 6.4%
+    IT.NET.SECR.P6... ✓ 47129.4708645722 (2024)
+    Progress: 6.6%
+    EG.ELC.COAL.ZS... ✓ 2.60009979636148 (2023)
+    Progress: 6.7%
+    EG.ELC.PETR.ZS... ✓ 1.05325619344311 (2023)
+    Progress: 6.8%
+    AG.LND.FRST.ZS... ✓ 47.206131846825 (2022)
+    Progress: 7.0%
+    EG.FEC.RNEW.ZS... ✓ 36 (2021)
+    Progress: 7.1%
+    SH.XPD.CHEX.GD.ZS... ✓ 10.87779903 (2023)
+    Progress: 7.2%
+    SE.TER.ENRR... ✓ 94.5116882324219 (2022)
+    Progress: 7.4%
+    SL.TLF.CACT.FE.ZS... ✓ 55.551 (2024)
+    Progress: 7.5%
+    IP.PAT.RESD... ✓ 1872 (2021)
+    Progress: 7.6%
+    SP.RUR.TOTL.ZS... ✓ 40.181 (2024)
+    Progress: 7.8%
+    SL.UEM.TOTL.ZS... ✓ 5.439 (2024)
+    Progress: 7.9%
+
+🌍 Processing Turkey (TUR)...
+    SP.DYN.CBRT.IN... ✓ 11.2 (2023)
+    Progress: 8.0%
+    SP.DYN.LE00.IN... ✓ 77.156 (2023)
+    Progress: 8.2%
+    SP.POP.0014.TO.ZS... ✓ 21.4489074757866 (2024)
+    Progress: 8.3%
+    SP.POP.65UP.TO.ZS... ✓ 10.2841810756946 (2024)
+    Progress: 8.4%
+    SP.POP.TOTL... ✓ 85518661 (2024)
+    Progress: 8.6%
+    NY.GDP.MKTP.CD... ✓ 1323254808058.74 (2024)
+    Progress: 8.7%
+    NY.GDP.MKTP.KD.ZG... ✓ 3.18402435479221 (2024)
+    Progress: 8.8%
+    IT.NET.BBND.P2... ✓ 22.4592 (2023)
+    Progress: 8.9%
+    IT.CEL.SETS.P2... ✓ 105.684 (2023)
+    Progress: 9.1%
+    IT.NET.SECR.P6... ✓ 11103.4011629345 (2024)
+    Progress: 9.2%
+    EG.ELC.COAL.ZS... ✓ 36.3051293131189 (2023)
+    Progress: 9.3%
+    EG.ELC.PETR.ZS... ✓ 0.3699038617718 (2023)
+    Progress: 9.5%
+    AG.LND.FRST.ZS... ✓ 29.2768733027559 (2022)
+    Progress: 9.6%
+    EG.FEC.RNEW.ZS... ✓ 12 (2021)
+    Progress: 9.7%
+    SH.XPD.CHEX.GD.ZS... ✓ 3.70338893 (2022)
+    Progress: 9.9%
+    SE.TER.ENRR... ✓ 127.577972412109 (2022)
+    Progress: 10.0%
+    SL.TLF.CACT.FE.ZS... ✓ 36.311 (2024)
+    Progress: 10.1%
+    IP.PAT.RESD... ✓ 8234 (2021)
+    Progress: 10.3%
+    SP.RUR.TOTL.ZS... ✓ 22.107 (2024)
+    Progress: 10.4%
+    SL.UEM.TOTL.ZS... ✓ 8.449 (2024)
+    Progress: 10.5%
+
+🌍 Processing United States (USA)...
+    SP.DYN.CBRT.IN... ✓ 10.7 (2023)
+    Progress: 10.7%
+    SP.DYN.LE00.IN... ✓ 78.3853658536585 (2023)
+    Progress: 10.8%
+    SP.POP.0014.TO.ZS... ✓ 17.3245769214436 (2024)
+    Progress: 10.9%
+    SP.POP.65UP.TO.ZS... ✓ 17.9287302134033 (2024)
+    Progress: 11.1%
+    SP.POP.TOTL... ✓ 340110988 (2024)
+    Progress: 11.2%
+    NY.GDP.MKTP.CD... ✓ 29184890000000 (2024)
+    Progress: 11.3%
+    NY.GDP.MKTP.KD.ZG... ✓ 2.79619035621393 (2024)
+    Progress: 11.4%
+    IT.NET.BBND.P2... ✓ 38.1475 (2023)
+    Progress: 11.6%
+    IT.CEL.SETS.P2... ✓ 112.411 (2023)
+    Progress: 11.7%
+    IT.NET.SECR.P6... ✓ 196554.134852003 (2024)
+    Progress: 11.8%
+    EG.ELC.COAL.ZS... ✓ 16.7739969225661 (2023)
+    Progress: 12.0%
+    EG.ELC.PETR.ZS... ✓ 0.72777639746516 (2023)
+    Progress: 12.1%
+    AG.LND.FRST.ZS... ✓ 33.8669264120375 (2022)
+    Progress: 12.2%
+    EG.FEC.RNEW.ZS... ✓ 10.9 (2021)
+    Progress: 12.4%
+    SH.XPD.CHEX.GD.ZS... ✓ 16.49613953 (2022)
+    Progress: 12.5%
+    SE.TER.ENRR... ✓ 79.361930847168 (2022)
+    Progress: 12.6%
+    SL.TLF.CACT.FE.ZS... ✓ 56.51 (2024)
+    Progress: 12.8%
+    IP.PAT.RESD... ✓ 262244 (2021)
+    Progress: 12.9%
+    SP.RUR.TOTL.ZS... ✓ 16.485 (2024)
+    Progress: 13.0%
+    SL.UEM.TOTL.ZS... ✓ 4.106 (2024)
+    Progress: 13.2%
+✅ Progress saved: 5/38 countries
+
+🌍 Processing China (CHN)...
+    SP.DYN.CBRT.IN... ✓ 6.39 (2023)
+    Progress: 13.3%
+    SP.DYN.LE00.IN... ✓ 77.953 (2023)
+    Progress: 13.4%
+    SP.POP.0014.TO.ZS... ✓ 16.0078123326803 (2024)
+    Progress: 13.6%
+    SP.POP.65UP.TO.ZS... ✓ 14.665268836569 (2024)
+    Progress: 13.7%
+    SP.POP.TOTL... ✓ 1408975000 (2024)
+    Progress: 13.8%
+    NY.GDP.MKTP.CD... ✓ 18743803170827.2 (2024)
+    Progress: 13.9%
+    NY.GDP.MKTP.KD.ZG... ✓ 4.9773565917572 (2024)
+    Progress: 14.1%
+    IT.NET.BBND.P2... ✓ 44.7289 (2023)
+    Progress: 14.2%
+    IT.CEL.SETS.P2... ✓ 128.247 (2023)
+    Progress: 14.3%
+    IT.NET.SECR.P6... ✓ 1413.32103124612 (2024)
+    Progress: 14.5%
+    EG.ELC.COAL.ZS... ✓ 61.7186608827991 (2022)
+    Progress: 14.6%
+    EG.ELC.PETR.ZS... ✓ 0.0974119959873274 (2022)
+    Progress: 14.7%
+    AG.LND.FRST.ZS... ✓ 23.8317336318638 (2022)
+    Progress: 14.9%
+    EG.FEC.RNEW.ZS... ✓ 15.2 (2021)
+    Progress: 15.0%
+    SH.XPD.CHEX.GD.ZS... ✓ 5.36948681 (2022)
+    Progress: 15.1%
+    SE.TER.ENRR... ✓ 74.823600769043 (2023)
+    Progress: 15.3%
+    SL.TLF.CACT.FE.ZS... ✓ 59.562 (2024)
+    Progress: 15.4%
+    IP.PAT.RESD... ✓ 1426644 (2021)
+    Progress: 15.5%
+    SP.RUR.TOTL.ZS... ✓ 34.456 (2024)
+    Progress: 15.7%
+    SL.UEM.TOTL.ZS... ✓ 4.571 (2024)
+    Progress: 15.8%
+
+🌍 Processing Japan (JPN)...
+    SP.DYN.CBRT.IN... ✓ 6 (2023)
+    Progress: 15.9%
+    SP.DYN.LE00.IN... ✓ 84.0412195121951 (2023)
+    Progress: 16.1%
+    SP.POP.0014.TO.ZS... ✓ 11.4361015985054 (2024)
+    Progress: 16.2%
+    SP.POP.65UP.TO.ZS... ✓ 29.7807703973917 (2024)
+    Progress: 16.3%
+    SP.POP.TOTL... ✓ 123975371 (2024)
+    Progress: 16.4%
+    NY.GDP.MKTP.CD... ✓ 4026210821146.81 (2024)
+    Progress: 16.6%
+    NY.GDP.MKTP.KD.ZG... ✓ 0.0836985643852159 (2024)
+    Progress: 16.7%
+    IT.NET.BBND.P2... ✓ 38.6312 (2023)
+    Progress: 16.8%
+    IT.CEL.SETS.P2... ✓ 178.432 (2023)
+    Progress: 17.0%
+    IT.NET.SECR.P6... ✓ 32928.7580837326 (2024)
+    Progress: 17.1%
+    EG.ELC.COAL.ZS... ✓ 28.5471557677759 (2023)
+    Progress: 17.2%
+    EG.ELC.PETR.ZS... ✓ 3.13859988774373 (2023)
+    Progress: 17.4%
+    AG.LND.FRST.ZS... ✓ 68.4087791495199 (2022)
+    Progress: 17.5%
+    EG.FEC.RNEW.ZS... ✓ 8.8 (2021)
+    Progress: 17.6%
+    SH.XPD.CHEX.GD.ZS... ✓ 11.42183685 (2022)
+    Progress: 17.8%
+    SE.TER.ENRR... ✓ 64.6288299560547 (2022)
+    Progress: 17.9%
+    SL.TLF.CACT.FE.ZS... ✓ 55.298 (2024)
+    Progress: 18.0%
+    IP.PAT.RESD... ✓ 222452 (2021)
+    Progress: 18.2%
+    SP.RUR.TOTL.ZS... ✓ 7.866 (2024)
+    Progress: 18.3%
+    SL.UEM.TOTL.ZS... ✓ 2.563 (2024)
+    Progress: 18.4%
+
+🌍 Processing United Kingdom (GBR)...
+    SP.DYN.CBRT.IN... ✓ 10.023 (2023)
+    Progress: 18.6%
+    SP.DYN.LE00.IN... ✓ 81.2380975609756 (2023)
+    Progress: 18.7%
+    SP.POP.0014.TO.ZS... ✓ 17.1850467046133 (2024)
+    Progress: 18.8%
+    SP.POP.65UP.TO.ZS... ✓ 19.4997673608515 (2024)
+    Progress: 18.9%
+    SP.POP.TOTL... ✓ 69226000 (2024)
+    Progress: 19.1%
+    NY.GDP.MKTP.CD... ✓ 3643834188782.91 (2024)
+    Progress: 19.2%
+    NY.GDP.MKTP.KD.ZG... ✓ 1.10066786639271 (2024)
+    Progress: 19.3%
+    IT.NET.BBND.P2... ✓ 41.4368 (2023)
+    Progress: 19.5%
+    IT.CEL.SETS.P2... ✓ 122.796 (2023)
+    Progress: 19.6%
+    IT.NET.SECR.P6... ✓ 68449.1953890157 (2024)
+    Progress: 19.7%
+    EG.ELC.COAL.ZS... ✓ 1.56579891808617 (2023)
+    Progress: 19.9%
+    EG.ELC.PETR.ZS... ✓ 0.826316065895205 (2023)
+    Progress: 20.0%
+    AG.LND.FRST.ZS... ✓ 13.2554871243748 (2022)
+    Progress: 20.1%
+    EG.FEC.RNEW.ZS... ✓ 12.2 (2021)
+    Progress: 20.3%
+    SH.XPD.CHEX.GD.ZS... ✓ 10.872015 (2023)
+    Progress: 20.4%
+    SE.TER.ENRR... ✓ 80.1511001586914 (2022)
+    Progress: 20.5%
+    SL.TLF.CACT.FE.ZS... ✓ 57.279 (2024)
+    Progress: 20.7%
+    IP.PAT.RESD... ✓ 11592 (2021)
+    Progress: 20.8%
+    SP.RUR.TOTL.ZS... ✓ 15.116 (2024)
+    Progress: 20.9%
+    SL.UEM.TOTL.ZS... ✓ 4.111 (2024)
+    Progress: 21.1%
+
+🌍 Processing France (FRA)...
+    SP.DYN.CBRT.IN... ✓ 9.9 (2023)
+    Progress: 21.2%
+    SP.DYN.LE00.IN... ✓ 82.9292682926829 (2023)
+    Progress: 21.3%
+    SP.POP.0014.TO.ZS... ✓ 16.5051210259256 (2024)
+    Progress: 21.4%
+    SP.POP.65UP.TO.ZS... ✓ 22.1465618989138 (2024)
+    Progress: 21.6%
+    SP.POP.TOTL... ✓ 68516699 (2024)
+    Progress: 21.7%
+    NY.GDP.MKTP.CD... ✓ 3162079073495.78 (2024)
+    Progress: 21.8%
+    NY.GDP.MKTP.KD.ZG... ✓ 1.16613851497229 (2024)
+    Progress: 22.0%
+    IT.NET.BBND.P2... ✓ 48.6688 (2023)
+    Progress: 22.1%
+    IT.CEL.SETS.P2... ✓ 116.688 (2023)
+    Progress: 22.2%
+    IT.NET.SECR.P6... ✓ 57303.8552251328 (2024)
+    Progress: 22.4%
+    EG.ELC.COAL.ZS... ✓ 0.58785467200252 (2023)
+    Progress: 22.5%
+    EG.ELC.PETR.ZS... ✓ 1.10701877226039 (2023)
+    Progress: 22.6%
+    AG.LND.FRST.ZS... ✓ 31.8136741928238 (2022)
+    Progress: 22.8%
+    EG.FEC.RNEW.ZS... ✓ 16.2 (2021)
+    Progress: 22.9%
+    SH.XPD.CHEX.GD.ZS... ✓ 11.8819046 (2022)
+    Progress: 23.0%
+    SE.TER.ENRR... ✓ 71.4203109741211 (2022)
+    Progress: 23.2%
+    SL.TLF.CACT.FE.ZS... ✓ 51.678 (2024)
+    Progress: 23.3%
+    IP.PAT.RESD... ✓ 13386 (2021)
+    Progress: 23.4%
+    SP.RUR.TOTL.ZS... ✓ 17.956 (2024)
+    Progress: 23.6%
+    SL.UEM.TOTL.ZS... ✓ 7.37 (2024)
+    Progress: 23.7%
+
+🌍 Processing Italy (ITA)...
+    SP.DYN.CBRT.IN... ✓ 6.4 (2023)
+    Progress: 23.8%
+    SP.DYN.LE00.IN... ✓ 83.7 (2023)
+    Progress: 23.9%
+    SP.POP.0014.TO.ZS... ✓ 11.892304596608 (2024)
+    Progress: 24.1%
+    SP.POP.65UP.TO.ZS... ✓ 24.624776723376 (2024)
+    Progress: 24.2%
+    SP.POP.TOTL... ✓ 58986023 (2024)
+    Progress: 24.3%
+    NY.GDP.MKTP.CD... ✓ 2372774547793.12 (2024)
+    Progress: 24.5%
+    NY.GDP.MKTP.KD.ZG... ✓ 0.725792380234424 (2024)
+    Progress: 24.6%
+    IT.NET.BBND.P2... ✓ 31.8411 (2023)
+    Progress: 24.7%
+    IT.CEL.SETS.P2... ✓ 131.872 (2023)
+    Progress: 24.9%
+    IT.NET.SECR.P6... ✓ 30629.849379742 (2024)
+    Progress: 25.0%
+    EG.ELC.COAL.ZS... ✓ 5.43982926746206 (2023)
+    Progress: 25.1%
+    EG.ELC.PETR.ZS... ✓ 3.8562395704442 (2023)
+    Progress: 25.3%
+    AG.LND.FRST.ZS... ✓ 32.7125321249831 (2022)
+    Progress: 25.4%
+    EG.FEC.RNEW.ZS... ✓ 17.5 (2021)
+    Progress: 25.5%
+    SH.XPD.CHEX.GD.ZS... ✓ 8.51808929 (2023)
+    Progress: 25.7%
+    SE.TER.ENRR... ✓ 73.8962097167969 (2022)
+    Progress: 25.8%
+    SL.TLF.CACT.FE.ZS... ✓ 41.277 (2024)
+    Progress: 25.9%
+    IP.PAT.RESD... ✓ 10281 (2021)
+    Progress: 26.1%
+    SP.RUR.TOTL.ZS... ✓ 27.708 (2024)
+    Progress: 26.2%
+    SL.UEM.TOTL.ZS... ✓ 6.778 (2024)
+    Progress: 26.3%
+✅ Progress saved: 10/38 countries
+
+🌍 Processing Canada (CAN)...
+    SP.DYN.CBRT.IN... ✓ 8.8 (2023)
+    Progress: 26.4%
+    SP.DYN.LE00.IN... ✓ 81.6465853658537 (2023)
+    Progress: 26.6%
+    SP.POP.0014.TO.ZS... ✓ 15.1113205709867 (2024)
+    Progress: 26.7%
+    SP.POP.65UP.TO.ZS... ✓ 19.7995907648324 (2024)
+    Progress: 26.8%
+    SP.POP.TOTL... ✓ 41288599 (2024)
+    Progress: 27.0%
+    NY.GDP.MKTP.CD... ✓ 2241253230970.34 (2024)
+    Progress: 27.1%
+    NY.GDP.MKTP.KD.ZG... ✓ 1.5280811085284 (2024)
+    Progress: 27.2%
+    IT.NET.BBND.P2... ✓ 42.5242 (2023)
+    Progress: 27.4%
+    IT.CEL.SETS.P2... ✓ 94.1497 (2023)
+    Progress: 27.5%
+    IT.NET.SECR.P6... ✓ 39712.7546032744 (2024)
+    Progress: 27.6%
+    EG.ELC.COAL.ZS... ✓ 4.33069295873517 (2023)
+    Progress: 27.8%
+    EG.ELC.PETR.ZS... ✓ 0.885442841074976 (2023)
+    Progress: 27.9%
+    AG.LND.FRST.ZS... ✓ 39.4659199995449 (2022)
+    Progress: 28.0%
+    EG.FEC.RNEW.ZS... ✓ 23.8 (2021)
+    Progress: 28.2%
+    SH.XPD.CHEX.GD.ZS... ✓ 11.22370815 (2023)
+    Progress: 28.3%
+    SE.TER.ENRR... ✓ 77.3137588500977 (2022)
+    Progress: 28.4%
+    SL.TLF.CACT.FE.ZS... ✓ 61.033 (2024)
+    Progress: 28.6%
+    IP.PAT.RESD... ✓ 4710 (2021)
+    Progress: 28.7%
+    SP.RUR.TOTL.ZS... ✓ 18.02 (2024)
+    Progress: 28.8%
+    SL.UEM.TOTL.ZS... ✓ 6.45 (2024)
+    Progress: 28.9%
+
+🌍 Processing Australia (AUS)...
+    SP.DYN.CBRT.IN... ✓ 10.8 (2023)
+    Progress: 29.1%
+    SP.DYN.LE00.IN... ✓ 83.0512195121951 (2023)
+    Progress: 29.2%
+    SP.POP.0014.TO.ZS... ✓ 17.8418482544494 (2024)
+    Progress: 29.3%
+    SP.POP.65UP.TO.ZS... ✓ 17.7300159228367 (2024)
+    Progress: 29.5%
+    SP.POP.TOTL... ✓ 27204809 (2024)
+    Progress: 29.6%
+    NY.GDP.MKTP.CD... ✓ 1752193307380.34 (2024)
+    Progress: 29.7%
+    NY.GDP.MKTP.KD.ZG... ✓ 1.4311125201703 (2024)
+    Progress: 29.9%
+    IT.NET.BBND.P2... ✓ 36.6047 (2023)
+    Progress: 30.0%
+    IT.CEL.SETS.P2... ✓ 112.513 (2023)
+    Progress: 30.1%
+    IT.NET.SECR.P6... ✓ 44282.1708470734 (2024)
+    Progress: 30.3%
+    EG.ELC.COAL.ZS... ✓ 46.5005792898417 (2023)
+    Progress: 30.4%
+    EG.ELC.PETR.ZS... ✓ 1.77211684895473 (2023)
+    Progress: 30.5%
+    AG.LND.FRST.ZS... ✓ 17.4213145571644 (2022)
+    Progress: 30.7%
+    EG.FEC.RNEW.ZS... ✓ 12.3 (2021)
+    Progress: 30.8%
+    SH.XPD.CHEX.GD.ZS... ✓ 9.92687893 (2022)
+    Progress: 30.9%
+    SE.TER.ENRR... ✓ 106.240760803223 (2022)
+    Progress: 31.1%
+    SL.TLF.CACT.FE.ZS... ✓ 62.356 (2024)
+    Progress: 31.2%
+    IP.PAT.RESD... ✓ 2966 (2021)
+    Progress: 31.3%
+    SP.RUR.TOTL.ZS... ✓ 13.25 (2024)
+    Progress: 31.4%
+    SL.UEM.TOTL.ZS... ✓ 4.072 (2024)
+    Progress: 31.6%
+
+🌍 Processing Spain (ESP)...
+    SP.DYN.CBRT.IN... ✓ 6.7 (2023)
+    Progress: 31.7%
+    SP.DYN.LE00.IN... ✓ 83.8829268292683 (2023)

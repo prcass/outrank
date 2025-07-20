@@ -1,0 +1,162 @@
+{
+  "001": {
+    "name": "Argentina",
+    "iso3": "ARG"
+  },
+  "002": {
+    "name": "Australia",
+    "iso3": "AUS"
+  },
+  "003": {
+    "name": "Belgium",
+    "iso3": "BEL"
+  },
+  "004": {
+    "name": "Bangladesh",
+    "iso3": "BGD"
+  },
+  "005": {
+    "name": "Brazil",
+    "iso3": "BRA"
+  },
+  "006": {
+    "name": "Canada",
+    "iso3": "CAN"
+  },
+  "007": {
+    "name": "Chile",
+    "iso3": "CHL"
+  },
+  "008": {
+    "name": "China",
+    "iso3": "CHN"
+  },
+  "009": {
+    "name": "Germany",
+    "iso3": "DEU"
+  },
+  "010": {
+    "name": "Denmark",
+    "iso3": "DNK"
+  },
+  "011": {
+    "name": "Egypt",
+    "iso3": "EGY"
+  },
+  "012": {
+    "name": "Spain",
+    "iso3": "ESP"
+  },
+  "013": {
+    "name": "Finland",
+    "iso3": "FIN"
+  },
+  "014": {
+    "name": "France",
+    "iso3": "FRA"
+  },
+  "015": {
+    "name": "United Kingdom",
+    "iso3": "GBR"
+  },
+  "016": {
+    "name": "Greece",
+    "iso3": "GRC"
+  },
+  "017": {
+    "name": "Indonesia",
+    "iso3": "IDN"
+  },
+  "018": {
+    "name": "India",
+    "iso3": "IND"
+  },
+  "019": {
+    "name": "Ireland",
+    "iso3": "IRL"
+  },
+  "020": {
+    "name": "Israel",
+    "iso3": "ISR"
+  },
+  "021": {
+    "name": "Italy",
+    "iso3": "ITA"
+  },
+  "022": {
+    "name": "Japan",
+    "iso3": "JPN"
+  },
+  "023": {
+    "name": "Kenya",
+    "iso3": "KEN"
+  },
+  "024": {
+    "name": "South Korea",
+    "iso3": "KOR"
+  },
+  "025": {
+    "name": "Mexico",
+    "iso3": "MEX"
+  },
+  "026": {
+    "name": "Malaysia",
+    "iso3": "MYS"
+  },
+  "027": {
+    "name": "Nigeria",
+    "iso3": "NGA"
+  },
+  "028": {
+    "name": "Netherlands",
+    "iso3": "NLD"
+  },
+  "029": {
+    "name": "Norway",
+    "iso3": "NOR"
+  },
+  "030": {
+    "name": "New Zealand",
+    "iso3": "NZL"
+  },
+  "031": {
+    "name": "Philippines",
+    "iso3": "PHL"
+  },
+  "032": {
+    "name": "Portugal",
+    "iso3": "PRT"
+  },
+  "033": {
+    "name": "Russia",
+    "iso3": "RUS"
+  },
+  "034": {
+    "name": "Saudi Arabia",
+    "iso3": "SAU"
+  },
+  "035": {
+    "name": "Thailand",
+    "iso3": "THA"
+  },
+  "036": {
+    "name": "Turkey",
+    "iso3": "TUR"
+  },
+  "037": {
+    "name": "Taiwan",
+    "iso3": "TWN"
+  },
+  "038": {
+    "name": "United States",
+    "iso3": "USA"
+  },
+  "039": {
+    "name": "Vietnam",
+    "iso3": "VNM"
+  },
+  "040": {
+    "name": "South Africa",
+    "iso3": "ZAF"
+  }
+}

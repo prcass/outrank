@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Outrank Print & Play - Correct Specifications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: white;
+        }
+        
+        @media print {
+            .page-break {
+                page-break-before: always;
+            }
+            
+            .no-print {
+                display: none;
+            }
+            
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            
+            @page {
+                size: A4;
+                margin: 0.5in;
+            }
+        }
+        
+        .page {
+            width: 8.5in;
+            height: 11in;
+            padding: 0.5in;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+        }
+        
+        /* Page 1: 406mm x 406mm Game Board scaled to fit page */
+        .board-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .board-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .game-board-container {
+            width: 7in;
+            height: 7in;
+            position: relative;
+        }
+        
+        /* Actual 406mm x 406mm board scaled down */
+        .game-board {
+            width: 100%;
+            height: 100%;
+            border: 4px solid #2c3e50;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Left panel (320mm of 406mm = ~79%) */
+        .left-panel {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 79%;
+            height: 100%;
+            background: #ffffff;
+            border-right: 2px solid #bdc3c7;
+        }
+        
+        /* Right panel (86mm of 406mm = ~21%) */
+        .right-panel {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 21%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Top section of left panel */
+        .score-display {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            height: 80px;
+            background: #3498db;
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        /* Center area for cards */
+        .card-area {
+            position: absolute;
+            top: 120px;
+            left: 20px;
+            right: 20px;
+            height: 200px;
+            background: white;
+            border: 3px solid #9b59b6;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .card-slot {
+            width: 50px;
+            height: 35px;
+            border: 2px dashed #9b59b6;
+            border-radius: 5px;
+            background: #f8f9fa;
+        }
+        
+        /* Bottom controls */
+        .control-area {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 120px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .bidding-section {
+            background: #f39c12;
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .blocking-section {
+            background: #27ae60;
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        /* Right panel sections */
+        .player-area {
+            flex: 1;
+            padding: 15px;
+            border-bottom: 1px solid #bdc3c7;
+        }
+        
+        .player-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .player-score {
+            font-size: 18px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .token-inventory {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+        
+        .mini-token {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 1px solid #2c3e50;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .mini-token.token-2 { background: #9b59b6; }
+        .mini-token.token-4 { background: #e67e22; }
+        .mini-token.token-6 { background: #e74c3c; }
+        
+        /* Page 2: 35mm Tokens and Components */
+        .components-page {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .components-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .token-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        
+        /* 35mm tokens (35mm = ~4.74cm = ~1.87in at print scale) */
+        .token-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .token-35mm {
+            width: 1.38in; /* 35mm scaled for page */
+            height: 1.38in;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            text-align: center;
+            border: 3px solid #2c3e50;
+            position: relative;
+        }
+        
+        .token-35mm.country {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        
+        .token-35mm.movie {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .token-35mm.sports {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        
+        .token-35mm.company {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+        
+        .token-code {
+            font-size: 10px;
+            opacity: 0.8;
+            margin-top: 3px;
+        }
+        
+        /* Blocking tokens */
+        .blocking-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 10px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .blocking-token-35mm {
+            width: 1.18in; /* Slightly smaller than game tokens */
+            height: 1.18in;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            color: white;
+            border: 3px solid #2c3e50;
+        }
+        
+        .blocking-token-35mm.blocking-2 { 
+            background: linear-gradient(135deg, #9b59b6, #8e44ad); 
+        }
+        .blocking-token-35mm.blocking-4 { 
+            background: linear-gradient(135deg, #e67e22, #d35400); 
+        }
+        .blocking-token-35mm.blocking-6 { 
+            background: linear-gradient(135deg, #e74c3c, #c0392b); 
+        }
+        
+        /* Sample cards */
+        .card-samples {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .sample-card {
+            width: 2.52in; /* 64mm scaled */
+            height: 1.57in; /* 40mm scaled */
+            border: 3px solid #2c3e50;
+            border-radius: 8px;
+            padding: 12px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .card-category {
+            font-size: 10px;
+            font-weight: bold;
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+        
+        .card-name {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            line-height: 1.2;
+        }
+        
+        .card-code {
+            font-size: 10px;
+            color: #95a5a6;
+            text-align: right;
+        }
+        
+        .specifications {
+            margin-top: 20px;
+            padding: 15px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #2c3e50;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+        }
+        
+        .cutting-guides {
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">Print PDF</button>
+    
+    <!-- Page 1: 406mm x 406mm Game Board (scaled to fit) -->
+    <div class="page board-page">
+        <div class="board-title">OUTRANK GAME BOARD - 406mm x 406mm (scaled to fit)</div>
+        
+        <div class="game-board-container">
+            <div class="game-board">
+                <!-- Left panel (320mm width) -->
+                <div class="left-panel">
+                    <div class="score-display">
+                        CURRENT STANDINGS
+                    </div>
+                    
+                    <div class="card-area">
+                        <div style="font-weight: bold; color: #9b59b6; margin-bottom: 10px;">DRAWN CARDS</div>
+                        <div class="card-grid">
+                            <div class="card-slot"></div>
+                            <div class="card-slot"></div>
+                            <div class="card-slot"></div>
+                            <div class="card-slot"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="control-area">
+                        <div class="bidding-section">
+                            <div style="font-weight: bold; margin-bottom: 8px;">BIDDING</div>
+                            <div style="font-size: 12px;">High Bid: 0</div>
+                            <div style="font-size: 12px;">Bidder: None</div>
+                        </div>
+                        
+                        <div class="blocking-section">
+                            <div style="font-weight: bold; margin-bottom: 8px;">BLOCKING</div>
+                            <div style="font-size: 12px;">Tokens Used: 0</div>
+                            <div style="display: flex; justify-content: center; gap: 3px; margin-top: 5px;">
+                                <div class="mini-token token-2">2</div>
+                                <div class="mini-token token-4">4</div>
+                                <div class="mini-token token-6">6</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right panel (86mm width) -->
+                <div class="right-panel">
+                    <div class="player-area">
+                        <div class="player-name">Player 1</div>
+                        <div class="player-score">0 pts</div>
+                        <div class="token-inventory">
+                            <div class="mini-token token-2">2</div>
+                            <div class="mini-token token-4">4</div>
+                            <div class="mini-token token-6">6</div>
+                        </div>
+                    </div>
+                    
+                    <div class="player-area">
+                        <div class="player-name">Player 2</div>
+                        <div class="player-score">0 pts</div>
+                        <div class="token-inventory">
+                            <div class="mini-token token-2">2</div>
+                            <div class="mini-token token-4">4</div>
+                            <div class="mini-token token-6">6</div>
+                        </div>
+                    </div>
+                    
+                    <div class="player-area">
+                        <div class="player-name">Player 3</div>
+                        <div class="player-score">0 pts</div>
+                        <div class="token-inventory">
+                            <div class="mini-token token-2">2</div>
+                            <div class="mini-token token-4">4</div>
+                            <div class="mini-token token-6">6</div>
+                        </div>
+                    </div>
+                    
+                    <div class="player-area">
+                        <div class="player-name">Player 4</div>
+                        <div class="player-score">0 pts</div>
+                        <div class="token-inventory">
+                            <div class="mini-token token-2">2</div>
+                            <div class="mini-token token-4">4</div>
+                            <div class="mini-token token-6">6</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 15px; text-align: center; font-size: 12px; color: #7f8c8d;">
+            <strong>Board Specifications:</strong> 406mm x 406mm (16" x 16") • Left Panel: 320mm • Right Panel: 86mm
+            <br>Print this page at actual size for full 406mm board, or scale to fit page
+        </div>
+    </div>
+    
+    <!-- Page 2: 35mm Tokens and Components -->
+    <div class="page components-page page-break">
+        <div class="components-title">OUTRANK GAME COMPONENTS - 35mm Tokens</div>
+        
+        <div class="token-section">
+            <div class="section-title">Game Tokens - 35mm Diameter (Board Game Standard)</div>
+            <div class="token-grid">
+                <!-- Countries (blue) -->
+                <div class="token-35mm country">
+                    <div>USA</div>
+                    <div class="token-code">001</div>
+                </div>
+                <div class="token-35mm country">
+                    <div>CHN</div>
+                    <div class="token-code">002</div>
+                </div>
+                <div class="token-35mm country">
+                    <div>JPN</div>
+                    <div class="token-code">003</div>
+                </div>
+                <div class="token-35mm country">
+                    <div>DEU</div>
+                    <div class="token-code">004</div>
+                </div>
+                <div class="token-35mm country">
+                    <div>GBR</div>
+                    <div class="token-code">005</div>
+                </div>
+                <div class="token-35mm country">
+                    <div>FRA</div>
+                    <div class="token-code">006</div>
+                </div>
+                
+                <!-- Movies (red) -->
+                <div class="token-35mm movie">
+                    <div>AVT</div>
+                    <div class="token-code">001</div>
+                </div>
+                <div class="token-35mm movie">
+                    <div>END</div>
+                    <div class="token-code">002</div>
+                </div>
+                <div class="token-35mm movie">
+                    <div>AW2</div>
+                    <div class="token-code">003</div>
+                </div>
+                <div class="token-35mm movie">
+                    <div>TIT</div>
+                    <div class="token-code">004</div>
+                </div>
+                <div class="token-35mm movie">
+                    <div>SW7</div>
+                    <div class="token-code">005</div>
+                </div>
+                <div class="token-35mm movie">
+                    <div>INF</div>
+                    <div class="token-code">006</div>
+                </div>
+                
+                <!-- Sports Teams (orange) -->
+                <div class="token-35mm sports">
+                    <div>MIL</div>
+                    <div class="token-code">001</div>
+                </div>
+                <div class="token-35mm sports">
+                    <div>ARS</div>
+                    <div class="token-code">002</div>
+                </div>
+                <div class="token-35mm sports">
+                    <div>ATL</div>
+                    <div class="token-code">003</div>
+                </div>
+                <div class="token-35mm sports">
+                    <div>BAY</div>
+                    <div class="token-code">004</div>
+                </div>
+                <div class="token-35mm sports">
+                    <div>CEL</div>
+                    <div class="token-code">005</div>
+                </div>
+                <div class="token-35mm sports">
+                    <div>BUL</div>
+                    <div class="token-code">006</div>
+                </div>
+                
+                <!-- Companies (green) -->
+                <div class="token-35mm company">
+                    <div>APL</div>
+                    <div class="token-code">001</div>
+                </div>
+                <div class="token-35mm company">
+                    <div>SAR</div>
+                    <div class="token-code">002</div>
+                </div>
+                <div class="token-35mm company">
+                    <div>MSF</div>
+                    <div class="token-code">003</div>
+                </div>
+                <div class="token-35mm company">
+                    <div>GOO</div>
+                    <div class="token-code">004</div>
+                </div>
+                <div class="token-35mm company">
+                    <div>AMZ</div>
+                    <div class="token-code">005</div>
+                </div>
+                <div class="token-35mm company">
+                    <div>TES</div>
+                    <div class="token-code">006</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="token-section">
+            <div class="section-title">Blocking Tokens - 30mm Diameter (3 per player, up to 6 players)</div>
+            <div class="blocking-grid">
+                <!-- 2-point tokens -->
+                <div class="blocking-token-35mm blocking-2">2</div>
+                <div class="blocking-token-35mm blocking-2">2</div>
+                <div class="blocking-token-35mm blocking-2">2</div>
+                <div class="blocking-token-35mm blocking-2">2</div>
+                <div class="blocking-token-35mm blocking-2">2</div>
+                <div class="blocking-token-35mm blocking-2">2</div>
+                <div class="blocking-token-35mm blocking-2">2</div>
+                <div class="blocking-token-35mm blocking-2">2</div>
+                <div class="blocking-token-35mm blocking-2">2</div>
+                
+                <!-- 4-point tokens -->
+                <div class="blocking-token-35mm blocking-4">4</div>
+                <div class="blocking-token-35mm blocking-4">4</div>
+                <div class="blocking-token-35mm blocking-4">4</div>
+                <div class="blocking-token-35mm blocking-4">4</div>
+                <div class="blocking-token-35mm blocking-4">4</div>
+                <div class="blocking-token-35mm blocking-4">4</div>
+                <div class="blocking-token-35mm blocking-4">4</div>
+                <div class="blocking-token-35mm blocking-4">4</div>
+                <div class="blocking-token-35mm blocking-4">4</div>
+                
+                <!-- 6-point tokens -->
+                <div class="blocking-token-35mm blocking-6">6</div>
+                <div class="blocking-token-35mm blocking-6">6</div>
+                <div class="blocking-token-35mm blocking-6">6</div>
+                <div class="blocking-token-35mm blocking-6">6</div>
+                <div class="blocking-token-35mm blocking-6">6</div>
+                <div class="blocking-token-35mm blocking-6">6</div>
+                <div class="blocking-token-35mm blocking-6">6</div>
+                <div class="blocking-token-35mm blocking-6">6</div>
+                <div class="blocking-token-35mm blocking-6">6</div>
+            </div>
+        </div>
+        
+        <div class="token-section">
+            <div class="section-title">Sample Ranking Cards - 64mm x 40mm</div>
+            <div class="card-samples">
+                <div class="sample-card">
+                    <div class="card-category">Countries</div>
+                    <div class="card-name">Rank by GDP per capita (highest to lowest)</div>
+                    <div class="card-code">ECN-001</div>
+                </div>
+                <div class="sample-card">
+                    <div class="card-category">Movies</div>
+                    <div class="card-name">Rank by worldwide box office gross (highest to lowest)</div>
+                    <div class="card-code">MOV-001</div>
+                </div>
+                <div class="sample-card">
+                    <div class="card-category">Sports Teams</div>
+                    <div class="card-name">Rank by team value (highest to lowest)</div>
+                    <div class="card-code">SPT-001</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="specifications">
+            <strong>Exact Specifications:</strong>
+            <ul style="margin-left: 20px; margin-top: 8px;">
+                <li><strong>Game Board:</strong> 406mm x 406mm (16" x 16")</li>
+                <li><strong>Game Tokens:</strong> 35mm diameter circles (1.38")</li>
+                <li><strong>Blocking Tokens:</strong> 30mm diameter circles (1.18")</li>
+                <li><strong>Ranking Cards:</strong> 64mm x 40mm rectangles (2.52" x 1.57")</li>
+                <li><strong>Complete Set:</strong> 160 game tokens + 27 blocking tokens + 132 cards</li>
+            </ul>
+        </div>
+        
+        <div class="cutting-guides">
+            <strong>Professional Cutting Tips:</strong>
+            • Use a craft knife and metal ruler for clean edges • Consider laminating tokens for durability
+            • 35mm tokens fit standard board game token holders • Board should be printed on heavy cardstock (200gsm+)
+        </div>
+    </div>
+</body>
+</html>

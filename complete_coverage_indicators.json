@@ -1,0 +1,150 @@
+{
+  "complete_indicators": [
+    {
+      "code": "SP.DYN.CBRT.IN",
+      "name": "Birth rate, crude (per 1,000 people)"
+    },
+    {
+      "code": "SH.XPD.CHEX.GD.ZS",
+      "name": "Current health expenditure (% of GDP)"
+    },
+    {
+      "code": "SP.DYN.CDRT.IN",
+      "name": "Death rate, crude (per 1,000 people)"
+    },
+    {
+      "code": "EG.ELC.COAL.ZS",
+      "name": "Electricity production from coal sources (% of total)"
+    },
+    {
+      "code": "EG.ELC.HYRO.ZS",
+      "name": "Electricity production from hydroelectric sources (% of total)"
+    },
+    {
+      "code": "EG.ELC.NGAS.ZS",
+      "name": "Electricity production from natural gas sources (% of total)"
+    },
+    {
+      "code": "EG.ELC.NUCL.ZS",
+      "name": "Electricity production from nuclear sources (% of total)"
+    },
+    {
+      "code": "EG.ELC.PETR.ZS",
+      "name": "Electricity production from oil sources (% of total)"
+    },
+    {
+      "code": "SP.DYN.TFRT.IN",
+      "name": "Fertility rate, total (births per woman)"
+    },
+    {
+      "code": "IT.NET.BBND.P2",
+      "name": "Fixed broadband subscriptions (per 100 people)"
+    },
+    {
+      "code": "AG.LND.FRST.ZS",
+      "name": "Forest area (% of land area)"
+    },
+    {
+      "code": "NY.GDP.MKTP.CD",
+      "name": "GDP (current US$)"
+    },
+    {
+      "code": "NY.GDP.MKTP.KD.ZG",
+      "name": "GDP growth (annual %)"
+    },
+    {
+      "code": "NY.GDP.PCAP.CD",
+      "name": "GDP per capita (current US$)"
+    },
+    {
+      "code": "NY.GNP.PCAP.CD",
+      "name": "GNI per capita, Atlas method (current US$)"
+    },
+    {
+      "code": "SL.TLF.CACT.FE.ZS",
+      "name": "Labor force participation rate, female (% of female population ages 15+) (modeled ILO estimate)"
+    },
+    {
+      "code": "SL.TLF.CACT.MA.ZS",
+      "name": "Labor force participation rate, male (% of male population ages 15+) (modeled ILO estimate)"
+    },
+    {
+      "code": "SP.DYN.LE00.IN",
+      "name": "Life expectancy at birth, total (years)"
+    },
+    {
+      "code": "IT.CEL.SETS.P2",
+      "name": "Mobile cellular subscriptions (per 100 people)"
+    },
+    {
+      "code": "SH.DYN.MORT",
+      "name": "Mortality rate, under-5 (per 1,000 live births)"
+    },
+    {
+      "code": "SH.DYN.MORT.FE",
+      "name": "Mortality rate, under-5, female (per 1,000 live births)"
+    },
+    {
+      "code": "SH.DYN.MORT.MA",
+      "name": "Mortality rate, under-5, male (per 1,000 live births)"
+    },
+    {
+      "code": "IP.PAT.NRES",
+      "name": "Patent applications, nonresidents"
+    },
+    {
+      "code": "IP.PAT.RESD",
+      "name": "Patent applications, residents"
+    },
+    {
+      "code": "SP.POP.0014.TO.ZS",
+      "name": "Population ages 0-14 (% of total population)"
+    },
+    {
+      "code": "SP.POP.1564.TO.ZS",
+      "name": "Population ages 15-64 (% of total population)"
+    },
+    {
+      "code": "SP.POP.65UP.TO.ZS",
+      "name": "Population ages 65 and above (% of total population)"
+    },
+    {
+      "code": "SP.POP.TOTL",
+      "name": "Population, total"
+    },
+    {
+      "code": "EG.FEC.RNEW.ZS",
+      "name": "Renewable energy consumption (% of total final energy consumption)"
+    },
+    {
+      "code": "SP.RUR.TOTL.ZS",
+      "name": "Rural population (% of total population)"
+    },
+    {
+      "code": "SE.TER.ENRR",
+      "name": "School enrollment, tertiary (% gross)"
+    },
+    {
+      "code": "SE.TER.ENRR.FE",
+      "name": "School enrollment, tertiary, female (% gross)"
+    },
+    {
+      "code": "SE.TER.ENRR.MA",
+      "name": "School enrollment, tertiary, male (% gross)"
+    },
+    {
+      "code": "IT.NET.SECR.P6",
+      "name": "Secure Internet servers (per 1 million people)"
+    },
+    {
+      "code": "SL.UEM.TOTL.ZS",
+      "name": "Unemployment, total (% of total labor force) (modeled ILO estimate)"
+    },
+    {
+      "code": "SP.URB.TOTL.IN.ZS",
+      "name": "Urban population (% of total population)"
+    }
+  ],
+  "count": 36,
+  "verification_date": "2025-07-18"
+}

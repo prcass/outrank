@@ -1,0 +1,181 @@
+{
+  "total_rankings": 28,
+  "extraction_date": "2025-07-19 13:56:58",
+  "methodology": "Wikipedia curated sources with complete data extraction",
+  "all_rankings": [
+    {
+      "name": "Coffee",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_coffee_production",
+      "priority": 3
+    },
+    {
+      "name": "Potato",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_potato_production",
+      "priority": 3
+    },
+    {
+      "name": "Rice",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_rice_production",
+      "priority": 3
+    },
+    {
+      "name": "Wheat",
+      "url": "https://en.wikipedia.org/wiki/International_wheat_production_statistics",
+      "priority": 3
+    },
+    {
+      "name": "Wine",
+      "url": "https://en.wikipedia.org/wiki/List_of_wine-producing_countries",
+      "priority": 3
+    },
+    {
+      "name": "Forest_area",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_forest_area",
+      "priority": 3
+    },
+    {
+      "name": "Apple",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_apple_production",
+      "priority": 2
+    },
+    {
+      "name": "Barley",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_barley_production",
+      "priority": 2
+    },
+    {
+      "name": "Corn",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_corn_production",
+      "priority": 2
+    },
+    {
+      "name": "Grape",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_grape_production",
+      "priority": 2
+    },
+    {
+      "name": "Soybean",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_soybean_production",
+      "priority": 2
+    },
+    {
+      "name": "Tomato",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_tomato_production",
+      "priority": 2
+    },
+    {
+      "name": "Apricot",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_apricot_production",
+      "priority": 1
+    },
+    {
+      "name": "Artichoke",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_artichoke_production",
+      "priority": 1
+    },
+    {
+      "name": "Avocado",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_avocado_production",
+      "priority": 1
+    },
+    {
+      "name": "Cereal",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_cereal_production",
+      "priority": 1
+    },
+    {
+      "name": "Cherry",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_cherry_production",
+      "priority": 1
+    },
+    {
+      "name": "Coconut",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_coconut_production",
+      "priority": 1
+    },
+    {
+      "name": "Cucumber",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_cucumber_production",
+      "priority": 1
+    },
+    {
+      "name": "Eggplant",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_eggplant_production",
+      "priority": 1
+    },
+    {
+      "name": "Fruit",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_fruit_production",
+      "priority": 1
+    },
+    {
+      "name": "Garlic",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_garlic_production",
+      "priority": 1
+    },
+    {
+      "name": "Papaya",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_papaya_production",
+      "priority": 1
+    },
+    {
+      "name": "Pear",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_pear_production",
+      "priority": 1
+    },
+    {
+      "name": "Pineapple",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_pineapple_production",
+      "priority": 1
+    },
+    {
+      "name": "Plum",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_plum_production",
+      "priority": 1
+    },
+    {
+      "name": "Vegetables",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_vegetable_production",
+      "priority": 1
+    },
+    {
+      "name": "Irrigated_land",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_irrigated_land_area",
+      "priority": 1
+    }
+  ],
+  "high_priority_immediate": [
+    {
+      "name": "Coffee",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_coffee_production",
+      "extract_prompt": "Extract the complete coffee production ranking table. Include: 1) Data source and year, 2) Complete ranking with all countries (rank, country, production amount), 3) Total world production, 4) References and external links."
+    },
+    {
+      "name": "Wine",
+      "url": "https://en.wikipedia.org/wiki/List_of_wine-producing_countries",
+      "extract_prompt": "Extract the complete wine production ranking table. Include: 1) Data source and year, 2) Complete ranking with all countries (rank, country, production amount), 3) Total world production, 4) References and external links."
+    },
+    {
+      "name": "Wheat",
+      "url": "https://en.wikipedia.org/wiki/International_wheat_production_statistics",
+      "extract_prompt": "Extract the complete wheat production ranking table. Include: 1) Data source and year, 2) Complete ranking with all countries (rank, country, production amount), 3) Total world production, 4) References and external links."
+    },
+    {
+      "name": "Rice",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_rice_production",
+      "extract_prompt": "Extract the complete rice production ranking table. Include: 1) Data source and year, 2) Complete ranking with all countries (rank, country, production amount), 3) Total world production, 4) References and external links."
+    },
+    {
+      "name": "Forest_area",
+      "url": "https://en.wikipedia.org/wiki/List_of_countries_by_forest_area",
+      "extract_prompt": "Extract the complete forest area ranking table. Include: 1) Data source and year, 2) Complete ranking with all countries (rank, country, forest area), 3) References and external links."
+    }
+  ],
+  "next_steps": [
+    "Extract high-priority rankings using WebFetch",
+    "Parse complete ranking tables",
+    "Calculate coverage for our 38 countries",
+    "Select rankings with 75%+ coverage",
+    "Add to final dataset"
+  ]
+}

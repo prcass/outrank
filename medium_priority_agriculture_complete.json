@@ -1,0 +1,238 @@
+{
+  "extraction_date": "2025-07-19 15:15:00",
+  "methodology": "Wikipedia curated sources extraction - Medium priority rankings",
+  "total_rankings_extracted": 10,
+  "source": "Wikipedia following original sources",
+  
+  "rankings": {
+    "apple_production": {
+      "ranking_name": "Apple Production",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_apple_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "unit": "tonnes",
+      "total_world_production": 95835965,
+      "countries_data": {
+        "China": {"rank": 1, "production": 47571800},
+        "Turkey": {"rank": 2, "production": 4817500},
+        "United States": {"rank": 3, "production": 4429330},
+        "Poland": {"rank": 4, "production": 4264700},
+        "India": {"rank": 5, "production": 2589000},
+        "Russia": {"rank": 6, "production": 2379900},
+        "Italy": {"rank": 7, "production": 2256240},
+        "Iran": {"rank": 8, "production": 1989734},
+        "France": {"rank": 9, "production": 1785660},
+        "Chile": {"rank": 10, "production": 1479683},
+        "Uzbekistan": {"rank": 11, "production": 1313233},
+        "South Africa": {"rank": 12, "production": 1231867},
+        "Ukraine": {"rank": 13, "production": 1129120},
+        "Germany": {"rank": 14, "production": 1070980},
+        "Brazil": {"rank": 15, "production": 1047217}
+      },
+      "total_countries": 95,
+      "notes": "Complete ranking available"
+    },
+
+    "potato_production": {
+      "ranking_name": "Potato Production",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_potato_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "unit": "metric tonnes",
+      "total_world_production": 374777763,
+      "countries_data": {
+        "China": {"rank": 1, "production": 95570055, "percentage": 25.5},
+        "India": {"rank": 2, "production": 56176000, "percentage": 15.0},
+        "Ukraine": {"rank": 3, "production": 20899210},
+        "Russia": {"rank": 4, "production": 18887679},
+        "United States": {"rank": 5, "production": 17791840}
+      },
+      "total_countries": 155,
+      "notes": "Complete ranking from major producers to small producers like Fiji (44 tonnes)"
+    },
+
+    "corn_production": {
+      "ranking_name": "Corn Production",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_corn_production",
+      "source": "Food and Agriculture Organization (FAOSTAT)",
+      "year": 2022,
+      "unit": "million metric tonnes",
+      "total_world_production": 1163500000,
+      "countries_data": {
+        "United States": {"rank": 1, "production": 348800000},
+        "China": {"rank": 2, "production": 277200000},
+        "Brazil": {"rank": 3, "production": 109400000},
+        "Argentina": {"rank": 4, "production": 59000000},
+        "European Union": {"rank": 5, "production": 53000000},
+        "India": {"rank": 6, "production": 33700000},
+        "Mexico": {"rank": 7, "production": 26600000},
+        "Ukraine": {"rank": 8, "production": 26200000},
+        "Indonesia": {"rank": 9, "production": 23600000},
+        "South Africa": {"rank": 10, "production": 16100000},
+        "Russia": {"rank": 11, "production": 15900000},
+        "Canada": {"rank": 12, "production": 14500000},
+        "Nigeria": {"rank": 13, "production": 12900000},
+        "France": {"rank": 14, "production": 10900000},
+        "Ethiopia": {"rank": 15, "production": 10200000},
+        "Romania": {"rank": 16, "production": 8000000}
+      },
+      "total_countries": 16,
+      "notes": "Major corn producing countries listed"
+    },
+
+    "barley_production": {
+      "ranking_name": "Barley Production",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_barley_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "unit": "metric tonnes",
+      "total_world_production": 154877140,
+      "countries_data": {
+        "Russia": {"rank": 1, "production": 23393510},
+        "Australia": {"rank": 2, "production": 14377284},
+        "France": {"rank": 3, "production": 11285440},
+        "Germany": {"rank": 4, "production": 11207100},
+        "Canada": {"rank": 5, "production": 9986681}
+      },
+      "total_countries": 101,
+      "notes": "28 countries produce >1M tonnes, 33 countries 100K-1M tonnes, 26 countries 10K-100K tonnes"
+    },
+
+    "grape_production": {
+      "ranking_name": "Grape Production",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_grape_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "unit": "metric tonnes",
+      "total_world_production": 74942573,
+      "countries_data": {
+        "France": {"rank": 1, "production": 12600000, "percentage": 16.8},
+        "Italy": {"rank": 2, "production": 8437970, "percentage": 11.3},
+        "Spain": {"rank": 3, "production": 6199950, "percentage": 8.3},
+        "United States": {"rank": 4, "production": 5902040},
+        "China": {"rank": 5, "production": 5372800}
+      },
+      "total_countries": 92,
+      "notes": "Down 2.4% from 2021 production"
+    },
+
+    "soybean_production": {
+      "ranking_name": "Soybean Production",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_soybean_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "unit": "metric tonnes",
+      "total_world_production": 348856427,
+      "countries_data": {
+        "Brazil": {"rank": 1, "production": 120701031},
+        "United States": {"rank": 2, "production": 116377000},
+        "Argentina": {"rank": 3, "production": 43861066},
+        "China": {"rank": 4, "production": 20280000},
+        "India": {"rank": 5, "production": 12986720}
+      },
+      "total_countries": 50,
+      "notes": "Brazil and US account for 68% of world production. 6.4% decrease from 2021"
+    },
+
+    "tomato_production": {
+      "ranking_name": "Tomato Production",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_tomato_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "unit": "metric tonnes",
+      "total_world_production": 186107972,
+      "countries_data": {
+        "China": {"rank": 1, "production": 68241811, "percentage": 37},
+        "India": {"rank": 2, "production": 20694000},
+        "Turkey": {"rank": 3, "production": 13000000},
+        "United States": {"rank": 4, "production": 10199753},
+        "Egypt": {"rank": 5, "production": 6275444}
+      },
+      "total_countries": 168,
+      "notes": "China produces 37% of global tomato production. 1.7% decrease from 2021"
+    },
+
+    "cereal_production": {
+      "ranking_name": "Cereal Production", 
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_cereal_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAO)",
+      "year": 2023,
+      "unit": "million tons",
+      "total_world_production": 3000000000,
+      "countries_data": {
+        "China": {"rank": 1, "production": 658000000},
+        "United States": {"rank": 2, "production": 478000000},
+        "India": {"rank": 3, "production": 382000000},
+        "Brazil": {"rank": 4, "production": 156000000},
+        "Russia": {"rank": 5, "production": 149000000},
+        "Argentina": {"rank": 6, "production": 101000000},
+        "Canada": {"rank": 7, "production": 72100000},
+        "Indonesia": {"rank": 8, "production": 65900000},
+        "France": {"rank": 9, "production": 62500000},
+        "Ukraine": {"rank": 10, "production": 61000000}
+      },
+      "total_countries": 178,
+      "notes": "Includes barley, oats, millet, sorghum, corn, rice, rye, and wheat"
+    },
+
+    "irrigated_land_area": {
+      "ranking_name": "Irrigated Land Area",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_irrigated_land_area",
+      "source": "The World Factbook by Central Intelligence Agency (CIA)",
+      "year": 2020,
+      "unit": "km²",
+      "total_world_irrigated": 3242917,
+      "countries_data": {
+        "India": {"rank": 1, "area": 715539},
+        "China": {"rank": 2, "area": 691600},
+        "United States": {"rank": 3, "area": 234782},
+        "Pakistan": {"rank": 4, "area": 193400},
+        "Indonesia": {"rank": 5, "area": 91360}
+      },
+      "total_countries": 200,
+      "notes": "India and China account for 43.39% of worldwide irrigated land"
+    },
+
+    "fruit_production": {
+      "ranking_name": "Fruit Production",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_fruit_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAO)",
+      "year": 2020,
+      "unit": "metric tonnes",
+      "total_world_production": 887027376,
+      "countries_data": {
+        "China": {"rank": 1, "production": 242793824},
+        "India": {"rank": 2, "production": 105971127},
+        "Brazil": {"rank": 3, "production": 39758842},
+        "Turkey": {"rank": 4, "production": 24153128},
+        "Mexico": {"rank": 5, "production": 23837562}
+      },
+      "total_countries": 195,
+      "notes": "Top 5 countries account for ~50% of global fruit production. Increased from 200M tonnes in 1961"
+    }
+  },
+
+  "coverage_analysis": {
+    "methodology": "Check our 38 countries against extracted data",
+    "our_countries_file": "countries_38_final.json",
+    "rankings_to_analyze": [
+      "apple_production",
+      "potato_production", 
+      "corn_production",
+      "barley_production",
+      "grape_production",
+      "soybean_production",
+      "tomato_production",
+      "cereal_production",
+      "irrigated_land_area",
+      "fruit_production"
+    ]
+  },
+
+  "next_steps": [
+    "Extract remaining low-priority agriculture rankings from Wikipedia",
+    "Calculate coverage for our 38 countries across all 15 extracted rankings",
+    "Select rankings with 75%+ coverage for inclusion in dataset",
+    "Add high-coverage agriculture indicators to final dataset"
+  ]
+}

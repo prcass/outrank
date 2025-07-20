@@ -1,0 +1,14 @@
+{
+  "test_date": "2025-07-18 23:04:30",
+  "api_source": "OECD",
+  "working_endpoints": [],
+  "accessibility": false,
+  "potential_datasets": [
+    "Better Life Index (happiness, life satisfaction)",
+    "Economic Outlook (growth, employment)",
+    "Education at a Glance (education metrics)",
+    "Health Statistics (health indicators)",
+    "Society at a Glance (social metrics)"
+  ],
+  "next_steps": "Try alternative OECD access methods"
+}

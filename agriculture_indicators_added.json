@@ -1,0 +1,59 @@
+{
+  "update_date": "2025-07-19 14:13:14",
+  "indicators_added": 2,
+  "new_total": 31,
+  "agriculture_indicators": [
+    {
+      "name": "Forest Area",
+      "description": "Which country has the highest forest coverage?",
+      "top_5": [
+        {
+          "country": "Finland",
+          "value": 73.7
+        },
+        {
+          "country": "Sweden",
+          "value": 68.7
+        },
+        {
+          "country": "Japan",
+          "value": 68.4
+        },
+        {
+          "country": "Brazil",
+          "value": 58.1
+        },
+        {
+          "country": "Malaysia",
+          "value": 58.2
+        }
+      ]
+    },
+    {
+      "name": "Irrigated Land Area",
+      "description": "Which country has the most irrigated agricultural land?",
+      "top_5": [
+        {
+          "country": "India",
+          "value": 715539
+        },
+        {
+          "country": "China",
+          "value": 691600
+        },
+        {
+          "country": "United States",
+          "value": 234782
+        },
+        {
+          "country": "Indonesia",
+          "value": 91360
+        },
+        {
+          "country": "Brazil",
+          "value": 69029
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "038": {
+    "gdp_per_capita": 82304.62,
+    "population": 336806231,
+    "life_expectancy": 78.4,
+    "internet_penetration": 93.1,
+    "inflation_rate": 4.12,
+    "unemployment_rate": 3.6
+  },
+  "008": {
+    "gdp_per_capita": 12951.18,
+    "population": 1410710000,
+    "life_expectancy": 78,
+    "internet_penetration": 77.5,
+    "inflation_rate": 0.23,
+    "unemployment_rate": 4.7
+  },
+  "022": {
+    "gdp_per_capita": 33836.18,
+    "population": 124516650,
+    "life_expectancy": 84,
+    "internet_penetration": 87,
+    "inflation_rate": 3.27,
+    "unemployment_rate": 2.6
+  },
+  "009": {
+    "gdp_per_capita": 53940.41,
+    "population": 83901923,
+    "life_expectancy": 80.5,
+    "internet_penetration": 92.5,
+    "inflation_rate": 5.95,
+    "unemployment_rate": 3.1
+  },
+  "015": {
+    "gdp_per_capita": 49200.81,
+    "population": 68492000,
+    "life_expectancy": 81.2,
+    "internet_penetration": 96.3,
+    "inflation_rate": 6.79,
+    "unemployment_rate": 4
+  },
+  "014": {
+    "gdp_per_capita": 44690.93,
+    "population": 68287487,
+    "life_expectancy": 82.9,
+    "internet_penetration": 86.8,
+    "inflation_rate": 4.88,
+    "unemployment_rate": 7.3
+  },
+  "018": {
+    "gdp_per_capita": 2530.12,
+    "population": 1438069596,
+    "life_expectancy": 72,
+    "internet_penetration": 55.9,
+    "inflation_rate": 5.65,
+    "unemployment_rate": 4.2
+  },
+  "005": {
+    "gdp_per_capita": 10377.59,
+    "population": 211140729,
+    "life_expectancy": 75.8,
+    "internet_penetration": 84.2,
+    "inflation_rate": 4.59,
+    "unemployment_rate": 7.9
+  },
+  "006": {
+    "gdp_per_capita": 54220.33,
+    "population": 40083484,
+    "life_expectancy": 81.6,
+    "internet_penetration": 94,
+    "inflation_rate": 3.88,
+    "unemployment_rate": 5.4
+  },
+  "021": {
+    "gdp_per_capita": 39065.42,
+    "population": 58993475,
+    "life_expectancy": 83.7,
+    "internet_penetration": 87,
+    "inflation_rate": 5.62,
+    "unemployment_rate": 7.6
+  }
+}

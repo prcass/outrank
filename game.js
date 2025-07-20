@@ -1782,7 +1782,7 @@ function getPlayersList() { return GameState.get('players.list'); }
 function getPlayersScores() { return GameState.get('players.scores'); }
 function getPlayerScore(playerName) { return GameState.get('players.scores.' + playerName) || 0; }
 function setPlayerScore(playerName, score) { GameState.set('players.scores.' + playerName, score); }
-function getPlayerTokens(playerName) { return GameState.get('players.blockingTokens.' + playerName) || {2: 1, 4: 1, 6: 1}; }
+function getPlayerTokens(playerName) { return GameState.get('players.blockingTokens.' + playerName) || {2: 0, 4: 0, 6: 0}; }
 function getPlayerOwnedCards(playerName, category) { 
     if (category) {
         return GameState.get('players.ownedCards.' + playerName + '.' + category) || [];
@@ -2873,16 +2873,16 @@ function startCategorySelection() {
         var companiesChallenge = document.getElementById('companiesChallenge');
         
         if (countryChallenge) {
-            countryChallenge.textContent = preGeneratedChallenges.countries.label;
+            countryChallenge.innerHTML = preGeneratedChallenges.countries.label;
         }
         if (movieChallenge) {
-            movieChallenge.textContent = preGeneratedChallenges.movies.label;
+            movieChallenge.innerHTML = preGeneratedChallenges.movies.label;
         }
         if (sportsChallenge) {
-            sportsChallenge.textContent = preGeneratedChallenges.sports.label;
+            sportsChallenge.innerHTML = preGeneratedChallenges.sports.label;
         }
         if (companiesChallenge) {
-            companiesChallenge.textContent = preGeneratedChallenges.companies.label;
+            companiesChallenge.innerHTML = preGeneratedChallenges.companies.label;
         }
         
         // Show whose turn it is to choose
@@ -2931,6 +2931,10 @@ window.selectCategory = function(categoryId) {
         
         // Update category indicators
         updateCategoryIndicators();
+        
+        // Reset bidderSuccess for new round (preserved from previous round for summary)
+        console.log('🔄 Resetting bidderSuccess for new round (was:', GameState.get('bidderSuccess'), ')');
+        GameState.set('bidderSuccess', false);
         
         console.log('🎯 About to call showBiddingScreen()...');
         // Continue to bidding phase
@@ -3112,7 +3116,7 @@ function showBiddingScreen() {
         if (promptInfo) {
             var promptData = {
                 challengeLabel: gameState.currentPrompt.label,
-                description: 'Players bid on how many they can rank correctly'
+                description: ''
             };
             safeSetHTML(promptInfo, TemplateEngine.render('promptInfo', promptData));
         }
@@ -4577,6 +4581,10 @@ function showRevealPhase() {
     correctRanking = calculateCorrectRanking(finalRanking, currentPrompt.challenge);
     GameState.set('currentRevealIndex', 0);
     bidderSuccess = false;
+    GameState.set('bidderSuccess', false);
+    GameState.set('revealCompletionHandled', false);
+    
+    console.log('🎬 Starting reveal phase with finalRanking:', finalRanking);
     
     // Update reveal screen
     try {
@@ -4597,6 +4605,14 @@ function showRevealPhase() {
     setupRevealInterface();
     
     showScreen('revealScreen');
+    
+    // Start reveal automation for automated testing
+    if (window.isAutomatedTestRunning) {
+        console.log('🤖 Auto-starting reveal automation...');
+        setTimeout(() => {
+            automatedReveal();
+        }, 100); // Small delay to ensure screen transition completes
+    }
 }
 
 function calculateCorrectRanking(cardIds, challenge) {
@@ -4758,13 +4774,14 @@ window.revealNext = function() {
         if (currentValue > prevValue) {
             // Sequence broken! Current card has higher value than previous
             bidderSuccess = false;
+            GameState.set('bidderSuccess', false);
             
             // Delay failure message so players can see the problematic card first
             eventListenerManager.addTimeout(function() {
                 console.log('SEQUENCE BROKEN!\n\n' + 
-                      prevCountry.name + ': ' + formatValue(prevValue, currentPrompt.challenge) + '\n' +
-                      currentCountry.name + ': ' + formatValue(currentValue, currentPrompt.challenge) + '\n\n' +
-                      currentCountry.name + ' has a higher value than ' + prevCountry.name + '!\n' +
+                      prevItem.name + ': ' + formatValue(prevValue, currentPrompt.challenge) + '\n' +
+                      currentItem.name + ': ' + formatValue(currentValue, currentPrompt.challenge) + '\n\n' +
+                      currentItem.name + ' has a higher value than ' + prevItem.name + '!\n' +
                       highestBidder + ' fails!');
                 
                 // Reveal all remaining cards
@@ -4784,8 +4801,14 @@ window.revealNext = function() {
     // If this was the last card, check if bidder succeeded
     var finalRanking = GameState.get('finalRanking');
     if (currentRevealIndex >= finalRanking.length) {
-        // bidderSuccess is already set correctly from the reveal process
-        // Don't override it here - just proceed to show results
+        // If we reach here without bidderSuccess being set to false by validation,
+        // then the bidder succeeded in ranking all cards correctly
+        if (!GameState.get('bidderSuccess')) {
+            console.log('🎉 All cards revealed successfully! Bidder succeeds.');
+            bidderSuccess = true;
+            GameState.set('bidderSuccess', true);
+        }
+        
         eventListenerManager.addTimeout(function() {
             var gameState = GameState.data;
             if (bidderSuccess) {
@@ -4800,6 +4823,7 @@ window.revealNext = function() {
 
 function showFinalResults() {
     console.log('🏁 showFinalResults called');
+    console.log('🐛 DEBUG: Call stack trace:', new Error().stack);
     console.log('Bidder success:', bidderSuccess);
     console.log('Current reveal index:', GameState.get('currentRevealIndex') || 0);
     
@@ -4887,55 +4911,28 @@ function showFinalResults() {
                 console.log('  - Win condition met:', winCondition);
                 if (winCondition) {
                     console.log('  - Winner:', winCondition, 'with score >=', ACTIVE_RULES.winningScore);
+                    console.log('  - 🐛 DEBUG: Current player scores:', getPlayersScores());
                 }
                 
-                if (getCurrentRound() < ACTIVE_RULES.maxRounds && !winCondition) {
-                    console.log('▶️ Continuing to next round...');
-                    continueToNextRound();
-                    
-                    eventListenerManager.addTimeout(async () => {
-                        try {
-                            console.log('🎮 Starting automated round:', getCurrentRound());
-                            await automatedRound(getCurrentRound());
-                        } catch (error) {
-                            console.error('❌ Error in automated round ' + getCurrentRound() + ':', error);
-                            console.error('❌ Automated test failed in round ' + getCurrentRound());
-                            window.isAutomatedTestRunning = false;
-                        }
-                    }, getTestDelay(1500)); // Use getTestDelay for fast mode
-                } else {
-                    console.log('🏁 Game completed! Generating detailed test results...');
-                    console.log('Reason: currentRound (' + getCurrentRound() + ') >= maxRounds (' + ACTIVE_RULES.maxRounds + ') OR win condition met');
-                    window.automatedTestResults.endTime = new Date();
-                    generateDetailedTestResults();
-                    window.isAutomatedTestRunning = false;
-                    
-                    // Clear any remaining timeouts and prevent further automation
-                    if (window.automatedTestState) {
-                        window.automatedTestState = null;
+                console.log('🐛 DEBUG: Game completion check - currentRound:', getCurrentRound(), 'maxRounds:', ACTIVE_RULES.maxRounds, 'winCondition:', winCondition);
+                console.log('🐛 DEBUG: Condition result:', (getCurrentRound() < ACTIVE_RULES.maxRounds && !winCondition));
+                
+                // Skip game completion check during automated tests - let nextRound() handle it
+                console.log('▶️ Automated test: Continuing to next round...');
+                continueToNextRound();
+                
+                eventListenerManager.addTimeout(async () => {
+                    try {
+                        console.log('🎮 Starting automated round:', getCurrentRound());
+                        await automatedRound(getCurrentRound());
+                    } catch (error) {
+                        console.error('❌ Error in automated round ' + getCurrentRound() + ':', error);
+                        console.error('❌ Automated test failed in round ' + getCurrentRound());
+                        window.isAutomatedTestRunning = false;
                     }
-                    
-                    console.log('✅ Automated test completed successfully!');
-                    
-                    // Show the test results screen for fast test
-                    eventListenerManager.addTimeout(() => {
-                        console.log('📊 Showing test results screen...');
-                        updateTestResultsDisplay(); // Populate the test results data
-                        showScreen('testResultsScreen');
-                        
-                        // Ensure we stay on test results screen
-                        setTimeout(() => {
-                            var currentScreen = document.querySelector('.screen.active');
-                            if (!currentScreen || currentScreen.id !== 'testResultsScreen') {
-                                console.log('🔄 Forcing return to test results screen...');
-                                updateTestResultsDisplay(); // Populate the test results data
-                                showScreen('testResultsScreen');
-                            }
-                        }, getTestDelay(2000));
-                    }, getTestDelay(1000));
-                }
-            }, getTestDelay(2000)); // Use getTestDelay for fast mode
-        }, getTestDelay(3000)); // Use getTestDelay for fast mode
+                }, getTestDelay(1500)); // Use getTestDelay for fast mode
+            }, getTestDelay(2000)); // Close the middle eventListenerManager.addTimeout
+        }, getTestDelay(1000)); // Close the outermost eventListenerManager.addTimeout
     }
 }
 
@@ -5634,14 +5631,15 @@ function resetRoundState() {
     GameState.set('currentRevealIndex', 0);
     GameState.set('finalRanking', []);
     GameState.set('correctRanking', []);
-    GameState.set('bidderSuccess', false);
+    // PRESERVE bidderSuccess for round summary - will be reset when new bidding starts
+    // GameState.set('bidderSuccess', false);  // MOVED TO startBiddingRound()
     GameState.set('players.currentBlocks', {});
     
     console.log('🧹 Clearing UI elements...');
     // Clear UI elements that might persist between rounds
     clearUIElements();
     
-    console.log('✅ Round state reset complete');
+    console.log('✅ Round state reset complete (bidderSuccess preserved for round summary)');
 }
 
 function clearUIElements() {
@@ -6478,7 +6476,11 @@ function runAutomatedTestWithMode(testName) {
     // Apply rules from UI before starting test
     console.log('⚙️ Applying rules from UI for automated test...');
     applyRulesFromUI();
-    console.log('✅ Rules applied - Max rounds:', ACTIVE_RULES.maxRounds, 'Winning score:', ACTIVE_RULES.winningScore);
+    
+    // Override winning score for automated tests to ensure multiple rounds
+    const originalWinningScore = ACTIVE_RULES.winningScore;
+    ACTIVE_RULES.winningScore = 100; // High enough to allow multiple rounds of testing
+    console.log('✅ Rules applied - Max rounds:', ACTIVE_RULES.maxRounds, 'Winning score:', ACTIVE_RULES.winningScore, '(overridden from', originalWinningScore, 'for testing)');
     
     // Initialize automated test state
     window.automatedTestState = {
@@ -7213,12 +7215,29 @@ function automatedRevealNext() {
     var currentRevealIndex = GameState.get('currentRevealIndex') || 0;
     console.log('🤖 Automated reveal next - index:', currentRevealIndex, 'of', finalRanking.length);
     
+    // Special case: if no cards to reveal, bidder succeeds immediately
+    if (finalRanking.length === 0) {
+        if (!GameState.get('revealCompletionHandled')) {
+            console.log('🎉 No cards to reveal - bidder succeeds!');
+            bidderSuccess = true;
+            GameState.set('bidderSuccess', true);
+            GameState.set('revealCompletionHandled', true);
+            showFinalResults();
+        }
+        return 'complete';
+    }
+    
+    // If all cards have been revealed and validation completed, show results
     if (currentRevealIndex >= finalRanking.length) {
-        // All cards revealed, show final results
         if (!GameState.get('revealCompletionHandled')) {
             console.log('🏁 All cards revealed, showing final results');
-            // Don't modify bidderSuccess here - it should already be set correctly
-            // by the sequence checking logic below
+            // bidderSuccess should have been set by sequence validation
+            // If we reach here without failure, bidder succeeded
+            if (!GameState.get('bidderSuccess')) {
+                console.log('🎉 Completed all reveals without failure - bidder succeeds!');
+                bidderSuccess = true;
+                GameState.set('bidderSuccess', true);
+            }
             GameState.set('revealCompletionHandled', true);
             showFinalResults();
         }
@@ -7259,6 +7278,7 @@ function automatedRevealNext() {
         if (sequenceBroken) {
             console.log('💥 Sequence broken! Bidder fails.');
             bidderSuccess = false;
+            GameState.set('bidderSuccess', false);
             // Reveal all remaining cards quickly
             GameState.set('currentRevealIndex', finalRanking.length);
             updateBidderRankingDisplay();
@@ -7277,6 +7297,7 @@ function automatedRevealNext() {
         if (!GameState.get('revealCompletionHandled')) {
             console.log('🎉 All cards revealed successfully! Bidder succeeds.');
             bidderSuccess = true;
+            GameState.set('bidderSuccess', true);
             GameState.set('revealCompletionHandled', true);
             showFinalResults();
         }

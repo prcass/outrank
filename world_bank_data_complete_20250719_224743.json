@@ -1,0 +1,3516 @@
+{
+  "extraction_date": "2025-07-19 22:47:13",
+  "source": "World Bank Open Data API",
+  "url": "https://api.worldbank.org/v2/",
+  "countries": {
+    "DEU": {
+      "name": "Germany",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 8.3,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 80.5414634146342,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 13.9155702737293,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 22.7900439454493,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 83901923,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 4525703903627.53,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": -0.266438401180253,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 45.3805,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 124.663,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 138947.387415662,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 26.6158079857232,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.862495024067169,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 32.685482024273,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 17.6,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 11.79903221,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 77.3656997680664,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 55.848,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 39822,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 22.235,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 3.068,
+          "year": "2023"
+        }
+      }
+    },
+    "DNK": {
+      "name": "Denmark",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 9.7,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 81.8536585365854,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 15.8669526161681,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 20.6001829312424,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 5946952,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 407091920305.404,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 2.49518434516773,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 44.0345,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 126.919,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 261262.408036924,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 7.43402450518379,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.918944392082941,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 15.758,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 39.5,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 9.41784573,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 84.5866088867188,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 59.812,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 1090,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 11.505,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 5.094,
+          "year": "2023"
+        }
+      }
+    },
+    "AUT": {
+      "name": "Austria",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 8.5,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 81.5414634146342,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 14.3026357250026,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 20.1640196753077,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 9131761,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 511685203845.001,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": -0.954962529389121,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 29.3725,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 121.746,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 42281.0014410145,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 2.60009979636148,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 1.05325619344311,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 47.206131846825,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 36,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 10.87779903,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 94.5116882324219,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 55.812,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 1872,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 40.47,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 5.264,
+          "year": "2023"
+        }
+      }
+    },
+    "TUR": {
+      "name": "Turkey",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 11.2,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 77.156,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 21.8397289718795,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 10.0010276668343,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 85325965,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 1118252958513.72,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 5.11116818488702,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 22.4592,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 105.684,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 9881.98609883873,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 36.3051293131189,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.3699038617718,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 29.2768733027559,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 12,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 3.70338893,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 127.577972412109,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 35.764,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 8234,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 22.537,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 9.388,
+          "year": "2023"
+        }
+      }
+    },
+    "USA": {
+      "name": "United States",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 10.7,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 78.3853658536585,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 17.5946376490897,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 17.4318194823539,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 336806231,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 27720709000000,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 2.88755600905984,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 38.1475,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 112.411,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 186692.908896926,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 16.7739969225661,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.72777639746516,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 33.8669264120375,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 10.9,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 16.49613953,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 79.361930847168,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 56.602,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 262244,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 16.702,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 3.638,
+          "year": "2023"
+        }
+      }
+    },
+    "CHN": {
+      "name": "China",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 6.39,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 77.953,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 16.5896107225921,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 14.3160774690688,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 1410710000,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 18270356654533.2,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 5.41484330099675,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 44.7289,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 128.247,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 1508.37096213963,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 61.7186608827991,
+          "year": "2022"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.0974119959873274,
+          "year": "2022"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 23.8317336318638,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 15.2,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 5.36948681,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 74.823600769043,
+          "year": "2023"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 59.948,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 1426644,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 35.43,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 4.67,
+          "year": "2023"
+        }
+      }
+    },
+    "JPN": {
+      "name": "Japan",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 6,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 84.0412195121951,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 11.6492906162775,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 29.5618100807812,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 124516650,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 4213167237905.83,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 1.47503481053384,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 38.6312,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 178.432,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 31701.7121806602,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 28.5471557677759,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 3.13859988774373,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 68.4087791495199,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 8.8,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 11.42183685,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 64.6288299560547,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 54.847,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 222452,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 7.95699999999999,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 2.6,
+          "year": "2023"
+        }
+      }
+    },
+    "GBR": {
+      "name": "United Kingdom",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 10.023,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 81.2380975609756,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 17.4091420415944,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 19.238129106618,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 68492000,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 3369861888972.88,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 0.39708234553963,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 41.4368,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 122.796,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 47354.4501547626,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 1.56579891808617,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.826316065895205,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 13.2554871243748,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 12.2,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 10.872015,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 80.1511001586914,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 57.365,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 11592,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 15.358,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 3.984,
+          "year": "2023"
+        }
+      }
+    },
+    "FRA": {
+      "name": "France",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 9.9,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 82.9292682926829,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 16.7847783333666,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 21.7491423914771,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 68287487,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 3051831611384.76,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 0.936487518850853,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 48.6688,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 116.688,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 52082.5872535037,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 0.58785467200252,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 1.10701877226039,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 31.8136741928238,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 16.2,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 11.8819046,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 71.4203109741211,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 51.826,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 13386,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 18.223,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 7.335,
+          "year": "2023"
+        }
+      }
+    },
+    "ITA": {
+      "name": "Italy",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 6.4,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 83.7,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 12.1444351765721,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 24.2187831541913,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 58993475,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 2304605139862.79,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 0.715372500867531,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 31.8411,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 131.872,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 30239.3103644089,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 5.43982926746206,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 3.8562395704442,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 32.7125321249831,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 17.5,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 8.51808929,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 73.8962097167969,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 41.313,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 10281,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 28.027,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 7.627,
+          "year": "2023"
+        }
+      }
+    },
+    "CAN": {
+      "name": "Canada",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 8.8,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 81.6465853658537,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 15.3045433897864,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 19.3581192161771,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 40083484,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 2173339670064.33,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 1.52874550838358,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 42.5242,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 94.1497,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 42565.0375102124,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 4.33069295873517,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.885442841074976,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 39.4659199995449,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 23.8,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 11.22370815,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 77.3137588500977,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 61.134,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 4710,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 18.138,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 5.415,
+          "year": "2023"
+        }
+      }
+    },
+    "AUS": {
+      "name": "Australia",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 10.8,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 83.0512195121951,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 18.0302829475224,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 17.384024966198,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 26652777,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 1728057316695.61,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 3.44199220009025,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 36.6047,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 112.513,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 47578.6444316853,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 46.5005792898417,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 1.77211684895473,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 17.4213145571644,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 12.3,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 9.92687893,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 106.240760803223,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 62.374,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 2966,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 13.383,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 3.668,
+          "year": "2023"
+        }
+      }
+    },
+    "ESP": {
+      "name": "Spain",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 6.7,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 83.8829268292683,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 13.2586507610337,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 20.6537075238774,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 48347910,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 1620090734956.89,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 2.6756634629066,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 37.2148,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 127.715,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 28736.5679302373,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 1.55855436202591,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 3.30588643217136,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 37.1827922798055,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 19,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 9.73828793,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 94.5131072998047,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 52.842,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 1308,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 18.448,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 12.179,
+          "year": "2023"
+        }
+      }
+    },
+    "NLD": {
+      "name": "Netherlands",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 9.2,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 81.9146341463415,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 15.1712741911722,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 20.1567559021407,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 17877117,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 1154361305398.06,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 0.0745608349011775,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 43.2644,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 117.352,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 194962.867894191,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 8.82379606201218,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 1.26183745291805,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 11.0296673596674,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 12.2,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 10.10068321,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 89.3898620605469,
+          "year": "2021"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 62.937,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 2080,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 6.821,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 3.537,
+          "year": "2023"
+        }
+      }
+    },
+    "SWE": {
+      "name": "Sweden",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 9.5,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 83.309756097561,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 17.2497847224289,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 20.5364235623884,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 10536632,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 585489968189.064,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": -0.114161935397789,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 40.734,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 140.266,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 52996.3464606147,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 0.317207608158145,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.156191578921977,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 68.6996660773915,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 57.9,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 10.88682365,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 83.8976135253906,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 61.763,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 1771,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 11.262,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 7.611,
+          "year": "2023"
+        }
+      }
+    },
+    "NOR": {
+      "name": "Norway",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 9.4,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 83.1121951219512,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 16.5067663290493,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 18.5338475896816,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 5519594,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 482949731776.587,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 0.0721204806030329,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 45.4377,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 111.657,
+          "year": "2022"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 37715.0928129859,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 0.0955492143013932,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.00839283639133859,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 33.4795618634529,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 61.4,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 7.94803333,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 97.6419830322266,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 61.765,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 946,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 16.005,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 3.572,
+          "year": "2023"
+        }
+      }
+    },
+    "FIN": {
+      "name": "Finland",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 7.8,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 81.6853658536585,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 14.9350079550124,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 23.5778747195571,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 5583911,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 294950618733.339,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": -0.946904862611035,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 35.3318,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 127.473,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 153868.49826224,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 4.08736810965388,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.220638990237649,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 73.7264996576714,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 50.2,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 9.6589222,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 104.944221496582,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 57.489,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 1557,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 14.227,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 7.151,
+          "year": "2023"
+        }
+      }
+    },
+    "ISL": {
+      "name": "Iceland",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 11,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 82.6073170731707,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 18.0560303954897,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 15.3483031550157,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 393349,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 31452223861.9091,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 5.64646181923563,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 37.4246,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 123.382,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 85402.5305771719,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 0,
+          "year": "2021"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.0197599170083486,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 0.522265198849549,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 82.4,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 8.99166012,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 84.985237121582,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 70.368,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 34,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 5.958,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 3.518,
+          "year": "2023"
+        }
+      }
+    },
+    "CHE": {
+      "name": "Switzerland",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 9,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 84.0560975609756,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 15.0109897220706,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 19.6113808360035,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 8888093,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 894424821645.205,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 0.683328174376044,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 47.6963,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 128.64,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 163635.101477899,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 0,
+          "year": "2021"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.051575075666065,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 32.2956707010417,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 27.7,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 11.70653343,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 74.1526794433594,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 62.294,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 1288,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 25.798,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 4.043,
+          "year": "2023"
+        }
+      }
+    },
+    "BEL": {
+      "name": "Belgium",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 9.4,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 82.3975609756098,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 16.2907447374445,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 20.1452749547016,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 11787423,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 644655275111.58,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 1.201691781997,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 43.7026,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 103.196,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 33643.2314340463,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 2.2462370677631,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.137054421521183,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 22.604446776415,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 11.7,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 10.76192474,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 83.5736465454102,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 49.831,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 799,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 1.81100000000001,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 5.528,
+          "year": "2023"
+        }
+      }
+    },
+    "NZL": {
+      "name": "New Zealand",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 10.86,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 83.0048780487805,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 18.374736798151,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 16.7985801212333,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 5245000,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 255194972673.122,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 1.39425181563566,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 37.8531,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 126.855,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 18830.695900858,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 2.45398773006135,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.00895615959876405,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 37.719363487904,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 28.9,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 10.02858067,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 77.0104675292969,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 66.932,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 330,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 13.015,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 3.729,
+          "year": "2023"
+        }
+      }
+    },
+    "SGP": {
+      "name": "Singapore",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 7.4,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 82.8951219512195,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 11.787475387969,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 13.0953667239036,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 5917648,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 505439514078.019,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 1.82140694115385,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 27.4344,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 173.2,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 228648.442759691,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 0.995658163176341,
+          "year": "2022"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 2.58766499851785,
+          "year": "2022"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 21.1838440111421,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 1.1,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 4.89702511,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 98.0222320556641,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 61.973,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 2024,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 0,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 3.444,
+          "year": "2023"
+        }
+      }
+    },
+    "ISR": {
+      "name": "Israel",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 18.6,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 83.1951219512195,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 27.6146152777445,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 12.4157088880088,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 9849000,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 512184638998.974,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 1.82652049482384,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 29.4357,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 153.337,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 12925.0685348766,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 17.5026979495583,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.159878492345817,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 6.46950092421442,
+          "year": "2021"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 6.2,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 7.34161806,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 57.6379203796387,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 61.825,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 1592,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 7.146,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 3.596,
+          "year": "2023"
+        }
+      }
+    },
+    "IRL": {
+      "name": "Ireland",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 10.3,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 82.8609756097561,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 19.0170360406648,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 15.5417068369309,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 5307600,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 551394889339.778,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": -5.5300073886596,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 31.8911,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 110.798,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 150045.406586781,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 4.34228145125295,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.723713575208825,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 11.4678472927856,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 12.7,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 6.11978531,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 76.6049499511719,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 59.968,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 75,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 35.534,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 4.288,
+          "year": "2023"
+        }
+      }
+    },
+    "BRA": {
+      "name": "Brazil",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 12.322,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 75.848,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 19.9359520540445,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 10.6336314676644,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 211140729,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 2191131765684.63,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 3.24165532906981,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 22.4192,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 101.02,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 5628.66295682819,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 1.98997733169775,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 1.28364207824804,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 59.1275118866159,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 46.5,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 9.14277458,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 60.3906211853027,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 53.205,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 4666,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 12.212,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 7.947,
+          "year": "2023"
+        }
+      }
+    },
+    "MEX": {
+      "name": "Mexico",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 15.706,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 75.069,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 24.9179721383635,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 7.98664578990007,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 129739759,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 1793798859343.27,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 3.2953909570288,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 20.0882,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 111.562,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 412.117306307005,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 6.55834754893159,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 6.56536182438499,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 33.6616419660999,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 13,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 5.72145176,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 46.4061317443848,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 47.317,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 1117,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 18.418,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 2.765,
+          "year": "2023"
+        }
+      }
+    },
+    "ARG": {
+      "name": "Argentina",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 11.064,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 77.395,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 22.190657287242,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 12.2030217969226,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 45538401,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 646075277525.125,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": -1.61100162090189,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 25.3581,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 137.706,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 5451.20150353984,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 1.82223900580178,
+          "year": "2022"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 10.3408973874833,
+          "year": "2022"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 10.3611377978507,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 9.2,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 9.86305332,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 107.047912597656,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 52.957,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 406,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 7.53700000000001,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 6.139,
+          "year": "2023"
+        }
+      }
+    },
+    "CHL": {
+      "name": "Chile",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 8.963,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 81.167,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 17.3843388990243,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 13.6933190598527,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 19658835,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 335518054097.637,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 0.521367977246825,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 22.9954,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 135.871,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 12299.9658931976,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 17.2832752057261,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 2.92347671476441,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 24.8227737340155,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 24.2,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 10.09532642,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 99.3372802734375,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 51.963,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 402,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 11.988,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 9.013,
+          "year": "2023"
+        }
+      }
+    },
+    "COL": {
+      "name": "Colombia",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 13.475,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 77.725,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 20.5978461579186,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 9.37542803553496,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 52321152,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 366291836137.916,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 0.712380031974334,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 17.037,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 166.98,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 1109.11166481961,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 10.8009585850744,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 3.15928038613427,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 52.9457763857593,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 29.7,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 7.69168758,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 59.2901382446289,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 51.859,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 432,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 17.646,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 9.594,
+          "year": "2023"
+        }
+      }
+    },
+    "POL": {
+      "name": "Poland",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 7.4,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 78.5073170731707,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 15.0967665723491,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 19.5609114692528,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 36687353,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 812451128978.58,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 0.249610834017872,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 26.114,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 135.146,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 37340.960521191,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 60.2718733661456,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 1.33713138743157,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 31.0594923061845,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 15.2,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 7.00451565,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 75.2911071777344,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 51.867,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 3377,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 39.782,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 2.743,
+          "year": "2023"
+        }
+      }
+    },
+    "CZE": {
+      "name": "Czech Republic",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 8.4,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 79.8780487804878,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 15.6736356440817,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 20.5459005583495,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 10864042,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 343206568134.637,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": -0.0552618201120225,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 37.91,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 126.005,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 80152.0281309664,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 39.2944527153861,
+          "year": "2023"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.112628649103502,
+          "year": "2023"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 34.7369431785448,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 17.2,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 8.53962803,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 70.8145904541016,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 53.235,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 541,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 25.448,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 2.579,
+          "year": "2023"
+        }
+      }
+    },
+    "THA": {
+      "name": "Thailand",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 8.245,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 76.412,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 15.0896793114488,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 14.7182560815403,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 71702435,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 515906283940.933,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 2.01775095328327,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 15.7473,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 168.643,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 3002.53401436088,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 19.6261883253753,
+          "year": "2022"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 5.65449305286704,
+          "year": "2022"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 38.7578539411615,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 19,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 5.35470581,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 46.1752090454102,
+          "year": "2023"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 59.285,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 867,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 46.392,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 0.733,
+          "year": "2023"
+        }
+      }
+    },
+    "MYS": {
+      "name": "Malaysia",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 12.412,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 76.657,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 22.2879920337748,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 7.45117376160733,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 35126298,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 399705137434.074,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 3.55548715410509,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 13.0287,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 142.732,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 8082.51982602892,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 46.7618447607556,
+          "year": "2022"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.540849341690781,
+          "year": "2022"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 57.871678587734,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 7.5,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 3.90591931,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 41.2618560791016,
+          "year": "2023"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 51.573,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 883,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 21.284,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 3.869,
+          "year": "2023"
+        }
+      }
+    },
+    "PHL": {
+      "name": "Philippines",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 16.019,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 69.833,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 28.6075480855588,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 5.26217156111322,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 114891199,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 437055627244.424,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 5.51894967862863,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 6.53931,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 117.276,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 305.497725722229,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 59.5695646325606,
+          "year": "2022"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 2.25799219835897,
+          "year": "2022"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 24.3430593285709,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 28,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 5.10629606,
+          "year": "2023"
+        },
+        "SE.TER.ENRR": {
+          "value": 45.2818946838379,
+          "year": "2023"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 50.369,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 490,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 51.713,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 2.222,
+          "year": "2023"
+        }
+      }
+    },
+    "IDN": {
+      "name": "Indonesia",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 15.941,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 71.146,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 24.9346390051087,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 7.04854077766648,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 281190067,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 1371169301563.62,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 5.04902331835997,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 4.81664,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 125.238,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 2722.38990575723,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 65.969400618357,
+          "year": "2022"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 2.20485396955985,
+          "year": "2022"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 48.0419900717626,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 20.2,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 2.69394851,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 45.1352272033691,
+          "year": "2023"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 52.545,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 1397,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 41.428,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 3.308,
+          "year": "2023"
+        }
+      }
+    },
+    "VNM": {
+      "name": "Vietnam",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 13.831,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 74.588,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 23.6058472126142,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 8.62116598619573,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 100352192,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 433857681378.291,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 5.06502391455075,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 22.6807,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 130.991,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 5256.30770476842,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 40.1977454271822,
+          "year": "2022"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.0647574670062515,
+          "year": "2022"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 47.203321964464,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 24.2,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 4.58891582,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 42.2242393493652,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 69.533,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 1066,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 60.52,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 1.645,
+          "year": "2023"
+        }
+      }
+    },
+    "IND": {
+      "name": "India",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 16.146,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 72.003,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 25.0570622244071,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 6.92184330138637,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 1438069596,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 3638489096033.86,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 9.19075493028345,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 2.74535,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 80.5632,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 966.082590066802,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 72.0403161523697,
+          "year": "2022"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 0.261622811127734,
+          "year": "2022"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 24.4494297370837,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 34.9,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 3.3058846,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 33.1165237426758,
+          "year": "2023"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 31.243,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 26267,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 63.636,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 4.172,
+          "year": "2023"
+        }
+      }
+    },
+    "ZAF": {
+      "name": "South Africa",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 18.775,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 66.139,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 26.0848983807105,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 6.51509367622564,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 63212384,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 380699271816.395,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 0.698485193724835,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 3.40566,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 171.509,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 14786.991738834,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 84.0540770704705,
+          "year": "2022"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 1.75260804769001,
+          "year": "2022"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 13.9950786833623,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 9.7,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 8.77086639,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 27.1743202209473,
+          "year": "2022"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 52.929,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 1804,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 31.181,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 32.098,
+          "year": "2023"
+        }
+      }
+    },
+    "EGY": {
+      "name": "Egypt",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 21.004,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 71.633,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 32.4351191889426,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 4.96968538776552,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 114535772,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 395926075163.006,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": 3.76028052279247,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 10.8645,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 92.8262,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 53.3021246846793,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 0,
+          "year": "2021"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 8.62608329061651,
+          "year": "2022"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 0.0451855944547692,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 6.1,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 4.70438385,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 39.3823089599609,
+          "year": "2023"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 15.3,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 881,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 56.9,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 7.334,
+          "year": "2023"
+        }
+      }
+    },
+    "PAK": {
+      "name": "Pakistan",
+      "indicators": {
+        "SP.DYN.CBRT.IN": {
+          "value": 27.806,
+          "year": "2023"
+        },
+        "SP.DYN.LE00.IN": {
+          "value": 67.649,
+          "year": "2023"
+        },
+        "SP.POP.0014.TO.ZS": {
+          "value": 37.0380613955353,
+          "year": "2023"
+        },
+        "SP.POP.65UP.TO.ZS": {
+          "value": 4.19627145721884,
+          "year": "2023"
+        },
+        "SP.POP.TOTL": {
+          "value": 247504495,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.CD": {
+          "value": 337885531778.052,
+          "year": "2023"
+        },
+        "NY.GDP.MKTP.KD.ZG": {
+          "value": -0.0398389716673506,
+          "year": "2023"
+        },
+        "IT.NET.BBND.P2": {
+          "value": 1.35622,
+          "year": "2023"
+        },
+        "IT.CEL.SETS.P2": {
+          "value": 76.5398,
+          "year": "2023"
+        },
+        "IT.NET.SECR.P6": {
+          "value": 113.359557368847,
+          "year": "2023"
+        },
+        "EG.ELC.COAL.ZS": {
+          "value": 15.9069207576433,
+          "year": "2022"
+        },
+        "EG.ELC.PETR.ZS": {
+          "value": 16.5886376657272,
+          "year": "2022"
+        },
+        "AG.LND.FRST.ZS": {
+          "value": 4.72605334163553,
+          "year": "2022"
+        },
+        "EG.FEC.RNEW.ZS": {
+          "value": 41.6,
+          "year": "2021"
+        },
+        "SH.XPD.CHEX.GD.ZS": {
+          "value": 2.90434051,
+          "year": "2022"
+        },
+        "SE.TER.ENRR": {
+          "value": 11.2206001281738,
+          "year": "2023"
+        },
+        "SL.TLF.CACT.FE.ZS": {
+          "value": 24.195,
+          "year": "2023"
+        },
+        "IP.PAT.RESD": {
+          "value": 426,
+          "year": "2021"
+        },
+        "SP.RUR.TOTL.ZS": {
+          "value": 61.96,
+          "year": "2023"
+        },
+        "SL.UEM.TOTL.ZS": {
+          "value": 5.408,
+          "year": "2023"
+        }
+      }
+    }
+  },
+  "indicators": {
+    "SP.DYN.CBRT.IN": {
+      "name": "Birth rate, crude (per 1,000 people)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "SP.DYN.LE00.IN": {
+      "name": "Life expectancy at birth, total (years)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "SP.POP.0014.TO.ZS": {
+      "name": "Population ages 0-14 (% of total population)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "SP.POP.65UP.TO.ZS": {
+      "name": "Population ages 65 and above (% of total population)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "SP.POP.TOTL": {
+      "name": "Population, total",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "NY.GDP.MKTP.CD": {
+      "name": "GDP (current US$)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "NY.GDP.MKTP.KD.ZG": {
+      "name": "GDP growth (annual %)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "IT.NET.BBND.P2": {
+      "name": "Fixed broadband subscriptions (per 100 people)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "IT.CEL.SETS.P2": {
+      "name": "Mobile cellular subscriptions (per 100 people)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "IT.NET.SECR.P6": {
+      "name": "Secure Internet servers (per 1 million people)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "EG.ELC.COAL.ZS": {
+      "name": "Electricity production from coal sources (% of total)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "EG.ELC.PETR.ZS": {
+      "name": "Electricity production from oil sources (% of total)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "AG.LND.FRST.ZS": {
+      "name": "Forest area (% of land area)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "EG.FEC.RNEW.ZS": {
+      "name": "Renewable energy consumption (% of total final energy consumption)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "SH.XPD.CHEX.GD.ZS": {
+      "name": "Current health expenditure (% of GDP)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "SE.TER.ENRR": {
+      "name": "School enrollment, tertiary (% gross)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "SL.TLF.CACT.FE.ZS": {
+      "name": "Labor force participation rate, female (% of female population ages 15+)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "IP.PAT.RESD": {
+      "name": "Patent applications, residents",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "SP.RUR.TOTL.ZS": {
+      "name": "Rural population (% of total population)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    },
+    "SL.UEM.TOTL.ZS": {
+      "name": "Unemployment, total (% of total labor force)",
+      "coverage": "40/40",
+      "coverage_pct": 100.0
+    }
+  },
+  "coverage_summary": {
+    "total_data_points": 800,
+    "available_data_points": 800,
+    "overall_coverage_pct": 100.0,
+    "total_countries": 40,
+    "total_indicators": 20
+  }
+}

@@ -1,0 +1,197 @@
+{
+  "category": "Agriculture",
+  "total_rankings": 25,
+  "rankings_list": [
+    {
+      "name": "Agricultural Output (Total)",
+      "description": "Total agricultural production value by country",
+      "typical_source": "FAO (Food and Agriculture Organization)",
+      "data_type": "value",
+      "unit": "billion USD"
+    },
+    {
+      "name": "Agricultural Output (Per Capita)",
+      "description": "Agricultural production value per person",
+      "typical_source": "FAO",
+      "data_type": "value",
+      "unit": "USD per capita"
+    },
+    {
+      "name": "Cereal Production",
+      "description": "Total cereal grain production by country",
+      "typical_source": "FAO",
+      "data_type": "value",
+      "unit": "million tonnes"
+    },
+    {
+      "name": "Wheat Production",
+      "description": "Total wheat production by country",
+      "typical_source": "FAO",
+      "data_type": "value",
+      "unit": "million tonnes"
+    },
+    {
+      "name": "Rice Production",
+      "description": "Total rice production by country",
+      "typical_source": "FAO",
+      "data_type": "value",
+      "unit": "million tonnes"
+    },
+    {
+      "name": "Corn/Maize Production",
+      "description": "Total corn/maize production by country",
+      "typical_source": "FAO",
+      "data_type": "value",
+      "unit": "million tonnes"
+    },
+    {
+      "name": "Coffee Production",
+      "description": "Total coffee production by country",
+      "typical_source": "International Coffee Organization",
+      "data_type": "value",
+      "unit": "thousand 60kg bags"
+    },
+    {
+      "name": "Tea Production",
+      "description": "Total tea production by country",
+      "typical_source": "FAO",
+      "data_type": "value",
+      "unit": "thousand tonnes"
+    },
+    {
+      "name": "Sugar Production",
+      "description": "Total sugar production by country",
+      "typical_source": "FAO",
+      "data_type": "value",
+      "unit": "million tonnes"
+    },
+    {
+      "name": "Wine Production",
+      "description": "Total wine production by country",
+      "typical_source": "International Organisation of Vine and Wine",
+      "data_type": "value",
+      "unit": "million hectolitres"
+    },
+    {
+      "name": "Beer Production",
+      "description": "Total beer production by country",
+      "typical_source": "Various brewing associations",
+      "data_type": "value",
+      "unit": "million hectolitres"
+    },
+    {
+      "name": "Meat Production",
+      "description": "Total meat production by country",
+      "typical_source": "FAO",
+      "data_type": "value",
+      "unit": "million tonnes"
+    },
+    {
+      "name": "Milk Production",
+      "description": "Total milk production by country",
+      "typical_source": "FAO",
+      "data_type": "value",
+      "unit": "million tonnes"
+    },
+    {
+      "name": "Fish and Seafood Production",
+      "description": "Total fisheries and aquaculture production",
+      "typical_source": "FAO",
+      "data_type": "value",
+      "unit": "million tonnes"
+    },
+    {
+      "name": "Agricultural Land Area",
+      "description": "Total agricultural land area by country",
+      "typical_source": "FAO/World Bank",
+      "data_type": "value",
+      "unit": "thousand sq km"
+    },
+    {
+      "name": "Arable Land (% of land area)",
+      "description": "Percentage of land area that is arable",
+      "typical_source": "World Bank",
+      "data_type": "percentage",
+      "unit": "%"
+    },
+    {
+      "name": "Agricultural Employment",
+      "description": "Percentage of workforce in agriculture",
+      "typical_source": "ILO/World Bank",
+      "data_type": "percentage",
+      "unit": "% of total employment"
+    },
+    {
+      "name": "Food Security Index",
+      "description": "Global Food Security Index ranking",
+      "typical_source": "Economist Intelligence Unit",
+      "data_type": "rank",
+      "unit": "rank"
+    },
+    {
+      "name": "Agricultural Exports",
+      "description": "Total agricultural export value",
+      "typical_source": "WTO/FAO",
+      "data_type": "value",
+      "unit": "billion USD"
+    },
+    {
+      "name": "Agricultural Imports",
+      "description": "Total agricultural import value",
+      "typical_source": "WTO/FAO",
+      "data_type": "value",
+      "unit": "billion USD"
+    },
+    {
+      "name": "Organic Farming Area",
+      "description": "Total area under organic farming",
+      "typical_source": "FiBL & IFOAM",
+      "data_type": "value",
+      "unit": "million hectares"
+    },
+    {
+      "name": "Fertilizer Consumption",
+      "description": "Fertilizer consumption per hectare of arable land",
+      "typical_source": "FAO",
+      "data_type": "value",
+      "unit": "kg per hectare"
+    },
+    {
+      "name": "Irrigation Coverage",
+      "description": "Percentage of agricultural land that is irrigated",
+      "typical_source": "FAO",
+      "data_type": "percentage",
+      "unit": "%"
+    },
+    {
+      "name": "Agricultural Productivity",
+      "description": "Agricultural value added per worker",
+      "typical_source": "World Bank",
+      "data_type": "value",
+      "unit": "constant 2015 USD"
+    },
+    {
+      "name": "Crop Yield Index",
+      "description": "Average crop yield compared to global average",
+      "typical_source": "FAO",
+      "data_type": "index",
+      "unit": "index (100 = global avg)"
+    }
+  ],
+  "extraction_instructions": {
+    "extraction_method": "Extract ALL countries data from each ranking",
+    "data_format": "Provide data in any of these formats:",
+    "acceptable_formats": [
+      "Copy/paste tables from source websites",
+      "CSV data",
+      "JSON data",
+      "PDF content",
+      "Direct values listing"
+    ],
+    "example_format": "\nExample data format:\n=== Wheat Production 2024 ===\nSource: FAO\nChina: 134.3 million tonnes\nIndia: 107.6 million tonnes\nRussia: 85.9 million tonnes\nUnited States: 49.7 million tonnes\n[... all countries ...]\n            ",
+    "coverage_analysis": "After extraction, we will analyze which of our 38 countries are covered",
+    "flexibility": "We keep ALL data, allowing us to switch countries if needed"
+  },
+  "extraction_date": "2025-07-19 13:42:05",
+  "status": "Awaiting data for all rankings"
+}

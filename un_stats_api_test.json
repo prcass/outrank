@@ -1,0 +1,11 @@
+{
+  "test_date": "2025-07-18 23:02:50",
+  "api_source": "UN Statistics Division",
+  "working_endpoints": [
+    "https://unstats.un.org/SDGAPI/v1/sdg/Indicator/List",
+    "https://unstats.un.org/SDGAPI/v1/sdg/Target/List",
+    "https://unstats.un.org/sdgapi/v1/sdg/GeoArea/List"
+  ],
+  "accessibility": true,
+  "next_steps": "Test specific indicators if accessible"
+}

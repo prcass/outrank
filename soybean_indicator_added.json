@@ -1,0 +1,41 @@
+{
+  "update_date": "2025-07-19 14:17:00",
+  "indicator_added": "Soybean Production",
+  "new_total_indicators": 32,
+  "coverage": {
+    "countries_with_data": 34,
+    "coverage_percent": 89.5,
+    "countries_with_production": 25,
+    "countries_with_zero": 9,
+    "missing": [
+      "Singapore",
+      "New Zealand",
+      "Chile",
+      "Malaysia"
+    ]
+  },
+  "top_producers": [
+    {
+      "country": "Brazil",
+      "production": 152144238
+    },
+    {
+      "country": "United States",
+      "production": 113343420
+    },
+    {
+      "country": "Argentina",
+      "production": 25044978
+    },
+    {
+      "country": "China",
+      "production": 19496297
+    },
+    {
+      "country": "India",
+      "production": 14984927
+    }
+  ],
+  "source": "FAO 2023 (FAOSTAT)",
+  "unit": "tonnes"
+}

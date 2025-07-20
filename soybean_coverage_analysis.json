@@ -1,0 +1,109 @@
+{
+  "coverage_percent": 60.526315789473685,
+  "total_found": 23,
+  "with_production": 20,
+  "zero_production": 3,
+  "missing": 15,
+  "production_data": [
+    {
+      "country": "Brazil",
+      "production": 152144238,
+      "yield": 3423
+    },
+    {
+      "country": "United States",
+      "production": 113343420,
+      "yield": 3398.7
+    },
+    {
+      "country": "China",
+      "production": 19496297.07,
+      "yield": 1952.6
+    },
+    {
+      "country": "India",
+      "production": 14984927.37,
+      "yield": 1145.3
+    },
+    {
+      "country": "Canada",
+      "production": 6980525,
+      "yield": 3087.1
+    },
+    {
+      "country": "South Africa",
+      "production": 2770000,
+      "yield": 2412.3
+    },
+    {
+      "country": "Italy",
+      "production": 1095940,
+      "yield": 3527.1
+    },
+    {
+      "country": "Indonesia",
+      "production": 326493,
+      "yield": 1489.5
+    },
+    {
+      "country": "Austria",
+      "production": 274960,
+      "yield": 3108.6
+    },
+    {
+      "country": "Japan",
+      "production": 260800,
+      "yield": 1685.8
+    },
+    {
+      "country": "Mexico",
+      "production": 199162.6,
+      "yield": 2185.8
+    },
+    {
+      "country": "Turkey",
+      "production": 137500,
+      "yield": 4207
+    },
+    {
+      "country": "Germany",
+      "production": 129000,
+      "yield": 2879.5
+    },
+    {
+      "country": "Australia",
+      "production": 52000,
+      "yield": 2512.1
+    },
+    {
+      "country": "Vietnam",
+      "production": 48102.94,
+      "yield": 1606.3
+    },
+    {
+      "country": "Poland",
+      "production": 47030,
+      "yield": 2609.9
+    },
+    {
+      "country": "Thailand",
+      "production": 20016,
+      "yield": 1666.6
+    },
+    {
+      "country": "Spain",
+      "production": 7670,
+      "yield": 3143.4
+    },
+    {
+      "country": "Switzerland",
+      "production": 6949,
+      "yield": 2257.1
+    },
+    {
+      "country": "Philippines",
+      "production": 615.64,
+      "yield": 1814.9
+    }
+  ]
+}

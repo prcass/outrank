@@ -1,0 +1,42 @@
+{
+  "038": {
+    "life_expectancy": 78.4,
+    "internet_penetration": 93.1
+  },
+  "008": {
+    "life_expectancy": 78,
+    "internet_penetration": 77.5
+  },
+  "022": {
+    "life_expectancy": 84,
+    "internet_penetration": 87
+  },
+  "009": {
+    "life_expectancy": 80.5,
+    "internet_penetration": 92.5
+  },
+  "015": {
+    "life_expectancy": 81.2,
+    "internet_penetration": 96.3
+  },
+  "014": {
+    "life_expectancy": 82.9,
+    "internet_penetration": 86.8
+  },
+  "018": {
+    "life_expectancy": 72,
+    "internet_penetration": 55.9
+  },
+  "005": {
+    "life_expectancy": 75.8,
+    "internet_penetration": 84.2
+  },
+  "006": {
+    "life_expectancy": 81.6,
+    "internet_penetration": 94
+  },
+  "021": {
+    "life_expectancy": 83.7,
+    "internet_penetration": 87
+  }
+}

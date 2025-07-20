@@ -1,0 +1,172 @@
+{
+  "indicator": "Cost of a Healthy Diet",
+  "source": "FAO - State of Food Security and Nutrition in the World (SOFI) Report",
+  "release": "July 2024",
+  "year": 2022,
+  "unit": "PPP dollar per person per day",
+  "coverage_analysis": {
+    "coverage_percent": 97.36842105263158,
+    "countries_with_data": 37,
+    "missing": 1,
+    "data": [
+      {
+        "country": "United Kingdom",
+        "cost": 2.12
+      },
+      {
+        "country": "Ireland",
+        "cost": 2.48
+      },
+      {
+        "country": "Belgium",
+        "cost": 2.56
+      },
+      {
+        "country": "United States",
+        "cost": 2.63
+      },
+      {
+        "country": "Denmark",
+        "cost": 2.73
+      },
+      {
+        "country": "Austria",
+        "cost": 2.76
+      },
+      {
+        "country": "Switzerland",
+        "cost": 2.85
+      },
+      {
+        "country": "Australia",
+        "cost": 2.9
+      },
+      {
+        "country": "Netherlands",
+        "cost": 2.9
+      },
+      {
+        "country": "Iceland",
+        "cost": 3.02
+      },
+      {
+        "country": "Israel",
+        "cost": 3.02
+      },
+      {
+        "country": "New Zealand",
+        "cost": 3.21
+      },
+      {
+        "country": "Finland",
+        "cost": 3.29
+      },
+      {
+        "country": "China",
+        "cost": 3.35
+      },
+      {
+        "country": "Spain",
+        "cost": 3.35
+      },
+      {
+        "country": "India",
+        "cost": 3.36
+      },
+      {
+        "country": "France",
+        "cost": 3.42
+      },
+      {
+        "country": "Singapore",
+        "cost": 3.48
+      },
+      {
+        "country": "Germany",
+        "cost": 3.56
+      },
+      {
+        "country": "Sweden",
+        "cost": 3.56
+      },
+      {
+        "country": "Italy",
+        "cost": 3.61
+      },
+      {
+        "country": "Czech Republic",
+        "cost": 3.63
+      },
+      {
+        "country": "South Africa",
+        "cost": 3.74
+      },
+      {
+        "country": "Malaysia",
+        "cost": 3.77
+      },
+      {
+        "country": "Canada",
+        "cost": 3.89
+      },
+      {
+        "country": "Mexico",
+        "cost": 3.89
+      },
+      {
+        "country": "Poland",
+        "cost": 3.91
+      },
+      {
+        "country": "Vietnam",
+        "cost": 3.96
+      },
+      {
+        "country": "Norway",
+        "cost": 4.01
+      },
+      {
+        "country": "Philippines",
+        "cost": 4.1
+      },
+      {
+        "country": "Colombia",
+        "cost": 4.13
+      },
+      {
+        "country": "Brazil",
+        "cost": 4.25
+      },
+      {
+        "country": "Turkey",
+        "cost": 4.5
+      },
+      {
+        "country": "Chile",
+        "cost": 4.54
+      },
+      {
+        "country": "Indonesia",
+        "cost": 4.64
+      },
+      {
+        "country": "Thailand",
+        "cost": 4.93
+      },
+      {
+        "country": "Japan",
+        "cost": 6.54
+      }
+    ],
+    "statistics": {
+      "average": 3.5835135135135134,
+      "min": 2.12,
+      "max": 6.54,
+      "range": 4.42
+    }
+  },
+  "missing_countries": [
+    "Argentina"
+  ],
+  "notes": "Argentina listed as 'Q - Missing value; suppressed'"
+}

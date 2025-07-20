@@ -1,0 +1,605 @@
+{
+  "test_date": "2025-07-18 23:11:36",
+  "source": "UN Statistics Division - Specific Indicator Testing",
+  "countries_tested": 37,
+  "indicators_tested": 10,
+  "results": {
+    "DC_TOF_HLTHNT": {
+      "description": "Total official development assistance to medical research and basic health sectors, net disbursement, by recipient countries (millions of constant 2023 United States dollars)",
+      "available_countries": [],
+      "missing_countries": [
+        [
+          "Germany",
+          "276",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Denmark",
+          "208",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Austria",
+          "40",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Luxembourg",
+          "442",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "China",
+          "156",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Japan",
+          "392",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "France",
+          "250",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Italy",
+          "380",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Canada",
+          "124",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Australia",
+          "36",
+          "HTTP Error 404: Not Found"
+        ]
+      ],
+      "coverage_percent": 0.0,
+      "tested_countries": 10
+    },
+    "DC_TOF_INFRAL": {
+      "description": "Total official flows for infrastructure, by recipient countries (millions of constant 2023 United States dollars)",
+      "available_countries": [],
+      "missing_countries": [
+        [
+          "Germany",
+          "276",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Denmark",
+          "208",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Austria",
+          "40",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Luxembourg",
+          "442",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "China",
+          "156",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Japan",
+          "392",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "France",
+          "250",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Italy",
+          "380",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Canada",
+          "124",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Australia",
+          "36",
+          "HTTP Error 404: Not Found"
+        ]
+      ],
+      "coverage_percent": 0.0,
+      "tested_countries": 10
+    },
+    "EG_EGY_CLEAN": {
+      "description": "Proportion of population with primary reliance on clean fuels and technology (%)",
+      "available_countries": [],
+      "missing_countries": [
+        [
+          "Germany",
+          "276",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Denmark",
+          "208",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Austria",
+          "40",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Luxembourg",
+          "442",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "China",
+          "156",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Japan",
+          "392",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "France",
+          "250",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Italy",
+          "380",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Canada",
+          "124",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Australia",
+          "36",
+          "HTTP Error 404: Not Found"
+        ]
+      ],
+      "coverage_percent": 0.0,
+      "tested_countries": 10
+    },
+    "ER_CBD_SMTA": {
+      "description": "Total reported number of Standard Material Transfer Agreements (SMTAs) transferring plant genetic resources for food and agriculture to the country (number)",
+      "available_countries": [],
+      "missing_countries": [
+        [
+          "Germany",
+          "276",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Denmark",
+          "208",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Austria",
+          "40",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Luxembourg",
+          "442",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "China",
+          "156",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Japan",
+          "392",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "France",
+          "250",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Italy",
+          "380",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Canada",
+          "124",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Australia",
+          "36",
+          "HTTP Error 404: Not Found"
+        ]
+      ],
+      "coverage_percent": 0.0,
+      "tested_countries": 10
+    },
+    "IC_GEN_MGTL": {
+      "description": "Proportion of women in managerial positions - 13th ICLS (%)",
+      "available_countries": [],
+      "missing_countries": [
+        [
+          "Germany",
+          "276",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Denmark",
+          "208",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Austria",
+          "40",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Luxembourg",
+          "442",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "China",
+          "156",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Japan",
+          "392",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "France",
+          "250",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Italy",
+          "380",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Canada",
+          "124",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Australia",
+          "36",
+          "HTTP Error 404: Not Found"
+        ]
+      ],
+      "coverage_percent": 0.0,
+      "tested_countries": 10
+    },
+    "IC_GEN_MGTN": {
+      "description": "Proportion of women in senior and middle management positions - 13th ICLS (%)",
+      "available_countries": [],
+      "missing_countries": [
+        [
+          "Germany",
+          "276",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Denmark",
+          "208",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Austria",
+          "40",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Luxembourg",
+          "442",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "China",
+          "156",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Japan",
+          "392",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "France",
+          "250",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Italy",
+          "380",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Canada",
+          "124",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Australia",
+          "36",
+          "HTTP Error 404: Not Found"
+        ]
+      ],
+      "coverage_percent": 0.0,
+      "tested_countries": 10
+    },
+    "SG_NHR_IMPL": {
+      "description": "Proportion of countries with independent National Human Rights Institutions in compliance with the Paris Principles (%)",
+      "available_countries": [],
+      "missing_countries": [
+        [
+          "Germany",
+          "276",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Denmark",
+          "208",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Austria",
+          "40",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Luxembourg",
+          "442",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "China",
+          "156",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Japan",
+          "392",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "France",
+          "250",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Italy",
+          "380",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Canada",
+          "124",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Australia",
+          "36",
+          "HTTP Error 404: Not Found"
+        ]
+      ],
+      "coverage_percent": 0.0,
+      "tested_countries": 10
+    },
+    "SH_H2O_SAFE": {
+      "description": "Proportion of population using safely managed drinking water services, by urban/rural (%)",
+      "available_countries": [],
+      "missing_countries": [
+        [
+          "Germany",
+          "276",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Denmark",
+          "208",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Austria",
+          "40",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Luxembourg",
+          "442",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "China",
+          "156",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Japan",
+          "392",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "France",
+          "250",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Italy",
+          "380",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Canada",
+          "124",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Australia",
+          "36",
+          "HTTP Error 404: Not Found"
+        ]
+      ],
+      "coverage_percent": 0.0,
+      "tested_countries": 10
+    },
+    "SH_HAP_ASMORT": {
+      "description": "Age-standardized mortality rate attributed to household air pollution (deaths per 100,000 population)",
+      "available_countries": [],
+      "missing_countries": [
+        [
+          "Germany",
+          "276",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Denmark",
+          "208",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Austria",
+          "40",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Luxembourg",
+          "442",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "China",
+          "156",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Japan",
+          "392",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "France",
+          "250",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Italy",
+          "380",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Canada",
+          "124",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Australia",
+          "36",
+          "HTTP Error 404: Not Found"
+        ]
+      ],
+      "coverage_percent": 0.0,
+      "tested_countries": 10
+    },
+    "SH_STA_ASAIRP": {
+      "description": "Age-standardized mortality rate attributed to household and ambient air pollution (deaths per 100,000 population)",
+      "available_countries": [],
+      "missing_countries": [
+        [
+          "Germany",
+          "276",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Denmark",
+          "208",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Austria",
+          "40",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Luxembourg",
+          "442",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "China",
+          "156",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Japan",
+          "392",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "France",
+          "250",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Italy",
+          "380",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Canada",
+          "124",
+          "HTTP Error 404: Not Found"
+        ],
+        [
+          "Australia",
+          "36",
+          "HTTP Error 404: Not Found"
+        ]
+      ],
+      "coverage_percent": 0.0,
+      "tested_countries": 10
+    }
+  },
+  "summary": {
+    "high_coverage": [],
+    "medium_coverage": [],
+    "low_coverage": [
+      "DC_TOF_HLTHNT",
+      "DC_TOF_INFRAL",
+      "EG_EGY_CLEAN",
+      "ER_CBD_SMTA",
+      "IC_GEN_MGTL",
+      "IC_GEN_MGTN",
+      "SG_NHR_IMPL",
+      "SH_H2O_SAFE",
+      "SH_HAP_ASMORT",
+      "SH_STA_ASAIRP"
+    ]
+  },
+  "recommendation": "Need broader testing"
+}

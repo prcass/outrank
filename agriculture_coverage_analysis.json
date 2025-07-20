@@ -1,0 +1,1170 @@
+{
+  "analysis_date": "2025-07-19 14:00:39",
+  "our_countries_count": 38,
+  "rankings_analyzed": 15,
+  "suitable_rankings_count": 0,
+  "coverage_threshold": 75.0,
+  "detailed_coverage": [
+    {
+      "ranking_name": "apple_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "total_countries_in_ranking": 95,
+      "our_countries_found": 11,
+      "our_countries_missing": 27,
+      "coverage_percent": 28.947368421052634,
+      "found_details": [
+        {
+          "country": "Germany",
+          "rank": 14,
+          "value": 1070980
+        },
+        {
+          "country": "Turkey",
+          "rank": 2,
+          "value": 4817500
+        },
+        {
+          "country": "United States",
+          "rank": 3,
+          "value": 4429330
+        },
+        {
+          "country": "China",
+          "rank": 1,
+          "value": 47571800
+        },
+        {
+          "country": "France",
+          "rank": 9,
+          "value": 1785660
+        },
+        {
+          "country": "Italy",
+          "rank": 7,
+          "value": 2256240
+        },
+        {
+          "country": "Brazil",
+          "rank": 15,
+          "value": 1047217
+        },
+        {
+          "country": "Chile",
+          "rank": 10,
+          "value": 1479683
+        },
+        {
+          "country": "Poland",
+          "rank": 4,
+          "value": 4264700
+        },
+        {
+          "country": "India",
+          "rank": 5,
+          "value": 2589000
+        },
+        {
+          "country": "South Africa",
+          "rank": 12,
+          "value": 1231867
+        }
+      ],
+      "missing_countries": [
+        "Denmark",
+        "Austria",
+        "Japan",
+        "United Kingdom",
+        "Canada",
+        "Australia",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Mexico",
+        "Argentina",
+        "Colombia",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Indonesia",
+        "Vietnam"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "corn_production",
+      "source": "Food and Agriculture Organization (FAOSTAT)",
+      "year": 2022,
+      "total_countries_in_ranking": 16,
+      "our_countries_found": 10,
+      "our_countries_missing": 28,
+      "coverage_percent": 26.31578947368421,
+      "found_details": [
+        {
+          "country": "United States",
+          "rank": 1,
+          "value": 348800000
+        },
+        {
+          "country": "China",
+          "rank": 2,
+          "value": 277200000
+        },
+        {
+          "country": "France",
+          "rank": 14,
+          "value": 10900000
+        },
+        {
+          "country": "Canada",
+          "rank": 12,
+          "value": 14500000
+        },
+        {
+          "country": "Brazil",
+          "rank": 3,
+          "value": 109400000
+        },
+        {
+          "country": "Mexico",
+          "rank": 7,
+          "value": 26600000
+        },
+        {
+          "country": "Argentina",
+          "rank": 4,
+          "value": 59000000
+        },
+        {
+          "country": "Indonesia",
+          "rank": 9,
+          "value": 23600000
+        },
+        {
+          "country": "India",
+          "rank": 6,
+          "value": 33700000
+        },
+        {
+          "country": "South Africa",
+          "rank": 10,
+          "value": 16100000
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Turkey",
+        "Japan",
+        "United Kingdom",
+        "Italy",
+        "Australia",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Chile",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Vietnam"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "wine_production",
+      "source": "Food and Agriculture Organization (FAO)",
+      "year": 2021,
+      "total_countries_in_ranking": 69,
+      "our_countries_found": 9,
+      "our_countries_missing": 29,
+      "coverage_percent": 23.684210526315788,
+      "found_details": [
+        {
+          "country": "United States",
+          "rank": 4,
+          "value": 2057021
+        },
+        {
+          "country": "China",
+          "rank": 5,
+          "value": 1814400
+        },
+        {
+          "country": "France",
+          "rank": 2,
+          "value": 3713200
+        },
+        {
+          "country": "Italy",
+          "rank": 1,
+          "value": 5088500
+        },
+        {
+          "country": "Australia",
+          "rank": 6,
+          "value": 1482000
+        },
+        {
+          "country": "Spain",
+          "rank": 3,
+          "value": 3700588
+        },
+        {
+          "country": "Argentina",
+          "rank": 8,
+          "value": 1248155
+        },
+        {
+          "country": "Chile",
+          "rank": 7,
+          "value": 1343729
+        },
+        {
+          "country": "South Africa",
+          "rank": 9,
+          "value": 1133300
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Turkey",
+        "Japan",
+        "United Kingdom",
+        "Canada",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Brazil",
+        "Mexico",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Indonesia",
+        "Vietnam",
+        "India"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "cereal_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAO)",
+      "year": 2023,
+      "total_countries_in_ranking": 178,
+      "our_countries_found": 8,
+      "our_countries_missing": 30,
+      "coverage_percent": 21.052631578947366,
+      "found_details": [
+        {
+          "country": "United States",
+          "rank": 2,
+          "value": 478000000
+        },
+        {
+          "country": "China",
+          "rank": 1,
+          "value": 658000000
+        },
+        {
+          "country": "France",
+          "rank": 9,
+          "value": 62500000
+        },
+        {
+          "country": "Canada",
+          "rank": 7,
+          "value": 72100000
+        },
+        {
+          "country": "Brazil",
+          "rank": 4,
+          "value": 156000000
+        },
+        {
+          "country": "Argentina",
+          "rank": 6,
+          "value": 101000000
+        },
+        {
+          "country": "Indonesia",
+          "rank": 8,
+          "value": 65900000
+        },
+        {
+          "country": "India",
+          "rank": 3,
+          "value": 382000000
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Turkey",
+        "Japan",
+        "United Kingdom",
+        "Italy",
+        "Australia",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Mexico",
+        "Chile",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Vietnam",
+        "South Africa"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "coffee_production",
+      "source": "FAOSTAT (United Nations)",
+      "year": 2023,
+      "total_countries_in_ranking": 36,
+      "our_countries_found": 5,
+      "our_countries_missing": 33,
+      "coverage_percent": 13.157894736842104,
+      "found_details": [
+        {
+          "country": "Brazil",
+          "rank": 1,
+          "value": 3405267
+        },
+        {
+          "country": "Colombia",
+          "rank": 4,
+          "value": 680858
+        },
+        {
+          "country": "Indonesia",
+          "rank": 3,
+          "value": 760192
+        },
+        {
+          "country": "Vietnam",
+          "rank": 2,
+          "value": 1956782
+        },
+        {
+          "country": "India",
+          "rank": 9,
+          "value": 332848
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "France",
+        "Italy",
+        "Canada",
+        "Australia",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Mexico",
+        "Argentina",
+        "Chile",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "South Africa"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "grape_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "total_countries_in_ranking": 92,
+      "our_countries_found": 5,
+      "our_countries_missing": 33,
+      "coverage_percent": 13.157894736842104,
+      "found_details": [
+        {
+          "country": "United States",
+          "rank": 4,
+          "value": 5902040
+        },
+        {
+          "country": "China",
+          "rank": 5,
+          "value": 5372800
+        },
+        {
+          "country": "France",
+          "rank": 1,
+          "value": 12600000
+        },
+        {
+          "country": "Italy",
+          "rank": 2,
+          "value": 8437970
+        },
+        {
+          "country": "Spain",
+          "rank": 3,
+          "value": 6199950
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Turkey",
+        "Japan",
+        "United Kingdom",
+        "Canada",
+        "Australia",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Brazil",
+        "Mexico",
+        "Argentina",
+        "Chile",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Indonesia",
+        "Vietnam",
+        "India",
+        "South Africa"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "soybean_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "total_countries_in_ranking": 50,
+      "our_countries_found": 5,
+      "our_countries_missing": 33,
+      "coverage_percent": 13.157894736842104,
+      "found_details": [
+        {
+          "country": "United States",
+          "rank": 2,
+          "value": 116377000
+        },
+        {
+          "country": "China",
+          "rank": 4,
+          "value": 20280000
+        },
+        {
+          "country": "Brazil",
+          "rank": 1,
+          "value": 120701031
+        },
+        {
+          "country": "Argentina",
+          "rank": 3,
+          "value": 43861066
+        },
+        {
+          "country": "India",
+          "rank": 5,
+          "value": 12986720
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Turkey",
+        "Japan",
+        "United Kingdom",
+        "France",
+        "Italy",
+        "Canada",
+        "Australia",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Mexico",
+        "Chile",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Indonesia",
+        "Vietnam",
+        "South Africa"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "fruit_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAO)",
+      "year": 2020,
+      "total_countries_in_ranking": 195,
+      "our_countries_found": 5,
+      "our_countries_missing": 33,
+      "coverage_percent": 13.157894736842104,
+      "found_details": [
+        {
+          "country": "Turkey",
+          "rank": 4,
+          "value": 24153128
+        },
+        {
+          "country": "China",
+          "rank": 1,
+          "value": 242793824
+        },
+        {
+          "country": "Brazil",
+          "rank": 3,
+          "value": 39758842
+        },
+        {
+          "country": "Mexico",
+          "rank": 5,
+          "value": 23837562
+        },
+        {
+          "country": "India",
+          "rank": 2,
+          "value": 105971127
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "United States",
+        "Japan",
+        "United Kingdom",
+        "France",
+        "Italy",
+        "Canada",
+        "Australia",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Argentina",
+        "Chile",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Indonesia",
+        "Vietnam",
+        "South Africa"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "wheat_production",
+      "source": "FAOSTAT (Food and Agriculture Organization Corporate Statistical Database)",
+      "year": 2022,
+      "total_countries_in_ranking": 30,
+      "our_countries_found": 4,
+      "our_countries_missing": 34,
+      "coverage_percent": 10.526315789473683,
+      "found_details": [
+        {
+          "country": "United States",
+          "rank": 4,
+          "value": 44900000
+        },
+        {
+          "country": "China",
+          "rank": 1,
+          "value": 137700000
+        },
+        {
+          "country": "Australia",
+          "rank": 5,
+          "value": 36200000
+        },
+        {
+          "country": "India",
+          "rank": 2,
+          "value": 107700000
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Turkey",
+        "Japan",
+        "United Kingdom",
+        "France",
+        "Italy",
+        "Canada",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Brazil",
+        "Mexico",
+        "Argentina",
+        "Chile",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Indonesia",
+        "Vietnam",
+        "South Africa"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "rice_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "total_countries_in_ranking": 117,
+      "our_countries_found": 4,
+      "our_countries_missing": 34,
+      "coverage_percent": 10.526315789473683,
+      "found_details": [
+        {
+          "country": "China",
+          "rank": 2,
+          "value": 255245235
+        },
+        {
+          "country": "Indonesia",
+          "rank": 4,
+          "value": 54748977
+        },
+        {
+          "country": "Vietnam",
+          "rank": 5,
+          "value": 42672339
+        },
+        {
+          "country": "India",
+          "rank": 1,
+          "value": 265098885
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Turkey",
+        "United States",
+        "Japan",
+        "United Kingdom",
+        "France",
+        "Italy",
+        "Canada",
+        "Australia",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Brazil",
+        "Mexico",
+        "Argentina",
+        "Chile",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "South Africa"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "forest_area",
+      "source": "Food and Agriculture Organization (FAO)",
+      "year": 2022,
+      "total_countries_in_ranking": 200,
+      "our_countries_found": 4,
+      "our_countries_missing": 34,
+      "coverage_percent": 10.526315789473683,
+      "found_details": [
+        {
+          "country": "United States",
+          "rank": 4,
+          "value": "Unknown"
+        },
+        {
+          "country": "China",
+          "rank": 5,
+          "value": "Unknown"
+        },
+        {
+          "country": "Canada",
+          "rank": 3,
+          "value": "Unknown"
+        },
+        {
+          "country": "Brazil",
+          "rank": 2,
+          "value": "Unknown"
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Turkey",
+        "Japan",
+        "United Kingdom",
+        "France",
+        "Italy",
+        "Australia",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Mexico",
+        "Argentina",
+        "Chile",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Indonesia",
+        "Vietnam",
+        "India",
+        "South Africa"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "barley_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "total_countries_in_ranking": 101,
+      "our_countries_found": 4,
+      "our_countries_missing": 34,
+      "coverage_percent": 10.526315789473683,
+      "found_details": [
+        {
+          "country": "Germany",
+          "rank": 4,
+          "value": 11207100
+        },
+        {
+          "country": "France",
+          "rank": 3,
+          "value": 11285440
+        },
+        {
+          "country": "Canada",
+          "rank": 5,
+          "value": 9986681
+        },
+        {
+          "country": "Australia",
+          "rank": 2,
+          "value": 14377284
+        }
+      ],
+      "missing_countries": [
+        "Denmark",
+        "Austria",
+        "Turkey",
+        "United States",
+        "China",
+        "Japan",
+        "United Kingdom",
+        "Italy",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Brazil",
+        "Mexico",
+        "Argentina",
+        "Chile",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Indonesia",
+        "Vietnam",
+        "India",
+        "South Africa"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "tomato_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "total_countries_in_ranking": 168,
+      "our_countries_found": 4,
+      "our_countries_missing": 34,
+      "coverage_percent": 10.526315789473683,
+      "found_details": [
+        {
+          "country": "Turkey",
+          "rank": 3,
+          "value": 13000000
+        },
+        {
+          "country": "United States",
+          "rank": 4,
+          "value": 10199753
+        },
+        {
+          "country": "China",
+          "rank": 1,
+          "value": 68241811
+        },
+        {
+          "country": "India",
+          "rank": 2,
+          "value": 20694000
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Japan",
+        "United Kingdom",
+        "France",
+        "Italy",
+        "Canada",
+        "Australia",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Brazil",
+        "Mexico",
+        "Argentina",
+        "Chile",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Indonesia",
+        "Vietnam",
+        "South Africa"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "irrigated_land_area",
+      "source": "The World Factbook by Central Intelligence Agency (CIA)",
+      "year": 2020,
+      "total_countries_in_ranking": 200,
+      "our_countries_found": 4,
+      "our_countries_missing": 34,
+      "coverage_percent": 10.526315789473683,
+      "found_details": [
+        {
+          "country": "United States",
+          "rank": 3,
+          "value": 234782
+        },
+        {
+          "country": "China",
+          "rank": 2,
+          "value": 691600
+        },
+        {
+          "country": "Indonesia",
+          "rank": 5,
+          "value": 91360
+        },
+        {
+          "country": "India",
+          "rank": 1,
+          "value": 715539
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Turkey",
+        "Japan",
+        "United Kingdom",
+        "France",
+        "Italy",
+        "Canada",
+        "Australia",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Brazil",
+        "Mexico",
+        "Argentina",
+        "Chile",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Vietnam",
+        "South Africa"
+      ],
+      "suitable_for_dataset": false
+    },
+    {
+      "ranking_name": "potato_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "total_countries_in_ranking": 155,
+      "our_countries_found": 3,
+      "our_countries_missing": 35,
+      "coverage_percent": 7.894736842105263,
+      "found_details": [
+        {
+          "country": "United States",
+          "rank": 5,
+          "value": 17791840
+        },
+        {
+          "country": "China",
+          "rank": 1,
+          "value": 95570055
+        },
+        {
+          "country": "India",
+          "rank": 2,
+          "value": 56176000
+        }
+      ],
+      "missing_countries": [
+        "Germany",
+        "Denmark",
+        "Austria",
+        "Turkey",
+        "Japan",
+        "United Kingdom",
+        "France",
+        "Italy",
+        "Canada",
+        "Australia",
+        "Spain",
+        "Netherlands",
+        "Sweden",
+        "Norway",
+        "Finland",
+        "Iceland",
+        "Switzerland",
+        "Belgium",
+        "New Zealand",
+        "Singapore",
+        "Israel",
+        "Ireland",
+        "Brazil",
+        "Mexico",
+        "Argentina",
+        "Chile",
+        "Colombia",
+        "Poland",
+        "Czech Republic",
+        "Thailand",
+        "Malaysia",
+        "Philippines",
+        "Indonesia",
+        "Vietnam",
+        "South Africa"
+      ],
+      "suitable_for_dataset": false
+    }
+  ],
+  "recommended_for_dataset": [],
+  "our_countries_list": [
+    "Germany",
+    "Denmark",
+    "Austria",
+    "Turkey",
+    "United States",
+    "China",
+    "Japan",
+    "United Kingdom",
+    "France",
+    "Italy",
+    "Canada",
+    "Australia",
+    "Spain",
+    "Netherlands",
+    "Sweden",
+    "Norway",
+    "Finland",
+    "Iceland",
+    "Switzerland",
+    "Belgium",
+    "New Zealand",
+    "Singapore",
+    "Israel",
+    "Ireland",
+    "Brazil",
+    "Mexico",
+    "Argentina",
+    "Chile",
+    "Colombia",
+    "Poland",
+    "Czech Republic",
+    "Thailand",
+    "Malaysia",
+    "Philippines",
+    "Indonesia",
+    "Vietnam",
+    "India",
+    "South Africa"
+  ]
+}

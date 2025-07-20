@@ -1,0 +1,35 @@
+{
+  "test_date": "2025-07-18 23:08:55",
+  "sources_tested": [
+    "heritage_foundation",
+    "transparency_international",
+    "freedom_house",
+    "world_happiness"
+  ],
+  "results": {
+    "heritage_foundation": {
+      "working_endpoints": [],
+      "accessible": false
+    },
+    "transparency_international": {
+      "working_endpoints": [],
+      "accessible": false
+    },
+    "freedom_house": {
+      "working_endpoints": [],
+      "accessible": false
+    },
+    "world_happiness": {
+      "working_endpoints": [
+        "https://worldhappiness.report/ed/2024/",
+        "https://kaggle.com/datasets/unsdsn/world-happiness"
+      ],
+      "accessible": true
+    }
+  },
+  "accessible_count": 1,
+  "accessible_sources": [
+    "world_happiness"
+  ],
+  "next_steps": "Test specific data from working sources"
+}

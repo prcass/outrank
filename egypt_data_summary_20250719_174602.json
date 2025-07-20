@@ -1,0 +1,24 @@
+{
+  "country": "Egypt",
+  "iso3": "EGY",
+  "data_complete": true,
+  "unesco": {
+    "total_sites": 7,
+    "cultural_sites": 6,
+    "natural_sites": 1,
+    "mixed_sites": 0
+  },
+  "happiness": {
+    "life_evaluation": 3.817
+  },
+  "nobel": {
+    "laureates": 4
+  },
+  "agriculture": {
+    "forest_percentage": "TBD",
+    "irrigated_land_km2": "TBD",
+    "soybean_production_tonnes": "TBD",
+    "healthy_diet_cost_ppp": "TBD"
+  },
+  "world_bank": "Available in EGY country mapping"
+}

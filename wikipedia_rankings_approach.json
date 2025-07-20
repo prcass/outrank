@@ -1,0 +1,119 @@
+{
+  "source": "Wikipedia List of international rankings",
+  "url": "https://en.wikipedia.org/wiki/List_of_international_rankings",
+  "approach_date": "2025-07-19 13:36:24",
+  "total_categories": 23,
+  "extraction_steps": [
+    {
+      "step": 1,
+      "title": "Category Prioritization",
+      "tasks": [
+        "Select categories most relevant for ranking games",
+        "Avoid sensitive topics (terrorism, military)",
+        "Focus on interesting comparative metrics",
+        "Prioritize: Economic, Education, Health, Environment, Innovation"
+      ]
+    },
+    {
+      "step": 2,
+      "title": "Source Verification",
+      "tasks": [
+        "Each ranking links to its original source",
+        "Verify source credibility (UN, World Bank, reputable NGOs)",
+        "Check data recency (prefer 2020-2025 data)",
+        "Confirm data covers our 38 countries"
+      ]
+    },
+    {
+      "step": 3,
+      "title": "Coverage Analysis",
+      "tasks": [
+        "Visit each ranking's source page",
+        "Check if our 38 countries are included",
+        "Calculate exact coverage percentage",
+        "Only accept if coverage is 100% (or 95%+ if exceptional)"
+      ]
+    },
+    {
+      "step": 4,
+      "title": "Data Extraction Process",
+      "tasks": [
+        "Copy ranking tables from source websites",
+        "Convert to structured format (JSON/CSV)",
+        "Verify all 38 countries have data",
+        "Note the exact source URL and date"
+      ]
+    },
+    {
+      "step": 5,
+      "title": "Quality Control",
+      "tasks": [
+        "No assumptions - only verified data",
+        "Double-check country names match ours",
+        "Ensure no missing values",
+        "Document source attribution clearly"
+      ]
+    }
+  ],
+  "priority_rankings": [
+    {
+      "category": "Economic",
+      "rankings": [
+        "Global Competitiveness Index",
+        "Ease of Doing Business Index",
+        "Economic Freedom Index"
+      ]
+    },
+    {
+      "category": "Education",
+      "rankings": [
+        "PISA scores (reading, math, science)",
+        "Education Index",
+        "University rankings by country"
+      ]
+    },
+    {
+      "category": "Health",
+      "rankings": [
+        "Healthcare Quality Index",
+        "Health system performance",
+        "Obesity rates"
+      ]
+    },
+    {
+      "category": "Environment",
+      "rankings": [
+        "Environmental Performance Index",
+        "Climate Change Performance Index",
+        "Renewable energy usage"
+      ]
+    },
+    {
+      "category": "Innovation",
+      "rankings": [
+        "Global Innovation Index",
+        "Digital Competitiveness",
+        "Startup ecosystem rankings"
+      ]
+    },
+    {
+      "category": "Quality of Life",
+      "rankings": [
+        "Human Development Index",
+        "Social Progress Index",
+        "Quality of Life Index"
+      ]
+    }
+  ],
+  "quality_requirements": {
+    "coverage": "100% for all 38 countries",
+    "verification": "All data must be verified from original sources",
+    "recency": "Prefer data from 2020-2025",
+    "credibility": "Only reputable sources (UN, World Bank, established NGOs)"
+  },
+  "current_status": {
+    "existing_indicators": 29,
+    "target_additional": "10-20",
+    "final_target": "40-50 total indicators"
+  }
+}

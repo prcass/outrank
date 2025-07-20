@@ -1,0 +1,184 @@
+{
+  "test_date": "2025-07-18 23:05:30",
+  "api_source": "WHO Global Health Observatory",
+  "working_endpoints": [
+    "https://ghoapi.azureedge.net/api/",
+    "https://ghoapi.azureedge.net/api/DIMENSION/COUNTRY",
+    "https://ghoapi.azureedge.net/api/DIMENSION/GHO",
+    "https://ghoapi.azureedge.net/api/Indicator"
+  ],
+  "accessibility": true,
+  "country_coverage": {
+    "total_our_countries": 40,
+    "direct_matches": 0,
+    "close_matches": 0,
+    "missing": 40,
+    "coverage_percent": 0.0
+  },
+  "matches": [],
+  "close_matches": [],
+  "missing": [
+    [
+      "Germany",
+      "DEU"
+    ],
+    [
+      "Denmark",
+      "DNK"
+    ],
+    [
+      "Austria",
+      "AUT"
+    ],
+    [
+      "Luxembourg",
+      "LUX"
+    ],
+    [
+      "Turkey",
+      "TUR"
+    ],
+    [
+      "United States",
+      "USA"
+    ],
+    [
+      "China",
+      "CHN"
+    ],
+    [
+      "Japan",
+      "JPN"
+    ],
+    [
+      "United Kingdom",
+      "GBR"
+    ],
+    [
+      "France",
+      "FRA"
+    ],
+    [
+      "Italy",
+      "ITA"
+    ],
+    [
+      "Canada",
+      "CAN"
+    ],
+    [
+      "Australia",
+      "AUS"
+    ],
+    [
+      "Spain",
+      "ESP"
+    ],
+    [
+      "Netherlands",
+      "NLD"
+    ],
+    [
+      "Sweden",
+      "SWE"
+    ],
+    [
+      "Norway",
+      "NOR"
+    ],
+    [
+      "Finland",
+      "FIN"
+    ],
+    [
+      "Iceland",
+      "ISL"
+    ],
+    [
+      "Switzerland",
+      "CHE"
+    ],
+    [
+      "Belgium",
+      "BEL"
+    ],
+    [
+      "New Zealand",
+      "NZL"
+    ],
+    [
+      "Singapore",
+      "SGP"
+    ],
+    [
+      "Israel",
+      "ISR"
+    ],
+    [
+      "Ireland",
+      "IRL"
+    ],
+    [
+      "Brazil",
+      "BRA"
+    ],
+    [
+      "Mexico",
+      "MEX"
+    ],
+    [
+      "Argentina",
+      "ARG"
+    ],
+    [
+      "Chile",
+      "CHL"
+    ],
+    [
+      "Colombia",
+      "COL"
+    ],
+    [
+      "Poland",
+      "POL"
+    ],
+    [
+      "Czech Republic",
+      "CZE"
+    ],
+    [
+      "Thailand",
+      "THA"
+    ],
+    [
+      "Malaysia",
+      "MYS"
+    ],
+    [
+      "Philippines",
+      "PHL"
+    ],
+    [
+      "Indonesia",
+      "IDN"
+    ],
+    [
+      "Vietnam",
+      "VNM"
+    ],
+    [
+      "India",
+      "IND"
+    ],
+    [
+      "South Africa",
+      "ZAF"
+    ],
+    [
+      "Egypt",
+      "EGY"
+    ]
+  ],
+  "interesting_indicators_count": 0,
+  "top_10_indicators": []
+}

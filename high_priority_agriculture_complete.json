@@ -1,0 +1,134 @@
+{
+  "extraction_date": "2025-07-19 15:00:00",
+  "methodology": "Wikipedia curated sources extraction",
+  "total_rankings_extracted": 5,
+  "source": "Wikipedia following original sources",
+  
+  "rankings": {
+    "coffee_production": {
+      "ranking_name": "Coffee Production",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_coffee_production",
+      "source": "FAOSTAT (United Nations)",
+      "year": 2023,
+      "unit": "tonnes",
+      "total_world_production": 11064205,
+      "countries_data": {
+        "Brazil": {"rank": 1, "production": 3405267, "percentage": 30.8},
+        "Vietnam": {"rank": 2, "production": 1956782, "percentage": 17.7},
+        "Indonesia": {"rank": 3, "production": 760192, "percentage": 6.8},
+        "Colombia": {"rank": 4, "production": 680858},
+        "Ethiopia": {"rank": 5, "production": 559400},
+        "Honduras": {"rank": 6, "production": 384361},
+        "Uganda": {"rank": 7, "production": 384000},
+        "Peru": {"rank": 8, "production": 369551},
+        "India": {"rank": 9, "production": 332848},
+        "Central African Republic": {"rank": 10, "production": 316108}
+      },
+      "total_countries": 36,
+      "notes": "36 countries producing over 10,000 tonnes"
+    },
+    
+    "wine_production": {
+      "ranking_name": "Wine Production",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_wine-producing_countries",
+      "source": "Food and Agriculture Organization (FAO)",
+      "year": 2021,
+      "unit": "tonnes",
+      "total_world_production": 27000000,
+      "countries_data": {
+        "Italy": {"rank": 1, "production": 5088500},
+        "France": {"rank": 2, "production": 3713200},
+        "Spain": {"rank": 3, "production": 3700588},
+        "United States": {"rank": 4, "production": 2057021},
+        "China": {"rank": 5, "production": 1814400},
+        "Australia": {"rank": 6, "production": 1482000},
+        "Chile": {"rank": 7, "production": 1343729},
+        "Argentina": {"rank": 8, "production": 1248155},
+        "South Africa": {"rank": 9, "production": 1133300},
+        "Portugal": {"rank": 10, "production": 718547}
+      },
+      "total_countries": 69,
+      "notes": "Top 15 countries account for over 90% of total production"
+    },
+    
+    "wheat_production": {
+      "ranking_name": "Wheat Production",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/International_wheat_production_statistics",
+      "source": "FAOSTAT (Food and Agriculture Organization Corporate Statistical Database)",
+      "year": 2022,
+      "unit": "metric tonnes",
+      "total_world_production": 808400000,
+      "countries_data": {
+        "China": {"rank": 1, "production": 137700000},
+        "India": {"rank": 2, "production": 107700000},
+        "Russia": {"rank": 3, "production": 104200000},
+        "United States": {"rank": 4, "production": 44900000},
+        "Australia": {"rank": 5, "production": 36200000}
+      },
+      "total_countries": 30,
+      "notes": "Countries producing at least 2 million metric tonnes annually"
+    },
+    
+    "rice_production": {
+      "ranking_name": "Rice Production", 
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_rice_production",
+      "source": "Food and Agriculture Organization Corporate Statistical Database (FAOSTAT)",
+      "year": 2022,
+      "unit": "metric tonnes",
+      "total_world_production": 776461457,
+      "countries_data": {
+        "India": {"rank": 1, "production": 265098885},
+        "China": {"rank": 2, "production": 255245235},
+        "Bangladesh": {"rank": 3, "production": 57189193},
+        "Indonesia": {"rank": 4, "production": 54748977},
+        "Vietnam": {"rank": 5, "production": 42672339}
+      },
+      "total_countries": 117,
+      "notes": "Complete ranking from major producers to smallest (Comoros: 5 tonnes)"
+    },
+    
+    "forest_area": {
+      "ranking_name": "Forest Area",
+      "wikipedia_url": "https://en.wikipedia.org/wiki/List_of_countries_by_forest_area",
+      "source": "Food and Agriculture Organization (FAO)",
+      "year": 2022,
+      "unit": "hectares and percentage",
+      "total_world_forest": 4060000000,
+      "countries_data": {
+        "Russia": {"rank": 1, "percentage_of_global": 20.1},
+        "Brazil": {"rank": 2, "percentage_of_global": 12.2},
+        "Canada": {"rank": 3, "percentage_of_global": 8.6},
+        "United States": {"rank": 4, "percentage_of_global": 7.6},
+        "China": {"rank": 5, "percentage_of_global": 5.4}
+      },
+      "by_forest_percentage": {
+        "French Guiana": {"rank": 1, "forest_percentage": 96.6},
+        "Suriname": {"rank": 2, "forest_percentage": 94.5},
+        "Guyana": {"rank": 3, "forest_percentage": 93.5},
+        "Micronesia": {"rank": 4, "forest_percentage": 92.1},
+        "Gabon": {"rank": 5, "forest_percentage": 91.2}
+      },
+      "total_countries": 200,
+      "notes": "31% of total global land area, 200+ countries/territories included"
+    }
+  },
+  
+  "coverage_analysis": {
+    "methodology": "Check our 38 countries against extracted data",
+    "our_countries_file": "countries_38_final.json",
+    "rankings_to_analyze": [
+      "coffee_production", 
+      "wine_production", 
+      "wheat_production", 
+      "rice_production", 
+      "forest_area"
+    ]
+  },
+  
+  "next_steps": [
+    "Extract remaining 23 agriculture rankings from Wikipedia",
+    "Calculate coverage for our 38 countries for all rankings",
+    "Select rankings with 75%+ coverage for inclusion in dataset",
+    "Add high-coverage agriculture indicators to final dataset"
+  ]
+}

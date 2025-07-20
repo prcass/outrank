@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Outrank Print & Play - PDF Version</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: white;
+        }
+        
+        @media print {
+            .page-break {
+                page-break-before: always;
+            }
+            
+            .no-print {
+                display: none;
+            }
+            
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+        
+        .page {
+            width: 8.5in;
+            height: 11in;
+            padding: 0.5in;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+        }
+        
+        /* Page 1: Game Board */
+        .board-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .board-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .game-board {
+            width: 7in;
+            height: 8in;
+            border: 3px solid #2c3e50;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .score-area {
+            grid-column: 1;
+            grid-row: 1 / -1;
+            background: #fff;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .center-area {
+            grid-column: 2;
+            grid-row: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .token-area {
+            grid-column: 3;
+            grid-row: 1 / -1;
+            background: #fff;
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .area-title {
+            font-weight: bold;
+            font-size: 14px;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+        
+        .card-display {
+            background: #fff;
+            border: 2px solid #9b59b6;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .bidding-area {
+            background: #fff;
+            border: 2px solid #f39c12;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .blocking-area {
+            background: #fff;
+            border: 2px solid #27ae60;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        /* Page 2: Tokens and Cards */
+        .components-page {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .components-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .token-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        
+        .token-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .token {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            color: white;
+            text-align: center;
+            border: 2px solid #2c3e50;
+        }
+        
+        .token.country {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        
+        .token.movie {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .token.sports {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        
+        .token.company {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+        
+        .blocking-token {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: white;
+            border: 3px solid #2c3e50;
+        }
+        
+        .blocking-2 { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .blocking-4 { background: linear-gradient(135deg, #e67e22, #d35400); }
+        .blocking-6 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        
+        .blocking-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 8px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .card-samples {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .sample-card {
+            width: 2in;
+            height: 1.4in;
+            border: 2px solid #2c3e50;
+            border-radius: 8px;
+            padding: 10px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .card-category {
+            font-size: 10px;
+            font-weight: bold;
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+        
+        .card-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .card-code {
+            font-size: 10px;
+            color: #95a5a6;
+            text-align: right;
+        }
+        
+        .cutting-guides {
+            margin-top: 20px;
+            padding: 15px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #2c3e50;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+        }
+        
+        .print-button:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">Print PDF</button>
+    
+    <!-- Page 1: Game Board -->
+    <div class="page board-page">
+        <div class="board-title">OUTRANK GAME BOARD</div>
+        
+        <div class="game-board">
+            <div class="score-area">
+                <div class="area-title">CURRENT STANDINGS</div>
+                <div style="font-size: 12px; line-height: 1.5;">
+                    <div style="margin: 10px 0; padding: 5px; border: 1px solid #bdc3c7; border-radius: 3px;">
+                        Player 1: <strong>0 pts</strong>
+                    </div>
+                    <div style="margin: 10px 0; padding: 5px; border: 1px solid #bdc3c7; border-radius: 3px;">
+                        Player 2: <strong>0 pts</strong>
+                    </div>
+                    <div style="margin: 10px 0; padding: 5px; border: 1px solid #bdc3c7; border-radius: 3px;">
+                        Player 3: <strong>0 pts</strong>
+                    </div>
+                    <div style="margin: 10px 0; padding: 5px; border: 1px solid #bdc3c7; border-radius: 3px;">
+                        Player 4: <strong>0 pts</strong>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; font-size: 10px; color: #7f8c8d;">
+                    <div><strong>Round:</strong> 1</div>
+                    <div><strong>Cards Left:</strong> 160</div>
+                </div>
+            </div>
+            
+            <div class="center-area">
+                <div class="card-display">
+                    <div class="area-title">DRAWN CARDS</div>
+                    <div style="font-size: 14px; color: #7f8c8d; margin: 20px 0;">
+                        Cards for this round will appear here
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
+                        <div style="width: 60px; height: 40px; border: 1px dashed #bdc3c7; border-radius: 3px; margin: 0 auto;"></div>
+                        <div style="width: 60px; height: 40px; border: 1px dashed #bdc3c7; border-radius: 3px; margin: 0 auto;"></div>
+                        <div style="width: 60px; height: 40px; border: 1px dashed #bdc3c7; border-radius: 3px; margin: 0 auto;"></div>
+                        <div style="width: 60px; height: 40px; border: 1px dashed #bdc3c7; border-radius: 3px; margin: 0 auto;"></div>
+                    </div>
+                </div>
+                
+                <div class="bidding-area">
+                    <div class="area-title">BIDDING PHASE</div>
+                    <div style="font-size: 12px; margin: 10px 0;">
+                        Current High Bid: <strong>0 cards</strong>
+                    </div>
+                    <div style="font-size: 12px;">
+                        High Bidder: <strong>None</strong>
+                    </div>
+                </div>
+                
+                <div class="blocking-area">
+                    <div class="area-title">BLOCKING PHASE</div>
+                    <div style="font-size: 12px; margin: 10px 0;">
+                        Tokens Used: <strong>0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 5px; margin-top: 10px;">
+                        <div style="width: 20px; height: 20px; border: 1px dashed #bdc3c7; border-radius: 50%;"></div>
+                        <div style="width: 20px; height: 20px; border: 1px dashed #bdc3c7; border-radius: 50%;"></div>
+                        <div style="width: 20px; height: 20px; border: 1px dashed #bdc3c7; border-radius: 50%;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="token-area">
+                <div class="area-title">BLOCKING TOKENS</div>
+                <div style="font-size: 10px; margin-bottom: 15px; color: #7f8c8d;">
+                    Each player starts with:
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <div class="blocking-token blocking-2" style="width: 30px; height: 30px; font-size: 12px;">2</div>
+                        <span style="font-size: 10px;">2-point</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <div class="blocking-token blocking-4" style="width: 30px; height: 30px; font-size: 12px;">4</div>
+                        <span style="font-size: 10px;">4-point</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <div class="blocking-token blocking-6" style="width: 30px; height: 30px; font-size: 12px;">6</div>
+                        <span style="font-size: 10px;">6-point</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; font-size: 9px; color: #7f8c8d; text-align: center;">
+                    Use tokens to block opponent's cards. Earn points + own the card if they fail.
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center; font-size: 12px; color: #7f8c8d;">
+            Outrank: The Ultimate Ranking Game • 2-6 Players • Ages 12+
+        </div>
+    </div>
+    
+    <!-- Page 2: Tokens and Cards -->
+    <div class="page components-page page-break">
+        <div class="components-title">OUTRANK GAME COMPONENTS</div>
+        
+        <div class="token-section">
+            <div class="section-title">Sample Game Tokens (Cut along edges)</div>
+            <div class="token-grid">
+                <!-- Country tokens -->
+                <div class="token country">
+                    <div>USA</div>
+                    <div style="font-size: 8px;">001</div>
+                </div>
+                <div class="token country">
+                    <div>CHN</div>
+                    <div style="font-size: 8px;">002</div>
+                </div>
+                <div class="token country">
+                    <div>JPN</div>
+                    <div style="font-size: 8px;">003</div>
+                </div>
+                <div class="token country">
+                    <div>DEU</div>
+                    <div style="font-size: 8px;">004</div>
+                </div>
+                <div class="token country">
+                    <div>GBR</div>
+                    <div style="font-size: 8px;">005</div>
+                </div>
+                <div class="token country">
+                    <div>FRA</div>
+                    <div style="font-size: 8px;">006</div>
+                </div>
+                
+                <!-- Movie tokens -->
+                <div class="token movie">
+                    <div>AVT</div>
+                    <div style="font-size: 8px;">001</div>
+                </div>
+                <div class="token movie">
+                    <div>END</div>
+                    <div style="font-size: 8px;">002</div>
+                </div>
+                <div class="token movie">
+                    <div>TIT</div>
+                    <div style="font-size: 8px;">003</div>
+                </div>
+                <div class="token movie">
+                    <div>SW7</div>
+                    <div style="font-size: 8px;">004</div>
+                </div>
+                <div class="token movie">
+                    <div>INF</div>
+                    <div style="font-size: 8px;">005</div>
+                </div>
+                <div class="token movie">
+                    <div>SPD</div>
+                    <div style="font-size: 8px;">006</div>
+                </div>
+                
+                <!-- Sports tokens -->
+                <div class="token sports">
+                    <div>MIL</div>
+                    <div style="font-size: 8px;">001</div>
+                </div>
+                <div class="token sports">
+                    <div>ARS</div>
+                    <div style="font-size: 8px;">002</div>
+                </div>
+                <div class="token sports">
+                    <div>ATL</div>
+                    <div style="font-size: 8px;">003</div>
+                </div>
+                <div class="token sports">
+                    <div>BAY</div>
+                    <div style="font-size: 8px;">004</div>
+                </div>
+                <div class="token sports">
+                    <div>CEL</div>
+                    <div style="font-size: 8px;">005</div>
+                </div>
+                <div class="token sports">
+                    <div>BUL</div>
+                    <div style="font-size: 8px;">006</div>
+                </div>
+                
+                <!-- Company tokens -->
+                <div class="token company">
+                    <div>APL</div>
+                    <div style="font-size: 8px;">001</div>
+                </div>
+                <div class="token company">
+                    <div>SAR</div>
+                    <div style="font-size: 8px;">002</div>
+                </div>
+                <div class="token company">
+                    <div>MSF</div>
+                    <div style="font-size: 8px;">003</div>
+                </div>
+                <div class="token company">
+                    <div>GOO</div>
+                    <div style="font-size: 8px;">004</div>
+                </div>
+                <div class="token company">
+                    <div>AMZ</div>
+                    <div style="font-size: 8px;">005</div>
+                </div>
+                <div class="token company">
+                    <div>TES</div>
+                    <div style="font-size: 8px;">006</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="token-section">
+            <div class="section-title">Blocking Tokens (3 per player)</div>
+            <div class="blocking-grid">
+                <!-- 2-point tokens (3 per player x 6 players = 18) -->
+                <div class="blocking-token blocking-2">2</div>
+                <div class="blocking-token blocking-2">2</div>
+                <div class="blocking-token blocking-2">2</div>
+                <div class="blocking-token blocking-2">2</div>
+                <div class="blocking-token blocking-2">2</div>
+                <div class="blocking-token blocking-2">2</div>
+                <div class="blocking-token blocking-2">2</div>
+                <div class="blocking-token blocking-2">2</div>
+                <div class="blocking-token blocking-2">2</div>
+                
+                <!-- 4-point tokens -->
+                <div class="blocking-token blocking-4">4</div>
+                <div class="blocking-token blocking-4">4</div>
+                <div class="blocking-token blocking-4">4</div>
+                <div class="blocking-token blocking-4">4</div>
+                <div class="blocking-token blocking-4">4</div>
+                <div class="blocking-token blocking-4">4</div>
+                <div class="blocking-token blocking-4">4</div>
+                <div class="blocking-token blocking-4">4</div>
+                <div class="blocking-token blocking-4">4</div>
+                
+                <!-- 6-point tokens -->
+                <div class="blocking-token blocking-6">6</div>
+                <div class="blocking-token blocking-6">6</div>
+                <div class="blocking-token blocking-6">6</div>
+                <div class="blocking-token blocking-6">6</div>
+                <div class="blocking-token blocking-6">6</div>
+                <div class="blocking-token blocking-6">6</div>
+                <div class="blocking-token blocking-6">6</div>
+                <div class="blocking-token blocking-6">6</div>
+                <div class="blocking-token blocking-6">6</div>
+            </div>
+        </div>
+        
+        <div class="token-section">
+            <div class="section-title">Sample Ranking Cards</div>
+            <div class="card-samples">
+                <div class="sample-card">
+                    <div class="card-category">Countries</div>
+                    <div class="card-name">Rank by GDP per capita</div>
+                    <div class="card-code">ECN-001</div>
+                </div>
+                <div class="sample-card">
+                    <div class="card-category">Movies</div>
+                    <div class="card-name">Rank by box office gross</div>
+                    <div class="card-code">MOV-001</div>
+                </div>
+                <div class="sample-card">
+                    <div class="card-category">Sports Teams</div>
+                    <div class="card-name">Rank by team value</div>
+                    <div class="card-code">SPT-001</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cutting-guides">
+            <strong>Cutting Instructions:</strong>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>Cut tokens along circular edges - make clean circles</li>
+                <li>Cut blocking tokens along circular edges</li>
+                <li>Cards can be cut along rectangular borders</li>
+                <li>Use a craft knife for cleaner edges</li>
+                <li>Consider laminating for durability</li>
+            </ul>
+            
+            <div style="margin-top: 15px;">
+                <strong>Full Game Includes:</strong> 160 game tokens (40 each category) • 27 blocking tokens • 132 ranking challenge cards
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-print functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // You can uncomment this to auto-print when page loads
+            // setTimeout(() => window.print(), 1000);
+        });
+    </script>
+</body>
+</html>

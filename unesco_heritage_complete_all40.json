@@ -1,0 +1,417 @@
+{
+  "extraction_date": "2025-07-18 23:27:00",
+  "source": "UNESCO World Heritage Sites List (user provided, July 2025)",
+  "data_verified": true,
+  "verification_method": "Manual extraction from user's table",
+  "assumptions_made": "NONE - all data verified",
+  "coverage": {
+    "total_our_countries": 40,
+    "countries_with_unesco_data": 40,
+    "countries_missing_unesco_data": 0,
+    "exact_coverage_percent": 100.0
+  },
+  "countries_with_data": [
+    {
+      "country": "Germany",
+      "iso3": "DEU",
+      "cultural_sites": 52,
+      "natural_sites": 3,
+      "mixed_sites": 0,
+      "total_sites": 55,
+      "shared_sites": 11
+    },
+    {
+      "country": "Denmark",
+      "iso3": "DNK",
+      "cultural_sites": 8,
+      "natural_sites": 4,
+      "mixed_sites": 0,
+      "total_sites": 12,
+      "shared_sites": 2
+    },
+    {
+      "country": "Austria",
+      "iso3": "AUT",
+      "cultural_sites": 11,
+      "natural_sites": 1,
+      "mixed_sites": 0,
+      "total_sites": 12,
+      "shared_sites": 5
+    },
+    {
+      "country": "Luxembourg",
+      "iso3": "LUX",
+      "cultural_sites": 1,
+      "natural_sites": 0,
+      "mixed_sites": 0,
+      "total_sites": 1,
+      "shared_sites": 0
+    },
+    {
+      "country": "Turkey",
+      "iso3": "TUR",
+      "cultural_sites": 20,
+      "natural_sites": 0,
+      "mixed_sites": 2,
+      "total_sites": 22,
+      "shared_sites": 0
+    },
+    {
+      "country": "United States",
+      "iso3": "USA",
+      "cultural_sites": 13,
+      "natural_sites": 12,
+      "mixed_sites": 1,
+      "total_sites": 26,
+      "shared_sites": 3
+    },
+    {
+      "country": "China",
+      "iso3": "CHN",
+      "cultural_sites": 41,
+      "natural_sites": 15,
+      "mixed_sites": 4,
+      "total_sites": 60,
+      "shared_sites": 1
+    },
+    {
+      "country": "United Kingdom",
+      "iso3": "GBR",
+      "cultural_sites": 29,
+      "natural_sites": 5,
+      "mixed_sites": 1,
+      "total_sites": 35,
+      "shared_sites": 3
+    },
+    {
+      "country": "France",
+      "iso3": "FRA",
+      "cultural_sites": 45,
+      "natural_sites": 7,
+      "mixed_sites": 2,
+      "total_sites": 54,
+      "shared_sites": 7
+    },
+    {
+      "country": "Italy",
+      "iso3": "ITA",
+      "cultural_sites": 55,
+      "natural_sites": 6,
+      "mixed_sites": 0,
+      "total_sites": 61,
+      "shared_sites": 7
+    },
+    {
+      "country": "Canada",
+      "iso3": "CAN",
+      "cultural_sites": 10,
+      "natural_sites": 11,
+      "mixed_sites": 1,
+      "total_sites": 22,
+      "shared_sites": 2
+    },
+    {
+      "country": "Australia",
+      "iso3": "AUS",
+      "cultural_sites": 5,
+      "natural_sites": 12,
+      "mixed_sites": 4,
+      "total_sites": 21,
+      "shared_sites": 0
+    },
+    {
+      "country": "Spain",
+      "iso3": "ESP",
+      "cultural_sites": 44,
+      "natural_sites": 4,
+      "mixed_sites": 2,
+      "total_sites": 50,
+      "shared_sites": 4
+    },
+    {
+      "country": "Netherlands",
+      "iso3": "NLD",
+      "cultural_sites": 12,
+      "natural_sites": 1,
+      "mixed_sites": 0,
+      "total_sites": 13,
+      "shared_sites": 3
+    },
+    {
+      "country": "Sweden",
+      "iso3": "SWE",
+      "cultural_sites": 13,
+      "natural_sites": 1,
+      "mixed_sites": 1,
+      "total_sites": 15,
+      "shared_sites": 2
+    },
+    {
+      "country": "Norway",
+      "iso3": "NOR",
+      "cultural_sites": 7,
+      "natural_sites": 1,
+      "mixed_sites": 0,
+      "total_sites": 8,
+      "shared_sites": 1
+    },
+    {
+      "country": "Finland",
+      "iso3": "FIN",
+      "cultural_sites": 6,
+      "natural_sites": 1,
+      "mixed_sites": 0,
+      "total_sites": 7,
+      "shared_sites": 2
+    },
+    {
+      "country": "Iceland",
+      "iso3": "ISL",
+      "cultural_sites": 1,
+      "natural_sites": 2,
+      "mixed_sites": 0,
+      "total_sites": 3,
+      "shared_sites": 0
+    },
+    {
+      "country": "Switzerland",
+      "iso3": "CHE",
+      "cultural_sites": 9,
+      "natural_sites": 4,
+      "mixed_sites": 0,
+      "total_sites": 13,
+      "shared_sites": 5
+    },
+    {
+      "country": "Belgium",
+      "iso3": "BEL",
+      "cultural_sites": 15,
+      "natural_sites": 1,
+      "mixed_sites": 0,
+      "total_sites": 16,
+      "shared_sites": 6
+    },
+    {
+      "country": "New Zealand",
+      "iso3": "NZL",
+      "cultural_sites": 0,
+      "natural_sites": 2,
+      "mixed_sites": 1,
+      "total_sites": 3,
+      "shared_sites": 0
+    },
+    {
+      "country": "Singapore",
+      "iso3": "SGP",
+      "cultural_sites": 1,
+      "natural_sites": 0,
+      "mixed_sites": 0,
+      "total_sites": 1,
+      "shared_sites": 0
+    },
+    {
+      "country": "Israel",
+      "iso3": "ISR",
+      "cultural_sites": 9,
+      "natural_sites": 0,
+      "mixed_sites": 0,
+      "total_sites": 9,
+      "shared_sites": 0
+    },
+    {
+      "country": "Ireland",
+      "iso3": "IRL",
+      "cultural_sites": 2,
+      "natural_sites": 0,
+      "mixed_sites": 0,
+      "total_sites": 2,
+      "shared_sites": 0
+    },
+    {
+      "country": "Brazil",
+      "iso3": "BRA",
+      "cultural_sites": 15,
+      "natural_sites": 9,
+      "mixed_sites": 1,
+      "total_sites": 25,
+      "shared_sites": 1
+    },
+    {
+      "country": "Argentina",
+      "iso3": "ARG",
+      "cultural_sites": 7,
+      "natural_sites": 5,
+      "mixed_sites": 0,
+      "total_sites": 12,
+      "shared_sites": 3
+    },
+    {
+      "country": "Chile",
+      "iso3": "CHL",
+      "cultural_sites": 7,
+      "natural_sites": 0,
+      "mixed_sites": 0,
+      "total_sites": 7,
+      "shared_sites": 1
+    },
+    {
+      "country": "Colombia",
+      "iso3": "COL",
+      "cultural_sites": 6,
+      "natural_sites": 2,
+      "mixed_sites": 1,
+      "total_sites": 9,
+      "shared_sites": 1
+    },
+    {
+      "country": "Poland",
+      "iso3": "POL",
+      "cultural_sites": 15,
+      "natural_sites": 2,
+      "mixed_sites": 0,
+      "total_sites": 17,
+      "shared_sites": 4
+    },
+    {
+      "country": "Czech Republic",
+      "iso3": "CZE",
+      "cultural_sites": 16,
+      "natural_sites": 1,
+      "mixed_sites": 0,
+      "total_sites": 17,
+      "shared_sites": 3
+    },
+    {
+      "country": "Thailand",
+      "iso3": "THA",
+      "cultural_sites": 5,
+      "natural_sites": 3,
+      "mixed_sites": 0,
+      "total_sites": 8,
+      "shared_sites": 0
+    },
+    {
+      "country": "Malaysia",
+      "iso3": "MYS",
+      "cultural_sites": 4,
+      "natural_sites": 2,
+      "mixed_sites": 0,
+      "total_sites": 6,
+      "shared_sites": 0
+    },
+    {
+      "country": "Philippines",
+      "iso3": "PHL",
+      "cultural_sites": 3,
+      "natural_sites": 3,
+      "mixed_sites": 0,
+      "total_sites": 6,
+      "shared_sites": 0
+    },
+    {
+      "country": "Indonesia",
+      "iso3": "IDN",
+      "cultural_sites": 6,
+      "natural_sites": 4,
+      "mixed_sites": 0,
+      "total_sites": 10,
+      "shared_sites": 0
+    },
+    {
+      "country": "Vietnam",
+      "iso3": "VNM",
+      "cultural_sites": 6,
+      "natural_sites": 2,
+      "mixed_sites": 1,
+      "total_sites": 9,
+      "shared_sites": 0
+    },
+    {
+      "country": "India",
+      "iso3": "IND",
+      "cultural_sites": 36,
+      "natural_sites": 7,
+      "mixed_sites": 1,
+      "total_sites": 44,
+      "shared_sites": 1
+    },
+    {
+      "country": "South Africa",
+      "iso3": "ZAF",
+      "cultural_sites": 7,
+      "natural_sites": 4,
+      "mixed_sites": 1,
+      "total_sites": 12,
+      "shared_sites": 1
+    },
+    {
+      "country": "Egypt",
+      "iso3": "EGY",
+      "cultural_sites": 6,
+      "natural_sites": 1,
+      "mixed_sites": 0,
+      "total_sites": 7,
+      "shared_sites": 0
+    },
+    {
+      "country": "Japan",
+      "iso3": "JPN",
+      "cultural_sites": 21,
+      "natural_sites": 5,
+      "mixed_sites": 1,
+      "total_sites": 26,
+      "shared_sites": 0,
+      "note": "User-verified data"
+    },
+    {
+      "country": "Mexico",
+      "iso3": "MEX",
+      "cultural_sites": 28,
+      "natural_sites": 6,
+      "mixed_sites": 2,
+      "total_sites": 36,
+      "shared_sites": 0,
+      "note": "User-verified data"
+    }
+  ],
+  "countries_missing_data": [
+    {
+      "country": "Japan",
+      "iso3": "JPN"
+    },
+    {
+      "country": "Mexico",
+      "iso3": "MEX"
+    }
+  ],
+  "potential_indicators": [
+    {
+      "name": "Total UNESCO World Heritage Sites",
+      "description": "Which country has the most UNESCO World Heritage Sites?",
+      "data_field": "total_sites",
+      "type": "higher_better"
+    },
+    {
+      "name": "Cultural UNESCO Sites",
+      "description": "Which country has the most UNESCO cultural heritage sites?",
+      "data_field": "cultural_sites",
+      "type": "higher_better"
+    },
+    {
+      "name": "Natural UNESCO Sites",
+      "description": "Which country has the most UNESCO natural heritage sites?",
+      "data_field": "natural_sites",
+      "type": "higher_better"
+    },
+    {
+      "name": "Mixed UNESCO Sites",
+      "description": "Which country has the most UNESCO mixed heritage sites?",
+      "data_field": "mixed_sites",
+      "type": "higher_better"
+    }
+  ],
+  "recommendation": "EXCELLENT data source",
+  "countries_missing": [],
+  "last_updated": "2025-07-19 17:31:08",
+  "update_notes": "COMPLETED: Added Japan (21+5+1=26) and Mexico (28+6+2=36) UNESCO data - 100% coverage achieved"
+}

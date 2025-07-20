@@ -1,0 +1,1327 @@
+{
+  "selection_date": "2025-07-18",
+  "methodology": "Hand-curated from 962 actual World Bank comparative indicators",
+  "total_game_worthy": 54,
+  "best_50_indicators": [
+    {
+      "id": "SP.DYN.CBRT.IN",
+      "name": "Birth rate, crude (per 1,000 people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Crude birth rate indicates the number of live births occurring during the year, per 1,000 population estimated at midyear. Subtracting the crude death rate from the crude birth rate provides the rate ",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: birth rate?"
+    },
+    {
+      "id": "SP.DYN.CDRT.IN",
+      "name": "Death rate, crude (per 1,000 people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Crude death rate indicates the number of deaths occurring during the year, per 1,000 population estimated at midyear. Subtracting the crude death rate from the crude birth rate provides the rate of na",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: death rate?"
+    },
+    {
+      "id": "SP.DYN.TFRT.IN",
+      "name": "Fertility rate, total (births per woman)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Total fertility rate represents the number of children that would be born to a woman if she were to live to the end of her childbearing years and bear children in accordance with age-specific fertilit",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: fertility rate?"
+    },
+    {
+      "id": "SP.DYN.LE00.IN",
+      "name": "Life expectancy at birth, total (years)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Life expectancy at birth indicates the number of years a newborn infant would live if prevailing patterns of mortality at the time of its birth were to stay the same throughout its life.",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country has the highest life expectancy?"
+    },
+    {
+      "id": "SP.POP.0014.TO.ZS",
+      "name": "Population ages 0-14 (% of total population)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Population between the ages 0 to 14 as a percentage of the total population. Population is based on the de facto definition of population.",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: population ages 0-14?"
+    },
+    {
+      "id": "SP.POP.1564.TO.ZS",
+      "name": "Population ages 15-64 (% of total population)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Total population between the ages 15 to 64 as a percentage of the total population. Population is based on the de facto definition of population, which counts all residents regardless of legal status ",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: population ages 15-64?"
+    },
+    {
+      "id": "SP.POP.65UP.TO.ZS",
+      "name": "Population ages 65 and above (% of total population)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Population ages 65 and above as a percentage of the total population. Population is based on the de facto definition of population, which counts all residents regardless of legal status or citizenship",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: population ages 65 and above?"
+    },
+    {
+      "id": "SP.POP.TOTL",
+      "name": "Population, total",
+      "source": "World Development Indicators",
+      "topics": [
+        "Climate Change",
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Total population is based on the de facto definition of population, which counts all residents regardless of legal status or citizenship. The values shown are midyear estimates.",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country has the most people?"
+    },
+    {
+      "id": "SP.RUR.TOTL.ZS",
+      "name": "Rural population (% of total population)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Agriculture & Rural Development  "
+      ],
+      "unit": "",
+      "sourceNote": "Rural population refers to people living in rural areas as defined by national statistical offices. It is calculated as the difference between total population and urban population.",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: rural population?"
+    },
+    {
+      "id": "SP.URB.TOTL.IN.ZS",
+      "name": "Urban population (% of total population)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Climate Change",
+        "Urban Development "
+      ],
+      "unit": "",
+      "sourceNote": "Urban population refers to people living in urban areas as defined by national statistical offices. The data are collected and smoothed by United Nations Population Division.",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: urban population?"
+    },
+    {
+      "id": "NY.GDP.MKTP.CD",
+      "name": "GDP (current US$)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Economy & Growth"
+      ],
+      "unit": "",
+      "sourceNote": "Gross domestic product is the total income earned through the production of goods and services in an economic territory during an accounting period. It can be measured in three different ways: using e",
+      "game_category": "economy",
+      "suggested_challenge": "Which country ranks highest in: gdp (current us$)?"
+    },
+    {
+      "id": "NY.GDP.MKTP.KD.ZG",
+      "name": "GDP growth (annual %)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Economy & Growth"
+      ],
+      "unit": "",
+      "sourceNote": "Gross domestic product is the total income earned through the production of goods and services in an economic territory during an accounting period. It can be measured in three different ways: using e",
+      "game_category": "economy",
+      "suggested_challenge": "Which country ranks highest in: gdp growth?"
+    },
+    {
+      "id": "NY.GDP.PCAP.CD",
+      "name": "GDP per capita (current US$)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Economy & Growth"
+      ],
+      "unit": "",
+      "sourceNote": "Gross domestic product is the total income earned through the production of goods and services in an economic territory during an accounting period. It can be measured in three different ways: using e",
+      "game_category": "economy",
+      "suggested_challenge": "Which country has the highest GDP per person?"
+    },
+    {
+      "id": "NY.GNP.PCAP.CD",
+      "name": "GNI per capita, Atlas method (current US$)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Economy & Growth"
+      ],
+      "unit": "",
+      "sourceNote": "Gross national income is the total income earned by all residents within an economic territory during an accounting period. It is equal to gross domestic product plus earned income receivable from abr",
+      "game_category": "economy",
+      "suggested_challenge": "Which country ranks highest in: gni per capita?"
+    },
+    {
+      "id": "FP.CPI.TOTL.ZG",
+      "name": "Inflation, consumer prices (annual %)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Economy & Growth",
+        "Financial Sector "
+      ],
+      "unit": "",
+      "sourceNote": "Inflation as measured by the consumer price index reflects the annual percentage change in the cost to the average consumer of acquiring a basket of goods and services that may be fixed or changed at ",
+      "game_category": "economy",
+      "suggested_challenge": "Which country ranks highest in: inflation?"
+    },
+    {
+      "id": "SL.UEM.TOTL.ZS",
+      "name": "Unemployment, total (% of total labor force) (modeled ILO estimate)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Social Protection & Labor"
+      ],
+      "unit": "",
+      "sourceNote": "Unemployment refers to the share of the labor force that is without work but available for and seeking employment.",
+      "game_category": "economy",
+      "suggested_challenge": "Which country has the highest unemployment rate?"
+    },
+    {
+      "id": "SE.ADT.LITR.ZS",
+      "name": "Literacy rate, adult total (% of people ages 15 and above)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education "
+      ],
+      "unit": "",
+      "sourceNote": "Adult literacy rate is the percentage of people ages 15 and above who can both read and write with understanding a short simple statement about their everyday life.",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: literacy rate?"
+    },
+    {
+      "id": "SE.PRM.NENR",
+      "name": "School enrollment, primary (% net)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education "
+      ],
+      "unit": "",
+      "sourceNote": "Net enrollment rate is the ratio of children of official school age who are enrolled in school to the population of the corresponding official school age. Primary education provides children with basi",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: school enrollment, primary?"
+    },
+    {
+      "id": "SE.PRM.NENR.FE",
+      "name": "School enrollment, primary, female (% net)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Net enrollment rate is the ratio of children of official school age who are enrolled in school to the population of the corresponding official school age. Primary education provides children with basi",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: school enrollment, primary?"
+    },
+    {
+      "id": "SE.PRM.NENR.MA",
+      "name": "School enrollment, primary, male (% net)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Net enrollment rate is the ratio of children of official school age who are enrolled in school to the population of the corresponding official school age. Primary education provides children with basi",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: school enrollment, primary?"
+    },
+    {
+      "id": "SE.SEC.NENR",
+      "name": "School enrollment, secondary (% net)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education "
+      ],
+      "unit": "",
+      "sourceNote": "Net enrollment rate is the ratio of children of official school age who are enrolled in school to the population of the corresponding official school age. Secondary education completes the provision o",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: school enrollment, secondary?"
+    },
+    {
+      "id": "SE.SEC.NENR.FE",
+      "name": "School enrollment, secondary, female (% net)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Net enrollment rate is the ratio of children of official school age who are enrolled in school to the population of the corresponding official school age. Secondary education completes the provision o",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: school enrollment, secondary?"
+    },
+    {
+      "id": "SE.SEC.NENR.MA",
+      "name": "School enrollment, secondary, male (% net)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Net enrollment rate is the ratio of children of official school age who are enrolled in school to the population of the corresponding official school age. Secondary education completes the provision o",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: school enrollment, secondary?"
+    },
+    {
+      "id": "SE.TER.ENRR",
+      "name": "School enrollment, tertiary (% gross)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education "
+      ],
+      "unit": "",
+      "sourceNote": "Gross enrollment ratio is the ratio of total enrollment, regardless of age, to the population of the age group that officially corresponds to the level of education shown. Tertiary education, whether ",
+      "game_category": "education",
+      "suggested_challenge": "Which country has the highest university enrollment?"
+    },
+    {
+      "id": "SE.TER.ENRR.FE",
+      "name": "School enrollment, tertiary, female (% gross)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Gross enrollment ratio is the ratio of total enrollment, regardless of age, to the population of the age group that officially corresponds to the level of education shown. Tertiary education, whether ",
+      "game_category": "education",
+      "suggested_challenge": "Which country has the highest university enrollment?"
+    },
+    {
+      "id": "SE.TER.ENRR.MA",
+      "name": "School enrollment, tertiary, male (% gross)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Gross enrollment ratio is the ratio of total enrollment, regardless of age, to the population of the age group that officially corresponds to the level of education shown. Tertiary education, whether ",
+      "game_category": "education",
+      "suggested_challenge": "Which country has the highest university enrollment?"
+    },
+    {
+      "id": "EG.ELC.COAL.ZS",
+      "name": "Electricity production from coal sources (% of total)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Energy & Mining ",
+        "Climate Change",
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The share of electricity production from coal sources of total electricity production. Sources of electricity refer to the inputs used to generate electricity. Coal refers to all coal and brown coal, ",
+      "game_category": "environment",
+      "suggested_challenge": "Which country ranks highest in: electricity production from coal sources?"
+    },
+    {
+      "id": "EG.ELC.HYRO.ZS",
+      "name": "Electricity production from hydroelectric sources (% of total)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Energy & Mining ",
+        "Climate Change",
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The share of electricity production from hydroelectric sources of total electricity production. Sources of electricity refer to the inputs used to generate electricity. Hydropower refers to electricit",
+      "game_category": "environment",
+      "suggested_challenge": "Which country ranks highest in: electricity production from hydroelectric sources?"
+    },
+    {
+      "id": "EG.ELC.NGAS.ZS",
+      "name": "Electricity production from natural gas sources (% of total)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Energy & Mining ",
+        "Climate Change",
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The share of electricity production from natural gas sources of total electricity production. Sources of electricity refer to the inputs used to generate electricity. Gas refers to natural gas but exc",
+      "game_category": "environment",
+      "suggested_challenge": "Which country ranks highest in: electricity production from natural gas sources?"
+    },
+    {
+      "id": "EG.ELC.NUCL.ZS",
+      "name": "Electricity production from nuclear sources (% of total)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Energy & Mining ",
+        "Climate Change",
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The share of electricity production from nuclear sources of total electricity production. Sources of electricity refer to the inputs used to generate electricity. Nuclear power refers to electricity p",
+      "game_category": "environment",
+      "suggested_challenge": "Which country ranks highest in: electricity production from nuclear sources?"
+    },
+    {
+      "id": "EG.ELC.PETR.ZS",
+      "name": "Electricity production from oil sources (% of total)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Energy & Mining ",
+        "Climate Change",
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The share of electricity production from oil sources of total electricity production. Sources of electricity refer to the inputs used to generate electricity. Oil refers to crude oil and petroleum pro",
+      "game_category": "environment",
+      "suggested_challenge": "Which country ranks highest in: electricity production from oil sources?"
+    },
+    {
+      "id": "AG.LND.FRST.ZS",
+      "name": "Forest area (% of land area)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Agriculture & Rural Development  ",
+        "Climate Change",
+        "Environment "
+      ],
+      "unit": "",
+      "sourceNote": "Forest area (% of land area) is the share of total land area that is under natural or planted stands of trees of at least 5 meters in situ, whether productive or not, and excludes tree stands in agric",
+      "game_category": "environment",
+      "suggested_challenge": "Which country has the most forest coverage?"
+    },
+    {
+      "id": "EG.FEC.RNEW.ZS",
+      "name": "Renewable energy consumption (% of total final energy consumption)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Energy & Mining ",
+        "Climate Change",
+        "Environment "
+      ],
+      "unit": "",
+      "sourceNote": "Renewable energy consumption is the share of renewables energy in total final energy consumption.",
+      "game_category": "environment",
+      "suggested_challenge": "Which country ranks highest in: renewable energy consumption?"
+    },
+    {
+      "id": "SH.XPD.CHEX.GD.ZS",
+      "name": "Current health expenditure (% of GDP)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Level of current health expenditure expressed as a percentage of GDP.  Estimates of current health expenditures include healthcare goods and services consumed during each year. This indicator does not",
+      "game_category": "health",
+      "suggested_challenge": "Which country spends the most on healthcare?"
+    },
+    {
+      "id": "SH.MED.BEDS.ZS",
+      "name": "Hospital beds (per 1,000 people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Hospital beds include inpatient beds available in public, private, general, and specialized hospitals and rehabilitation centers. In most cases beds for both acute and chronic care are included.",
+      "game_category": "health",
+      "suggested_challenge": "Which country ranks highest in: hospital beds?"
+    },
+    {
+      "id": "SH.DYN.MORT",
+      "name": "Mortality rate, under-5 (per 1,000 live births)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health ",
+        "Aid Effectiveness ",
+        "Climate Change"
+      ],
+      "unit": "",
+      "sourceNote": "Under-five mortality rate is the probability per 1,000 that a newborn baby will die before reaching age five, if subject to age-specific mortality rates of the specified year.",
+      "game_category": "health",
+      "suggested_challenge": "Which country ranks highest in: mortality rate, under-5?"
+    },
+    {
+      "id": "SH.DYN.MORT.FE",
+      "name": "Mortality rate, under-5, female (per 1,000 live births)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Under-five mortality rate, female is the probability per 1,000 that a newborn female baby will die before reaching age five, if subject to female age-specific mortality rates of the specified year.",
+      "game_category": "health",
+      "suggested_challenge": "Which country ranks highest in: mortality rate, under-5?"
+    },
+    {
+      "id": "SH.DYN.MORT.MA",
+      "name": "Mortality rate, under-5, male (per 1,000 live births)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Under-five mortality rate, male is the probability per 1,000 that a newborn male baby will die before reaching age five, if subject to male age-specific mortality rates of the specified year.",
+      "game_category": "health",
+      "suggested_challenge": "Which country ranks highest in: mortality rate, under-5?"
+    },
+    {
+      "id": "SH.MED.PHYS.ZS",
+      "name": "Physicians (per 1,000 people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Physicians include generalist and specialist medical practitioners.",
+      "game_category": "health",
+      "suggested_challenge": "Which country ranks highest in: physicians?"
+    },
+    {
+      "id": "SH.STA.OWGH.ZS",
+      "name": "Prevalence of overweight, weight for height (% of children under 5)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Prevalence of overweight children is the percentage of children under age 5 whose weight for height is more than two standard deviations above the median for the international reference population of ",
+      "game_category": "health",
+      "suggested_challenge": "Which country ranks highest in: prevalence of overweight?"
+    },
+    {
+      "id": "MS.MIL.XPND.GD.ZS",
+      "name": "Military expenditure (% of GDP)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Public Sector "
+      ],
+      "unit": "",
+      "sourceNote": "Military expenditures data from SIPRI are derived from the NATO definition, which includes all current and capital expenditures on the armed forces, including peacekeeping forces; defense ministries a",
+      "game_category": "innovation",
+      "suggested_challenge": "Which country spends the most on military?"
+    },
+    {
+      "id": "IP.PAT.NRES",
+      "name": "Patent applications, nonresidents",
+      "source": "World Development Indicators",
+      "topics": [
+        "Science & Technology "
+      ],
+      "unit": "",
+      "sourceNote": "Patent applications are worldwide patent applications filed through the Patent Cooperation Treaty procedure or with a national patent office for exclusive rights for an invention--a product or process",
+      "game_category": "innovation",
+      "suggested_challenge": "Which country ranks highest in: patent applications, nonresidents?"
+    },
+    {
+      "id": "IP.PAT.RESD",
+      "name": "Patent applications, residents",
+      "source": "World Development Indicators",
+      "topics": [
+        "Science & Technology "
+      ],
+      "unit": "",
+      "sourceNote": "Patent applications are worldwide patent applications filed through the Patent Cooperation Treaty procedure or with a national patent office for exclusive rights for an invention--a product or process",
+      "game_category": "innovation",
+      "suggested_challenge": "Which country ranks highest in: patent applications, residents?"
+    },
+    {
+      "id": "GB.XPD.RSDV.GD.ZS",
+      "name": "Research and development expenditure (% of GDP)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Science & Technology "
+      ],
+      "unit": "",
+      "sourceNote": "Gross domestic expenditures on research and development (R&D), expressed as a percent of GDP. They include both capital and current expenditures in the four main sectors: Business enterprise, Governme",
+      "game_category": "innovation",
+      "suggested_challenge": "Which country ranks highest in: research and development expenditure?"
+    },
+    {
+      "id": "IS.RRS.TOTL.KM",
+      "name": "Rail lines (total route-km)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The total length of rail line in the country operated for passenger transport, goods transport, or both.",
+      "game_category": "other",
+      "suggested_challenge": "Which country ranks highest in: rail lines?"
+    },
+    {
+      "id": "SL.TLF.CACT.FE.ZS",
+      "name": "Labor force participation rate, female (% of female population ages 15+) (modeled ILO estimate)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Social Protection & Labor",
+        "Gender",
+        "Social Development "
+      ],
+      "unit": "",
+      "sourceNote": "The labor force participation rate is the labor force as a percent of the population ages 15 and older. The labor force is the sum of all persons of working age who are employed and those who are unem",
+      "game_category": "social",
+      "suggested_challenge": "Which country ranks highest in: labor force participation rate, female?"
+    },
+    {
+      "id": "SL.TLF.CACT.MA.ZS",
+      "name": "Labor force participation rate, male (% of male population ages 15+) (modeled ILO estimate)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Social Protection & Labor",
+        "Gender",
+        "Social Development "
+      ],
+      "unit": "",
+      "sourceNote": "Labor force participation rate is the proportion of the population ages 15 and older that is economically active: all people who supply labor for the production of goods and services during a specifie",
+      "game_category": "social",
+      "suggested_challenge": "Which country ranks highest in: labor force participation rate, male?"
+    },
+    {
+      "id": "IT.NET.BBND.P2",
+      "name": "Fixed broadband subscriptions (per 100 people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "Fixed broadband subscriptions refers to fixed subscriptions to high-speed access to the public Internet (a TCP/IP connection), at downstream speeds equal to, or greater than, 256 kbit/s. This includes",
+      "game_category": "technology",
+      "suggested_challenge": "Which country ranks highest in: fixed broadband subscriptions?"
+    },
+    {
+      "id": "IT.CEL.SETS.P2",
+      "name": "Mobile cellular subscriptions (per 100 people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "Mobile cellular telephone subscriptions are subscriptions to a public mobile telephone service that provide access to the PSTN using cellular technology. The indicator includes (and is split into) the",
+      "game_category": "technology",
+      "suggested_challenge": "Which country has the most mobile phones per person?"
+    },
+    {
+      "id": "IT.NET.SECR.P6",
+      "name": "Secure Internet servers (per 1 million people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The number of distinct, publicly-trusted TLS/SSL certificates found in the Netcraft Secure Server Survey (by hosting country), per 1 million people.",
+      "game_category": "technology",
+      "suggested_challenge": "Which country ranks highest in: secure internet servers?"
+    }
+  ],
+  "all_game_worthy": [
+    {
+      "id": "SP.DYN.CBRT.IN",
+      "name": "Birth rate, crude (per 1,000 people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Crude birth rate indicates the number of live births occurring during the year, per 1,000 population estimated at midyear. Subtracting the crude death rate from the crude birth rate provides the rate ",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: birth rate?"
+    },
+    {
+      "id": "SP.DYN.CDRT.IN",
+      "name": "Death rate, crude (per 1,000 people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Crude death rate indicates the number of deaths occurring during the year, per 1,000 population estimated at midyear. Subtracting the crude death rate from the crude birth rate provides the rate of na",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: death rate?"
+    },
+    {
+      "id": "SP.DYN.TFRT.IN",
+      "name": "Fertility rate, total (births per woman)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Total fertility rate represents the number of children that would be born to a woman if she were to live to the end of her childbearing years and bear children in accordance with age-specific fertilit",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: fertility rate?"
+    },
+    {
+      "id": "SP.DYN.LE00.IN",
+      "name": "Life expectancy at birth, total (years)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Life expectancy at birth indicates the number of years a newborn infant would live if prevailing patterns of mortality at the time of its birth were to stay the same throughout its life.",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country has the highest life expectancy?"
+    },
+    {
+      "id": "SP.POP.0014.TO.ZS",
+      "name": "Population ages 0-14 (% of total population)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Population between the ages 0 to 14 as a percentage of the total population. Population is based on the de facto definition of population.",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: population ages 0-14?"
+    },
+    {
+      "id": "SP.POP.1564.TO.ZS",
+      "name": "Population ages 15-64 (% of total population)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Total population between the ages 15 to 64 as a percentage of the total population. Population is based on the de facto definition of population, which counts all residents regardless of legal status ",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: population ages 15-64?"
+    },
+    {
+      "id": "SP.POP.65UP.TO.ZS",
+      "name": "Population ages 65 and above (% of total population)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Population ages 65 and above as a percentage of the total population. Population is based on the de facto definition of population, which counts all residents regardless of legal status or citizenship",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: population ages 65 and above?"
+    },
+    {
+      "id": "SP.POP.TOTL",
+      "name": "Population, total",
+      "source": "World Development Indicators",
+      "topics": [
+        "Climate Change",
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Total population is based on the de facto definition of population, which counts all residents regardless of legal status or citizenship. The values shown are midyear estimates.",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country has the most people?"
+    },
+    {
+      "id": "SP.RUR.TOTL.ZS",
+      "name": "Rural population (% of total population)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Agriculture & Rural Development  "
+      ],
+      "unit": "",
+      "sourceNote": "Rural population refers to people living in rural areas as defined by national statistical offices. It is calculated as the difference between total population and urban population.",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: rural population?"
+    },
+    {
+      "id": "SP.URB.TOTL.IN.ZS",
+      "name": "Urban population (% of total population)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Climate Change",
+        "Urban Development "
+      ],
+      "unit": "",
+      "sourceNote": "Urban population refers to people living in urban areas as defined by national statistical offices. The data are collected and smoothed by United Nations Population Division.",
+      "game_category": "demographics",
+      "suggested_challenge": "Which country ranks highest in: urban population?"
+    },
+    {
+      "id": "NY.GDP.MKTP.CD",
+      "name": "GDP (current US$)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Economy & Growth"
+      ],
+      "unit": "",
+      "sourceNote": "Gross domestic product is the total income earned through the production of goods and services in an economic territory during an accounting period. It can be measured in three different ways: using e",
+      "game_category": "economy",
+      "suggested_challenge": "Which country ranks highest in: gdp (current us$)?"
+    },
+    {
+      "id": "NY.GDP.MKTP.KD.ZG",
+      "name": "GDP growth (annual %)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Economy & Growth"
+      ],
+      "unit": "",
+      "sourceNote": "Gross domestic product is the total income earned through the production of goods and services in an economic territory during an accounting period. It can be measured in three different ways: using e",
+      "game_category": "economy",
+      "suggested_challenge": "Which country ranks highest in: gdp growth?"
+    },
+    {
+      "id": "NY.GDP.PCAP.CD",
+      "name": "GDP per capita (current US$)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Economy & Growth"
+      ],
+      "unit": "",
+      "sourceNote": "Gross domestic product is the total income earned through the production of goods and services in an economic territory during an accounting period. It can be measured in three different ways: using e",
+      "game_category": "economy",
+      "suggested_challenge": "Which country has the highest GDP per person?"
+    },
+    {
+      "id": "NY.GNP.PCAP.CD",
+      "name": "GNI per capita, Atlas method (current US$)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Economy & Growth"
+      ],
+      "unit": "",
+      "sourceNote": "Gross national income is the total income earned by all residents within an economic territory during an accounting period. It is equal to gross domestic product plus earned income receivable from abr",
+      "game_category": "economy",
+      "suggested_challenge": "Which country ranks highest in: gni per capita?"
+    },
+    {
+      "id": "FP.CPI.TOTL.ZG",
+      "name": "Inflation, consumer prices (annual %)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Economy & Growth",
+        "Financial Sector "
+      ],
+      "unit": "",
+      "sourceNote": "Inflation as measured by the consumer price index reflects the annual percentage change in the cost to the average consumer of acquiring a basket of goods and services that may be fixed or changed at ",
+      "game_category": "economy",
+      "suggested_challenge": "Which country ranks highest in: inflation?"
+    },
+    {
+      "id": "SL.UEM.TOTL.ZS",
+      "name": "Unemployment, total (% of total labor force) (modeled ILO estimate)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Social Protection & Labor"
+      ],
+      "unit": "",
+      "sourceNote": "Unemployment refers to the share of the labor force that is without work but available for and seeking employment.",
+      "game_category": "economy",
+      "suggested_challenge": "Which country has the highest unemployment rate?"
+    },
+    {
+      "id": "SE.ADT.LITR.ZS",
+      "name": "Literacy rate, adult total (% of people ages 15 and above)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education "
+      ],
+      "unit": "",
+      "sourceNote": "Adult literacy rate is the percentage of people ages 15 and above who can both read and write with understanding a short simple statement about their everyday life.",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: literacy rate?"
+    },
+    {
+      "id": "SE.PRM.NENR",
+      "name": "School enrollment, primary (% net)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education "
+      ],
+      "unit": "",
+      "sourceNote": "Net enrollment rate is the ratio of children of official school age who are enrolled in school to the population of the corresponding official school age. Primary education provides children with basi",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: school enrollment, primary?"
+    },
+    {
+      "id": "SE.PRM.NENR.FE",
+      "name": "School enrollment, primary, female (% net)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Net enrollment rate is the ratio of children of official school age who are enrolled in school to the population of the corresponding official school age. Primary education provides children with basi",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: school enrollment, primary?"
+    },
+    {
+      "id": "SE.PRM.NENR.MA",
+      "name": "School enrollment, primary, male (% net)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Net enrollment rate is the ratio of children of official school age who are enrolled in school to the population of the corresponding official school age. Primary education provides children with basi",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: school enrollment, primary?"
+    },
+    {
+      "id": "SE.SEC.NENR",
+      "name": "School enrollment, secondary (% net)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education "
+      ],
+      "unit": "",
+      "sourceNote": "Net enrollment rate is the ratio of children of official school age who are enrolled in school to the population of the corresponding official school age. Secondary education completes the provision o",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: school enrollment, secondary?"
+    },
+    {
+      "id": "SE.SEC.NENR.FE",
+      "name": "School enrollment, secondary, female (% net)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Net enrollment rate is the ratio of children of official school age who are enrolled in school to the population of the corresponding official school age. Secondary education completes the provision o",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: school enrollment, secondary?"
+    },
+    {
+      "id": "SE.SEC.NENR.MA",
+      "name": "School enrollment, secondary, male (% net)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Net enrollment rate is the ratio of children of official school age who are enrolled in school to the population of the corresponding official school age. Secondary education completes the provision o",
+      "game_category": "education",
+      "suggested_challenge": "Which country ranks highest in: school enrollment, secondary?"
+    },
+    {
+      "id": "SE.TER.ENRR",
+      "name": "School enrollment, tertiary (% gross)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education "
+      ],
+      "unit": "",
+      "sourceNote": "Gross enrollment ratio is the ratio of total enrollment, regardless of age, to the population of the age group that officially corresponds to the level of education shown. Tertiary education, whether ",
+      "game_category": "education",
+      "suggested_challenge": "Which country has the highest university enrollment?"
+    },
+    {
+      "id": "SE.TER.ENRR.FE",
+      "name": "School enrollment, tertiary, female (% gross)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Gross enrollment ratio is the ratio of total enrollment, regardless of age, to the population of the age group that officially corresponds to the level of education shown. Tertiary education, whether ",
+      "game_category": "education",
+      "suggested_challenge": "Which country has the highest university enrollment?"
+    },
+    {
+      "id": "SE.TER.ENRR.MA",
+      "name": "School enrollment, tertiary, male (% gross)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Education ",
+        "Gender"
+      ],
+      "unit": "",
+      "sourceNote": "Gross enrollment ratio is the ratio of total enrollment, regardless of age, to the population of the age group that officially corresponds to the level of education shown. Tertiary education, whether ",
+      "game_category": "education",
+      "suggested_challenge": "Which country has the highest university enrollment?"
+    },
+    {
+      "id": "EG.ELC.COAL.ZS",
+      "name": "Electricity production from coal sources (% of total)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Energy & Mining ",
+        "Climate Change",
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The share of electricity production from coal sources of total electricity production. Sources of electricity refer to the inputs used to generate electricity. Coal refers to all coal and brown coal, ",
+      "game_category": "environment",
+      "suggested_challenge": "Which country ranks highest in: electricity production from coal sources?"
+    },
+    {
+      "id": "EG.ELC.HYRO.ZS",
+      "name": "Electricity production from hydroelectric sources (% of total)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Energy & Mining ",
+        "Climate Change",
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The share of electricity production from hydroelectric sources of total electricity production. Sources of electricity refer to the inputs used to generate electricity. Hydropower refers to electricit",
+      "game_category": "environment",
+      "suggested_challenge": "Which country ranks highest in: electricity production from hydroelectric sources?"
+    },
+    {
+      "id": "EG.ELC.NGAS.ZS",
+      "name": "Electricity production from natural gas sources (% of total)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Energy & Mining ",
+        "Climate Change",
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The share of electricity production from natural gas sources of total electricity production. Sources of electricity refer to the inputs used to generate electricity. Gas refers to natural gas but exc",
+      "game_category": "environment",
+      "suggested_challenge": "Which country ranks highest in: electricity production from natural gas sources?"
+    },
+    {
+      "id": "EG.ELC.NUCL.ZS",
+      "name": "Electricity production from nuclear sources (% of total)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Energy & Mining ",
+        "Climate Change",
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The share of electricity production from nuclear sources of total electricity production. Sources of electricity refer to the inputs used to generate electricity. Nuclear power refers to electricity p",
+      "game_category": "environment",
+      "suggested_challenge": "Which country ranks highest in: electricity production from nuclear sources?"
+    },
+    {
+      "id": "EG.ELC.PETR.ZS",
+      "name": "Electricity production from oil sources (% of total)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Energy & Mining ",
+        "Climate Change",
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The share of electricity production from oil sources of total electricity production. Sources of electricity refer to the inputs used to generate electricity. Oil refers to crude oil and petroleum pro",
+      "game_category": "environment",
+      "suggested_challenge": "Which country ranks highest in: electricity production from oil sources?"
+    },
+    {
+      "id": "AG.LND.FRST.ZS",
+      "name": "Forest area (% of land area)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Agriculture & Rural Development  ",
+        "Climate Change",
+        "Environment "
+      ],
+      "unit": "",
+      "sourceNote": "Forest area (% of land area) is the share of total land area that is under natural or planted stands of trees of at least 5 meters in situ, whether productive or not, and excludes tree stands in agric",
+      "game_category": "environment",
+      "suggested_challenge": "Which country has the most forest coverage?"
+    },
+    {
+      "id": "EG.FEC.RNEW.ZS",
+      "name": "Renewable energy consumption (% of total final energy consumption)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Energy & Mining ",
+        "Climate Change",
+        "Environment "
+      ],
+      "unit": "",
+      "sourceNote": "Renewable energy consumption is the share of renewables energy in total final energy consumption.",
+      "game_category": "environment",
+      "suggested_challenge": "Which country ranks highest in: renewable energy consumption?"
+    },
+    {
+      "id": "SH.XPD.CHEX.GD.ZS",
+      "name": "Current health expenditure (% of GDP)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Level of current health expenditure expressed as a percentage of GDP.  Estimates of current health expenditures include healthcare goods and services consumed during each year. This indicator does not",
+      "game_category": "health",
+      "suggested_challenge": "Which country spends the most on healthcare?"
+    },
+    {
+      "id": "SH.MED.BEDS.ZS",
+      "name": "Hospital beds (per 1,000 people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Hospital beds include inpatient beds available in public, private, general, and specialized hospitals and rehabilitation centers. In most cases beds for both acute and chronic care are included.",
+      "game_category": "health",
+      "suggested_challenge": "Which country ranks highest in: hospital beds?"
+    },
+    {
+      "id": "SH.DYN.MORT",
+      "name": "Mortality rate, under-5 (per 1,000 live births)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health ",
+        "Aid Effectiveness ",
+        "Climate Change"
+      ],
+      "unit": "",
+      "sourceNote": "Under-five mortality rate is the probability per 1,000 that a newborn baby will die before reaching age five, if subject to age-specific mortality rates of the specified year.",
+      "game_category": "health",
+      "suggested_challenge": "Which country ranks highest in: mortality rate, under-5?"
+    },
+    {
+      "id": "SH.DYN.MORT.FE",
+      "name": "Mortality rate, under-5, female (per 1,000 live births)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Under-five mortality rate, female is the probability per 1,000 that a newborn female baby will die before reaching age five, if subject to female age-specific mortality rates of the specified year.",
+      "game_category": "health",
+      "suggested_challenge": "Which country ranks highest in: mortality rate, under-5?"
+    },
+    {
+      "id": "SH.DYN.MORT.MA",
+      "name": "Mortality rate, under-5, male (per 1,000 live births)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Under-five mortality rate, male is the probability per 1,000 that a newborn male baby will die before reaching age five, if subject to male age-specific mortality rates of the specified year.",
+      "game_category": "health",
+      "suggested_challenge": "Which country ranks highest in: mortality rate, under-5?"
+    },
+    {
+      "id": "SH.MED.PHYS.ZS",
+      "name": "Physicians (per 1,000 people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Physicians include generalist and specialist medical practitioners.",
+      "game_category": "health",
+      "suggested_challenge": "Which country ranks highest in: physicians?"
+    },
+    {
+      "id": "SH.STA.OWGH.ZS",
+      "name": "Prevalence of overweight, weight for height (% of children under 5)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Health "
+      ],
+      "unit": "",
+      "sourceNote": "Prevalence of overweight children is the percentage of children under age 5 whose weight for height is more than two standard deviations above the median for the international reference population of ",
+      "game_category": "health",
+      "suggested_challenge": "Which country ranks highest in: prevalence of overweight?"
+    },
+    {
+      "id": "MS.MIL.XPND.GD.ZS",
+      "name": "Military expenditure (% of GDP)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Public Sector "
+      ],
+      "unit": "",
+      "sourceNote": "Military expenditures data from SIPRI are derived from the NATO definition, which includes all current and capital expenditures on the armed forces, including peacekeeping forces; defense ministries a",
+      "game_category": "innovation",
+      "suggested_challenge": "Which country spends the most on military?"
+    },
+    {
+      "id": "IP.PAT.NRES",
+      "name": "Patent applications, nonresidents",
+      "source": "World Development Indicators",
+      "topics": [
+        "Science & Technology "
+      ],
+      "unit": "",
+      "sourceNote": "Patent applications are worldwide patent applications filed through the Patent Cooperation Treaty procedure or with a national patent office for exclusive rights for an invention--a product or process",
+      "game_category": "innovation",
+      "suggested_challenge": "Which country ranks highest in: patent applications, nonresidents?"
+    },
+    {
+      "id": "IP.PAT.RESD",
+      "name": "Patent applications, residents",
+      "source": "World Development Indicators",
+      "topics": [
+        "Science & Technology "
+      ],
+      "unit": "",
+      "sourceNote": "Patent applications are worldwide patent applications filed through the Patent Cooperation Treaty procedure or with a national patent office for exclusive rights for an invention--a product or process",
+      "game_category": "innovation",
+      "suggested_challenge": "Which country ranks highest in: patent applications, residents?"
+    },
+    {
+      "id": "GB.XPD.RSDV.GD.ZS",
+      "name": "Research and development expenditure (% of GDP)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Science & Technology "
+      ],
+      "unit": "",
+      "sourceNote": "Gross domestic expenditures on research and development (R&D), expressed as a percent of GDP. They include both capital and current expenditures in the four main sectors: Business enterprise, Governme",
+      "game_category": "innovation",
+      "suggested_challenge": "Which country ranks highest in: research and development expenditure?"
+    },
+    {
+      "id": "IS.RRS.TOTL.KM",
+      "name": "Rail lines (total route-km)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The total length of rail line in the country operated for passenger transport, goods transport, or both.",
+      "game_category": "other",
+      "suggested_challenge": "Which country ranks highest in: rail lines?"
+    },
+    {
+      "id": "SL.TLF.CACT.FE.ZS",
+      "name": "Labor force participation rate, female (% of female population ages 15+) (modeled ILO estimate)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Social Protection & Labor",
+        "Gender",
+        "Social Development "
+      ],
+      "unit": "",
+      "sourceNote": "The labor force participation rate is the labor force as a percent of the population ages 15 and older. The labor force is the sum of all persons of working age who are employed and those who are unem",
+      "game_category": "social",
+      "suggested_challenge": "Which country ranks highest in: labor force participation rate, female?"
+    },
+    {
+      "id": "SL.TLF.CACT.MA.ZS",
+      "name": "Labor force participation rate, male (% of male population ages 15+) (modeled ILO estimate)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Social Protection & Labor",
+        "Gender",
+        "Social Development "
+      ],
+      "unit": "",
+      "sourceNote": "Labor force participation rate is the proportion of the population ages 15 and older that is economically active: all people who supply labor for the production of goods and services during a specifie",
+      "game_category": "social",
+      "suggested_challenge": "Which country ranks highest in: labor force participation rate, male?"
+    },
+    {
+      "id": "IT.NET.BBND.P2",
+      "name": "Fixed broadband subscriptions (per 100 people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "Fixed broadband subscriptions refers to fixed subscriptions to high-speed access to the public Internet (a TCP/IP connection), at downstream speeds equal to, or greater than, 256 kbit/s. This includes",
+      "game_category": "technology",
+      "suggested_challenge": "Which country ranks highest in: fixed broadband subscriptions?"
+    },
+    {
+      "id": "IT.CEL.SETS.P2",
+      "name": "Mobile cellular subscriptions (per 100 people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "Mobile cellular telephone subscriptions are subscriptions to a public mobile telephone service that provide access to the PSTN using cellular technology. The indicator includes (and is split into) the",
+      "game_category": "technology",
+      "suggested_challenge": "Which country has the most mobile phones per person?"
+    },
+    {
+      "id": "IT.NET.SECR.P6",
+      "name": "Secure Internet servers (per 1 million people)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Infrastructure "
+      ],
+      "unit": "",
+      "sourceNote": "The number of distinct, publicly-trusted TLS/SSL certificates found in the Netcraft Secure Server Survey (by hosting country), per 1 million people.",
+      "game_category": "technology",
+      "suggested_challenge": "Which country ranks highest in: secure internet servers?"
+    },
+    {
+      "id": "ST.INT.ARVL",
+      "name": "International tourism, number of arrivals",
+      "source": "World Development Indicators",
+      "topics": [
+        "Private Sector",
+        "Trade"
+      ],
+      "unit": "",
+      "sourceNote": "International inbound tourists (overnight visitors) are the number of tourists who travel to a country other than that in which they have their usual residence, but outside their usual environment, fo",
+      "game_category": "tourism",
+      "suggested_challenge": "Which country gets the most international tourists?"
+    },
+    {
+      "id": "ST.INT.RCPT.CD",
+      "name": "International tourism, receipts (current US$)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Private Sector",
+        "Trade"
+      ],
+      "unit": "",
+      "sourceNote": "International tourism receipts are expenditures by international inbound visitors, including payments to national carriers for international transport. These receipts include any other prepayment made",
+      "game_category": "tourism",
+      "suggested_challenge": "Which country ranks highest in: international tourism, receipts?"
+    },
+    {
+      "id": "NE.EXP.GNFS.CD",
+      "name": "Exports of goods and services (current US$)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Economy & Growth",
+        "Trade"
+      ],
+      "unit": "",
+      "sourceNote": "Exports of goods includes changes in the economic ownership of goods from residents of the compiling economy to non-residents, irrespective of physical movement of goods across national borders. Expor",
+      "game_category": "trade",
+      "suggested_challenge": "Which country exports the most goods and services?"
+    },
+    {
+      "id": "NE.IMP.GNFS.CD",
+      "name": "Imports of goods and services (current US$)",
+      "source": "World Development Indicators",
+      "topics": [
+        "Economy & Growth",
+        "Trade"
+      ],
+      "unit": "",
+      "sourceNote": "Imports of goods includes change in the economic ownership of goods from non-residents to\n\n\nresidents of the compiling economy, irrespective of physical movement of goods across national borders. Impo",
+      "game_category": "trade",
+      "suggested_challenge": "Which country ranks highest in: imports of goods and services?"
+    }
+  ]
+}

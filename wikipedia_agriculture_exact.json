@@ -1,0 +1,493 @@
+{
+  "source": "Wikipedia - List of international rankings",
+  "url": "https://en.wikipedia.org/wiki/List_of_international_rankings",
+  "section": "Agriculture",
+  "total_rankings": 28,
+  "rankings_list": [
+    {
+      "name": "Apple production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Apricot production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Artichoke production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Avocado production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Barley production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Cereal production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Cherry production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Coconut production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Coffee production",
+      "category": "Production",
+      "unit": "tonnes or bags"
+    },
+    {
+      "name": "Corn production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Cucumber production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Eggplant production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Fruit production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Garlic production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Grape production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Papaya production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Pear production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Pineapple production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Plum production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Potato production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Rice production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Soybean production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Tomato production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Vegetables production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Wheat production",
+      "category": "Production",
+      "unit": "tonnes"
+    },
+    {
+      "name": "Wine production",
+      "category": "Production",
+      "unit": "hectolitres"
+    },
+    {
+      "name": "Forest area",
+      "category": "Land",
+      "unit": "sq km or %"
+    },
+    {
+      "name": "Irrigated land area",
+      "category": "Land",
+      "unit": "sq km or %"
+    }
+  ],
+  "extraction_templates": [
+    {
+      "ranking_name": "Apple production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Apricot production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Artichoke production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Avocado production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Barley production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Cereal production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Cherry production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Coconut production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Coffee production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes or bags",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Corn production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Cucumber production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Eggplant production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Fruit production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Garlic production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Grape production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Papaya production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Pear production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Pineapple production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Plum production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Potato production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Rice production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Soybean production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Tomato production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Vegetables production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Wheat production",
+      "category": "Agriculture - Production",
+      "unit": "tonnes",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Wine production",
+      "category": "Agriculture - Production",
+      "unit": "hectolitres",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Forest area",
+      "category": "Agriculture - Land",
+      "unit": "sq km or %",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    },
+    {
+      "ranking_name": "Irrigated land area",
+      "category": "Agriculture - Land",
+      "unit": "sq km or %",
+      "source": "TBD - from Wikipedia links",
+      "source_url": "",
+      "year": "",
+      "extraction_date": "2025-07-19 13:45:45",
+      "all_countries_data": {},
+      "total_countries": 0,
+      "data_status": "Awaiting data"
+    }
+  ],
+  "extraction_date": "2025-07-19 13:45:45",
+  "instructions": {
+    "step1": "Click on each ranking link in Wikipedia",
+    "step2": "Copy the data table from the source",
+    "step3": "Provide data for ALL countries",
+    "step4": "I'll extract and analyze coverage"
+  }
+}

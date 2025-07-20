@@ -1,0 +1,25 @@
+{
+  "analysis_date": "2025-07-19 14:05:09",
+  "total_rankings_analyzed": 10,
+  "suitable_count": 2,
+  "suitable_rankings": [
+    {
+      "name": "Forest Area",
+      "coverage": 38,
+      "percentage": 100.0,
+      "source": "FAO 2022",
+      "unit": "km\u00b2 and % of land area"
+    },
+    {
+      "name": "Irrigated Land Area",
+      "coverage": 38,
+      "percentage": 100.0,
+      "source": "CIA World Factbook 2020",
+      "unit": "km\u00b2"
+    }
+  ],
+  "recommendation": [
+    "Forest Area (% of land area)",
+    "Irrigated Land Area (km\u00b2)"
+  ]
+}
