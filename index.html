@@ -75,6 +75,13 @@
                         <button class="btn secondary" onclick="startRealQRScan()">📷 Scan QR Code</button>
                     </div>
                     
+                    <div class="action-card">
+                        <div class="card-icon">🎯</div>
+                        <div class="card-title">Live Game Validation</div>
+                        <div class="card-description">Validate ranking attempts during physical gameplay</div>
+                        <button class="btn primary" onclick="showScreen('liveValidationScreen')">🎯 Start Live Validation</button>
+                    </div>
+                    
                     <!-- Debug buttons for testing -->
                     <div class="action-card" style="margin-top: 20px; background: #f0f0f0;">
                         <div class="card-title">🔧 Debug Tests</div>
@@ -82,8 +89,8 @@
                         <button class="btn secondary" onclick="checkData()" style="margin: 5px;">Check Data</button>
                         <button class="btn secondary" onclick="testFunction()" style="margin: 5px;">Test Function</button>
                         <button class="btn secondary" onclick="testVisualConsole()" style="margin: 5px;">🖥️ Test Visual Console</button>
-                        <button class="btn secondary" onclick="runAutomatedTest()" style="margin: 5px;">🤖 Run Automated Test</button>
-                        <button class="btn primary" onclick="runFastAutomatedTest()" style="margin: 5px;">⚡ Fast Test</button>
+                        <button class="btn secondary" onclick="runAutomatedTest()" style="margin: 5px;">🤖 Run Test v4</button>
+                        <button class="btn primary" onclick="runFastAutomatedTest()" style="margin: 5px;">⚡ Fast Test v4</button>
                         <button class="btn secondary" onclick="testTokenReplacement()" style="margin: 5px;">🔄 Test Token Screen</button>
                         <button class="btn secondary" onclick="viewTestResults()" style="margin: 5px;">📊 View Test Results</button>
                         <button class="btn secondary" onclick="resetAllStatistics()" style="margin: 5px;">🔄 Reset Stats</button>
@@ -565,7 +572,7 @@
                     </div>
                     
                     <div class="button-group">
-                        <button class="btn primary" onclick="runAutomatedTest()">🤖 Run New Test</button>
+                        <button class="btn primary" onclick="runAutomatedTest()">🤖 Run Test v4</button>
                         <button class="btn secondary" onclick="exportTestResults()">📤 Export Results</button>
                         <button class="btn secondary" onclick="clearTestResults()">🗑️ Clear Results</button>
                         <button class="btn secondary" onclick="showScreen('titleScreen')">🏠 Back to Home</button>
@@ -759,6 +766,63 @@
                         </div>
                     </div>
                     <button class="btn primary" onclick="continueFromTokenReplacement()">Continue</button>
+                </div>
+            </div>
+
+            <!-- Live Game Validation Screen -->
+            <div id="liveValidationScreen" class="screen">
+                <div class="app-header">
+                    <div class="header-background"></div>
+                    <h2 class="screen-title">🎯 Live Game Validation</h2>
+                    <p class="screen-subtitle">Validate ranking attempts during physical gameplay</p>
+                </div>
+                
+                <div class="screen-content" id="liveValidationContent">
+                    <div class="info-card" style="background: #e3f2fd; margin-bottom: 20px;">
+                        <div class="card-title">📋 Challenge Setup</div>
+                        <div class="card-description">Enter the challenge details from your physical game</div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Category:</label>
+                                <select id="liveValidationCategory" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">Select Category</option>
+                                    <option value="countries">Countries</option>
+                                    <option value="movies">Movies</option>
+                                    <option value="sports">Sports</option>
+                                    <option value="companies">Companies</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Challenge Number:</label>
+                                <input type="text" id="liveChalllengeNumber" placeholder="e.g., 001, 017" maxlength="3" 
+                                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Winning Bid:</label>
+                                <input type="number" id="liveBidAmount" min="1" max="10" placeholder="1-10"
+                                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Bidder Name:</label>
+                                <input type="text" id="liveBidderName" placeholder="Player name"
+                                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                        </div>
+                        
+                        <button class="btn primary" onclick="setupLiveValidation()" style="width: 100%; margin-top: 15px;">
+                            🎲 Start Validation Setup
+                        </button>
+                    </div>
+                    
+                    <div id="liveValidationResults" style="margin-top: 20px;"></div>
+                    
+                    <div class="screen-actions">
+                        <button class="btn secondary" onclick="showScreen('titleScreen')">🏠 Back to Home</button>
+                    </div>
                 </div>
             </div>
         </div>
