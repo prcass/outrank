@@ -9277,31 +9277,163 @@ let liveValidationState = {
     currentValidation: null,
     currentChallenge: null,
     playerRanking: [],
-    currentStep: 0
+    currentStep: 0,
+    masterDataset: null,
+    currentDataset: 'production'
 };
 
-function setupLiveValidation() {
+// Toggle dataset selector visibility
+function toggleDatasetSelector() {
+    const category = document.getElementById('liveValidationCategory').value;
+    const datasetDiv = document.getElementById('datasetSelectorDiv');
+    
+    if (category === 'countries') {
+        datasetDiv.style.display = 'block';
+    } else {
+        datasetDiv.style.display = 'none';
+    }
+}
+
+// Load master dataset for validation
+window.loadMasterDatasetForValidation = async function loadMasterDatasetForValidation() {
+    // Use the same cache as the HTML function
+    if (window.masterDatasetCache) {
+        liveValidationState.masterDataset = window.masterDatasetCache;
+        return window.masterDatasetCache;
+    }
+    
+    if (liveValidationState.masterDataset) {
+        return liveValidationState.masterDataset;
+    }
+    
+    try {
+        const response = await fetch('master_country_dataset_FINAL_2025-07-26T22-14-26.json');
+        if (!response.ok) {
+            throw new Error('Failed to load master dataset');
+        }
+        
+        const masterData = await response.json();
+        
+        // Convert to game data format
+        const gameData = {
+            categories: {
+                countries: {
+                    name: "Countries",
+                    icon: "🌍",
+                    items: {},
+                    prompts: []
+                }
+            }
+        };
+        
+        // Convert countries to game format
+        Object.entries(masterData.countries).forEach(([countryCode, countryData]) => {
+            gameData.categories.countries.items[countryCode] = {
+                name: countryData.name,
+                code: countryCode,
+                ...Object.fromEntries(
+                    Object.entries(countryData.categories || {}).map(([key, data]) => [
+                        key, data.value || data.rawValue
+                    ])
+                )
+            };
+        });
+        
+        // Add prompts for available challenges
+        Object.keys(masterData.categoryIndex).forEach(challenge => {
+            gameData.categories.countries.prompts.push({
+                challenge: challenge,
+                label: `Rank by ${challenge}`
+            });
+        });
+        
+        // Cache in both places
+        window.masterDatasetCache = gameData;
+        liveValidationState.masterDataset = gameData;
+        return gameData;
+        
+    } catch (error) {
+        console.error('Failed to load master dataset:', error);
+        alert('Failed to load master dataset. Using production data.');
+        return null;
+    }
+};
+
+// Get current dataset for validation
+function getCurrentValidationDataset() {
+    if (liveValidationState.currentDataset === 'master' && liveValidationState.masterDataset) {
+        return liveValidationState.masterDataset;
+    } else {
+        return window.GAME_DATA;
+    }
+}
+
+async function setupLiveValidation() {
     const category = document.getElementById('liveValidationCategory').value;
     const challengeNum = document.getElementById('liveChalllengeNumber').value;
     const bidAmount = parseInt(document.getElementById('liveBidAmount').value);
-    const bidderName = document.getElementById('liveBidderName').value;
+    const bidderName = 'Player'; // Default since we removed the name field
 
-    if (!category || !challengeNum || !bidAmount || !bidderName) {
+    if (!category || !challengeNum || !bidAmount) {
         alert('Please fill in all fields');
         return;
     }
+    
+    // Load master dataset if needed
+    if (category === 'countries') {
+        const selectedDataset = document.getElementById('liveValidationDataset').value;
+        if (selectedDataset === 'master') {
+            const loadResult = await loadMasterDatasetForValidation();
+            if (!loadResult) {
+                return; // Failed to load, stop here
+            }
+            liveValidationState.currentDataset = 'master';
+        } else {
+            liveValidationState.currentDataset = 'production';
+        }
+    }
 
-    // Find the challenge
-    if (!window.GAME_DATA || !window.GAME_DATA.categories[category]) {
+    // Get current dataset and find the challenge
+    let currentGameData;
+    
+    // Load master dataset if needed for countries
+    if (category === 'countries' && liveValidationState.currentDataset === 'master') {
+        if (!liveValidationState.masterDataset) {
+            alert('Master dataset not loaded. Please try again.');
+            return;
+        }
+        currentGameData = liveValidationState.masterDataset;
+    } else {
+        currentGameData = window.GAME_DATA;
+    }
+    
+    if (!currentGameData || !currentGameData.categories[category]) {
         alert('Game data not loaded or category not found');
         return;
     }
 
-    const challenges = window.GAME_DATA.categories[category].prompts;
+    const challenges = currentGameData.categories[category].prompts;
     const challengeIndex = parseInt(challengeNum) - 1;
     
+    console.log(`Validation setup:`, {
+        category,
+        challengeNum,
+        challengeIndex,
+        dataset: liveValidationState.currentDataset,
+        availableChallenges: challenges.length,
+        hasCurrentGameData: !!currentGameData,
+        hasCategory: !!currentGameData.categories[category]
+    });
+    
     if (challengeIndex < 0 || challengeIndex >= challenges.length) {
-        alert(`Challenge ${challengeNum} not found in ${category}`);
+        const datasetType = liveValidationState.currentDataset === 'master' ? 'Master' : 'Production';
+        alert(`Challenge ${challengeNum} not found in ${category} (${datasetType} dataset). Available: 001-${String(challenges.length).padStart(3, '0')} (${challenges.length} total)`);
+        console.log(`Challenge lookup failed:`, {
+            requested: challengeNum,
+            requestedIndex: challengeIndex,
+            available: challenges.length,
+            dataset: datasetType
+        });
         return;
     }
 
@@ -9319,19 +9451,28 @@ function setupLiveValidation() {
 
 function showLiveRankingInput() {
     const output = document.getElementById('liveValidationResults');
-    const categoryItems = window.GAME_DATA.categories[liveValidationState.currentValidation.category].items;
+    const currentGameData = getCurrentValidationDataset();
+    const categoryItems = currentGameData.categories[liveValidationState.currentValidation.category].items;
     
     // Get available tokens for this category
-    const tokens = Object.keys(categoryItems).map(code => ({
-        code: code,
-        name: categoryItems[code].name
-    }));
+    const challengeKey = liveValidationState.currentChallenge.challenge || liveValidationState.currentChallenge.label?.replace('Rank by ', '');
+    const tokens = Object.keys(categoryItems).map(code => {
+        const countryData = categoryItems[code];
+        const hasValue = countryData[challengeKey] !== undefined && countryData[challengeKey] !== null && countryData[challengeKey] !== 0;
+        return {
+            code: code,
+            name: countryData.name,
+            hasValue: hasValue,
+            value: countryData[challengeKey]
+        };
+    }).sort((a, b) => a.name.localeCompare(b.name));
 
     let html = `
         <div class="info-card" style="background: #f8f9fa; margin-bottom: 20px;">
             <div class="card-title">📋 Challenge Confirmed</div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;">
                 <div><strong>Category:</strong> ${liveValidationState.currentValidation.category.charAt(0).toUpperCase() + liveValidationState.currentValidation.category.slice(1)}</div>
+                <div><strong>Dataset:</strong> ${liveValidationState.currentDataset === 'master' ? '📚 Master' : '🎮 Production'}</div>
                 <div><strong>Challenge:</strong> #${liveValidationState.currentValidation.challengeNum}</div>
                 <div><strong>Bid Amount:</strong> ${liveValidationState.currentValidation.bidAmount} tokens</div>
                 <div><strong>Bidder:</strong> ${liveValidationState.currentValidation.bidderName}</div>
@@ -9353,7 +9494,7 @@ function showLiveRankingInput() {
                 <select id="liveRanking_${i}" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                     <option value="">Select token...</option>
                     ${tokens.map(token => 
-                        `<option value="${token.code}">${token.code} - ${token.name}</option>`
+                        `<option value="${token.code}" style="${token.hasValue ? 'background-color: #d4edda; color: #155724;' : ''}">${token.code} - ${token.name}${token.hasValue ? ' ✓' : ''}</option>`
                     ).join('')}
                 </select>
             </div>
@@ -9372,10 +9513,18 @@ function showLiveRankingInput() {
 }
 
 function extractLiveChallengeTitle(htmlLabel) {
+    if (!htmlLabel) return 'Challenge';
+    
+    // Handle simple text labels (master dataset format)
+    if (typeof htmlLabel === 'string' && !htmlLabel.includes('<')) {
+        return htmlLabel.replace('Rank by ', '');
+    }
+    
+    // Handle HTML labels (production dataset format)
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlLabel;
     const titleDiv = tempDiv.querySelector('div[style*="font-weight: bold"]');
-    return titleDiv ? titleDiv.textContent : 'Challenge';
+    return titleDiv ? titleDiv.textContent : htmlLabel;
 }
 
 function startLiveValidation() {
@@ -9429,7 +9578,7 @@ function startDramaticReveal() {
     updateLiveRevealDisplay();
 }
 
-function revealNextLiveCard() {
+async function revealNextLiveCard() {
     const currentStep = liveValidationState.currentStep;
     const playerRanking = liveValidationState.playerRanking;
     const challenge = liveValidationState.currentChallenge;
@@ -9442,9 +9591,20 @@ function revealNextLiveCard() {
         return;
     }
     
-    // Reveal the next card
+    // Disable the reveal button during animation
+    const revealBtn = document.getElementById('revealNextBtn');
+    revealBtn.disabled = true;
+    revealBtn.textContent = '⏳ Revealing...';
+    
+    // Add countdown suspense
+    await showCountdownSuspense();
+    
+    // Reveal the next card with flip animation
     liveValidationState.currentStep++;
-    updateLiveRevealDisplay();
+    await updateLiveRevealDisplayWithAnimation();
+    
+    // Re-enable button
+    revealBtn.disabled = false;
     
     // Check sequential ordering if we have at least 2 cards revealed
     if (liveValidationState.currentStep >= 2) {
@@ -9452,9 +9612,11 @@ function revealNextLiveCard() {
         const previousCardId = playerRanking[currentStep - 1];
         
         // Get actual values for comparison
-        const categoryItems = window.GAME_DATA.categories[liveValidationState.currentValidation.category].items;
-        const currentValue = categoryItems[currentCardId][challenge.challenge];
-        const previousValue = categoryItems[previousCardId][challenge.challenge];
+        const currentGameData = getCurrentValidationDataset();
+        const categoryItems = currentGameData.categories[liveValidationState.currentValidation.category].items;
+        const challengeKey = challenge.challenge || challenge.label?.replace('Rank by ', '');
+        const currentValue = categoryItems[currentCardId][challengeKey];
+        const previousValue = categoryItems[previousCardId][challengeKey];
         
         // Check if sequence is correct based on direction
         let sequenceValid;
@@ -9484,7 +9646,6 @@ function revealNextLiveCard() {
     }
     
     // Update button text or show completion
-    const revealBtn = document.getElementById('revealNextBtn');
     if (liveValidationState.currentStep >= playerRanking.length) {
         setTimeout(() => {
             showLiveValidationComplete(true);
@@ -9500,7 +9661,8 @@ function updateLiveRevealDisplay() {
     
     const playerRanking = liveValidationState.playerRanking;
     const currentStep = liveValidationState.currentStep;
-    const categoryItems = window.GAME_DATA.categories[liveValidationState.currentValidation.category].items;
+    const currentGameData = getCurrentValidationDataset();
+    const categoryItems = currentGameData.categories[liveValidationState.currentValidation.category].items;
     const challenge = liveValidationState.currentChallenge;
     
     let html = '';
@@ -9518,7 +9680,8 @@ function updateLiveRevealDisplay() {
             statusClass = 'hidden';
         }
         
-        const value = isRevealed ? item[challenge.challenge] : '???';
+        const challengeKey = challenge.challenge || challenge.label?.replace('Rank by ', '');
+        const value = isRevealed ? item[challengeKey] : '???';
         const displayName = isRevealed ? item.name : '???';
         
         html += `
@@ -9536,6 +9699,72 @@ function updateLiveRevealDisplay() {
     revealList.innerHTML = html;
 }
 
+// Exciting animation functions for reveal
+function showCountdownSuspense() {
+    return new Promise((resolve) => {
+        const revealBtn = document.getElementById('revealNextBtn');
+        let count = 3;
+        
+        const countdown = () => {
+            if (count > 0) {
+                revealBtn.textContent = `🎲 ${count}...`;
+                revealBtn.style.transform = 'scale(1.1)';
+                revealBtn.style.background = '#ff6b6b';
+                
+                setTimeout(() => {
+                    revealBtn.style.transform = 'scale(1)';
+                    count--;
+                    setTimeout(countdown, 300);
+                }, 200);
+            } else {
+                revealBtn.textContent = '🎉 REVEAL!';
+                revealBtn.style.background = '#4caf50';
+                setTimeout(() => {
+                    revealBtn.style.background = '';
+                    resolve();
+                }, 300);
+            }
+        };
+        
+        countdown();
+    });
+}
+
+function updateLiveRevealDisplayWithAnimation() {
+    return new Promise((resolve) => {
+        // First, do the regular update
+        updateLiveRevealDisplay();
+        
+        // Then add the flip animation to the newly revealed card
+        const currentCardIndex = liveValidationState.currentStep - 1;
+        const card = document.getElementById(`liveCard_${currentCardIndex}`);
+        
+        if (card) {
+            // Add flip animation
+            card.style.transform = 'rotateY(180deg)';
+            card.style.transition = 'transform 0.6s';
+            
+            setTimeout(() => {
+                card.style.transform = 'rotateY(0deg)';
+                card.classList.add('just-revealed');
+                
+                // Add a glow effect
+                card.style.boxShadow = '0 0 20px rgba(76, 175, 80, 0.5)';
+                card.style.background = 'linear-gradient(45deg, #e8f5e8, #ffffff)';
+                
+                setTimeout(() => {
+                    card.style.boxShadow = '';
+                    card.style.background = '';
+                    card.classList.remove('just-revealed');
+                    resolve();
+                }, 1000);
+            }, 300);
+        } else {
+            resolve();
+        }
+    });
+}
+
 function markLiveCardStatus(cardIndex, isCorrect) {
     const card = document.getElementById(`liveCard_${cardIndex}`);
     const statusIcon = document.getElementById(`statusIcon_${cardIndex}`);
@@ -9543,13 +9772,71 @@ function markLiveCardStatus(cardIndex, isCorrect) {
     if (!card || !statusIcon) return;
     
     if (isCorrect) {
+        // Success animation
         card.classList.add('correct');
         statusIcon.innerHTML = '✅';
         statusIcon.style.color = '#4caf50';
+        
+        // Add success flash effect
+        card.style.background = '#4caf50';
+        card.style.color = 'white';
+        card.style.transform = 'scale(1.05)';
+        card.style.transition = 'all 0.3s ease';
+        
+        setTimeout(() => {
+            card.style.background = '#e8f5e8';
+            card.style.color = '';
+            card.style.transform = 'scale(1)';
+            
+            // Sparkle effect
+            addSparkleEffect(card);
+        }, 300);
+        
     } else {
+        // Failure animation  
         card.classList.add('wrong');
         statusIcon.innerHTML = '❌';
         statusIcon.style.color = '#f44336';
+        
+        // Add shake and red flash effect
+        card.style.background = '#f44336';
+        card.style.color = 'white';
+        card.style.animation = 'shake 0.5s ease-in-out';
+        
+        setTimeout(() => {
+            card.style.background = '#ffebee';
+            card.style.color = '';
+            card.style.animation = '';
+        }, 500);
+    }
+}
+
+function addSparkleEffect(card) {
+    // Create sparkles around the card
+    for (let i = 0; i < 5; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.innerHTML = '✨';
+        sparkle.style.position = 'absolute';
+        sparkle.style.fontSize = '16px';
+        sparkle.style.pointerEvents = 'none';
+        sparkle.style.zIndex = '1000';
+        
+        // Random position around the card
+        const rect = card.getBoundingClientRect();
+        sparkle.style.left = (rect.left + Math.random() * rect.width) + 'px';
+        sparkle.style.top = (rect.top + Math.random() * rect.height) + 'px';
+        
+        document.body.appendChild(sparkle);
+        
+        // Animate sparkle  
+        sparkle.style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+        sparkle.style.transform = 'translateY(-30px) scale(0.5)';
+        sparkle.style.opacity = '0';
+        
+        // Remove sparkle after animation
+        setTimeout(() => {
+            document.body.removeChild(sparkle);
+        }, 1000);
     }
 }
 
@@ -9623,6 +9910,64 @@ function createFireworkBurst(container) {
     }
 }
 
+function playVictorySound() {
+    // Create a simple victory sound using Web Audio API
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Victory chord progression
+        const frequencies = [261.63, 329.63, 392.00]; // C, E, G major chord
+        
+        frequencies.forEach((freq, index) => {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime + index * 0.1);
+            oscillator.stop(audioContext.currentTime + 0.5 + index * 0.1);
+        });
+    } catch (error) {
+        console.log('Audio not supported, skipping victory sound');
+    }
+}
+
+function createConfettiRain() {
+    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8'];
+    
+    for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.innerHTML = ['🎉', '🎊', '⭐', '✨', '🌟'][Math.floor(Math.random() * 5)];
+            confetti.style.cssText = `
+                position: fixed;
+                top: -50px;
+                left: ${Math.random() * window.innerWidth}px;
+                font-size: ${Math.random() * 20 + 15}px;
+                pointer-events: none;
+                z-index: 10001;
+                animation: confetti-fall ${Math.random() * 2 + 3}s linear forwards;
+            `;
+            
+            document.body.appendChild(confetti);
+            
+            // Remove after animation
+            setTimeout(() => {
+                if (confetti.parentNode) {
+                    confetti.parentNode.removeChild(confetti);
+                }
+            }, 5000);
+        }, i * 50);
+    }
+}
+
 function showLiveValidationComplete(success, failedAtStep = null, currentValue = null, previousValue = null) {
     const statusDiv = document.getElementById('liveValidationStatus');
     const revealBtn = document.getElementById('revealNextBtn');
@@ -9640,18 +9985,28 @@ function showLiveValidationComplete(success, failedAtStep = null, currentValue =
         }
         
         statusDiv.innerHTML = `
-            <div class="validation-success">
-                <h3>🎉 SUCCESS!</h3>
-                <p><strong>${liveValidationState.currentValidation.bidderName}</strong> successfully ranked all ${liveValidationState.playerRanking.length} cards in correct sequential order!</p>
-                <p>The ranking follows the proper ${isAscending ? 'ascending' : 'descending'} sequence for this challenge.</p>
+            <div class="validation-success" style="text-align: center; padding: 20px; background: linear-gradient(45deg, #4caf50, #81c784); color: white; border-radius: 10px; margin: 10px 0;">
+                <h3 style="font-size: 24px; margin-bottom: 10px;">🎉 PERFECT RANKING! 🎉</h3>
+                <p style="font-size: 18px; margin-bottom: 10px;"><strong>${liveValidationState.currentValidation.bidderName}</strong> nailed all ${liveValidationState.playerRanking.length} cards!</p>
+                <p style="font-size: 16px; margin-bottom: 15px;">Flawless ${isAscending ? 'ascending' : 'descending'} sequence! 🏆</p>
+                <div style="font-size: 30px; animation: bounce 1s infinite;">🥇 CHAMPION 🥇</div>
             </div>
         `;
         revealBtn.style.display = 'none';
         
+        // Add celebration effects
+        statusDiv.style.animation = 'successFlash 1s ease-in-out';
+        
         // Show fireworks celebration!
         setTimeout(() => {
             showFireworks();
+            playVictorySound();
         }, 500);
+        
+        // Add confetti rain
+        setTimeout(() => {
+            createConfettiRain();
+        }, 800);
     } else {
         const direction = isAscending ? 'higher' : 'lower';
         statusDiv.innerHTML = `
@@ -9697,7 +10052,8 @@ function showLiveValidationResults() {
         const playerToken = liveValidationState.playerRanking[i];
         const correctToken = correctOrder[i];
         const isCorrect = playerToken === correctToken;
-        const categoryItems = window.GAME_DATA.categories[liveValidationState.currentValidation.category].items;
+        const currentGameData = getCurrentValidationDataset();
+        const categoryItems = currentGameData.categories[liveValidationState.currentValidation.category].items;
 
         html += `
             <div style="padding: 15px; border-radius: 8px; border: 2px solid ${isCorrect ? '#4caf50' : '#f44336'}; background: ${isCorrect ? '#e8f5e8' : '#ffebee'};">
@@ -9747,8 +10103,9 @@ function showLiveValidationResults() {
 
 function getLiveCorrectOrder() {
     // Get the correct ranking data for this challenge
-    const challengeKey = liveValidationState.currentChallenge.challenge;
-    const categoryItems = window.GAME_DATA.categories[liveValidationState.currentValidation.category].items;
+    const challengeKey = liveValidationState.currentChallenge.challenge || liveValidationState.currentChallenge.label?.replace('Rank by ', '');
+    const currentGameData = getCurrentValidationDataset();
+    const categoryItems = currentGameData.categories[liveValidationState.currentValidation.category].items;
     
     // Extract all items with their values for this challenge
     const itemsWithValues = Object.keys(categoryItems).map(code => ({
@@ -9776,14 +10133,18 @@ function resetLiveValidation() {
         currentValidation: null,
         currentChallenge: null,
         playerRanking: [],
-        currentStep: 0
+        currentStep: 0,
+        masterDataset: null,
+        currentDataset: 'production'
     };
     
     // Clear form
     document.getElementById('liveValidationCategory').value = '';
+    document.getElementById('liveChallengeSelect').innerHTML = '<option value="">Select a challenge...</option>';
     document.getElementById('liveChalllengeNumber').value = '';
     document.getElementById('liveBidAmount').value = '';
-    document.getElementById('liveBidderName').value = '';
+    document.getElementById('liveValidationDataset').value = 'production';
+    document.getElementById('datasetSelectorDiv').style.display = 'none';
     
     // Reset output
     document.getElementById('liveValidationResults').innerHTML = '';

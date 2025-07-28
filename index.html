@@ -785,31 +785,46 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
                             <div>
                                 <label style="display: block; margin-bottom: 5px; font-weight: bold;">Category:</label>
-                                <select id="liveValidationCategory" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <select id="liveValidationCategory" onchange="toggleDatasetSelector(); populateChallenges()" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                                     <option value="">Select Category</option>
+                                    <option value="companies">Companies</option>
                                     <option value="countries">Countries</option>
                                     <option value="movies">Movies</option>
                                     <option value="sports">Sports</option>
-                                    <option value="companies">Companies</option>
+                                </select>
+                            </div>
+                            
+                            <div id="datasetSelectorDiv" style="display: none;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: bold;">📊 Dataset:</label>
+                                <select id="liveValidationDataset" onchange="populateChallenges()" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="production">🎮 Production (40 countries, 32 challenges)</option>
+                                    <option value="master">📚 Master (200 countries, 146 challenges)</option>
                                 </select>
                             </div>
                             
                             <div>
-                                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Challenge Number:</label>
-                                <input type="text" id="liveChalllengeNumber" placeholder="e.g., 001, 017" maxlength="3" 
-                                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Challenge:</label>
+                                <select id="liveChallengeSelect" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">Select a challenge...</option>
+                                </select>
+                                <input type="hidden" id="liveChalllengeNumber" />
                             </div>
                             
                             <div>
                                 <label style="display: block; margin-bottom: 5px; font-weight: bold;">Winning Bid:</label>
-                                <input type="number" id="liveBidAmount" min="1" max="10" placeholder="1-10"
-                                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                            </div>
-                            
-                            <div>
-                                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Bidder Name:</label>
-                                <input type="text" id="liveBidderName" placeholder="Player name"
-                                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                <select id="liveBidAmount" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">Select bid...</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
                             </div>
                         </div>
                         
@@ -831,5 +846,156 @@
     <!-- IMPORTANT: Load data.js FIRST, then game.js -->
  <script src="data.js?v=44"></script>
     <script src="game.js?v=36"></script>
+    
+    <script>
+        // Ensure functions are available immediately
+        function toggleDatasetSelector() {
+            const category = document.getElementById('liveValidationCategory').value;
+            const datasetDiv = document.getElementById('datasetSelectorDiv');
+            
+            if (category === 'countries') {
+                datasetDiv.style.display = 'block';
+            } else {
+                datasetDiv.style.display = 'none';
+            }
+        }
+        
+        // Load master dataset for challenge population
+        async function loadMasterDatasetForChallenges() {
+            if (window.masterDatasetCache) {
+                return window.masterDatasetCache;
+            }
+            
+            try {
+                const response = await fetch('master_country_dataset_FINAL_2025-07-26T22-14-26.json');
+                if (!response.ok) throw new Error('Failed to load master dataset');
+                
+                const masterData = await response.json();
+                
+                // Convert to game data format
+                const gameData = {
+                    categories: {
+                        countries: {
+                            name: "Countries",
+                            icon: "🌍",
+                            items: {},
+                            prompts: []
+                        }
+                    }
+                };
+                
+                // Convert countries to game format
+                Object.entries(masterData.countries).forEach(([countryCode, countryData]) => {
+                    gameData.categories.countries.items[countryCode] = {
+                        name: countryData.name,
+                        code: countryCode,
+                        ...Object.fromEntries(
+                            Object.entries(countryData.categories || {}).map(([key, data]) => [
+                                key, data.value || data.rawValue
+                            ])
+                        )
+                    };
+                });
+                
+                // Add prompts for available challenges
+                Object.keys(masterData.categoryIndex).forEach((challenge, index) => {
+                    gameData.categories.countries.prompts.push({
+                        challenge: challenge,
+                        label: `Rank by ${challenge}`
+                    });
+                });
+                
+                // Cache the result and sync with validation state
+                window.masterDatasetCache = gameData;
+                if (typeof liveValidationState !== 'undefined') {
+                    liveValidationState.masterDataset = gameData;
+                }
+                return gameData;
+                
+            } catch (error) {
+                console.error('Failed to load master dataset:', error);
+                throw error;
+            }
+        }
+        
+        async function populateChallenges() {
+            const category = document.getElementById('liveValidationCategory').value;
+            const challengeSelect = document.getElementById('liveChallengeSelect');
+            const challengeNumberInput = document.getElementById('liveChalllengeNumber');
+            
+            // Clear current options
+            challengeSelect.innerHTML = '<option value="">Select a challenge...</option>';
+            challengeNumberInput.value = '';
+            
+            if (!category) return;
+            
+            let gameData = window.GAME_DATA;
+            
+            // Load master dataset if needed for countries
+            if (category === 'countries') {
+                const selectedDataset = document.getElementById('liveValidationDataset').value;
+                if (selectedDataset === 'master') {
+                    try {
+                        gameData = await loadMasterDatasetForChallenges();
+                        if (!gameData) {
+                            alert('Failed to load master dataset');
+                            return;
+                        }
+                        // Sync with validation state
+                        if (typeof liveValidationState !== 'undefined') {
+                            liveValidationState.currentDataset = 'master';
+                        }
+                    } catch (error) {
+                        console.error('Failed to load master dataset:', error);
+                        alert('Failed to load master dataset challenges');
+                        return;
+                    }
+                } else {
+                    // Set to production dataset
+                    if (typeof liveValidationState !== 'undefined') {
+                        liveValidationState.currentDataset = 'production';
+                    }
+                }
+            }
+            
+            // Get challenges for the selected category
+            if (gameData && gameData.categories && gameData.categories[category]) {
+                const challenges = gameData.categories[category].prompts || [];
+                
+                challenges.forEach((challenge, index) => {
+                    const challengeNumber = String(index + 1).padStart(3, '0');
+                    const option = document.createElement('option');
+                    option.value = challengeNumber;
+                    option.textContent = `${challengeNumber} - ${extractChallengeTitle(challenge.label || challenge.challenge)}`;
+                    challengeSelect.appendChild(option);
+                });
+                
+                console.log(`Master dataset: Loaded ${challenges.length} challenges (001-${String(challenges.length).padStart(3, '0')})`);
+                
+                console.log(`Loaded ${challenges.length} challenges for ${category}`);
+            }
+            
+            // Update challenge number when selection changes
+            challengeSelect.onchange = function() {
+                challengeNumberInput.value = this.value;
+            };
+        }
+        
+        function extractChallengeTitle(label) {
+            if (!label) return 'Unknown Challenge';
+            
+            // Remove HTML tags and extract meaningful title
+            const cleanLabel = label.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            
+            // Try to extract the main question/title
+            const lines = cleanLabel.split(/\n|\r/).filter(line => line.trim());
+            if (lines.length > 0) {
+                // Use the first substantial line
+                return lines[0].substring(0, 50) + (lines[0].length > 50 ? '...' : '');
+            }
+            
+            return cleanLabel.substring(0, 50) + (cleanLabel.length > 50 ? '...' : '');
+        }
+    </script>
 </body>
 </html>
