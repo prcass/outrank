@@ -1,0 +1,51 @@
+{
+  "timestamp": "2025-07-28T20:13:22.176Z",
+  "files": [
+    {
+      "original": "companies-production.json",
+      "originalSize": 74225,
+      "minified": "companies-production.min.json",
+      "compressed": "companies-production.min.json.gz",
+      "hasChunks": false
+    },
+    {
+      "original": "core.json",
+      "originalSize": 512,
+      "minified": "core.min.json",
+      "compressed": "core.min.json.gz",
+      "hasChunks": false
+    },
+    {
+      "original": "countries-40.json",
+      "originalSize": 3930,
+      "minified": "countries-40.min.json",
+      "compressed": "countries-40.min.json.gz",
+      "hasChunks": false
+    },
+    {
+      "original": "countries-production.json",
+      "originalSize": 66443,
+      "minified": "countries-production.min.json",
+      "compressed": "countries-production.min.json.gz",
+      "hasChunks": false
+    },
+    {
+      "original": "movies-production.json",
+      "originalSize": 146,
+      "minified": "movies-production.min.json",
+      "compressed": "movies-production.min.json.gz",
+      "hasChunks": false
+    },
+    {
+      "original": "sports-production.json",
+      "originalSize": 468213,
+      "minified": "sports-production.min.json",
+      "compressed": "sports-production.min.json.gz",
+      "hasChunks": true
+    }
+  ],
+  "totalSavings": {
+    "minification": 22,
+    "compression": 76
+  }
+}

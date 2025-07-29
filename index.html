@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#1a73e8">
     <!-- Content Security Policy for enhanced security -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self'; 
@@ -843,11 +847,59 @@
         </div>
     </div>
     
-    <!-- IMPORTANT: Load data.js FIRST, then game.js -->
- <script src="data.js?v=44"></script>
+    <!-- LAZY LOADING SYSTEM: Load core data structure, then lazy loader, then game.js -->
+    <script src="data-core.js?v=1"></script>
+    <script src="data-loader.js?v=1"></script>
+    <script src="loading-ui.js?v=1"></script>
     <script src="game.js?v=36"></script>
     
     <script>
+        // Mobile touch optimizations to eliminate 300ms delay
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add mobile-specific event handling
+            if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+                // Apply touch-friendly styles to all interactive elements
+                const interactiveElements = document.querySelectorAll('button, .btn, .card, .card-item, .token-item, input, select');
+                interactiveElements.forEach(function(element) {
+                    element.style.touchAction = 'manipulation';
+                    element.style.webkitTapHighlightColor = 'transparent';
+                });
+                
+                // Prevent double-tap zoom on buttons
+                let lastTouchEnd = 0;
+                document.addEventListener('touchend', function(event) {
+                    const now = (new Date()).getTime();
+                    if (now - lastTouchEnd <= 300) {
+                        event.preventDefault();
+                    }
+                    lastTouchEnd = now;
+                }, false);
+                
+                // Add visual feedback for touch interactions
+                document.addEventListener('touchstart', function(e) {
+                    if (e.target.matches('button, .btn, .card, .card-item, .token-item')) {
+                        e.target.style.transform = 'scale(0.98)';
+                        e.target.style.opacity = '0.8';
+                    }
+                }, {passive: true});
+                
+                document.addEventListener('touchend', function(e) {
+                    if (e.target.matches('button, .btn, .card, .card-item, .token-item')) {
+                        setTimeout(function() {
+                            e.target.style.transform = '';
+                            e.target.style.opacity = '';
+                        }, 100);
+                    }
+                }, {passive: true});
+            }
+            
+            // Optimize viewport for mobile devices
+            const viewport = document.querySelector('meta[name="viewport"]');
+            if (viewport && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no');
+            }
+        });
+        
         // Ensure functions are available immediately
         function toggleDatasetSelector() {
             const category = document.getElementById('liveValidationCategory').value;

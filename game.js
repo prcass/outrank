@@ -149,6 +149,396 @@ function sanitizeHTML(htmlContent) {
 }
 
 /**
+ * Optimized Animation System for 60fps Performance
+ * Replaces setTimeout chains with requestAnimationFrame for smooth animations
+ * Provides GPU-accelerated animations and proper cleanup
+ */
+var AnimationSystem = {
+    // Track active animations for cleanup
+    activeAnimations: new Set(),
+    
+    // Utility to run frame-synced animations
+    scheduleFrame: function(callback) {
+        const animationId = requestAnimationFrame(callback);
+        this.activeAnimations.add(animationId);
+        return animationId;
+    },
+    
+    // Schedule callback after specified number of frames (16.67ms per frame at 60fps)
+    scheduleFrameDelay: function(callback, frames = 1) {
+        let currentFrame = 0;
+        const animate = () => {
+            currentFrame++;
+            if (currentFrame >= frames) {
+                callback();
+            } else {
+                this.scheduleFrame(animate);
+            }
+        };
+        this.scheduleFrame(animate);
+    },
+    
+    // Clean up all active animations
+    cleanup: function() {
+        this.activeAnimations.forEach(id => cancelAnimationFrame(id));
+        this.activeAnimations.clear();
+    },
+    
+    // Create optimized promise-based animation delays
+    delay: function(ms) {
+        return new Promise(resolve => {
+            const frames = Math.ceil(ms / 16.67); // Convert ms to frames
+            this.scheduleFrameDelay(resolve, frames);
+        });
+    },
+    
+    // Optimized element transformation with GPU acceleration
+    setTransform: function(element, transform) {
+        if (!element) return;
+        element.classList.add('animating');
+        element.style.willChange = 'transform';
+        element.style.transform = transform.includes('translate3d') ? transform : transform + ' translateZ(0)';
+    },
+    
+    // Clean up element after animation
+    cleanupElement: function(element) {
+        if (!element) return;
+        this.scheduleFrame(() => {
+            element.style.willChange = 'auto';
+            element.classList.remove('animating');
+        });
+    },
+    
+    // Optimized countdown animation
+    animateCountdown: function(element, options = {}) {
+        const { 
+            startCount = 3, 
+            onCount = () => {}, 
+            onComplete = () => {},
+            scaleAnimation = true,
+            colorAnimation = true 
+        } = options;
+        
+        return new Promise((resolve) => {
+            let count = startCount;
+            
+            const performCount = () => {
+                if (count > 0) {
+                    onCount(count);
+                    
+                    if (scaleAnimation) {
+                        this.setTransform(element, 'scale3d(1.1, 1.1, 1)');
+                    }
+                    if (colorAnimation) {
+                        element.style.background = '#ff6b6b';
+                    }
+                    
+                    // Return to normal after 12 frames (~200ms)
+                    this.scheduleFrameDelay(() => {
+                        if (scaleAnimation) {
+                            this.setTransform(element, 'scale3d(1, 1, 1)');
+                        }
+                        count--;
+                        // Next count after 18 frames (~300ms)
+                        this.scheduleFrameDelay(performCount, 18);
+                    }, 12);
+                } else {
+                    onComplete();
+                    if (colorAnimation) {
+                        element.style.background = '#4caf50';
+                        this.scheduleFrameDelay(() => {
+                            element.style.background = '';
+                            this.cleanupElement(element);
+                            resolve();
+                        }, 18);
+                    } else {
+                        this.cleanupElement(element);
+                        resolve();
+                    }
+                }
+            };
+            
+            performCount();
+        });
+    },
+    
+    // Optimized card flip animation
+    animateCardFlip: function(element, onFlipComplete = () => {}) {
+        if (!element) return Promise.resolve();
+        
+        return new Promise((resolve) => {
+            element.style.willChange = 'transform';
+            this.setTransform(element, 'rotateY(180deg)');
+            element.style.transition = 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            
+            // Flip back after 18 frames (~300ms)
+            this.scheduleFrameDelay(() => {
+                this.setTransform(element, 'rotateY(0deg)');
+                element.classList.add('just-revealed');
+                
+                // Add glow effect
+                element.style.boxShadow = '0 0 20px rgba(76, 175, 80, 0.5)';
+                element.style.background = 'linear-gradient(45deg, #e8f5e8, #ffffff)';
+                
+                onFlipComplete();
+                
+                // Clean up after 60 frames (~1000ms)
+                this.scheduleFrameDelay(() => {
+                    element.style.boxShadow = '';
+                    element.style.background = '';
+                    element.style.transition = '';
+                    element.classList.remove('just-revealed');
+                    this.cleanupElement(element);
+                    resolve();
+                }, 60);
+            }, 18);
+        });
+    },
+    
+    // Optimized status animation (success/failure)
+    animateStatus: function(card, statusIcon, isCorrect) {
+        if (!card || !statusIcon) return Promise.resolve();
+        
+        return new Promise((resolve) => {
+            card.style.willChange = 'transform, background-color';
+            
+            if (isCorrect) {
+                card.classList.add('correct');
+                statusIcon.innerHTML = '✅';
+                statusIcon.style.color = '#4caf50';
+                
+                // Success flash
+                card.style.background = '#4caf50';
+                card.style.color = 'white';
+                this.setTransform(card, 'scale3d(1.05, 1.05, 1)');
+                card.style.transition = 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                
+                this.scheduleFrameDelay(() => {
+                    card.style.background = '#e8f5e8';
+                    card.style.color = '';
+                    this.setTransform(card, 'scale3d(1, 1, 1)');
+                    
+                    // Add sparkle effect
+                    this.createSparkleEffect(card);
+                    
+                    this.scheduleFrameDelay(() => {
+                        card.style.transition = '';
+                        this.cleanupElement(card);
+                        resolve();
+                    }, 18);
+                }, 18);
+                
+            } else {
+                card.classList.add('wrong');
+                statusIcon.innerHTML = '❌';
+                statusIcon.style.color = '#f44336';
+                
+                // Failure flash and shake
+                card.style.background = '#f44336';
+                card.style.color = 'white';
+                card.style.animation = 'shake 0.5s ease-in-out';
+                
+                this.scheduleFrameDelay(() => {
+                    card.style.background = '#ffebee';
+                    card.style.color = '';
+                    card.style.animation = '';
+                    this.cleanupElement(card);
+                    resolve();
+                }, 30);
+            }
+        });
+    },
+    
+    // Optimized sparkle effect with GPU acceleration
+    createSparkleEffect: function(targetElement) {
+        if (!targetElement) return;
+        
+        const rect = targetElement.getBoundingClientRect();
+        const sparkleCount = 5;
+        const sparkles = [];
+        
+        for (let i = 0; i < sparkleCount; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.innerHTML = '✨';
+            sparkle.style.cssText = `
+                position: fixed;
+                font-size: 16px;
+                pointer-events: none;
+                z-index: 1000;
+                will-change: transform, opacity;
+                left: ${rect.left + Math.random() * rect.width}px;
+                top: ${rect.top + Math.random() * rect.height}px;
+            `;
+            
+            document.body.appendChild(sparkle);
+            sparkles.push(sparkle);
+            
+            // Animate with GPU acceleration
+            this.setTransform(sparkle, 'translate3d(0, -30px, 0) scale3d(0.5, 0.5, 1)');
+            sparkle.style.opacity = '0';
+            sparkle.style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+        }
+        
+        // Clean up sparkles after animation
+        this.scheduleFrameDelay(() => {
+            sparkles.forEach(sparkle => {
+                if (sparkle.parentNode) {
+                    sparkle.parentNode.removeChild(sparkle);
+                }
+            });
+        }, 60);
+    },
+    
+    // Batch DOM operations to prevent layout thrashing
+    batchDOMUpdates: function(updates) {
+        // Use requestAnimationFrame to batch DOM reads and writes
+        this.scheduleFrame(() => {
+            // Batch all DOM reads first
+            const measurements = [];
+            updates.forEach((update, index) => {
+                if (update.read) {
+                    measurements[index] = update.read();
+                }
+            });
+            
+            // Then batch all DOM writes
+            this.scheduleFrame(() => {
+                updates.forEach((update, index) => {
+                    if (update.write) {
+                        update.write(measurements[index]);
+                    }
+                });
+            });
+        });
+    },
+    
+    // Optimized fireworks animation with GPU acceleration
+    createFireworks: function() {
+        const fireworksContainer = document.createElement('div');
+        fireworksContainer.id = 'fireworks-container';
+        fireworksContainer.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10000;
+            will-change: contents;
+        `;
+        document.body.appendChild(fireworksContainer);
+        
+        // Create multiple firework bursts using frame timing
+        for (let i = 0; i < 6; i++) {
+            this.scheduleFrameDelay(() => {
+                this.createFireworkBurst(fireworksContainer);
+            }, i * 18); // 18 frames = ~300ms at 60fps
+        }
+        
+        // Remove fireworks after animation (180 frames = ~3000ms)
+        this.scheduleFrameDelay(() => {
+            if (fireworksContainer.parentNode) {
+                fireworksContainer.parentNode.removeChild(fireworksContainer);
+            }
+        }, 180);
+        
+        return fireworksContainer;
+    },
+    
+    // Optimized firework burst with GPU-accelerated particles
+    createFireworkBurst: function(container) {
+        const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8'];
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * (window.innerHeight * 0.6) + (window.innerHeight * 0.2);
+        
+        // Create 12 particles per burst
+        const particles = [];
+        for (let i = 0; i < 12; i++) {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                background: ${colors[Math.floor(Math.random() * colors.length)]};
+                border-radius: 50%;
+                left: ${x}px;
+                top: ${y}px;
+                will-change: transform, opacity;
+            `;
+            
+            container.appendChild(particle);
+            particles.push(particle);
+            
+            // Calculate particle trajectory
+            const angle = (i / 12) * Math.PI * 2;
+            const velocity = 100 + Math.random() * 100;
+            const deltaX = Math.cos(angle) * velocity;
+            const deltaY = Math.sin(angle) * velocity;
+            
+            // Use Web Animations API with GPU acceleration
+            const animation = particle.animate([
+                { 
+                    transform: 'translate3d(0, 0, 0) scale3d(1, 1, 1)', 
+                    opacity: 1 
+                },
+                { 
+                    transform: `translate3d(${deltaX}px, ${deltaY}px, 0) scale3d(0, 0, 1)`, 
+                    opacity: 0 
+                }
+            ], {
+                duration: 1000 + Math.random() * 500,
+                easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+            });
+            
+            // Clean up particle when animation completes
+            animation.onfinish = () => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            };
+        }
+    },
+    
+    // Optimized confetti rain with GPU acceleration
+    createConfettiRain: function() {
+        const confettiElements = ['🎉', '🎊', '⭐', '✨', '🌟'];
+        const confettiPieces = [];
+        
+        for (let i = 0; i < 50; i++) {
+            this.scheduleFrameDelay(() => {
+                const confetti = document.createElement('div');
+                confetti.innerHTML = confettiElements[Math.floor(Math.random() * confettiElements.length)];
+                confetti.style.cssText = `
+                    position: fixed;
+                    top: -50px;
+                    left: ${Math.random() * window.innerWidth}px;
+                    font-size: ${Math.random() * 20 + 15}px;
+                    pointer-events: none;
+                    z-index: 10001;
+                    will-change: transform, opacity;
+                `;
+                
+                document.body.appendChild(confetti);
+                confettiPieces.push(confetti);
+                
+                // Use CSS animation with GPU acceleration
+                const fallDuration = Math.random() * 2 + 3;
+                confetti.style.animation = `confetti-fall ${fallDuration}s linear forwards`;
+                
+                // Remove after animation (fallDuration * 60 frames per second)
+                this.scheduleFrameDelay(() => {
+                    if (confetti.parentNode) {
+                        confetti.parentNode.removeChild(confetti);
+                    }
+                }, Math.ceil(fallDuration * 60));
+            }, i * 3); // 3 frames = ~50ms stagger between confetti pieces
+        }
+        
+        return confettiPieces;
+    }
+};
+
+/**
  * Clean up any visible trusted template markers from the page
  */
 function cleanupAllTemplateMarkers() {
@@ -507,7 +897,7 @@ var InputValidator = {
         var errors = [];
         var validatedData = {};
         
-        var screen = document.getElementById(screenId);
+        var screen = DOMCache.get(screenId);
         if (!screen) {
             return {isValid: false, errors: ['Screen not found'], validatedData: {}};
         }
@@ -706,6 +1096,10 @@ var eventListenerManager = {
     listeners: [],
     /** @type {Array<number>} Array of tracked timeout IDs */
     timeouts: [],
+    /** @type {number} Maximum number of listeners to track */
+    maxListeners: 500,
+    /** @type {number} Maximum number of timeouts to track */
+    maxTimeouts: 200,
     
     /**
      * Add an event listener with automatic cleanup tracking
@@ -724,12 +1118,30 @@ var eventListenerManager = {
             
             element.addEventListener(event, handler, options);
             
-            // Track for cleanup
+            // Track for cleanup with bounds checking
+            if (this.listeners.length >= this.maxListeners) {
+                // Remove oldest listener that's no longer in DOM
+                this.cleanupStaleListeners();
+                
+                // If still at limit after cleanup, remove oldest
+                if (this.listeners.length >= this.maxListeners) {
+                    const oldListener = this.listeners.shift();
+                    if (oldListener && oldListener.element && oldListener.element.removeEventListener) {
+                        try {
+                            oldListener.element.removeEventListener(oldListener.event, oldListener.handler);
+                        } catch (e) {
+                            safeConsoleLog('Error removing old listener during bounds check:', e);
+                        }
+                    }
+                }
+            }
+            
             this.listeners.push({
                 element: element,
                 event: event,
                 handler: handler,
-                options: options
+                options: options,
+                timestamp: Date.now() // Add timestamp for cleanup
             });
             
             return true;
@@ -813,9 +1225,16 @@ var eventListenerManager = {
         }
     },
     
-    // Add timeout with tracking
+    // Add timeout with tracking and bounds checking
     addTimeout: function(callback, delay) {
         try {
+            // Clean up completed timeouts if at limit
+            if (this.timeouts.length >= this.maxTimeouts) {
+                // Clear oldest timeout
+                const oldTimeout = this.timeouts.shift();
+                clearTimeout(oldTimeout);
+            }
+            
             var timeoutId = setTimeout(callback, delay);
             this.timeouts.push(timeoutId);
             return timeoutId;
@@ -837,8 +1256,203 @@ var eventListenerManager = {
             safeConsoleLog('Error removing timeout:', error);
             return false;
         }
+    },
+    
+    /**
+     * Clean up stale listeners that are no longer in the DOM
+     * @returns {number} Number of stale listeners removed
+     */
+    cleanupStaleListeners: function() {
+        try {
+            const initialCount = this.listeners.length;
+            this.listeners = this.listeners.filter(function(listener) {
+                // Check if element is still in DOM
+                if (!listener.element || !document.contains(listener.element)) {
+                    // Try to remove the listener anyway (safe to do)
+                    try {
+                        if (listener.element && listener.element.removeEventListener) {
+                            listener.element.removeEventListener(listener.event, listener.handler);
+                        }
+                    } catch (e) {
+                        // Ignore errors when cleaning up stale listeners
+                    }
+                    return false; // Remove from tracking
+                }
+                return true; // Keep in tracking
+            });
+            
+            const removedCount = initialCount - this.listeners.length;
+            if (removedCount > 0) {
+                safeConsoleLog('Cleaned up', removedCount, 'stale event listeners');
+            }
+            return removedCount;
+        } catch (error) {
+            safeConsoleLog('Error cleaning up stale listeners:', error);
+            return 0;
+        }
+    },
+    
+    /**
+     * Get statistics about tracked listeners and timeouts
+     * @returns {Object} Statistics object
+     */
+    getStats: function() {
+        return {
+            listenersCount: this.listeners.length,
+            timeoutsCount: this.timeouts.length,
+            maxListeners: this.maxListeners,
+            maxTimeouts: this.maxTimeouts
+        };
     }
 };
+
+/**
+ * Periodic cleanup function to prevent memory leaks during long sessions
+ */
+function performPeriodicCleanup() {
+    try {
+        // Clean up stale listeners
+        const staleListeners = eventListenerManager.cleanupStaleListeners();
+        
+        // Clean up DOM cache
+        if (DOMCache && DOMCache.validateCache) {
+            DOMCache.validateCache();
+        }
+        
+        // Clean up GameState listeners
+        if (GameState && GameState.cleanupStaleListeners) {
+            GameState.cleanupStaleListeners();
+        }
+        
+        // Clean up automated test state if needed
+        if (window.automatedTestState && window.automatedTestState.timeouts.length > 50) {
+            const oldTimeoutsCount = window.automatedTestState.timeouts.length;
+            // Clear timeouts older than 5 minutes that might be stale
+            const now = Date.now();
+            window.automatedTestState.timeouts = window.automatedTestState.timeouts.filter(function(timeoutId) {
+                // Keep recent timeouts (this is a simple heuristic)
+                return typeof timeoutId === 'number' && timeoutId > (now - 300000);
+            });
+            
+            const cleanedTimeouts = oldTimeoutsCount - window.automatedTestState.timeouts.length;
+            if (cleanedTimeouts > 0) {
+                safeConsoleLog('Cleaned up', cleanedTimeouts, 'old automated test timeouts');
+            }
+        }
+        
+        // Log cleanup summary
+        var stats = {
+            staleListeners: staleListeners,
+            eventManagerStats: eventListenerManager.getStats(),
+            domCacheStats: DOMCache.getStats(),
+            gameStateStats: GameState.getListenerStats()
+        };
+        
+        safeConsoleLog('Periodic cleanup completed:', JSON.stringify(stats, null, 2));
+    } catch (error) {
+        safeConsoleLog('Error during periodic cleanup:', error);
+    }
+}
+
+/**
+ * Comprehensive cleanup function for game resets and session ends
+ */
+function performComprehensiveCleanup() {
+    try {
+        safeConsoleLog('Starting comprehensive cleanup...');
+        
+        // Clean up event listeners
+        if (eventListenerManager && eventListenerManager.cleanup) {
+            eventListenerManager.cleanup();
+        }
+        
+        // Clean up DOM cache
+        if (DOMCache && DOMCache.clear) {
+            DOMCache.clear();
+        }
+        
+        // Clean up GameState
+        if (GameState && GameState.reset) {
+            GameState.reset();
+        }
+        
+        // Clean up automated test state
+        if (window.automatedTestState) {
+            if (window.automatedTestState.clearAllTimeouts) {
+                window.automatedTestState.clearAllTimeouts();
+            }
+            window.automatedTestState = null;
+        }
+        
+        // Clean up automated test results
+        if (window.automatedTestResults && window.automatedTestResults.cleanup) {
+            window.automatedTestResults.cleanup();
+        }
+        
+        // Clean up console history
+        if (window.consoleLogHistory) {
+            window.consoleLogHistory.length = 0;
+        }
+        
+        safeConsoleLog('Comprehensive cleanup completed successfully');
+        return true;
+    } catch (error) {
+        safeConsoleLog('Error during comprehensive cleanup:', error);
+        return false;
+    }
+
+// Schedule periodic cleanup every 5 minutes during active sessions
+if (typeof window !== 'undefined') {
+    setInterval(performPeriodicCleanup, 300000); // 5 minutes
+}
+
+/**
+ * Memory leak prevention for new game starts
+ */
+function prepareForNewGame() {
+    try {
+        safeConsoleLog('Preparing for new game - cleaning up previous session...');
+        
+        // Full cleanup
+        performComprehensiveCleanup();
+        
+        // Additional cleanup for new game preparation
+        if (window.globalCardStats) {
+            window.globalCardStats = {
+                totalCardsRanked: 0,
+                totalCardsOwned: 0,
+                totalCardsInPlay: 0
+            };
+        }
+        
+        // Clear any remaining global arrays that might accumulate
+        if (window.categoryRemovedCards) {
+            Object.keys(window.categoryRemovedCards).forEach(function(category) {
+                window.categoryRemovedCards[category] = [];
+            });
+        }
+        
+        if (window.lastRoundNewlyOwnedCards) {
+            window.lastRoundNewlyOwnedCards = [];
+        }
+        
+        // Force garbage collection hint (if available)
+        if (window.gc && typeof window.gc === 'function') {
+            try {
+                window.gc();
+                safeConsoleLog('Manual garbage collection triggered');
+            } catch (gcError) {
+                // Ignore gc errors - not always available
+            }
+        }
+        
+        safeConsoleLog('New game preparation completed');
+        return true;
+    } catch (error) {
+        safeConsoleLog('Error preparing for new game:', error);
+        return false;
+    }
+}
 
 /**
  * Centralized State Management System
@@ -968,6 +1582,8 @@ var GameState = {
     
     // State change listeners
     listeners: {},
+    // Maximum listeners per path to prevent memory leaks
+    maxListenersPerPath: 20,
     
     // Subscribe to state changes
     subscribe: function(path, callback) {
@@ -975,11 +1591,94 @@ var GameState = {
             if (!this.listeners[path]) {
                 this.listeners[path] = [];
             }
-            this.listeners[path].push(callback);
-            return true;
+            
+            // Prevent memory leaks by limiting listeners per path
+            if (this.listeners[path].length >= this.maxListenersPerPath) {
+                safeConsoleLog('Warning: Too many listeners for path:', path, 'removing oldest');
+                this.listeners[path].shift(); // Remove oldest listener
+            }
+            
+            this.listeners[path].push({
+                callback: callback,
+                timestamp: Date.now()
+            });
+            
+            return callback; // Return callback for use in unsubscribe
         } catch (error) {
             safeConsoleLog('Error subscribing to state:', error);
             return false;
+        }
+    },
+    
+    /**
+     * Unsubscribe from state changes
+     * @param {string} path - State path to unsubscribe from
+     * @param {Function} callback - The callback function to remove
+     * @returns {boolean} True if successfully unsubscribed
+     */
+    unsubscribe: function(path, callback) {
+        try {
+            if (!this.listeners[path]) {
+                return false;
+            }
+            
+            const initialLength = this.listeners[path].length;
+            this.listeners[path] = this.listeners[path].filter(function(listener) {
+                return listener.callback !== callback;
+            });
+            
+            const removed = initialLength - this.listeners[path].length;
+            if (removed > 0) {
+                safeConsoleLog('Unsubscribed', removed, 'listeners from path:', path);
+            }
+            
+            // Clean up empty listener arrays
+            if (this.listeners[path].length === 0) {
+                delete this.listeners[path];
+            }
+            
+            return removed > 0;
+        } catch (error) {
+            safeConsoleLog('Error unsubscribing from state:', error);
+            return false;
+        }
+    },
+    
+    /**
+     * Clean up old listeners that might be stale
+     * @param {number} maxAge - Maximum age in milliseconds (default: 1 hour)
+     * @returns {number} Number of listeners cleaned up
+     */
+    cleanupStaleListeners: function(maxAge) {
+        maxAge = maxAge || 3600000; // 1 hour default
+        
+        try {
+            let totalRemoved = 0;
+            const now = Date.now();
+            
+            Object.keys(this.listeners).forEach(function(path) {
+                const initialLength = this.listeners[path].length;
+                this.listeners[path] = this.listeners[path].filter(function(listener) {
+                    return (now - listener.timestamp) <= maxAge;
+                });
+                
+                const removed = initialLength - this.listeners[path].length;
+                totalRemoved += removed;
+                
+                // Clean up empty listener arrays
+                if (this.listeners[path].length === 0) {
+                    delete this.listeners[path];
+                }
+            }.bind(this));
+            
+            if (totalRemoved > 0) {
+                safeConsoleLog('Cleaned up', totalRemoved, 'stale state listeners');
+            }
+            
+            return totalRemoved;
+        } catch (error) {
+            safeConsoleLog('Error cleaning up stale listeners:', error);
+            return 0;
         }
     },
     
@@ -987,8 +1686,10 @@ var GameState = {
     notifyStateChange: function(path, newValue, oldValue) {
         try {
             if (this.listeners[path]) {
-                this.listeners[path].forEach(function(callback) {
+                this.listeners[path].forEach(function(listener) {
                     try {
+                        // Handle both old format (direct callback) and new format (object with callback)
+                        const callback = listener.callback || listener;
                         callback(newValue, oldValue, path);
                     } catch (callbackError) {
                         safeConsoleLog('Error in state change callback:', callbackError);
@@ -1003,6 +1704,9 @@ var GameState = {
     // Reset game state
     reset: function() {
         try {
+            // Clean up listeners before reset
+            this.listeners = {};
+            
             this.data = {
                 currentPrompt: null,
                 drawnCards: [],
@@ -1043,6 +1747,31 @@ var GameState = {
             return false;
         }
     },
+    
+    /**
+     * Get statistics about the state listeners
+     * @returns {Object} Listener statistics
+     */
+    getListenerStats: function() {
+        try {
+            const stats = {
+                totalPaths: Object.keys(this.listeners).length,
+                totalListeners: 0,
+                pathDetails: {}
+            };
+            
+            Object.keys(this.listeners).forEach(function(path) {
+                const listenerCount = this.listeners[path].length;
+                stats.totalListeners += listenerCount;
+                stats.pathDetails[path] = listenerCount;
+            }.bind(this));
+            
+            return stats;
+        } catch (error) {
+            safeConsoleLog('Error getting listener stats:', error);
+            return { totalPaths: 0, totalListeners: 0, pathDetails: {} };
+        }
+    }
     
     // Initialize player with validation
     initializePlayer: function(name) {
@@ -1138,6 +1867,10 @@ var GameState = {
 var DOMCache = {
     /** @type {Object<string, Element>} Cache storage for DOM elements */
     cache: {},
+    /** @type {Array<string>} LRU tracking for cache entries */
+    accessOrder: [],
+    /** @type {number} Maximum cache size to prevent memory leaks */
+    maxCacheSize: 200,
     
     /**
      * Get cached DOM element by ID, or query and cache it if not found
@@ -1152,13 +1885,14 @@ var DOMCache = {
             
             // Return cached element if available and still in DOM
             if (this.cache[id] && document.contains(this.cache[id])) {
+                this._updateAccessOrder(id);
                 return this.cache[id];
             }
             
             // Query and cache the element
             var element = document.getElementById(id);
             if (element) {
-                this.cache[id] = element;
+                this._addToCache(id, element);
             }
             
             return element;
@@ -1187,6 +1921,9 @@ var DOMCache = {
                     }
                 }
                 if (stillValid) {
+                    if (cacheKey) {
+                        this._updateAccessOrder(cacheKey);
+                    }
                     return cached;
                 }
             }
@@ -1194,7 +1931,7 @@ var DOMCache = {
             // Query and cache
             var elements = Array.from(document.querySelectorAll(selector));
             if (cacheKey) {
-                this.cache[cacheKey] = elements;
+                this._addToCache(cacheKey, elements);
             }
             
             return elements;
@@ -1208,6 +1945,7 @@ var DOMCache = {
     clear: function() {
         try {
             this.cache = {};
+            this.accessOrder = [];
             safeConsoleLog('DOM cache cleared');
         } catch (error) {
             safeConsoleLog('Error clearing DOM cache:', error);
@@ -1219,6 +1957,11 @@ var DOMCache = {
         try {
             if (this.cache[key]) {
                 delete this.cache[key];
+                // Remove from access order tracking
+                const index = this.accessOrder.indexOf(key);
+                if (index !== -1) {
+                    this.accessOrder.splice(index, 1);
+                }
                 return true;
             }
             return false;
@@ -1263,6 +2006,66 @@ var DOMCache = {
         } catch (error) {
             safeConsoleLog('Error validating DOM cache:', error);
         }
+    },
+    
+    /**
+     * Add element to cache with LRU management
+     * @param {string} key - Cache key
+     * @param {Element|Array} element - Element(s) to cache
+     * @private
+     */
+    _addToCache: function(key, element) {
+        try {
+            // Update access order (move to end if exists, add if new)
+            const existingIndex = this.accessOrder.indexOf(key);
+            if (existingIndex !== -1) {
+                this.accessOrder.splice(existingIndex, 1);
+            }
+            this.accessOrder.push(key);
+            
+            // Add to cache
+            this.cache[key] = element;
+            
+            // Enforce size limit using LRU eviction
+            while (this.accessOrder.length > this.maxCacheSize) {
+                const oldestKey = this.accessOrder.shift();
+                if (oldestKey && this.cache[oldestKey]) {
+                    delete this.cache[oldestKey];
+                }
+            }
+        } catch (error) {
+            safeConsoleLog('Error adding to DOM cache:', key, error);
+        }
+    },
+    
+    /**
+     * Update access order for cache hit
+     * @param {string} key - Cache key that was accessed
+     * @private
+     */
+    _updateAccessOrder: function(key) {
+        try {
+            const index = this.accessOrder.indexOf(key);
+            if (index !== -1) {
+                // Move to end (most recently used)
+                this.accessOrder.splice(index, 1);
+                this.accessOrder.push(key);
+            }
+        } catch (error) {
+            safeConsoleLog('Error updating cache access order:', error);
+        }
+    },
+    
+    /**
+     * Get cache statistics
+     * @returns {Object} Cache statistics
+     */
+    getStats: function() {
+        return {
+            size: Object.keys(this.cache).length,
+            maxSize: this.maxCacheSize,
+            accessOrderLength: this.accessOrder.length
+        };
     }
 };
 
@@ -1432,7 +2235,7 @@ function showTokenReplacementNotification(removedTokens, addedTokens) {
         console.log('📱 Showing token replacement screen...');
         
         // Show removed tokens organized by reason
-        var removedList = document.getElementById('removedTokensList');
+        var removedList = DOMCache.get('removedTokensList');
         if (removedList) {
             var removedHtml = '';
             if (removedTokens && removedTokens.length > 0) {
@@ -1528,7 +2331,7 @@ function showTokenReplacementNotification(removedTokens, addedTokens) {
         }
         
         // Show added tokens as simple list
-        var addedList = document.getElementById('addedTokensList');
+        var addedList = DOMCache.get('addedTokensList');
         if (addedList) {
             var addedHtml = '';
             
@@ -1579,14 +2382,14 @@ function showTokenReplacementNotification(removedTokens, addedTokens) {
         showScreen('tokenReplacementScreen');
         
         // Update the screen title and headers AFTER showing the screen
-        var titleElement = document.getElementById('tokenReplacementTitle');
+        var titleElement = DOMCache.get('tokenReplacementTitle');
         if (titleElement) {
             titleElement.textContent = 'Round ' + getCurrentRound() + ' Token Changes';
         }
         
         // Update column headers with counts
-        var removedHeader = document.getElementById('removedTokensHeader');
-        var addedHeader = document.getElementById('addedTokensHeader');
+        var removedHeader = DOMCache.get('removedTokensHeader');
+        var addedHeader = DOMCache.get('addedTokensHeader');
         var removedCount = removedTokens ? removedTokens.length : 0;
         var addedCount = addedTokens ? addedTokens.length : 0;
         
@@ -1600,7 +2403,7 @@ function showTokenReplacementNotification(removedTokens, addedTokens) {
         }
         
         // Verify screen is shown
-        var screenElement = document.getElementById('tokenReplacementScreen');
+        var screenElement = DOMCache.get('tokenReplacementScreen');
         if (screenElement) {
             console.log('✅ Token replacement screen element found');
             console.log('  Display style:', screenElement.style.display);
@@ -1634,7 +2437,7 @@ function addConsoleMessage(message, type) {
             return false; // Silent fail for empty messages
         }
         
-        var consoleOutput = document.getElementById('consoleOutput');
+        var consoleOutput = DOMCache.get('consoleOutput');
         if (!consoleOutput) {
             // Fallback to original console if element not found
             if (typeof originalConsoleLog === 'function') {
@@ -1660,6 +2463,9 @@ function addConsoleMessage(message, type) {
         
         messageElement.textContent = '[' + timestamp + '] ' + String(message);
         
+        // Add to console history with bounds checking
+        manageConsoleHistory(String(message));
+        
         consoleOutput.appendChild(messageElement);
         
         // Auto-scroll to bottom with error handling
@@ -1679,6 +2485,7 @@ function addConsoleMessage(message, type) {
                         messages[i].remove();
                     }
                 }
+                safeConsoleLog('Cleaned up', removeCount, 'console DOM messages');
             }
         } catch (cleanupError) {
             safeConsoleLog('Error cleaning up console messages:', cleanupError);
@@ -1697,16 +2504,49 @@ function addConsoleMessage(message, type) {
 }
 
 function clearConsoleOutput() {
-    var consoleOutput = document.getElementById('consoleOutput');
+    var consoleOutput = DOMCache.get('consoleOutput');
     if (consoleOutput) {
         safeSetHTML(consoleOutput, '<div class="console-message">Console output cleared...</div>');
-        // Also clear the stored logs
-        window.consoleLogHistory = [];
+        // Also clear the stored logs with bounds checking
+        if (!window.consoleLogHistory) {
+            window.consoleLogHistory = [];
+        } else {
+            window.consoleLogHistory.length = 0; // Clear array but keep reference
+        }
     }
 }
 
+/**
+ * Enhanced console history management with size limits
+ */
+function manageConsoleHistory(message) {
+    // Initialize console history if not exists
+    if (!window.consoleLogHistory) {
+        window.consoleLogHistory = [];
+    }
+    
+    // Add message with timestamp
+    var historyEntry = {
+        message: message,
+        timestamp: Date.now(),
+        timeString: new Date().toISOString()
+    };
+    
+    window.consoleLogHistory.push(historyEntry);
+    
+    // Implement FIFO cleanup when limit is reached
+    var maxHistorySize = GAME_CONFIG.MAX_CONSOLE_MESSAGES * 2; // Store 2x visual limit
+    if (window.consoleLogHistory.length > maxHistorySize) {
+        var removeCount = window.consoleLogHistory.length - maxHistorySize;
+        window.consoleLogHistory.splice(0, removeCount); // Remove from beginning
+        safeConsoleLog('Cleaned up', removeCount, 'old console history entries');
+    }
+    
+    return historyEntry;
+}
+
 function exportConsoleToFile() {
-    var consoleOutput = document.getElementById('consoleOutput');
+    var consoleOutput = DOMCache.get('consoleOutput');
     if (!consoleOutput) {
         console.log('No console output found to export');
         return;
@@ -2427,6 +3267,14 @@ window.showScreen = function(screenId) {
         // Clean up previous screen's event listeners and timeouts
         eventListenerManager.cleanup();
         
+        // If starting a new game, perform comprehensive cleanup
+        if (screenId === 'playersScreen' || screenId === 'titleScreen') {
+            prepareForNewGame();
+        }
+        
+        // Clean up all active animations to prevent memory leaks
+        AnimationSystem.cleanup();
+        
         // Clean up DOM cache for screen transition
         DOMCache.clear();
         
@@ -2582,7 +3430,7 @@ function getPlayersByScore() {
 var nextPlayerNumber = 2; // Start at 2 since Player 1 already exists
 
 window.addPlayer = function() {
-    var allPlayersElement = document.getElementById('allPlayers');
+    var allPlayersElement = DOMCache.get('allPlayers');
     if (allPlayersElement) {
         var playerHtml = '<div class="form-group" id="playerGroup' + nextPlayerNumber + '">' +
             '<label>Player ' + nextPlayerNumber + ':</label>' +
@@ -2601,7 +3449,7 @@ function updatePlayerCount() {
     var names = [];
     
     for (var i = 1; i < nextPlayerNumber; i++) {
-        var input = document.getElementById('player' + i);
+        var input = DOMCache.get('player' + i);
         if (input && input.value) {
             var validation = InputValidator.validatePlayerName(input.value);
             if (validation.isValid) {
@@ -2614,7 +3462,7 @@ function updatePlayerCount() {
         }
     }
     
-    var playerCountElement = document.getElementById('playerCount');
+    var playerCountElement = DOMCache.get('playerCount');
     if (playerCountElement) {
         if (count === 0) {
             playerCountElement.textContent = 'Add players above';
@@ -2624,7 +3472,7 @@ function updatePlayerCount() {
     }
     
     // Update round summary
-    var roundSummary = document.getElementById('roundSummary');
+    var roundSummary = DOMCache.get('roundSummary');
     if (roundSummary) {
         var html = '<strong>Round ' + getCurrentRound() + ' of ' + GAME_CONFIG.MAX_ROUNDS + '</strong><br>' +
                   '<strong>Players:</strong> ' + (count === 0 ? 'Add players above' : count + ' players ready') + '<br>' +
@@ -2647,7 +3495,7 @@ function updatePlayerCount() {
 }
 
 window.removePlayer = function(num) {
-    var group = document.getElementById('playerGroup' + num);
+    var group = DOMCache.get('playerGroup' + num);
     if (group) {
         group.remove();
     }
@@ -2682,7 +3530,7 @@ window.startRoundWithBidder = function() {
     var validationErrors = [];
     
     for (var i = 1; i < nextPlayerNumber; i++) {
-        var input = document.getElementById('player' + i);
+        var input = DOMCache.get('player' + i);
         if (input && input.value) {
             var validation = InputValidator.validatePlayerName(input.value);
             if (validation.isValid) {
@@ -2734,7 +3582,7 @@ function updateCategoryIndicators() {
     // Update all category badges
     var badges = ['categoryBadge', 'blockingCategoryBadge', 'scanCategoryBadge', 'revealCategoryBadge'];
     badges.forEach(function(badgeId) {
-        var badge = document.getElementById(badgeId);
+        var badge = DOMCache.get(badgeId);
         if (badge) {
             badge.textContent = categoryText;
             badge.className = 'category-badge ' + categoryClass;
@@ -2757,7 +3605,7 @@ window.debugSetCategory = function(categoryId) {
     console.log('🐛 Debug: Set category to', categoryId);
     
     // Reset the dropdown
-    var select = document.getElementById('debugCategorySelect');
+    var select = DOMCache.get('debugCategorySelect');
     if (select) {
         select.value = '';
     }
@@ -2772,7 +3620,7 @@ window.continueToScanning = function() {
 window.scanCard = function() {
     console.log("Scan card clicked!");
     
-    var cardInput = document.getElementById('cardInput');
+    var cardInput = DOMCache.get('cardInput');
     if (!cardInput) {
         console.log('Card input field not found');
         return;
@@ -2831,7 +3679,7 @@ window.scanCard = function() {
 // Add Enter key support for card input
 window.addEventListener('load', function() {
     eventListenerManager.addTimeout(function() {
-        var cardInput = document.getElementById('cardInput');
+        var cardInput = DOMCache.get('cardInput');
         if (cardInput) {
             eventListenerManager.addListener(cardInput, 'keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -2892,10 +3740,10 @@ function startCategorySelection() {
         preGeneratedChallenges.companies = window.GAME_DATA.getRandomChallenge('companies');
         
         // Update UI with challenge descriptions
-        var countryChallenge = document.getElementById('countryChallenge');
-        var movieChallenge = document.getElementById('movieChallenge');
-        var sportsChallenge = document.getElementById('sportsChallenge');
-        var companiesChallenge = document.getElementById('companiesChallenge');
+        var countryChallenge = DOMCache.get('countryChallenge');
+        var movieChallenge = DOMCache.get('movieChallenge');
+        var sportsChallenge = DOMCache.get('sportsChallenge');
+        var companiesChallenge = DOMCache.get('companiesChallenge');
         
         if (countryChallenge) {
             countryChallenge.innerHTML = preGeneratedChallenges.countries.label;
@@ -2912,7 +3760,7 @@ function startCategorySelection() {
         
         // Show whose turn it is to choose
         var chooser = getCurrentCategoryChooser();
-        var categoryChooserName = document.getElementById('categoryChooserName');
+        var categoryChooserName = DOMCache.get('categoryChooserName');
         if (categoryChooserName) {
             categoryChooserName.textContent = chooser + "'s turn to choose";
         }
@@ -4151,7 +4999,7 @@ function setupBlockingScreen() {
 }
 
 function setupBlockingCards() {
-    var container = document.getElementById('availableCards');
+    var container = DOMCache.get('availableCards');
     if (!container) return;
     
     var gameState = GameState.data;
@@ -4179,7 +5027,7 @@ function setupBlockingCards() {
 }
 
 function setupBlockingTokens() {
-    var container = document.getElementById('blockingTokens');
+    var container = DOMCache.get('blockingTokens');
     if (!container) return;
     
     // Get current player's tokens (in a real game, this would be dynamic)
@@ -4313,7 +5161,7 @@ function showCardSelection() {
     GameState.set('selectedCardsForRanking', []);
     
     // Hide any existing ranking container from previous rounds
-    var rankingContainer = document.getElementById('rankingContainer');
+    var rankingContainer = DOMCache.get('rankingContainer');
     if (rankingContainer) {
         rankingContainer.style.display = 'none';
     }
@@ -4326,13 +5174,14 @@ function showCardSelection() {
 }
 
 function updateAvailableCardsDisplay(remainingCards) {
-    var container = document.getElementById('availableCardsForSelection');
+    var container = DOMCache.get('availableCardsForSelection');
     
     if (container) {
         // Make sure the container is visible (it might have been hidden by ranking interface)
         container.style.display = 'block';
         
-        var html = '';
+        // Use DocumentFragment for optimal performance
+        var fragment = document.createDocumentFragment();
         
         // Show owned cards first (if token ownership is enabled and player has owned cards)
         var currentPlayer = GameState.get('highestBidder');
@@ -4349,37 +5198,99 @@ function updateAvailableCardsDisplay(remainingCards) {
         }
         
         if (ownedCards.length > 0) {
-            html += '<div class="form-card"><div class="section-header"><div class="section-icon">🏆</div>' +
-                   '<div class="section-title">Your Owned Cards (' + ownedCards.length + ' available)</div></div>' +
-                   '<div class="cards-grid">';
+            // Create owned cards section
+            var ownedSection = document.createElement('div');
+            ownedSection.className = 'form-card';
+            
+            var ownedHeader = document.createElement('div');
+            ownedHeader.className = 'section-header';
+            ownedHeader.innerHTML = '<div class="section-icon">🏆</div><div class="section-title">Your Owned Cards (' + ownedCards.length + ' available)</div>';
+            ownedSection.appendChild(ownedHeader);
+            
+            var ownedGrid = document.createElement('div');
+            ownedGrid.className = 'cards-grid';
             
             ownedCards.forEach(function(cardId) {
                 var categoryData = window.GAME_DATA.categories[currentCategory];
                 var cardData = categoryData.items[cardId];
-                html += '<div class="card-item card-selectable owned-card" data-card-id="' + HTMLEscaper.escapeHTMLAttribute(cardId) + '">' +
-                       '<div class="card-name">👑 ' + sanitizeHTML(cardData.name) + '</div>' +
-                       '<div class="card-code">' + sanitizeHTML(cardData.code) + '</div>' +
-                       '<div style="font-size: 10px; color: #666;">OWNED</div></div>'
+                
+                var cardElement = document.createElement('div');
+                cardElement.className = 'card-item card-selectable owned-card';
+                cardElement.setAttribute('data-card-id', cardId);
+                
+                var cardName = document.createElement('div');
+                cardName.className = 'card-name';
+                cardName.textContent = '👑 ' + cardData.name;
+                
+                var cardCode = document.createElement('div');
+                cardCode.className = 'card-code';
+                cardCode.textContent = cardData.code;
+                
+                var ownedLabel = document.createElement('div');
+                ownedLabel.style.cssText = 'font-size: 10px; color: #666;';
+                ownedLabel.textContent = 'OWNED';
+                
+                cardElement.appendChild(cardName);
+                cardElement.appendChild(cardCode);
+                cardElement.appendChild(ownedLabel);
+                ownedGrid.appendChild(cardElement);
             });
             
-            html += '</div><div class="selection-info">💡 Use your owned cards strategically - once used, they\'re gone forever!</div></div>';
+            ownedSection.appendChild(ownedGrid);
+            
+            var ownedInfo = document.createElement('div');
+            ownedInfo.className = 'selection-info';
+            ownedInfo.textContent = '💡 Use your owned cards strategically - once used, they\'re gone forever!';
+            ownedSection.appendChild(ownedInfo);
+            
+            fragment.appendChild(ownedSection);
         }
         
-        // Show remaining available cards
-        html += '<div class="form-card"><div class="section-header"><div class="section-icon">🎴</div>' +
-               '<div class="section-title">Available Cards (' + remainingCards.length + ' remaining)</div></div><div class="cards-grid">';
+        // Create available cards section
+        var availableSection = document.createElement('div');
+        availableSection.className = 'form-card';
+        
+        var availableHeader = document.createElement('div');
+        availableHeader.className = 'section-header';
+        availableHeader.innerHTML = '<div class="section-icon">🎴</div><div class="section-title">Available Cards (' + remainingCards.length + ' remaining)</div>';
+        availableSection.appendChild(availableHeader);
+        
+        var availableGrid = document.createElement('div');
+        availableGrid.className = 'cards-grid';
         
         remainingCards.forEach(function(cardId, index) {
             var categoryData = window.GAME_DATA.categories[currentCategory];
             var item = categoryData.items[cardId];
-            html += '<div class="card-item card-selectable" data-card-id="' + HTMLEscaper.escapeHTMLAttribute(cardId) + '">' +
-                   '<div class="card-name">' + sanitizeHTML(item.name) + '</div>' +
-                   '<div class="card-code">' + sanitizeHTML(item.code) + '</div>' +
-                   '</div>';
+            
+            var cardElement = document.createElement('div');
+            cardElement.className = 'card-item card-selectable';
+            cardElement.setAttribute('data-card-id', cardId);
+            
+            var cardName = document.createElement('div');
+            cardName.className = 'card-name';
+            cardName.textContent = item.name;
+            
+            var cardCode = document.createElement('div');
+            cardCode.className = 'card-code';
+            cardCode.textContent = item.code;
+            
+            cardElement.appendChild(cardName);
+            cardElement.appendChild(cardCode);
+            availableGrid.appendChild(cardElement);
         });
         
-        html += '</div><div class="selection-info">Click cards to select them for ranking</div></div>';
-        safeSetHTML(container, html);
+        availableSection.appendChild(availableGrid);
+        
+        var availableInfo = document.createElement('div');
+        availableInfo.className = 'selection-info';
+        availableInfo.textContent = 'Click cards to select them for ranking';
+        availableSection.appendChild(availableInfo);
+        
+        fragment.appendChild(availableSection);
+        
+        // Clear container and append fragment in one operation
+        container.innerHTML = '';
+        container.appendChild(fragment);
         
         console.log('🎴 Updated availableCardsForSelection with', container.querySelectorAll('.card-selectable[data-card-id]').length, 'selectable cards');
         
@@ -4503,9 +5414,15 @@ window.selectCardForRanking = function(cardId) {
 };
 
 function updateCardSelectionDisplay() {
-    // Update visual state of selected cards
+    // Cache DOM queries and game state for performance
     var selectedCardsForRanking = GameState.get('selectedCardsForRanking');
-    document.querySelectorAll('.card-selectable').forEach(function(cardElement) {
+    var container = DOMCache.get('availableCardsForSelection');
+    
+    if (!container) return;
+    
+    // Use container-scoped query for better performance
+    var cardElements = container.querySelectorAll('.card-selectable');
+    cardElements.forEach(function(cardElement) {
         var cardId = cardElement.getAttribute('data-card-id');
         if (selectedCardsForRanking.includes(cardId)) {
             cardElement.classList.add('card-selected');
@@ -4515,7 +5432,7 @@ function updateCardSelectionDisplay() {
     });
     
     // Update selection counter if needed
-    var selectionInfo = document.querySelector('.selection-info');
+    var selectionInfo = container.querySelector('.selection-info');
     if (selectionInfo) {
         var currentBid = GameState.get('currentBid');
         selectionInfo.textContent = 'Selected ' + selectedCardsForRanking.length + '/' + currentBid + ' cards. Click cards to select/deselect.';
@@ -4547,7 +5464,7 @@ function showRankingInterface() {
     }
     
     // Hide card selection interface
-    var container = document.getElementById('availableCardsForSelection');
+    var container = DOMCache.get('availableCardsForSelection');
     if (container) {
         container.style.display = 'none';
     }
@@ -4558,7 +5475,7 @@ function showRankingInterface() {
 
 function updateRankingInterface() {
     // Create or update ranking container
-    var rankingContainer = document.getElementById('rankingContainer');
+    var rankingContainer = DOMCache.get('rankingContainer');
     if (!rankingContainer) {
         var scanContent = document.querySelector('#scanScreen .screen-content');
         rankingContainer = document.createElement('div');
@@ -4566,38 +5483,90 @@ function updateRankingInterface() {
         scanContent.appendChild(rankingContainer);
     }
     
-    var html = '<div class="form-card">' +
-              '<div class="section-header">' +
-              '<div class="section-icon">📊</div>' +
-              '<div class="section-title">Rank Your Cards</div>' +
-              '</div>' +
-              '<div class="ranking-instructions">Drag cards to reorder them. Top = Highest value for this category.</div>' +
-              '<div id="rankingArea" class="ranking-area">';
+    // Use DocumentFragment for optimal performance
+    var fragment = document.createDocumentFragment();
+    
+    // Create form card container
+    var formCard = document.createElement('div');
+    formCard.className = 'form-card';
+    
+    // Create header section
+    var header = document.createElement('div');
+    header.className = 'section-header';
+    header.innerHTML = '<div class="section-icon">📊</div><div class="section-title">Rank Your Cards</div>';
+    formCard.appendChild(header);
+    
+    // Create instructions
+    var instructions = document.createElement('div');
+    instructions.className = 'ranking-instructions';
+    instructions.textContent = 'Drag cards to reorder them. Top = Highest value for this category.';
+    formCard.appendChild(instructions);
+    
+    // Create ranking area
+    var rankingArea = document.createElement('div');
+    rankingArea.id = 'rankingArea';
+    rankingArea.className = 'ranking-area';
     
     // Show cards in current ranking order (or selection order if not yet ranked)
     var finalRanking = GameState.get('finalRanking');
     var selectedCardsForRanking = GameState.get('selectedCardsForRanking');
     var cardsToRank = finalRanking.length > 0 ? finalRanking : selectedCardsForRanking.slice();
+    var currentCategory = GameState.get('currentCategory') || 'countries';
+    var categoryData = window.GAME_DATA.categories[currentCategory];
     
     cardsToRank.forEach(function(cardId, index) {
-        var currentCategory = GameState.get('currentCategory') || 'countries';
-        var categoryData = window.GAME_DATA.categories[currentCategory];
         var item = categoryData ? categoryData.items[cardId] : null;
-        html += '<div class="ranking-card" data-card-id="' + HTMLEscaper.escapeHTMLAttribute(cardId) + '" draggable="true">' +
-               '<span class="rank-number">' + (index + 1) + '</span>' +
-               '<span class="country-name">' + sanitizeHTML(item ? item.name : cardId) + '<br><small>' + sanitizeHTML(item ? item.code : cardId) + '</small></span>' +
-               '<span class="drag-handle">⋮⋮</span>' +
-               '</div>';
+        
+        var rankingCard = document.createElement('div');
+        rankingCard.className = 'ranking-card';
+        rankingCard.setAttribute('data-card-id', cardId);
+        rankingCard.draggable = true;
+        
+        var rankNumber = document.createElement('span');
+        rankNumber.className = 'rank-number';
+        rankNumber.textContent = (index + 1).toString();
+        
+        var countryName = document.createElement('span');
+        countryName.className = 'country-name';
+        var nameText = item ? item.name : cardId;
+        var codeText = item ? item.code : cardId;
+        countryName.innerHTML = sanitizeHTML(nameText) + '<br><small>' + sanitizeHTML(codeText) + '</small>';
+        
+        var dragHandle = document.createElement('span');
+        dragHandle.className = 'drag-handle';
+        dragHandle.textContent = '⋮⋮';
+        
+        rankingCard.appendChild(rankNumber);
+        rankingCard.appendChild(countryName);
+        rankingCard.appendChild(dragHandle);
+        rankingArea.appendChild(rankingCard);
     });
     
-    html += '</div>' +
-           '<div class="ranking-actions">' +
-           '<button class="btn primary" onclick="submitRanking()">✅ Submit Ranking</button>' +
-           '<button class="btn secondary" onclick="resetRanking()">🔄 Reset Order</button>' +
-           '</div>' +
-           '</div>';
+    formCard.appendChild(rankingArea);
     
-    safeSetHTML(rankingContainer, html);
+    // Create action buttons
+    var actions = document.createElement('div');
+    actions.className = 'ranking-actions';
+    
+    var submitBtn = document.createElement('button');
+    submitBtn.className = 'btn primary';
+    submitBtn.onclick = function() { submitRanking(); };
+    submitBtn.textContent = '✅ Submit Ranking';
+    
+    var resetBtn = document.createElement('button');
+    resetBtn.className = 'btn secondary';
+    resetBtn.onclick = function() { resetRanking(); };
+    resetBtn.textContent = '🔄 Reset Order';
+    
+    actions.appendChild(submitBtn);
+    actions.appendChild(resetBtn);
+    formCard.appendChild(actions);
+    
+    fragment.appendChild(formCard);
+    
+    // Clear container and append fragment in one operation
+    rankingContainer.innerHTML = '';
+    rankingContainer.appendChild(fragment);
     
     // Add drag and drop functionality
     setupDragAndDrop();
@@ -4605,7 +5574,7 @@ function updateRankingInterface() {
 
 function setupDragAndDrop() {
     var rankingCards = document.querySelectorAll('.ranking-card');
-    var rankingArea = document.getElementById('rankingArea');
+    var rankingArea = DOMCache.get('rankingArea');
     
     rankingCards.forEach(function(card) {
         var dragStartHandler = function(e) {
@@ -5043,7 +6012,7 @@ function calculateCorrectRanking(cardIds, challenge) {
 }
 
 function setupRevealInterface() {
-    var revealCards = document.getElementById('revealCards');
+    var revealCards = DOMCache.get('revealCards');
     if (!revealCards) return;
     
     var html = '<div class="reveal-container">' +
@@ -5061,20 +6030,22 @@ function setupRevealInterface() {
 }
 
 function updateBidderRankingDisplay() {
-    var container = document.getElementById('bidderRankingList');
+    var container = DOMCache.get('bidderRankingList');
     if (!container) return;
     
     var finalRanking = GameState.get('finalRanking');
     var currentPrompt = GameState.get('currentPrompt');
-    var html = '';
+    var currentCategory = GameState.get('currentCategory') || 'countries';
+    var categoryData = window.GAME_DATA.categories[currentCategory];
+    var currentRevealIndex = GameState.get('currentRevealIndex') || 0;
+    
+    // Use DocumentFragment for optimal performance
+    var fragment = document.createDocumentFragment();
     var sequenceBroken = false;
     
     finalRanking.forEach(function(cardId, index) {
-        var currentCategory = GameState.get('currentCategory') || 'countries';
-        var categoryData = window.GAME_DATA.categories[currentCategory];
         var item = categoryData ? categoryData.items[cardId] : null;
         var value = item ? item[currentPrompt.challenge] : 0;
-        var currentRevealIndex = GameState.get('currentRevealIndex') || 0;
         var isRevealed = index < currentRevealIndex;
         
         var statusClass = '';
@@ -5118,17 +6089,50 @@ function updateBidderRankingDisplay() {
             }
         }
         
-        html += '<div class="reveal-card bidder-card ' + statusClass + '">' +
-               '<span class="rank-number">' + (index + 1) + '</span>' +
-               '<span class="country-info">' +
-               '<span class="country-name">' + (item ? item.name : cardId) + '<br><small>' + (item ? item.code : cardId) + '</small></span>' +
-               '<span class="country-value">' + (isRevealed ? formatValue(value, currentPrompt.challenge) : '???') + '</span>' +
-               '</span>' +
-               '<span class="status-icon">' + statusIcon + '</span>' +
-               '</div>';
+        // Create card element
+        var cardElement = document.createElement('div');
+        cardElement.className = 'reveal-card bidder-card ' + statusClass;
+        
+        // Create rank number
+        var rankNumber = document.createElement('span');
+        rankNumber.className = 'rank-number';
+        rankNumber.textContent = (index + 1).toString();
+        
+        // Create country info container
+        var countryInfo = document.createElement('span');
+        countryInfo.className = 'country-info';
+        
+        // Create country name
+        var countryName = document.createElement('span');
+        countryName.className = 'country-name';
+        var nameText = item ? item.name : cardId;
+        var codeText = item ? item.code : cardId;
+        countryName.innerHTML = nameText + '<br><small>' + codeText + '</small>';
+        
+        // Create country value
+        var countryValue = document.createElement('span');
+        countryValue.className = 'country-value';
+        countryValue.textContent = isRevealed ? formatValue(value, currentPrompt.challenge) : '???';
+        
+        countryInfo.appendChild(countryName);
+        countryInfo.appendChild(countryValue);
+        
+        // Create status icon
+        var statusIconElement = document.createElement('span');
+        statusIconElement.className = 'status-icon';
+        statusIconElement.textContent = statusIcon;
+        
+        // Assemble card
+        cardElement.appendChild(rankNumber);
+        cardElement.appendChild(countryInfo);
+        cardElement.appendChild(statusIconElement);
+        
+        fragment.appendChild(cardElement);
     });
     
-    safeSetHTML(container, html);
+    // Clear container and append fragment in one operation
+    container.innerHTML = '';
+    container.appendChild(fragment);
 }
 
 
@@ -5146,16 +6150,18 @@ function formatValue(value, challenge) {
 }
 
 function updateRevealProgress() {
-    var progressElement = document.getElementById('revealProgress');
+    // Cache currentRevealIndex to avoid multiple GameState calls
+    var currentRevealIndex = GameState.get('currentRevealIndex') || 0;
+    var totalCards = correctRanking.length;
+    
+    var progressElement = DOMCache.get('revealProgress');
     if (progressElement) {
-        var currentRevealIndex = GameState.get('currentRevealIndex') || 0;
-        progressElement.textContent = currentRevealIndex + ' of ' + correctRanking.length;
+        progressElement.textContent = currentRevealIndex + ' of ' + totalCards;
     }
     
-    var progressBar = document.getElementById('revealProgressBar');
+    var progressBar = DOMCache.get('revealProgressBar');
     if (progressBar) {
-        var currentRevealIndex = GameState.get('currentRevealIndex') || 0;
-        var percentage = (currentRevealIndex / correctRanking.length) * 100;
+        var percentage = (currentRevealIndex / totalCards) * 100;
         progressBar.style.width = percentage + '%';
     }
 }
@@ -5801,9 +6807,9 @@ function calculateAndApplyScores() {
 }
 
 function updateResultsDisplay() {
-    var resultsContent = document.getElementById('resultsContent');
-    var resultsTitle = document.getElementById('resultsTitle');
-    var finalRankingDiv = document.getElementById('finalRanking');
+    var resultsContent = DOMCache.get('resultsContent');
+    var resultsTitle = DOMCache.get('resultsTitle');
+    var finalRankingDiv = DOMCache.get('finalRanking');
     
     if (resultsTitle) {
         resultsTitle.textContent = bidderSuccess ? 'Round Success!' : 'Round Failed!';
@@ -5910,7 +6916,7 @@ function updateInterimDisplay() {
 
 function updateInterimLeaderboard() {
     console.log('🏆 updateInterimLeaderboard called');
-    var container = document.getElementById('interimLeaderboard');
+    var container = DOMCache.get('interimLeaderboard');
     if (!container) {
         console.error('❌ interimLeaderboard container not found!');
         return;
@@ -5962,7 +6968,7 @@ function updateInterimLeaderboard() {
 }
 
 function updateInterimTokenInventory() {
-    var container = document.getElementById('interimTokenInventory');
+    var container = DOMCache.get('interimTokenInventory');
     if (!container) return;
     
     var players = GameState.get('players');
@@ -6004,7 +7010,7 @@ function updateInterimTokenInventory() {
 
 function updateInterimRoundSummary() {
     console.log('📋 updateInterimRoundSummary called');
-    var container = document.getElementById('interimRoundSummary');
+    var container = DOMCache.get('interimRoundSummary');
     if (!container) {
         console.error('❌ interimRoundSummary container not found!');
         return;
@@ -6181,6 +7187,9 @@ window.nextRound = function() {
                     window.automatedTestState = null;
                 }
                 
+                // Perform comprehensive cleanup
+                performComprehensiveCleanup();
+                
                 console.log('✅ Automated test completed successfully!');
             }, 5000); // Give more time for current round to complete
             
@@ -6291,64 +7300,64 @@ function clearUIElements() {
     console.log('🧹 Starting clearUIElements...');
     
     // Clear bidding interface
-    var highBidderDisplay = document.getElementById('highBidderDisplay');
+    var highBidderDisplay = DOMCache.get('highBidderDisplay');
     if (highBidderDisplay) {
         safeSetHTML(highBidderDisplay, '<div class="high-bid-amount">No bids yet</div><div class="high-bid-player">Waiting for first bid...</div>');
     }
     
-    var playerBidding = document.getElementById('playerBidding');
+    var playerBidding = DOMCache.get('playerBidding');
     if (playerBidding) {
         safeSetHTML(playerBidding, '');
     }
     
     // Clear blocking interface
-    var availableCards = document.getElementById('availableCards');
+    var availableCards = DOMCache.get('availableCards');
     if (availableCards) {
         safeSetHTML(availableCards, '');
     }
     
-    var blockingTokens = document.getElementById('blockingTokens');
+    var blockingTokens = DOMCache.get('blockingTokens');
     if (blockingTokens) {
         safeSetHTML(blockingTokens, '');
     }
     
     // Clear card selection interface
-    var availableCardsForSelection = document.getElementById('availableCardsForSelection');
+    var availableCardsForSelection = DOMCache.get('availableCardsForSelection');
     if (availableCardsForSelection) {
         safeSetHTML(availableCardsForSelection, '');
     }
     
-    var scannedCards = document.getElementById('scannedCards');
+    var scannedCards = DOMCache.get('scannedCards');
     if (scannedCards) {
         safeSetHTML(scannedCards, '');
     }
     
     // Clear ranking interface (including dynamically created container)
-    var rankingContainer = document.getElementById('rankingContainer');
+    var rankingContainer = DOMCache.get('rankingContainer');
     if (rankingContainer) {
         rankingContainer.remove(); // Remove the entire element, not just clear it
     }
     
     // Clear reveal interface
-    var revealCards = document.getElementById('revealCards');
+    var revealCards = DOMCache.get('revealCards');
     if (revealCards) {
         safeSetHTML(revealCards, '');
     }
     
-    var revealProgress = document.getElementById('revealProgress');
+    var revealProgress = DOMCache.get('revealProgress');
     if (revealProgress) {
         revealProgress.textContent = '0 of 0';
     }
     
     // Clear the drawn cards info display on bidding screen
-    var drawnCardsInfo = document.getElementById('drawnCardsInfo');
+    var drawnCardsInfo = DOMCache.get('drawnCardsInfo');
     if (drawnCardsInfo) {
         safeSetHTML(drawnCardsInfo, '');
     }
     
     console.log('✅ clearUIElements complete');
     
-    var revealProgressBar = document.getElementById('revealProgressBar');
+    var revealProgressBar = DOMCache.get('revealProgressBar');
     if (revealProgressBar) {
         revealProgressBar.style.width = '0%';
     }
@@ -6360,18 +7369,18 @@ function clearUIElements() {
     }
     
     // Hide finish button
-    var finishBtn = document.getElementById('finishBtn');
+    var finishBtn = DOMCache.get('finishBtn');
     if (finishBtn) {
         finishBtn.style.display = 'none';
     }
     
     // Clear prompt info
-    var promptInfo = document.getElementById('promptInfo');
+    var promptInfo = DOMCache.get('promptInfo');
     if (promptInfo) {
         safeSetHTML(promptInfo, '<div class="card-title">Challenge Loading...</div><div class="card-description">Setting up the game...</div>');
     }
     
-    var drawnCardsInfo = document.getElementById('drawnCardsInfo');
+    var drawnCardsInfo = DOMCache.get('drawnCardsInfo');
     if (drawnCardsInfo) {
         safeSetHTML(drawnCardsInfo, '');
     }
@@ -6617,9 +7626,9 @@ function updateScoresDisplay(preCalculatedScores) {
     // Get players object for owned cards access
     var players = GameState.get('players');
     
-    var leaderboard = document.getElementById('leaderboard');
-    var playerStats = document.getElementById('playerStats');
-    var chipInventory = document.getElementById('chipInventory');
+    var leaderboard = DOMCache.get('leaderboard');
+    var playerStats = DOMCache.get('playerStats');
+    var chipInventory = DOMCache.get('chipInventory');
     
     if (leaderboard) {
         // Use pre-calculated scores if provided, otherwise calculate
@@ -6847,7 +7856,7 @@ window.quickSetup4Players = function() {
             // Wait a moment for DOM updates, then fill in the player names
             setTimeout(function() {
                 for (var i = 0; i < 4; i++) {
-                    var playerInput = document.getElementById('player' + (i + 1));
+                    var playerInput = DOMCache.get('player' + (i + 1));
                     if (playerInput) {
                         playerInput.value = playerNames[i];
                         console.log('✅ Set player ' + (i + 1) + ' to: ' + playerNames[i]);
@@ -6917,7 +7926,7 @@ window.continueFromTokenReplacement = function() {
     console.log('Continuing from token replacement screen...');
     
     // Hide the token replacement screen first
-    var tokenScreen = document.getElementById('tokenReplacementScreen');
+    var tokenScreen = DOMCache.get('tokenReplacementScreen');
     if (tokenScreen) {
         tokenScreen.classList.remove('active');
     }
@@ -6962,7 +7971,36 @@ window.automatedTestState = {
     isInReveal: false,
     currentPhase: 'idle',
     currentRoundId: null,
-    timeouts: []
+    timeouts: [],
+    maxTimeouts: 100, // Limit timeout tracking to prevent memory leaks
+    
+    // Method to safely add timeouts with bounds checking
+    addTimeout: function(fn, delay) {
+        // Clean up old timeouts if we're at the limit
+        if (this.timeouts.length >= this.maxTimeouts) {
+            const oldTimeout = this.timeouts.shift();
+            clearTimeout(oldTimeout);
+        }
+        
+        const timeoutId = setTimeout(fn, delay);
+        this.timeouts.push(timeoutId);
+        return timeoutId;
+    },
+    
+    // Method to clear all timeouts
+    clearAllTimeouts: function() {
+        this.timeouts.forEach(timeoutId => clearTimeout(timeoutId));
+        this.timeouts = [];
+    },
+    
+    // Method to remove specific timeout
+    removeTimeout: function(timeoutId) {
+        clearTimeout(timeoutId);
+        const index = this.timeouts.indexOf(timeoutId);
+        if (index !== -1) {
+            this.timeouts.splice(index, 1);
+        }
+    }
 };
 
 // Card selection state tracking
@@ -6985,10 +8023,40 @@ window.automatedTestResults = {
     failedBids: 0,
     playerStats: {},
     errors: [],
+    maxRounds: 50,    // Limit stored rounds to prevent memory leaks
+    maxErrors: 100,   // Limit stored errors to prevent memory leaks
     cardStats: {
         totalCardsRanked: 0,    // Total cards used in ranking attempts
         totalCardsOwned: 0,     // Total cards currently owned by all players
         totalCardsInPlay: 0     // Total cards still available in the general pool
+    },
+    
+    // Method to safely add rounds with bounds checking
+    addRound: function(roundData) {
+        if (this.rounds.length >= this.maxRounds) {
+            this.rounds.shift(); // Remove oldest round
+        }
+        this.rounds.push(roundData);
+    },
+    
+    // Method to safely add errors with bounds checking
+    addError: function(error) {
+        if (this.errors.length >= this.maxErrors) {
+            this.errors.shift(); // Remove oldest error
+        }
+        this.errors.push(error);
+    },
+    
+    // Method to clean up test results
+    cleanup: function() {
+        this.rounds = [];
+        this.errors = [];
+        this.playerStats = {};
+        this.cardStats = {
+            totalCardsRanked: 0,
+            totalCardsOwned: 0,
+            totalCardsInPlay: 0
+        };
     }
 };
 
@@ -7023,14 +8091,18 @@ function setPhase(phase, roundId) {
 }
 
 function clearAllTimeouts() {
-    window.automatedTestState.timeouts.forEach(timeoutId => clearTimeout(timeoutId));
-    window.automatedTestState.timeouts = [];
+    if (window.automatedTestState && window.automatedTestState.clearAllTimeouts) {
+        window.automatedTestState.clearAllTimeouts();
+    }
 }
 
 function addTimeout(fn, delay) {
-    const timeoutId = setTimeout(fn, delay);
-    window.automatedTestState.timeouts.push(timeoutId);
-    return timeoutId;
+    if (window.automatedTestState && window.automatedTestState.addTimeout) {
+        return window.automatedTestState.addTimeout(fn, delay);
+    } else {
+        // Fallback for when automated test state is not available
+        return setTimeout(fn, delay);
+    }
 }
 
 function updateTestStatistics(action, data) {
@@ -7297,7 +8369,9 @@ function runAutomatedTestWithMode(testName) {
     } catch (error) {
         console.error('❌ Error starting automated test:', error);
         console.error('Failed to start automated test: ' + error.message);
-        window.automatedTestResults.errors.push('Test start error: ' + error.message);
+        if (window.automatedTestResults && window.automatedTestResults.addError) {
+            window.automatedTestResults.addError('Test start error: ' + error.message);
+        }
         window.isAutomatedTestRunning = false;
         // Keep visual console enabled for error review
     }
@@ -7344,7 +8418,7 @@ async function automatedRound(roundNum) {
         
         // Make sure we have enough player input fields
         for (var playerNum = 2; playerNum <= 4; playerNum++) {
-            var existingInput = document.getElementById('player' + playerNum);
+            var existingInput = DOMCache.get('player' + playerNum);
             if (!existingInput) {
                 addPlayer(); // This will create the input field
                 console.log('✅ Added player input field:', playerNum);
@@ -7353,7 +8427,7 @@ async function automatedRound(roundNum) {
         
         // Fill in the player names in the input fields
         for (var i = 0; i < 4; i++) {
-            var playerInput = document.getElementById('player' + (i + 1));
+            var playerInput = DOMCache.get('player' + (i + 1));
             if (playerInput) {
                 playerInput.value = playerNames[i];
                 console.log('✅ Set player' + (i + 1) + ' to:', playerNames[i]);
@@ -7405,7 +8479,9 @@ async function automatedRound(roundNum) {
         console.error('❌ Error in round ' + roundNum + ':', error);
         console.error('Test failed in round ' + roundNum + ': ' + error.message);
         roundData.errors.push('Round start error: ' + error.message);
-        window.automatedTestResults.errors.push('Round ' + roundNum + ' error: ' + error.message);
+        if (window.automatedTestResults && window.automatedTestResults.addError) {
+            window.automatedTestResults.addError('Round ' + roundNum + ' error: ' + error.message);
+        }
     }
 }
 
@@ -7815,7 +8891,7 @@ function handleRankingPhase() {
             console.log('📋 Looking for ranking submission button...');
             
             // Check if ranking container exists (meaning ranking interface is loaded)
-            var rankingContainer = document.getElementById('rankingContainer');
+            var rankingContainer = DOMCache.get('rankingContainer');
             if (rankingContainer) {
                 console.log('✅ Ranking interface found, submitting ranking...');
                 
@@ -7952,7 +9028,7 @@ function automatedReveal() {
                         revealResult = automatedRevealNext();
                     } else {
                         // Check if reveal button exists and is clickable
-                        var revealBtn = document.getElementById('revealBtn');
+                        var revealBtn = DOMCache.get('revealBtn');
                         if (revealBtn && !revealBtn.disabled) {
                             console.log('🔘 Clicking reveal button...');
                             revealNext();
@@ -8347,6 +9423,39 @@ function generateDetailedTestResults() {
     
     console.log('\n✨ Test completed successfully! All game mechanics working properly.');
     console.log('📊 Results stored in window.automatedTestResults for further analysis.');
+    
+    // Schedule cleanup after a delay to allow for final logging
+    setTimeout(function() {
+        // Clean up test-specific memory allocations
+        try {
+            if (window.automatedTestState) {
+                if (window.automatedTestState.clearAllTimeouts) {
+                    window.automatedTestState.clearAllTimeouts();
+                }
+                // Keep minimal state for result viewing but clear memory-intensive parts
+                window.automatedTestState.timeouts = [];
+            }
+            
+            // Clean up old test results if they exist
+            if (window.automatedTestResults && window.automatedTestResults.cleanup) {
+                // Don't fully cleanup yet - results might still be displayed
+                // Just clean up the large arrays
+                if (window.automatedTestResults.rounds && window.automatedTestResults.rounds.length > 10) {
+                    // Keep only last 10 rounds for viewing
+                    window.automatedTestResults.rounds = window.automatedTestResults.rounds.slice(-10);
+                }
+                if (window.automatedTestResults.errors && window.automatedTestResults.errors.length > 20) {
+                    // Keep only last 20 errors for viewing
+                    window.automatedTestResults.errors = window.automatedTestResults.errors.slice(-20);
+                }
+            }
+            
+            safeConsoleLog('✅ Post-test cleanup completed');
+        } catch (cleanupError) {
+            safeConsoleLog('⚠️ Error during post-test cleanup:', cleanupError);
+        }
+    }, 10000); // 10 second delay
+    
     console.log('=====================================\n');
 }
 
@@ -8365,7 +9474,7 @@ function updateTestResultsDisplay() {
     console.log('players.stats:', players ? players.stats : 'No players');
     
     // Test Overview
-    var overviewDiv = document.getElementById('testOverview');
+    var overviewDiv = DOMCache.get('testOverview');
     console.log('overviewDiv found:', !!overviewDiv);
     if (!results || !results.startTime) {
         safeSetHTML(overviewDiv, '<div class="no-scores-message">No automated tests have been run yet!<br>Click "Run Automated Test" to start testing.</div>');
@@ -8412,7 +9521,7 @@ function updateTestResultsDisplay() {
     }
     
     // Player Performance
-    var performanceDiv = document.getElementById('playerPerformance');
+    var performanceDiv = DOMCache.get('playerPerformance');
     if (!results || !results.playerStats || Object.keys(results.playerStats).length === 0) {
         safeSetHTML(performanceDiv, '<div class="no-scores-message">No player data available!</div>');
     } else {
@@ -8437,7 +9546,7 @@ function updateTestResultsDisplay() {
     }
     
     // Player Statistics (unified with Scores Screen)
-    var roundsDiv = document.getElementById('roundDetails');
+    var roundsDiv = DOMCache.get('roundDetails');
     if (!players || !players.stats || Object.keys(players.stats).length === 0) {
         safeSetHTML(roundsDiv, '<div class="no-scores-message">No player statistics available!</div>');
     } else {
@@ -8542,7 +9651,7 @@ function updateCardStatistics() {
 
 // Function to display card statistics in test results
 function displayCardStatistics() {
-    var overviewDiv = document.getElementById('testOverview');
+    var overviewDiv = DOMCache.get('testOverview');
     if (!overviewDiv || !window.automatedTestResults || !window.automatedTestResults.cardStats) {
         return;
     }
@@ -8558,7 +9667,7 @@ function displayCardStatistics() {
     }
     
     // Add card statistics to the overview
-    var existingCardStats = document.getElementById('cardStatsSection');
+    var existingCardStats = DOMCache.get('cardStatsSection');
     if (existingCardStats) {
         existingCardStats.remove();
     }
@@ -8817,7 +9926,7 @@ function updateRulesPreview() {
     preview += '  Country Token Bonus: ' + ACTIVE_RULES.endGameTokenPoints + ' points each\n';
     preview += '  Blocking Token Bonus: ' + ACTIVE_RULES.endGameBlockingTokenPoints + ' points each\n';
     
-    var previewElement = document.getElementById('activeRulesList');
+    var previewElement = DOMCache.get('activeRulesList');
     if (previewElement) {
         previewElement.textContent = preview;
     }
@@ -8845,10 +9954,15 @@ function applyRulesAndStart() {
     showScreen('playerScreen');
 }
 
+// Clean up animations when page is about to unload
+window.addEventListener('beforeunload', function() {
+    AnimationSystem.cleanup();
+});
+
 // Initialize rules configuration when page loads
 window.addEventListener('load', function() {
     setTimeout(function() {
-        if (document.getElementById('rulesScreen')) {
+        if (DOMCache.get('rulesScreen')) {
             updateRulesUI();
             updateRulesPreview();
             safeConsoleLog('🎮 Rules configuration initialized');
@@ -9284,8 +10398,8 @@ let liveValidationState = {
 
 // Toggle dataset selector visibility
 function toggleDatasetSelector() {
-    const category = document.getElementById('liveValidationCategory').value;
-    const datasetDiv = document.getElementById('datasetSelectorDiv');
+    const category = DOMCache.get('liveValidationCategory').value;
+    const datasetDiv = DOMCache.get('datasetSelectorDiv');
     
     if (category === 'countries') {
         datasetDiv.style.display = 'block';
@@ -9369,9 +10483,9 @@ function getCurrentValidationDataset() {
 }
 
 async function setupLiveValidation() {
-    const category = document.getElementById('liveValidationCategory').value;
-    const challengeNum = document.getElementById('liveChalllengeNumber').value;
-    const bidAmount = parseInt(document.getElementById('liveBidAmount').value);
+    const category = DOMCache.get('liveValidationCategory').value;
+    const challengeNum = DOMCache.get('liveChalllengeNumber').value;
+    const bidAmount = parseInt(DOMCache.get('liveBidAmount').value);
     const bidderName = 'Player'; // Default since we removed the name field
 
     if (!category || !challengeNum || !bidAmount) {
@@ -9381,7 +10495,7 @@ async function setupLiveValidation() {
     
     // Load master dataset if needed
     if (category === 'countries') {
-        const selectedDataset = document.getElementById('liveValidationDataset').value;
+        const selectedDataset = DOMCache.get('liveValidationDataset').value;
         if (selectedDataset === 'master') {
             const loadResult = await loadMasterDatasetForValidation();
             if (!loadResult) {
@@ -9450,7 +10564,7 @@ async function setupLiveValidation() {
 }
 
 function showLiveRankingInput() {
-    const output = document.getElementById('liveValidationResults');
+    const output = DOMCache.get('liveValidationResults');
     const currentGameData = getCurrentValidationDataset();
     const categoryItems = currentGameData.categories[liveValidationState.currentValidation.category].items;
     
@@ -9531,7 +10645,7 @@ function startLiveValidation() {
     // Collect the ranking
     liveValidationState.playerRanking = [];
     for (let i = 0; i < liveValidationState.currentValidation.bidAmount; i++) {
-        const value = document.getElementById(`liveRanking_${i}`).value;
+        const value = DOMCache.get(`liveRanking_${i}`).value;
         if (!value) {
             alert(`Please select a token for position ${i + 1}`);
             return;
@@ -9548,7 +10662,7 @@ function startLiveValidation() {
 }
 
 function startDramaticReveal() {
-    const output = document.getElementById('liveValidationResults');
+    const output = DOMCache.get('liveValidationResults');
     const challenge = liveValidationState.currentChallenge;
     const correctOrder = getLiveCorrectOrder();
     const isAscending = challenge.direction === 'asc';
@@ -9592,7 +10706,7 @@ async function revealNextLiveCard() {
     }
     
     // Disable the reveal button during animation
-    const revealBtn = document.getElementById('revealNextBtn');
+    const revealBtn = DOMCache.get('revealNextBtn');
     revealBtn.disabled = true;
     revealBtn.textContent = '⏳ Revealing...';
     
@@ -9656,7 +10770,7 @@ async function revealNextLiveCard() {
 }
 
 function updateLiveRevealDisplay() {
-    const revealList = document.getElementById('liveRevealList');
+    const revealList = DOMCache.get('liveRevealList');
     if (!revealList) return;
     
     const playerRanking = liveValidationState.playerRanking;
@@ -9701,214 +10815,47 @@ function updateLiveRevealDisplay() {
 
 // Exciting animation functions for reveal
 function showCountdownSuspense() {
-    return new Promise((resolve) => {
-        const revealBtn = document.getElementById('revealNextBtn');
-        let count = 3;
-        
-        const countdown = () => {
-            if (count > 0) {
-                revealBtn.textContent = `🎲 ${count}...`;
-                revealBtn.style.transform = 'scale(1.1)';
-                revealBtn.style.background = '#ff6b6b';
-                
-                setTimeout(() => {
-                    revealBtn.style.transform = 'scale(1)';
-                    count--;
-                    setTimeout(countdown, 300);
-                }, 200);
-            } else {
-                revealBtn.textContent = '🎉 REVEAL!';
-                revealBtn.style.background = '#4caf50';
-                setTimeout(() => {
-                    revealBtn.style.background = '';
-                    resolve();
-                }, 300);
-            }
-        };
-        
-        countdown();
+    const revealBtn = DOMCache.get('revealNextBtn');
+    
+    return AnimationSystem.animateCountdown(revealBtn, {
+        startCount: 3,
+        onCount: (count) => {
+            revealBtn.textContent = `🎲 ${count}...`;
+        },
+        onComplete: () => {
+            revealBtn.textContent = '🎉 REVEAL!';
+        }
     });
 }
 
 function updateLiveRevealDisplayWithAnimation() {
-    return new Promise((resolve) => {
-        // First, do the regular update
-        updateLiveRevealDisplay();
-        
-        // Then add the flip animation to the newly revealed card
-        const currentCardIndex = liveValidationState.currentStep - 1;
-        const card = document.getElementById(`liveCard_${currentCardIndex}`);
-        
-        if (card) {
-            // Add flip animation
-            card.style.transform = 'rotateY(180deg)';
-            card.style.transition = 'transform 0.6s';
-            
-            setTimeout(() => {
-                card.style.transform = 'rotateY(0deg)';
-                card.classList.add('just-revealed');
-                
-                // Add a glow effect
-                card.style.boxShadow = '0 0 20px rgba(76, 175, 80, 0.5)';
-                card.style.background = 'linear-gradient(45deg, #e8f5e8, #ffffff)';
-                
-                setTimeout(() => {
-                    card.style.boxShadow = '';
-                    card.style.background = '';
-                    card.classList.remove('just-revealed');
-                    resolve();
-                }, 1000);
-            }, 300);
-        } else {
-            resolve();
-        }
-    });
+    // First, do the regular update
+    updateLiveRevealDisplay();
+    
+    // Then add the flip animation to the newly revealed card
+    const currentCardIndex = liveValidationState.currentStep - 1;
+    const card = DOMCache.get(`liveCard_${currentCardIndex}`);
+    
+    return AnimationSystem.animateCardFlip(card);
 }
 
 function markLiveCardStatus(cardIndex, isCorrect) {
-    const card = document.getElementById(`liveCard_${cardIndex}`);
-    const statusIcon = document.getElementById(`statusIcon_${cardIndex}`);
+    const card = DOMCache.get(`liveCard_${cardIndex}`);
+    const statusIcon = DOMCache.get(`statusIcon_${cardIndex}`);
     
-    if (!card || !statusIcon) return;
-    
-    if (isCorrect) {
-        // Success animation
-        card.classList.add('correct');
-        statusIcon.innerHTML = '✅';
-        statusIcon.style.color = '#4caf50';
-        
-        // Add success flash effect
-        card.style.background = '#4caf50';
-        card.style.color = 'white';
-        card.style.transform = 'scale(1.05)';
-        card.style.transition = 'all 0.3s ease';
-        
-        setTimeout(() => {
-            card.style.background = '#e8f5e8';
-            card.style.color = '';
-            card.style.transform = 'scale(1)';
-            
-            // Sparkle effect
-            addSparkleEffect(card);
-        }, 300);
-        
-    } else {
-        // Failure animation  
-        card.classList.add('wrong');
-        statusIcon.innerHTML = '❌';
-        statusIcon.style.color = '#f44336';
-        
-        // Add shake and red flash effect
-        card.style.background = '#f44336';
-        card.style.color = 'white';
-        card.style.animation = 'shake 0.5s ease-in-out';
-        
-        setTimeout(() => {
-            card.style.background = '#ffebee';
-            card.style.color = '';
-            card.style.animation = '';
-        }, 500);
-    }
+    return AnimationSystem.animateStatus(card, statusIcon, isCorrect);
 }
 
 function addSparkleEffect(card) {
-    // Create sparkles around the card
-    for (let i = 0; i < 5; i++) {
-        const sparkle = document.createElement('div');
-        sparkle.innerHTML = '✨';
-        sparkle.style.position = 'absolute';
-        sparkle.style.fontSize = '16px';
-        sparkle.style.pointerEvents = 'none';
-        sparkle.style.zIndex = '1000';
-        
-        // Random position around the card
-        const rect = card.getBoundingClientRect();
-        sparkle.style.left = (rect.left + Math.random() * rect.width) + 'px';
-        sparkle.style.top = (rect.top + Math.random() * rect.height) + 'px';
-        
-        document.body.appendChild(sparkle);
-        
-        // Animate sparkle  
-        sparkle.style.transition = 'opacity 1s ease-out, transform 1s ease-out';
-        sparkle.style.transform = 'translateY(-30px) scale(0.5)';
-        sparkle.style.opacity = '0';
-        
-        // Remove sparkle after animation
-        setTimeout(() => {
-            document.body.removeChild(sparkle);
-        }, 1000);
-    }
+    // Use the optimized sparkle effect from AnimationSystem
+    AnimationSystem.createSparkleEffect(card);
 }
 
 function showFireworks() {
-    // Create fireworks container
-    const fireworksContainer = document.createElement('div');
-    fireworksContainer.id = 'fireworks-container';
-    fireworksContainer.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 10000;
-    `;
-    document.body.appendChild(fireworksContainer);
-    
-    // Create multiple firework bursts
-    for (let i = 0; i < 6; i++) {
-        setTimeout(() => {
-            createFireworkBurst(fireworksContainer);
-        }, i * 300);
-    }
-    
-    // Remove fireworks after animation
-    setTimeout(() => {
-        if (fireworksContainer.parentNode) {
-            fireworksContainer.parentNode.removeChild(fireworksContainer);
-        }
-    }, 3000);
+    return AnimationSystem.createFireworks();
 }
 
-function createFireworkBurst(container) {
-    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8'];
-    const x = Math.random() * window.innerWidth;
-    const y = Math.random() * (window.innerHeight * 0.6) + (window.innerHeight * 0.2);
-    
-    // Create 12 particles per burst
-    for (let i = 0; i < 12; i++) {
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: ${colors[Math.floor(Math.random() * colors.length)]};
-            border-radius: 50%;
-            left: ${x}px;
-            top: ${y}px;
-        `;
-        
-        container.appendChild(particle);
-        
-        // Animate particle
-        const angle = (i / 12) * Math.PI * 2;
-        const velocity = 100 + Math.random() * 100;
-        const deltaX = Math.cos(angle) * velocity;
-        const deltaY = Math.sin(angle) * velocity;
-        
-        particle.animate([
-            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-            { transform: `translate(${deltaX}px, ${deltaY}px) scale(0)`, opacity: 0 }
-        ], {
-            duration: 1000 + Math.random() * 500,
-            easing: 'ease-out'
-        }).onfinish = () => {
-            if (particle.parentNode) {
-                particle.parentNode.removeChild(particle);
-            }
-        };
-    }
-}
+// Removed - now handled by AnimationSystem.createFireworkBurst
 
 function playVictorySound() {
     // Create a simple victory sound using Web Audio API
@@ -9940,37 +10887,12 @@ function playVictorySound() {
 }
 
 function createConfettiRain() {
-    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8'];
-    
-    for (let i = 0; i < 50; i++) {
-        setTimeout(() => {
-            const confetti = document.createElement('div');
-            confetti.innerHTML = ['🎉', '🎊', '⭐', '✨', '🌟'][Math.floor(Math.random() * 5)];
-            confetti.style.cssText = `
-                position: fixed;
-                top: -50px;
-                left: ${Math.random() * window.innerWidth}px;
-                font-size: ${Math.random() * 20 + 15}px;
-                pointer-events: none;
-                z-index: 10001;
-                animation: confetti-fall ${Math.random() * 2 + 3}s linear forwards;
-            `;
-            
-            document.body.appendChild(confetti);
-            
-            // Remove after animation
-            setTimeout(() => {
-                if (confetti.parentNode) {
-                    confetti.parentNode.removeChild(confetti);
-                }
-            }, 5000);
-        }, i * 50);
-    }
+    return AnimationSystem.createConfettiRain();
 }
 
 function showLiveValidationComplete(success, failedAtStep = null, currentValue = null, previousValue = null) {
-    const statusDiv = document.getElementById('liveValidationStatus');
-    const revealBtn = document.getElementById('revealNextBtn');
+    const statusDiv = DOMCache.get('liveValidationStatus');
+    const revealBtn = DOMCache.get('revealNextBtn');
     const challenge = liveValidationState.currentChallenge;
     const isAscending = challenge.direction === 'asc';
     
@@ -10031,7 +10953,7 @@ function showLiveValidationComplete(success, failedAtStep = null, currentValue =
 }
 
 function showLiveValidationResults() {
-    const output = document.getElementById('liveValidationResults');
+    const output = DOMCache.get('liveValidationResults');
     const correctOrder = getLiveCorrectOrder();
     
     let html = `
@@ -10139,13 +11061,13 @@ function resetLiveValidation() {
     };
     
     // Clear form
-    document.getElementById('liveValidationCategory').value = '';
-    document.getElementById('liveChallengeSelect').innerHTML = '<option value="">Select a challenge...</option>';
-    document.getElementById('liveChalllengeNumber').value = '';
-    document.getElementById('liveBidAmount').value = '';
-    document.getElementById('liveValidationDataset').value = 'production';
-    document.getElementById('datasetSelectorDiv').style.display = 'none';
+    DOMCache.get('liveValidationCategory').value = '';
+    DOMCache.get('liveChallengeSelect').innerHTML = '<option value="">Select a challenge...</option>';
+    DOMCache.get('liveChalllengeNumber').value = '';
+    DOMCache.get('liveBidAmount').value = '';
+    DOMCache.get('liveValidationDataset').value = 'production';
+    DOMCache.get('datasetSelectorDiv').style.display = 'none';
     
     // Reset output
-    document.getElementById('liveValidationResults').innerHTML = '';
+    DOMCache.get('liveValidationResults').innerHTML = '';
 }

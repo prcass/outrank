@@ -5,6 +5,23 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* Enable hardware acceleration for smoother animations */
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+/* Optimize touch events for mobile */
+html {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 body {
@@ -133,13 +150,14 @@ body {
     margin: 0;
 }
 
-/* Button styling */
+/* Button styling with mobile accessibility standards */
 .btn {
     width: 100%;
+    min-height: 44px; /* iOS/Android minimum touch target */
     padding: 15px;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 16px; /* Minimum readable size on mobile */
     font-weight: 600;
     cursor: pointer;
     text-align: center;
@@ -147,6 +165,14 @@ body {
     margin: 8px 0 0 0;
     display: block;
     text-decoration: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    /* GPU acceleration for smooth touch interactions */
+    will-change: transform;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .btn.primary {
@@ -192,6 +218,11 @@ body {
     border-radius: 5px;
     font-size: 16px;
     box-sizing: border-box;
+    min-height: 44px; /* Minimum touch target height */
+    touch-action: manipulation;
+    -webkit-appearance: none; /* Remove iOS default styling */
+    -moz-appearance: none;
+    appearance: none;
 }
 
 .form-group input:focus,
@@ -255,7 +286,7 @@ body {
     color: #333;
 }
 
-/* Game cards */
+/* Game cards optimized for mobile touch */
 .card {
     background: white;
     border: 2px solid #e9ecef;
@@ -270,21 +301,32 @@ body {
     justify-content: center;
     width: 140px;
     height: 140px;
-    font-size: 13px;
+    font-size: 14px; /* Increased from 13px for mobile readability */
     line-height: 1.2;
     overflow: hidden;
     text-overflow: ellipsis;
     flex-direction: column;
+    /* Mobile touch optimizations */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* Ensure minimum touch target size */
+    min-width: 44px;
+    min-height: 44px;
 }
 
 .card .card-name {
-    font-size: 14px;
+    font-size: 16px; /* Increased from 14px for better mobile readability */
     margin-bottom: 5px;
     font-weight: 600;
 }
 
 .card .card-code {
-    font-size: 12px;
+    font-size: 14px; /* Increased from 12px for mobile readability */
     color: #666;
     font-weight: 500;
     background: rgba(0,0,0,0.1);
@@ -322,12 +364,12 @@ body {
     border-collapse: collapse;
     margin-top: 12px;
     table-layout: auto;
-    font-size: 12px;
+    font-size: 14px; /* Increased from 12px for mobile readability */
 }
 
 .scores-table th,
 .scores-table td {
-    padding: 8px 4px;
+    padding: 12px 8px; /* Increased padding for better touch targets */
     border-bottom: 1px solid #e9ecef;
     vertical-align: top;
 }
@@ -336,12 +378,12 @@ body {
     background: #f8f9fa;
     font-weight: 600;
     color: #333;
-    font-size: 14px;
+    font-size: 16px; /* Increased from 14px for better mobile readability */
 }
 
 .scores-table td {
     color: #666;
-    font-size: 14px;
+    font-size: 16px; /* Increased from 14px for better mobile readability */
 }
 
 .scores-table th:nth-child(1),
@@ -561,19 +603,26 @@ body {
 }
 
 .bid-input {
-    width: 50px;
-    padding: 6px;
+    width: 60px; /* Increased from 50px for better touch targets */
+    padding: 10px; /* Increased from 6px for better touch targets */
     border: 1px solid #ddd;
     border-radius: 4px;
     text-align: center;
-    font-size: 12px;
+    font-size: 16px; /* Increased from 12px for mobile readability */
+    min-height: 44px; /* Minimum touch target height */
+    touch-action: manipulation;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 .btn.small {
-    padding: 6px 10px;
-    font-size: 11px;
-    min-width: 50px;
+    padding: 10px 15px; /* Increased for better touch targets */
+    font-size: 14px; /* Increased from 11px for mobile readability */
+    min-width: 44px; /* Minimum touch target */
+    min-height: 44px; /* Minimum touch target height */
     white-space: nowrap;
+    touch-action: manipulation;
 }
 
 .passed-text {
@@ -876,16 +925,17 @@ body {
 
 .reveal-card.revealed {
     animation: revealCard 0.5s ease-in-out;
+    will-change: transform, opacity;
 }
 
 @keyframes revealCard {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translate3d(0, -10px, 0);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translate3d(0, 0, 0);
     }
 }
 
@@ -916,20 +966,30 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-size: 13px;
+    font-size: 14px; /* Increased from 13px for mobile readability */
     line-height: 1.2;
     font-weight: 600;
     flex-direction: column;
+    /* Mobile touch optimizations */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* Ensure minimum touch target size */
+    min-width: 44px;
+    min-height: 44px;
 }
 
 .card-name {
-    font-size: 14px;
+    font-size: 16px; /* Increased from 14px for better mobile readability */
     margin-bottom: 5px;
     font-weight: 600;
 }
 
 .card-code {
-    font-size: 12px;
+    font-size: 14px; /* Increased from 12px for mobile readability */
     color: #666;
     font-weight: 500;
     background: rgba(0,0,0,0.1);
@@ -963,7 +1023,7 @@ body {
 }
 
 .token-item {
-    padding: 15px 20px;
+    padding: 18px 24px; /* Increased padding for better touch targets */
     border: 2px solid #ddd;
     border-radius: 8px;
     cursor: pointer;
@@ -971,6 +1031,15 @@ body {
     text-align: center;
     font-weight: bold;
     min-width: 80px;
+    min-height: 44px; /* Minimum touch target height */
+    font-size: 16px; /* Ensure readable font size */
+    /* Mobile touch optimizations */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .token-item:hover {
@@ -1319,11 +1388,56 @@ body {
     }
 }
 
-/* Responsive design */
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+    body {
+        /* Enable smooth scrolling on mobile */
+        -webkit-overflow-scrolling: touch;
+        overflow-scrolling: touch;
+    }
+    
+    .phone-container {
+        margin: 10px auto;
+        padding: 0 15px;
+        max-width: none;
+        width: 100%;
+    }
+    
+    .phone-frame {
+        border-radius: 0;
+        box-shadow: none;
+        min-height: 100vh;
+    }
+    
+    .app-header {
+        padding: 25px 20px;
+    }
+    
+    .screen-content {
+        padding: 25px 20px;
+    }
+    
+    /* Improve touch targets for mobile */
+    .action-card,
+    .form-card,
+    .info-card {
+        padding: 25px;
+        margin-bottom: 25px;
+        border-radius: 12px;
+    }
+    
+    .btn {
+        padding: 18px;
+        font-size: 18px;
+        margin: 12px 0 0 0;
+        border-radius: 12px;
+    }
+}
+
 @media (max-width: 480px) {
     .phone-container {
-        margin: 20px auto;
-        padding: 0 10px;
+        margin: 0;
+        padding: 0;
     }
     
     .app-header {
@@ -1336,27 +1450,27 @@ body {
     
     .app-title,
     .screen-title {
-        font-size: 24px;
+        font-size: 26px; /* Increased from 24px for better readability */
     }
     
     .cards-grid {
         grid-template-columns: 1fr;
     }
     
-    /* Adjust token size for very small screens */
+    /* Adjust card sizes for small screens but keep readable */
     .card, .card-item {
-        width: 120px;
-        height: 120px;
-        font-size: 12px;
-        padding: 12px;
+        width: 140px; /* Kept larger for better touch targets */
+        height: 140px;
+        font-size: 14px; /* Increased from 12px for readability */
+        padding: 15px;
     }
     
     .card-name {
-        font-size: 11px;
+        font-size: 16px; /* Increased from 11px for readability */
     }
     
     .card-code {
-        font-size: 9px;
+        font-size: 14px; /* Increased from 9px for readability */
     }
     
     .tokens-grid {
@@ -1637,6 +1751,7 @@ body {
     border-color: #2196f3;
     background: #e3f2fd;
     animation: revealCard 0.5s ease-in-out;
+    will-change: transform, opacity;
 }
 
 .reveal-card.current-reveal .rank-number {
@@ -1693,31 +1808,32 @@ body {
 .reveal-card.wrong .status-icon {
     opacity: 1;
     animation: statusPop 0.5s ease-out;
+    will-change: transform, opacity;
 }
 
 @keyframes statusPop {
-    0% { transform: scale(0); opacity: 0; }
-    50% { transform: scale(1.3); opacity: 1; }
-    100% { transform: scale(1); opacity: 1; }
+    0% { transform: scale3d(0, 0, 1); opacity: 0; }
+    50% { transform: scale3d(1.3, 1.3, 1); opacity: 1; }
+    100% { transform: scale3d(1, 1, 1); opacity: 1; }
 }
 
 /* Exciting reveal animations */
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    10%, 30%, 50%, 70%, 90% { transform: translate3d(-5px, 0, 0); }
+    20%, 40%, 60%, 80% { transform: translate3d(5px, 0, 0); }
 }
 
 @keyframes flipCard {
-    0% { transform: rotateY(0deg); }
-    50% { transform: rotateY(180deg); }
-    100% { transform: rotateY(0deg); }
+    0% { transform: rotateY(0deg) translateZ(0); }
+    50% { transform: rotateY(180deg) translateZ(0); }
+    100% { transform: rotateY(0deg) translateZ(0); }
 }
 
 @keyframes pulseButton {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(255, 107, 107, 0.6); }
-    100% { transform: scale(1); }
+    0% { transform: scale3d(1, 1, 1); }
+    50% { transform: scale3d(1.1, 1.1, 1); box-shadow: 0 0 20px rgba(255, 107, 107, 0.6); }
+    100% { transform: scale3d(1, 1, 1); }
 }
 
 @keyframes successFlash {
@@ -1734,19 +1850,120 @@ body {
 
 .just-revealed {
     animation: flipCard 0.6s ease-in-out;
+    will-change: transform;
 }
 
 .reveal-button-countdown {
     animation: pulseButton 0.5s ease-in-out;
+    will-change: transform, box-shadow;
 }
 
 @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-15px); }
-    60% { transform: translateY(-7px); }
+    0%, 20%, 50%, 80%, 100% { transform: translate3d(0, 0, 0); }
+    40% { transform: translate3d(0, -15px, 0); }
+    60% { transform: translate3d(0, -7px, 0); }
 }
 
 @keyframes confetti-fall {
-    0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    0% { transform: translate3d(0, -50px, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate3d(0, 100vh, 0) rotate(360deg); opacity: 0; }
+}
+
+/* Performance optimizations for animated elements */
+.live-validation-reveal,
+.reveal-container,
+.ranking-list,
+.reveal-card,
+.fireworks-container,
+.confetti {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.reveal-card {
+    will-change: auto; /* Only set to transform/opacity during animations */
+}
+
+.reveal-card.animating {
+    will-change: transform, opacity, background-color;
+}
+
+/* Optimize button interactions */
+.btn {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.btn:hover,
+.btn:active,
+.btn.animating {
+    will-change: transform, background-color, box-shadow;
+}
+
+/* Optimize status icons */
+.status-icon {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.status-icon.animating {
+    will-change: transform, opacity;
+}
+
+/* Mobile landscape orientation optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+    .phone-frame {
+        min-height: 100vh;
+    }
+    
+    .app-header {
+        padding: 15px 20px; /* Reduced padding for landscape */
+    }
+    
+    .screen-content {
+        padding: 15px 20px;
+    }
+    
+    .app-title,
+    .screen-title {
+        font-size: 22px; /* Smaller for landscape */
+    }
+    
+    .cards-grid {
+        grid-template-columns: repeat(3, 1fr); /* More columns in landscape */
+        gap: 8px;
+    }
+    
+    .card, .card-item {
+        width: 120px;
+        height: 120px;
+        font-size: 13px;
+        padding: 12px;
+    }
+}
+
+/* Very small screens (older iPhones, small Android) */
+@media (max-width: 320px) {
+    .app-title,
+    .screen-title {
+        font-size: 22px;
+    }
+    
+    .btn {
+        font-size: 16px;
+        padding: 16px;
+    }
+    
+    .card, .card-item {
+        width: 120px;
+        height: 120px;
+        margin: 6px;
+    }
+    
+    .action-card,
+    .form-card,
+    .info-card {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
 }
