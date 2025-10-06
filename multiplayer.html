@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>4f4 V4.94 - Multiplayer</title>
+    <title>4f4 V4.95 - Multiplayer</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -696,7 +696,7 @@
         <!-- MODE SELECTION SCREEN -->
         <div id="modeSelectionScreen" class="screen active">
             <div class="header">
-                <h1>4f4 V4.94</h1>
+                <h1>4f4 V4.95</h1>
                 <p class="subtitle">Multiplayer</p>
             </div>
 
@@ -750,7 +750,7 @@
         <!-- ONLINE SETUP SCREEN -->
         <div id="onlineSetupScreen" class="screen">
             <div class="header">
-                <h1>4f4 V4.94 - Online</h1>
+                <h1>4f4 V4.95 - Online</h1>
                 <p class="subtitle">Connect with Friends</p>
             </div>
 
@@ -936,7 +936,7 @@
             </div>
 
             <div class="header">
-                <h1>4f4 V4.94</h1>
+                <h1>4f4 V4.95</h1>
                 <p class="subtitle" id="playerNameDisplay" style="font-weight: bold; color: #667eea; margin-bottom: 5px;">Loading...</p>
                 <p class="subtitle">Round <span id="roundNumber">1</span></p>
                 <button id="toggleDataBtn" class="btn btn-secondary" style="position: absolute; top: 20px; right: 20px; padding: 8px 15px; font-size: 0.9em;" onclick="toggleDataVisibility()">
@@ -1780,14 +1780,14 @@
                         gameState.drawnChallengeCards = Object.values(gameState.drawnChallengeCards);
                     }
 
-                    // V4.94: Use explicit showModal flag from Firebase
+                    // V4.95: Use explicit showModal flag from Firebase
                     const shouldShowModal = gameState.showModal === true;
                     const isCardsMode = gameState.challengeMode === 'cards';
                     const hasCards = gameState.drawnChallengeCards?.length > 0;
                     const modal = document.getElementById('categoryModal');
                     const isModalCurrentlyShown = modal?.classList.contains('active');
 
-                    console.log('🔍 V4.94 Modal check:', {
+                    console.log('🔍 V4.95 Modal check:', {
                         showModalFlag: gameState.showModal,
                         shouldShowModal,
                         hasCards,
@@ -2036,7 +2036,7 @@
             if (GameModeManager.isOnline() && isFirstGuesser) {
                 GameModeManager.updateGameState({
                     drawnChallengeCards: gameState.drawnChallengeCards,
-                    showModal: true  // V4.94: Explicit flag to show modal for all players
+                    showModal: true  // V4.95: Explicit flag to show modal for all players
                 }).then(() => {
                     console.log('✅ Synced challenge cards + showModal=true to Firebase');
                 }).catch(err => {
@@ -2069,10 +2069,11 @@
                 const firstGuesser = gameState.players?.[gameState.firstGuesser];
                 const firstGuesserName = firstGuesser?.name || 'Player';
 
-                // V4.92: Check if current player is the first guesser (only they can select)
+                // V4.95: Check if current player is the first guesser (only they can select)
+                // In local mode, always allow selection (same device). In online mode, check user ID.
                 const playerIds = window.playerIds || [];
                 const firstGuesserId = playerIds[gameState.firstGuesser];
-                const isFirstGuesser = firstGuesserId === window.currentUserId;
+                const isFirstGuesser = GameModeManager.isLocal() || firstGuesserId === window.currentUserId;
                 const instructionText = isFirstGuesser
                     ? `<strong>${firstGuesserName}</strong>, choose one challenge card:`
                     : `Waiting for <strong>${firstGuesserName}</strong> to choose a challenge card...`;
@@ -2331,7 +2332,7 @@
                     passedPlayers: Array.from(gameState.passedPlayers),
                     currentPlayer: gameState.currentPlayer,
                     selectedDraftToken: null,
-                    showModal: false  // V4.94: Hide modal for all players after selection
+                    showModal: false  // V4.95: Hide modal for all players after selection
                 });
                 console.log('✅ Synced challenge selection + showModal=false to Firebase');
             }
@@ -2564,7 +2565,7 @@
                 return; // Exit immediately
             }
 
-            // V4.94: Check if we're in round transition (modal being shown)
+            // V4.95: Check if we're in round transition (modal being shown)
             // Modal open = don't show lockout overlay
             const isRoundTransition = gameState.showModal === true;
 
@@ -2574,7 +2575,7 @@
                 myPlayerIndex = window.playerIds.indexOf(window.currentUserId);
             }
 
-            console.log(`🔍 V4.94 updateLockedOutState - Player ${myPlayerIndex}: isModalActive=${isModalActive}, showModal=${gameState.showModal}, isRoundTransition=${isRoundTransition}, hasPassed=${gameState.passedPlayers.has(myPlayerIndex)}`);
+            console.log(`🔍 V4.95 updateLockedOutState - Player ${myPlayerIndex}: isModalActive=${isModalActive}, showModal=${gameState.showModal}, isRoundTransition=${isRoundTransition}, hasPassed=${gameState.passedPlayers.has(myPlayerIndex)}`);
 
             if (isRoundTransition) {
                 // Round transition - hide lockout overlay regardless of pass state
@@ -2861,7 +2862,7 @@
                     thisRound: player.thisRound
                 });
 
-                // V4.94: Keep same player turn after correct guess (don't advance)
+                // V4.95: Keep same player turn after correct guess (don't advance)
                 GameModeManager.updateGameState({
                     centerToken: newCenterToken,
                     draftPool: newDraftPool,
