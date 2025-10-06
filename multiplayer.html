@@ -2861,42 +2861,23 @@
                     thisRound: player.thisRound
                 });
 
-                // V4.86: Advance turn after correct guess
-                const playerCount = Object.keys(gameState.players).length;
-                let nextPlayerIndex = gameState.currentPlayer;
-                let attempts = 0;
-                do {
-                    nextPlayerIndex = (nextPlayerIndex + 1) % playerCount;
-                    attempts++;
-                    if (attempts > playerCount) break;
-                } while (gameState.passedPlayers.has(nextPlayerIndex));
-
+                // V4.93: Keep same player turn after correct guess (don't advance)
                 GameModeManager.updateGameState({
                     centerToken: newCenterToken,
                     draftPool: newDraftPool,
                     selectedDraftToken: newSelectedDraftToken,
                     passedPlayers: Array.from(gameState.passedPlayers),
-                    currentPlayer: nextPlayerIndex, // V4.86: Advance turn
+                    // currentPlayer stays the same - player keeps turn after correct guess
                     lastAction: actionData
                 });
 
-                console.log(`✅ Correct guess - turn advanced to Player ${nextPlayerIndex}`);
+                console.log(`✅ Correct guess - ${gameState.players[gameState.currentPlayer].name} keeps their turn`);
             } else {
-                // LOCAL MODE: Update state directly and advance turn
+                // LOCAL MODE: Update state directly, keep same player turn
                 gameState.centerToken = newCenterToken;
                 gameState.draftPool = newDraftPool;
                 gameState.selectedDraftToken = newSelectedDraftToken;
-
-                const playerCount = getPlayerCount();
-                let nextPlayerIndex = gameState.currentPlayer;
-                let attempts = 0;
-                do {
-                    nextPlayerIndex = (nextPlayerIndex + 1) % playerCount;
-                    attempts++;
-                    if (attempts > playerCount) break;
-                } while (gameState.passedPlayers.has(nextPlayerIndex));
-
-                gameState.currentPlayer = nextPlayerIndex;
+                // currentPlayer stays the same - player keeps turn after correct guess
                 document.getElementById('guessArea').classList.remove('active');
             }
 
