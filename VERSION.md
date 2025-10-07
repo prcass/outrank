@@ -1,5 +1,21 @@
 # FourFor4 Multiplayer - Version History
 
+## ⚠️ IMPORTANT: Version Number Update Protocol
+**ALWAYS update version numbers in BOTH locations when making changes:**
+1. **VERSION.md** - Update "Current Development" section to next version
+2. **multiplayer.html** - Update `<title>` tag (line 6) to match
+3. **Git commit** - Tag release after committing
+
+**Example workflow:**
+```bash
+# 1. Update multiplayer.html title: "4f4 V5.0.X - Description"
+# 2. Update VERSION.md: Add new version section, bump "Current Development"
+# 3. Commit and tag:
+git add multiplayer.html VERSION.md
+git commit -m "vX.X.X: Description"
+git tag -a vX.X.X -m "Version X.X.X"
+```
+
 ## Versioning Strategy
 - **Major (X.0.0)**: New game-changing features (e.g., bonus card system)
 - **Minor (5.X.0)**: New features, significant changes
