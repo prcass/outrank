@@ -2678,7 +2678,10 @@
         }
 
         function executeSwapTokens(player, card) {
-            const playerTokens = [...player.hand, ...player.thisRound];
+            // V5.1.0: Ensure arrays (hand/thisRound might be objects in FourFor4)
+            const hand = Array.isArray(player.hand) ? player.hand : Object.values(player.hand || {});
+            const thisRound = Array.isArray(player.thisRound) ? player.thisRound : Object.values(player.thisRound || {});
+            const playerTokens = [...hand, ...thisRound];
 
             if (playerTokens.length === 0) {
                 showNotification('No tokens in your hand to swap!', 'error');
@@ -2705,6 +2708,14 @@
                         `Trading away ${playerToken.name}. Select token from pool:`,
                         (poolTokenIndex) => {
                             const poolToken = gameState.draftPool[poolTokenIndex];
+
+                            // Ensure hand and thisRound are arrays before using array methods
+                            if (!Array.isArray(player.hand)) {
+                                player.hand = Object.values(player.hand || {});
+                            }
+                            if (!Array.isArray(player.thisRound)) {
+                                player.thisRound = Object.values(player.thisRound || {});
+                            }
 
                             // Remove from player's hand/thisRound
                             const handIndex = player.hand.findIndex(t => t.id === playerToken.id);
@@ -2735,7 +2746,10 @@
         }
 
         function executeReturnToken(player, card) {
-            const playerTokens = [...player.hand, ...player.thisRound];
+            // V5.1.0: Ensure arrays (hand/thisRound might be objects in FourFor4)
+            const hand = Array.isArray(player.hand) ? player.hand : Object.values(player.hand || {});
+            const thisRound = Array.isArray(player.thisRound) ? player.thisRound : Object.values(player.thisRound || {});
+            const playerTokens = [...hand, ...thisRound];
 
             if (playerTokens.length === 0) {
                 showNotification('No tokens to return!', 'error');
@@ -2749,6 +2763,14 @@
                 'Select a token from your hand to return to pool:',
                 (tokenIndex) => {
                     const returnedToken = playerTokens[tokenIndex];
+
+                    // Ensure hand and thisRound are arrays before using array methods
+                    if (!Array.isArray(player.hand)) {
+                        player.hand = Object.values(player.hand || {});
+                    }
+                    if (!Array.isArray(player.thisRound)) {
+                        player.thisRound = Object.values(player.thisRound || {});
+                    }
 
                     // Remove from player's hand/thisRound
                     const handIndex = player.hand.findIndex(t => t.id === returnedToken.id);
@@ -4010,37 +4032,47 @@
                 });
             }
 
-            // V5.0.6: Check for Lucky passive effect (draw extra token at start of turn)
+            // V5.1.0: Check for Lucky passive effect (draw extra token at start of turn - with player choice)
             const currentPlayer = getPlayerByIndex(gameState.currentPlayer);
             const hasLucky = currentPlayer.bonusCards && currentPlayer.bonusCards.some(card => card.effect === 'draw_bonus');
 
             if (hasLucky && gameState.draftPool.length > 0) {
-                // Draw 1 random token from draft pool to player's thisRound
-                const randomIndex = Math.floor(Math.random() * gameState.draftPool.length);
-                const luckyToken = gameState.draftPool.splice(randomIndex, 1)[0];
+                // V5.1.0: Let player choose which token to draw with Lucky
+                showTokenSelectionModal(
+                    gameState.draftPool,
+                    '🍀 Lucky - Choose Token',
+                    `${currentPlayer.name}'s Lucky card! Choose a token to draw:`,
+                    (tokenIndex) => {
+                        const luckyToken = gameState.draftPool.splice(tokenIndex, 1)[0];
 
-                if (!Array.isArray(currentPlayer.thisRound)) {
-                    currentPlayer.thisRound = Object.values(currentPlayer.thisRound || {});
-                }
-                currentPlayer.thisRound.push(luckyToken);
+                        if (!Array.isArray(currentPlayer.thisRound)) {
+                            currentPlayer.thisRound = Object.values(currentPlayer.thisRound || {});
+                        }
+                        currentPlayer.thisRound.push(luckyToken);
 
-                console.log(`🍀 ${currentPlayer.name} has Lucky: drew ${luckyToken.name}`);
-                showNotification(`🍀 ${currentPlayer.name}'s Lucky card drew ${luckyToken.name}!`, 'success');
+                        console.log(`🍀 ${currentPlayer.name} has Lucky: drew ${luckyToken.name}`);
+                        showNotification(`🍀 ${currentPlayer.name}'s Lucky card drew ${luckyToken.name}!`, 'success');
 
-                // Update draft pool UI
-                updateDraftPoolUI();
+                        // Update draft pool UI
+                        updateDraftPoolUI();
 
-                // Sync to Firebase if online
-                if (GameModeManager.isOnline()) {
-                    const playerIds = Object.keys(gameState.players);
-                    const playerId = playerIds[gameState.currentPlayer];
-                    GameModeManager.updatePlayer(playerId, {
-                        thisRound: currentPlayer.thisRound
-                    });
-                    GameModeManager.updateGameState({
-                        draftPool: gameState.draftPool
-                    });
-                }
+                        // Sync to Firebase if online
+                        if (GameModeManager.isOnline()) {
+                            const playerIds = Object.keys(gameState.players);
+                            const playerId = playerIds[gameState.currentPlayer];
+                            GameModeManager.updatePlayer(playerId, {
+                                thisRound: currentPlayer.thisRound
+                            });
+                            GameModeManager.updateGameState({
+                                draftPool: gameState.draftPool
+                            });
+                        }
+
+                        // Continue with turn advancement
+                        updateGameUI();
+                    }
+                );
+                return; // Exit advanceTurn early, will be called after token selection
             }
 
             // Update UI
