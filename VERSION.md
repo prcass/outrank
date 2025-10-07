@@ -45,14 +45,56 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.0.7 (In Progress)
+## Current Development: v5.1.1 (In Progress)
 **Status**: Active Development
-**Branch**: v5.0
+**Branch**: v5.1
 
 **Planned Features:**
-- Enhanced player choice UI for card targets (not random)
 - Full online multiplayer testing with all cards
 - Additional balance tweaks
+- Bug fixes and polish
+
+---
+
+## v5.1.0 - Player Choice UI for Token Selection (2025-10-07)
+**Tag**: `v5.1.0`
+**Status**: Stable
+
+### Major Features:
+✅ **Player Choice UI for Token Selection**
+- Removed random selection from all token manipulation cards
+- Players now choose specific tokens instead of random selection
+- Beautiful modal interface with token circles showing ID and name
+- Grid layout for easy selection
+
+✅ **Token Manipulation Cards Enhanced:**
+- 🎯 **Snatch**: Choose which token to steal from draft pool
+- 🎴 **Double Pick**: Choose 2 tokens sequentially from draft pool
+- 🔄 **Trade**: Two-step selection - choose your token, then pool token
+- ♻️ **Recycle**: Choose which token to return to pool
+
+✅ **Removed Foresight/Peek Card**
+- Eliminated confusing "peek at top 3" mechanic (pool is shuffled)
+- Simplified deck to 19 cards
+- Removed executePeekDeck() function
+
+### Implementation:
+- Added `tokenSelectionModal` HTML structure
+- Added `showTokenSelectionModal()` function with callback system
+- Added `selectToken()` and `closeTokenSelectionModal()` functions
+- Updated all 4 token manipulation functions to use player choice
+- Sequential selection for multi-token cards (e.g., draw 2)
+- Two-step selection for swap cards
+
+### Game Balance:
+- Much more strategic token manipulation
+- Players can make informed decisions about which tokens to take/trade
+- Removes randomness from card effects
+- Increases skill ceiling for advanced play
+
+### Testing:
+- ⏳ Local multiplayer testing pending
+- ⏳ Online multiplayer pending testing
 
 ---
 

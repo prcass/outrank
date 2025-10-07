@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>4f4 V5.0.6 - Multiplayer + Bonus Cards (Complete System)</title>
+    <title>4f4 V5.1.0 - Multiplayer + Bonus Cards (Player Choice UI)</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -759,7 +759,7 @@
         <!-- MODE SELECTION SCREEN -->
         <div id="modeSelectionScreen" class="screen active">
             <div class="header">
-                <h1>4f4 V5.0.6</h1>
+                <h1>4f4 V5.1.0</h1>
                 <p class="subtitle">Multiplayer</p>
             </div>
 
@@ -999,7 +999,7 @@
             </div>
 
             <div class="header">
-                <h1>4f4 V5.0.6</h1>
+                <h1>4f4 V5.1.0</h1>
                 <p class="subtitle" id="playerNameDisplay" style="font-weight: bold; color: #667eea; margin-bottom: 5px;">Loading...</p>
                 <p class="subtitle">Round <span id="roundNumber">1</span></p>
                 <button id="toggleDataBtn" class="btn btn-secondary" style="position: absolute; top: 20px; right: 20px; padding: 8px 15px; font-size: 0.9em;" onclick="toggleDataVisibility()">
@@ -1161,6 +1161,18 @@
             </div>
         </div>
 
+        <!-- Token Selection Modal (v5.1.0) -->
+        <div id="tokenSelectionModal" class="modal">
+            <div class="modal-content" style="max-width: 600px;">
+                <h2 id="tokenSelectionTitle">🎯 Select Token</h2>
+                <p id="tokenSelectionInstructions" style="margin-bottom: 15px; color: #666;">Choose a token:</p>
+                <div id="tokenSelectionContent" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px;">
+                    <!-- Dynamically populated tokens to select -->
+                </div>
+                <button class="btn btn-secondary" onclick="closeTokenSelectionModal()" style="width: 100%;">Cancel</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -1236,8 +1248,7 @@
             { id: 'LUCKY_DRAW', name: '🍀 Lucky', type: 'passive', effect: 'draw_bonus', description: 'Passive: Draw 1 extra token each turn' },
 
             // SPECIAL ACTIONS
-            { id: 'SWAP_TOKENS', name: '🔄 Trade', type: 'playable', effect: 'swap', description: 'Swap 1 of your tokens with 1 from draft pool' },
-            { id: 'PEEK_DECK', name: '👁️ Foresight', type: 'playable', effect: 'peek', value: 3, description: 'Look at top 3 tokens in draft pool' }
+            { id: 'SWAP_TOKENS', name: '🔄 Trade', type: 'playable', effect: 'swap', description: 'Swap 1 of your tokens with 1 from draft pool' }
         ];
 
         console.log('🎴 Bonus card database loaded:', BONUS_CARDS.length, 'cards');
@@ -2540,10 +2551,6 @@
                     executeForceDiscard(player, card);
                     break;
 
-                case 'peek':
-                    executePeekDeck(player, card);
-                    break;
-
                 default:
                     showNotification(`Card effect '${card.effect}' not yet implemented`, 'error');
                     return;
@@ -2567,41 +2574,107 @@
             }
         }
 
-        // V5.0.3: TOKEN MANIPULATION CARD EFFECTS
+        // ===== V5.1.0: TOKEN SELECTION MODAL =====
+        let tokenSelectionCallback = null;
+
+        function showTokenSelectionModal(tokens, title, instructions, callback) {
+            const modal = document.getElementById('tokenSelectionModal');
+            const titleEl = document.getElementById('tokenSelectionTitle');
+            const instructionsEl = document.getElementById('tokenSelectionInstructions');
+            const content = document.getElementById('tokenSelectionContent');
+
+            titleEl.textContent = title;
+            instructionsEl.textContent = instructions;
+
+            // Display tokens as clickable circles
+            content.innerHTML = tokens.map((token, index) => `
+                <div onclick="selectToken(${index})" style="cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transition: transform 0.2s;">
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-weight: bold; border: 3px solid white; font-size: 0.9em;">${token.id || token.name.substring(0, 3).toUpperCase()}</div>
+                    <div style="font-size: 0.8em; text-align: center; word-wrap: break-word; max-width: 100px;">${token.name}</div>
+                </div>
+            `).join('');
+
+            tokenSelectionCallback = callback;
+            modal.classList.add('active');
+        }
+
+        function selectToken(tokenIndex) {
+            if (tokenSelectionCallback) {
+                tokenSelectionCallback(tokenIndex);
+            }
+            closeTokenSelectionModal();
+        }
+
+        function closeTokenSelectionModal() {
+            const modal = document.getElementById('tokenSelectionModal');
+            modal.classList.remove('active');
+            tokenSelectionCallback = null;
+        }
+
+        // V5.1.0: TOKEN MANIPULATION CARD EFFECTS (now with player choice)
         function executeStealToken(player, card) {
             if (gameState.draftPool.length === 0) {
                 showNotification('No tokens in draft pool to steal!', 'error');
                 return;
             }
 
-            // Steal random token from draft pool
-            const randomIndex = Math.floor(Math.random() * gameState.draftPool.length);
-            const stolenToken = gameState.draftPool.splice(randomIndex, 1)[0];
-            player.thisRound.push(stolenToken);
+            // V5.1.0: Show selection modal for player to choose
+            showTokenSelectionModal(
+                gameState.draftPool,
+                '🎯 Snatch - Choose Token',
+                'Select a token to steal from the draft pool:',
+                (tokenIndex) => {
+                    const stolenToken = gameState.draftPool.splice(tokenIndex, 1)[0];
+                    player.thisRound.push(stolenToken);
 
-            showNotification(`🎯 ${player.name} stole ${stolenToken.name}!`, 'success');
-            console.log(`🎯 ${player.name} stole token:`, stolenToken.name);
+                    showNotification(`🎯 ${player.name} stole ${stolenToken.name}!`, 'success');
+                    console.log(`🎯 ${player.name} stole token:`, stolenToken.name);
 
-            removeCardFromHand(player, card);
-            updateDraftPoolUI();
+                    removeCardFromHand(player, card);
+                    updateDraftPoolUI();
+                    updateGameUI();
+                }
+            );
         }
 
         function executeExtraDraw(player, card) {
             const drawCount = card.value || 2;
-            const drawnTokens = [];
 
-            for (let i = 0; i < drawCount && gameState.draftPool.length > 0; i++) {
-                const randomIndex = Math.floor(Math.random() * gameState.draftPool.length);
-                const token = gameState.draftPool.splice(randomIndex, 1)[0];
-                player.thisRound.push(token);
-                drawnTokens.push(token);
+            if (gameState.draftPool.length === 0) {
+                showNotification('No tokens in draft pool to draw!', 'error');
+                return;
             }
 
-            showNotification(`🎴 ${player.name} drew ${drawnTokens.length} extra tokens!`, 'success');
-            console.log(`🎴 ${player.name} drew tokens:`, drawnTokens.map(t => t.name).join(', '));
+            // V5.1.0: Multi-select tokens (select first token, then second)
+            const drawnTokens = [];
+            let remainingDraws = Math.min(drawCount, gameState.draftPool.length);
 
-            removeCardFromHand(player, card);
-            updateDraftPoolUI();
+            function drawNextToken() {
+                if (remainingDraws === 0) {
+                    showNotification(`🎴 ${player.name} drew ${drawnTokens.length} tokens: ${drawnTokens.map(t => t.name).join(', ')}!`, 'success');
+                    console.log(`🎴 ${player.name} drew tokens:`, drawnTokens.map(t => t.name).join(', '));
+
+                    removeCardFromHand(player, card);
+                    updateDraftPoolUI();
+                    updateGameUI();
+                    return;
+                }
+
+                showTokenSelectionModal(
+                    gameState.draftPool,
+                    `🎴 Double Pick - Choose Token (${drawnTokens.length + 1}/${drawCount})`,
+                    `Select token ${drawnTokens.length + 1} of ${drawCount}:`,
+                    (tokenIndex) => {
+                        const token = gameState.draftPool.splice(tokenIndex, 1)[0];
+                        player.thisRound.push(token);
+                        drawnTokens.push(token);
+                        remainingDraws--;
+                        drawNextToken();
+                    }
+                );
+            }
+
+            drawNextToken();
         }
 
         function executeSwapTokens(player, card) {
@@ -2617,34 +2690,48 @@
                 return;
             }
 
-            // For now, swap random tokens (could be enhanced with player choice UI)
-            const playerTokenIndex = Math.floor(Math.random() * playerTokens.length);
-            const poolTokenIndex = Math.floor(Math.random() * gameState.draftPool.length);
+            // V5.1.0: Two-step selection - first player's token, then pool token
+            showTokenSelectionModal(
+                playerTokens,
+                '🔄 Trade - Choose Your Token',
+                'Select a token from your hand to trade away:',
+                (playerTokenIndex) => {
+                    const playerToken = playerTokens[playerTokenIndex];
 
-            const playerToken = playerTokens[playerTokenIndex];
-            const poolToken = gameState.draftPool[poolTokenIndex];
+                    // Now select pool token
+                    showTokenSelectionModal(
+                        gameState.draftPool,
+                        '🔄 Trade - Choose Pool Token',
+                        `Trading away ${playerToken.name}. Select token from pool:`,
+                        (poolTokenIndex) => {
+                            const poolToken = gameState.draftPool[poolTokenIndex];
 
-            // Remove from player's hand/thisRound
-            const handIndex = player.hand.findIndex(t => t.id === playerToken.id);
-            const thisRoundIndex = player.thisRound.findIndex(t => t.id === playerToken.id);
+                            // Remove from player's hand/thisRound
+                            const handIndex = player.hand.findIndex(t => t.id === playerToken.id);
+                            const thisRoundIndex = player.thisRound.findIndex(t => t.id === playerToken.id);
 
-            if (handIndex > -1) {
-                player.hand.splice(handIndex, 1);
-            } else if (thisRoundIndex > -1) {
-                player.thisRound.splice(thisRoundIndex, 1);
-            }
+                            if (handIndex > -1) {
+                                player.hand.splice(handIndex, 1);
+                            } else if (thisRoundIndex > -1) {
+                                player.thisRound.splice(thisRoundIndex, 1);
+                            }
 
-            // Add pool token to player's thisRound
-            player.thisRound.push(poolToken);
+                            // Add pool token to player's thisRound
+                            player.thisRound.push(poolToken);
 
-            // Replace pool token with player's token
-            gameState.draftPool[poolTokenIndex] = playerToken;
+                            // Replace pool token with player's token
+                            gameState.draftPool[poolTokenIndex] = playerToken;
 
-            showNotification(`🔄 Swapped ${playerToken.name} for ${poolToken.name}!`, 'success');
-            console.log(`🔄 ${player.name} swapped ${playerToken.name} ↔️ ${poolToken.name}`);
+                            showNotification(`🔄 Swapped ${playerToken.name} for ${poolToken.name}!`, 'success');
+                            console.log(`🔄 ${player.name} swapped ${playerToken.name} ↔️ ${poolToken.name}`);
 
-            removeCardFromHand(player, card);
-            updateDraftPoolUI();
+                            removeCardFromHand(player, card);
+                            updateDraftPoolUI();
+                            updateGameUI();
+                        }
+                    );
+                }
+            );
         }
 
         function executeReturnToken(player, card) {
@@ -2655,28 +2742,35 @@
                 return;
             }
 
-            // Return random token (could be enhanced with player choice UI)
-            const randomIndex = Math.floor(Math.random() * playerTokens.length);
-            const returnedToken = playerTokens[randomIndex];
+            // V5.1.0: Show selection modal for player to choose which token to return
+            showTokenSelectionModal(
+                playerTokens,
+                '♻️ Recycle - Choose Token',
+                'Select a token from your hand to return to pool:',
+                (tokenIndex) => {
+                    const returnedToken = playerTokens[tokenIndex];
 
-            // Remove from player's hand/thisRound
-            const handIndex = player.hand.findIndex(t => t.id === returnedToken.id);
-            const thisRoundIndex = player.thisRound.findIndex(t => t.id === returnedToken.id);
+                    // Remove from player's hand/thisRound
+                    const handIndex = player.hand.findIndex(t => t.id === returnedToken.id);
+                    const thisRoundIndex = player.thisRound.findIndex(t => t.id === returnedToken.id);
 
-            if (handIndex > -1) {
-                player.hand.splice(handIndex, 1);
-            } else if (thisRoundIndex > -1) {
-                player.thisRound.splice(thisRoundIndex, 1);
-            }
+                    if (handIndex > -1) {
+                        player.hand.splice(handIndex, 1);
+                    } else if (thisRoundIndex > -1) {
+                        player.thisRound.splice(thisRoundIndex, 1);
+                    }
 
-            // Return to draft pool
-            gameState.draftPool.push(returnedToken);
+                    // Return to draft pool
+                    gameState.draftPool.push(returnedToken);
 
-            showNotification(`♻️ ${player.name} returned ${returnedToken.name} to pool`, 'success');
-            console.log(`♻️ ${player.name} returned token:`, returnedToken.name);
+                    showNotification(`♻️ ${player.name} returned ${returnedToken.name} to pool`, 'success');
+                    console.log(`♻️ ${player.name} returned token:`, returnedToken.name);
 
-            removeCardFromHand(player, card);
-            updateDraftPoolUI();
+                    removeCardFromHand(player, card);
+                    updateDraftPoolUI();
+                    updateGameUI();
+                }
+            );
         }
 
         // V5.0.6: DEFENSIVE CARD EFFECTS
@@ -2729,41 +2823,6 @@
 
             showNotification(`💣 ${player.name} sabotaged ${targetPlayer.name}! Discarded ${discardCount} token(s)`, 'success');
             console.log(`💣 ${player.name} forced ${targetPlayer.name} to discard:`, discardedTokens.map(t => t.name).join(', '));
-
-            removeCardFromHand(player, card);
-        }
-
-        function executePeekDeck(player, card) {
-            const peekCount = card.value || 3;
-
-            if (gameState.draftPool.length === 0) {
-                showNotification('No tokens in draft pool to peek at!', 'error');
-                return;
-            }
-
-            // Show first N tokens from draft pool (without removing them)
-            const tokensToShow = gameState.draftPool.slice(0, Math.min(peekCount, gameState.draftPool.length));
-
-            // Create modal content showing the tokens
-            const peekModal = `
-                <div style="background: rgba(0,0,0,0.9); position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10000; display: flex; align-items: center; justify-content: center;">
-                    <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%;">
-                        <h2 style="color: #764ba2; margin-bottom: 20px;">👁️ ${card.name}</h2>
-                        <p style="margin-bottom: 15px; color: #666;">Next ${tokensToShow.length} token(s) in draft pool:</p>
-                        ${tokensToShow.map((token, index) => `
-                            <div style="padding: 10px; margin: 8px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px;">
-                                <strong>${index + 1}. ${token.name}</strong>
-                            </div>
-                        `).join('')}
-                        <button class="btn btn-primary" onclick="this.closest('div[style*=fixed]').remove()" style="width: 100%; margin-top: 20px;">Got it!</button>
-                    </div>
-                </div>
-            `;
-
-            document.body.insertAdjacentHTML('beforeend', peekModal);
-
-            showNotification(`👁️ ${player.name} peeked at ${tokensToShow.length} token(s)!`, 'success');
-            console.log(`👁️ ${player.name} peeked at tokens:`, tokensToShow.map(t => t.name).join(', '));
 
             removeCardFromHand(player, card);
         }
