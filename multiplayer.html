@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>4f4 V5.0.2 - Multiplayer + Bonus Cards (Multipliers)</title>
+    <title>4f4 V5.0.3 - Multiplayer + Bonus Cards (Token Manipulation)</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -1053,6 +1053,7 @@
                     <!-- ACTION BUTTONS -->
                     <div class="action-buttons">
                         <button id="cashOutBtn" class="btn btn-secondary" onclick="openCashOutModal()" disabled>💰 Cash Out</button>
+                        <button id="playCardBtn" class="btn btn-secondary" onclick="openPlayCardModal()" disabled>🎴 Play Card</button>
                         <button id="passBtn" class="btn btn-secondary" onclick="passRound()">⏩ Pass</button>
                     </div>
 
@@ -1134,6 +1135,18 @@
                 <div id="bonusCardPickContent">
                     <!-- Dynamically populated cards -->
                 </div>
+            </div>
+        </div>
+
+        <!-- V5.0.3: PLAY CARD MODAL -->
+        <div id="playCardModal" class="modal">
+            <div class="modal-content" style="max-width: 500px;">
+                <h2>🎴 Play a Card</h2>
+                <p style="margin-bottom: 15px; color: #666;">Select a card to play from your hand</p>
+                <div id="playCardContent">
+                    <!-- Dynamically populated playable cards -->
+                </div>
+                <button class="btn btn-secondary" onclick="closePlayCardModal()" style="width: 100%; margin-top: 15px;">Cancel</button>
             </div>
         </div>
 
@@ -2343,6 +2356,217 @@
             console.log('✅ Bonus cards synced to Firebase');
         }
 
+        // V5.0.3: PLAY CARD MODAL FUNCTIONS
+        function openPlayCardModal() {
+            const player = getPlayerByIndex(gameState.currentPlayer);
+            const modal = document.getElementById('playCardModal');
+            const content = document.getElementById('playCardContent');
+
+            // Filter for playable cards (not immediate, not endgame, not passive)
+            const playableCards = player.bonusCards.filter(card =>
+                card.type === 'playable' && !player.activeEffects.some(e => e.id === card.id)
+            );
+
+            if (playableCards.length === 0) {
+                showNotification('No playable cards in hand', 'error');
+                return;
+            }
+
+            content.innerHTML = playableCards.map((card, index) => `
+                <div class="bonus-card-option" onclick="playCardFromHand(${index})" style="cursor: pointer; padding: 15px; margin: 10px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; transition: transform 0.2s;">
+                    <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 5px;">${card.name}</div>
+                    <div style="font-size: 0.9em; opacity: 0.9;">${card.description}</div>
+                </div>
+            `).join('');
+
+            modal.classList.add('active');
+        }
+
+        function closePlayCardModal() {
+            document.getElementById('playCardModal').classList.remove('active');
+        }
+
+        function playCardFromHand(cardIndex) {
+            const player = getPlayerByIndex(gameState.currentPlayer);
+            const playableCards = player.bonusCards.filter(card =>
+                card.type === 'playable' && !player.activeEffects.some(e => e.id === card.id)
+            );
+            const card = playableCards[cardIndex];
+
+            if (!card) {
+                console.error('❌ Invalid card selection');
+                return;
+            }
+
+            console.log(`🎴 ${player.name} is playing card:`, card.name);
+
+            // Handle different card effects
+            switch(card.effect) {
+                case 'steal':
+                    executeStealToken(player, card);
+                    break;
+
+                case 'draw':
+                    executeExtraDraw(player, card);
+                    break;
+
+                case 'swap':
+                    executeSwapTokens(player, card);
+                    break;
+
+                case 'return':
+                    executeReturnToken(player, card);
+                    break;
+
+                case 'multiplier':
+                    // Add to active effects for next cash-in
+                    player.activeEffects.push({...card, usesRemaining: 1});
+                    showNotification(`✨ ${card.name} active! Next cash-in will be multiplied by ${card.value}x`, 'success');
+                    removeCardFromHand(player, card);
+                    break;
+
+                case 'wildcard':
+                    // Add to active effects for next cash-in
+                    player.activeEffects.push({...card, usesRemaining: card.uses || 1});
+                    showNotification(`🌈 ${card.name} active! Can treat token as any tag`, 'success');
+                    removeCardFromHand(player, card);
+                    break;
+
+                default:
+                    showNotification(`Card effect '${card.effect}' not yet implemented`, 'error');
+                    return;
+            }
+
+            closePlayCardModal();
+            renderPlayers();
+            updateActionButtons();
+
+            // Sync to Firebase if online
+            if (GameModeManager.isOnline()) {
+                syncBonusCardsToFirebase();
+            }
+        }
+
+        function removeCardFromHand(player, card) {
+            const cardIndexInHand = player.bonusCards.findIndex(c => c.id === card.id);
+            if (cardIndexInHand > -1) {
+                player.bonusCards.splice(cardIndexInHand, 1);
+                console.log(`🗑️ Removed ${card.name} from ${player.name}'s hand`);
+            }
+        }
+
+        // V5.0.3: TOKEN MANIPULATION CARD EFFECTS
+        function executeStealToken(player, card) {
+            if (gameState.draftPool.length === 0) {
+                showNotification('No tokens in draft pool to steal!', 'error');
+                return;
+            }
+
+            // Steal random token from draft pool
+            const randomIndex = Math.floor(Math.random() * gameState.draftPool.length);
+            const stolenToken = gameState.draftPool.splice(randomIndex, 1)[0];
+            player.thisRound.push(stolenToken);
+
+            showNotification(`🎯 ${player.name} stole ${stolenToken.name}!`, 'success');
+            console.log(`🎯 ${player.name} stole token:`, stolenToken.name);
+
+            removeCardFromHand(player, card);
+            updateDraftPoolUI();
+        }
+
+        function executeExtraDraw(player, card) {
+            const drawCount = card.value || 2;
+            const drawnTokens = [];
+
+            for (let i = 0; i < drawCount && gameState.draftPool.length > 0; i++) {
+                const randomIndex = Math.floor(Math.random() * gameState.draftPool.length);
+                const token = gameState.draftPool.splice(randomIndex, 1)[0];
+                player.thisRound.push(token);
+                drawnTokens.push(token);
+            }
+
+            showNotification(`🎴 ${player.name} drew ${drawnTokens.length} extra tokens!`, 'success');
+            console.log(`🎴 ${player.name} drew tokens:`, drawnTokens.map(t => t.name).join(', '));
+
+            removeCardFromHand(player, card);
+            updateDraftPoolUI();
+        }
+
+        function executeSwapTokens(player, card) {
+            const playerTokens = [...player.hand, ...player.thisRound];
+
+            if (playerTokens.length === 0) {
+                showNotification('No tokens in your hand to swap!', 'error');
+                return;
+            }
+
+            if (gameState.draftPool.length === 0) {
+                showNotification('No tokens in draft pool to swap with!', 'error');
+                return;
+            }
+
+            // For now, swap random tokens (could be enhanced with player choice UI)
+            const playerTokenIndex = Math.floor(Math.random() * playerTokens.length);
+            const poolTokenIndex = Math.floor(Math.random() * gameState.draftPool.length);
+
+            const playerToken = playerTokens[playerTokenIndex];
+            const poolToken = gameState.draftPool[poolTokenIndex];
+
+            // Remove from player's hand/thisRound
+            const handIndex = player.hand.findIndex(t => t.id === playerToken.id);
+            const thisRoundIndex = player.thisRound.findIndex(t => t.id === playerToken.id);
+
+            if (handIndex > -1) {
+                player.hand.splice(handIndex, 1);
+            } else if (thisRoundIndex > -1) {
+                player.thisRound.splice(thisRoundIndex, 1);
+            }
+
+            // Add pool token to player's thisRound
+            player.thisRound.push(poolToken);
+
+            // Replace pool token with player's token
+            gameState.draftPool[poolTokenIndex] = playerToken;
+
+            showNotification(`🔄 Swapped ${playerToken.name} for ${poolToken.name}!`, 'success');
+            console.log(`🔄 ${player.name} swapped ${playerToken.name} ↔️ ${poolToken.name}`);
+
+            removeCardFromHand(player, card);
+            updateDraftPoolUI();
+        }
+
+        function executeReturnToken(player, card) {
+            const playerTokens = [...player.hand, ...player.thisRound];
+
+            if (playerTokens.length === 0) {
+                showNotification('No tokens to return!', 'error');
+                return;
+            }
+
+            // Return random token (could be enhanced with player choice UI)
+            const randomIndex = Math.floor(Math.random() * playerTokens.length);
+            const returnedToken = playerTokens[randomIndex];
+
+            // Remove from player's hand/thisRound
+            const handIndex = player.hand.findIndex(t => t.id === returnedToken.id);
+            const thisRoundIndex = player.thisRound.findIndex(t => t.id === returnedToken.id);
+
+            if (handIndex > -1) {
+                player.hand.splice(handIndex, 1);
+            } else if (thisRoundIndex > -1) {
+                player.thisRound.splice(thisRoundIndex, 1);
+            }
+
+            // Return to draft pool
+            gameState.draftPool.push(returnedToken);
+
+            showNotification(`♻️ ${player.name} returned ${returnedToken.name} to pool`, 'success');
+            console.log(`♻️ ${player.name} returned token:`, returnedToken.name);
+
+            removeCardFromHand(player, card);
+            updateDraftPoolUI();
+        }
+
         function startNewRound() {
             console.log(`🎲 startNewRound() called - firstGuesser index: ${gameState.firstGuesser}`);
 
@@ -3186,13 +3410,22 @@
             // Check if current player has passed
             const hasPassed = gameState.passedPlayers.has(gameState.currentPlayer);
 
+            // V5.0.3: Check if player has playable cards
+            const hasPlayableCards = player.bonusCards && player.bonusCards.some(card =>
+                card.type === 'playable' && !player.activeEffects.some(e => e.id === card.id)
+            );
+
             // Disable all actions if player has passed
             if (hasPassed) {
                 document.getElementById('cashOutBtn').disabled = true;
+                document.getElementById('playCardBtn').disabled = true;
                 document.getElementById('passBtn').disabled = true;
             } else {
                 // Cash out button enabled if player has sets
                 document.getElementById('cashOutBtn').disabled = !canCashOut(player);
+
+                // V5.0.3: Play Card button enabled if player has playable cards
+                document.getElementById('playCardBtn').disabled = !hasPlayableCards;
 
                 // Pass button enabled if not passed
                 document.getElementById('passBtn').disabled = false;

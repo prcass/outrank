@@ -19,16 +19,66 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.0.3 (In Progress)
+## Current Development: v5.0.4 (In Progress)
 **Status**: Active Development
 **Branch**: v5.0
 
 **Planned Features:**
-- Token manipulation cards (Steal, Extra Draw, Swap)
-- Defensive cards (Block, Force Discard)
-- Wildcard mechanics
-- Passive effect cards integration
+- Defensive cards (Block Cash-In, Force Discard)
+- Passive effect cards (Genius, Lucky)
+- Enhanced player choice UI for card targets
 - Full online multiplayer testing
+
+---
+
+## v5.0.3 - Token Manipulation Cards + Play Card UI (2025-10-07)
+**Tag**: `v5.0.3`
+**Status**: Stable - Ready for Testing
+
+### Features Added:
+✅ **Play Card UI System**
+- New "Play Card" button added to action buttons
+- Modal interface to select and play cards from hand
+- Button enabled only when player has playable cards
+- Beautiful card selection interface with descriptions
+
+✅ **Token Manipulation Cards**
+- 🎯 **Snatch**: Steal 1 random token from draft pool
+- 🎴 **Double Pick**: Draw 2 extra tokens from pool
+- 🔄 **Trade**: Swap 1 of your tokens with 1 from pool
+- ♻️ **Recycle**: Return 1 token from hand to pool
+
+✅ **Manual Card Activation**
+- Players can now play multiplier/wildcard cards manually
+- Cards move to activeEffects when played
+- Automatic removal from hand after use
+- Visual feedback for all card plays
+
+✅ **Integration & Polish**
+- All token manipulation cards fully functional
+- Random selection for target tokens (can be enhanced later)
+- Firebase sync support for online play
+- Updated notifications for all card effects
+- Proper state management and UI updates
+
+### Code Changes:
+- Added openPlayCardModal() and closePlayCardModal() functions
+- Added playCardFromHand() with switch statement for card effects
+- Implemented 4 token manipulation functions: executeStealToken(), executeExtraDraw(), executeSwapTokens(), executeReturnToken()
+- Updated updateActionButtons() to enable Play Card button
+- Added removeCardFromHand() helper function
+- Added playCardModal HTML structure
+
+### Testing:
+- ✅ Play Card button enables/disables correctly
+- ✅ Modal shows only playable cards
+- ⏳ Token manipulation effects need in-game testing
+- ⏳ Online multiplayer pending testing
+
+### Known Limitations:
+- Token selection is random (no player choice UI yet)
+- Defensive cards not yet implemented
+- Passive effects not yet integrated
 
 ---
 
