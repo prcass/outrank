@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>4f4 V5.0.3 - Multiplayer + Bonus Cards (Token Manipulation)</title>
+    <title>4f4 V5.0.4 - Multiplayer + Bonus Cards (Defensive & Peek)</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -759,7 +759,7 @@
         <!-- MODE SELECTION SCREEN -->
         <div id="modeSelectionScreen" class="screen active">
             <div class="header">
-                <h1>4f4 V5.0.3</h1>
+                <h1>4f4 V5.0.4</h1>
                 <p class="subtitle">Multiplayer</p>
             </div>
 
@@ -813,7 +813,7 @@
         <!-- ONLINE SETUP SCREEN -->
         <div id="onlineSetupScreen" class="screen">
             <div class="header">
-                <h1>4f4 V5.0.3 - Online</h1>
+                <h1>4f4 V5.0.4 - Online</h1>
                 <p class="subtitle">Connect with Friends</p>
             </div>
 
@@ -999,7 +999,7 @@
             </div>
 
             <div class="header">
-                <h1>4f4 V5.0.3</h1>
+                <h1>4f4 V5.0.4</h1>
                 <p class="subtitle" id="playerNameDisplay" style="font-weight: bold; color: #667eea; margin-bottom: 5px;">Loading...</p>
                 <p class="subtitle">Round <span id="roundNumber">1</span></p>
                 <button id="toggleDataBtn" class="btn btn-secondary" style="position: absolute; top: 20px; right: 20px; padding: 8px 15px; font-size: 0.9em;" onclick="toggleDataVisibility()">
@@ -2432,6 +2432,18 @@
                     removeCardFromHand(player, card);
                     break;
 
+                case 'block':
+                    executeBlockCashout(player, card);
+                    break;
+
+                case 'discard':
+                    executeForceDiscard(player, card);
+                    break;
+
+                case 'peek':
+                    executePeekDeck(player, card);
+                    break;
+
                 default:
                     showNotification(`Card effect '${card.effect}' not yet implemented`, 'error');
                     return;
@@ -2565,6 +2577,95 @@
 
             removeCardFromHand(player, card);
             updateDraftPoolUI();
+        }
+
+        // V5.0.4: DEFENSIVE CARD EFFECTS
+        function executeBlockCashout(player, card) {
+            // Add block effect to active effects - will be checked when ANY player tries to cash out
+            player.activeEffects.push({...card, usesRemaining: 1, targetNextCashout: true});
+
+            showNotification(`🛡️ ${player.name} activated Veto! Next cash-in will be blocked!`, 'success');
+            console.log(`🛡️ ${player.name} activated block card - next cash-in will be blocked`);
+
+            removeCardFromHand(player, card);
+        }
+
+        function executeForceDiscard(player, card) {
+            // Get all other players with tokens
+            const eligibleTargets = gameState.players.filter((p, idx) => {
+                const tokens = [...(p.hand || []), ...(p.thisRound || [])];
+                return idx !== gameState.currentPlayer && tokens.length > 0;
+            });
+
+            if (eligibleTargets.length === 0) {
+                showNotification('No opponents with tokens to target!', 'error');
+                return;
+            }
+
+            // For now, target random opponent (can be enhanced with player selection UI)
+            const targetPlayer = eligibleTargets[Math.floor(Math.random() * eligibleTargets.length)];
+            const targetTokens = [...(targetPlayer.hand || []), ...(targetPlayer.thisRound || [])];
+
+            // Discard up to 2 random tokens
+            const discardCount = Math.min(2, targetTokens.length);
+            const discardedTokens = [];
+
+            for (let i = 0; i < discardCount; i++) {
+                const randomIndex = Math.floor(Math.random() * targetTokens.length);
+                const discardedToken = targetTokens.splice(randomIndex, 1)[0];
+
+                // Remove from player's hand or thisRound
+                const handIndex = targetPlayer.hand.findIndex(t => t.id === discardedToken.id);
+                const thisRoundIndex = targetPlayer.thisRound.findIndex(t => t.id === discardedToken.id);
+
+                if (handIndex > -1) {
+                    targetPlayer.hand.splice(handIndex, 1);
+                } else if (thisRoundIndex > -1) {
+                    targetPlayer.thisRound.splice(thisRoundIndex, 1);
+                }
+
+                discardedTokens.push(discardedToken);
+            }
+
+            showNotification(`💣 ${player.name} sabotaged ${targetPlayer.name}! Discarded ${discardCount} token(s)`, 'success');
+            console.log(`💣 ${player.name} forced ${targetPlayer.name} to discard:`, discardedTokens.map(t => t.name).join(', '));
+
+            removeCardFromHand(player, card);
+        }
+
+        function executePeekDeck(player, card) {
+            const peekCount = card.value || 3;
+
+            if (gameState.draftPool.length === 0) {
+                showNotification('No tokens in draft pool to peek at!', 'error');
+                return;
+            }
+
+            // Show first N tokens from draft pool (without removing them)
+            const tokensToShow = gameState.draftPool.slice(0, Math.min(peekCount, gameState.draftPool.length));
+
+            // Create modal content showing the tokens
+            const peekModal = `
+                <div style="background: rgba(0,0,0,0.9); position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10000; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%;">
+                        <h2 style="color: #764ba2; margin-bottom: 20px;">👁️ ${card.name}</h2>
+                        <p style="margin-bottom: 15px; color: #666;">Next ${tokensToShow.length} token(s) in draft pool:</p>
+                        ${tokensToShow.map((token, index) => `
+                            <div style="padding: 10px; margin: 8px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px;">
+                                <strong>${index + 1}. ${token.name}</strong>
+                            </div>
+                        `).join('')}
+                        <button class="btn btn-primary" onclick="this.closest('div[style*=fixed]').remove()" style="width: 100%; margin-top: 20px;">Got it!</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', peekModal);
+
+            showNotification(`👁️ ${player.name} peeked at ${tokensToShow.length} token(s)!`, 'success');
+            console.log(`👁️ ${player.name} peeked at tokens:`, tokensToShow.map(t => t.name).join(', '));
+
+            removeCardFromHand(player, card);
         }
 
         function startNewRound() {
@@ -3868,6 +3969,27 @@
 
         function executeCashOut() {
             const player = getPlayerByIndex(gameState.currentPlayer);
+
+            // V5.0.4: Check if any opponent has an active block effect
+            const blockingPlayer = gameState.players.find((p, idx) =>
+                idx !== gameState.currentPlayer &&
+                p.activeEffects &&
+                p.activeEffects.some(e => e.effect === 'block' && e.targetNextCashout)
+            );
+
+            if (blockingPlayer) {
+                // Find and remove the block effect
+                const blockEffect = blockingPlayer.activeEffects.find(e => e.effect === 'block' && e.targetNextCashout);
+                const effectIndex = blockingPlayer.activeEffects.indexOf(blockEffect);
+                blockingPlayer.activeEffects.splice(effectIndex, 1);
+
+                showNotification(`🛡️ ${blockingPlayer.name}'s Veto blocked the cash-in!`, 'error');
+                console.log(`🛡️ ${blockingPlayer.name} blocked ${player.name}'s cash-in attempt`);
+
+                closeCashOutModal();
+                renderPlayers();
+                return;
+            }
 
             // Get selected tokens
             const selectedBtns = document.querySelectorAll('.cash-token-btn.selected');

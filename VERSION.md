@@ -45,15 +45,63 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.0.4 (In Progress)
+## Current Development: v5.0.5 (In Progress)
 **Status**: Active Development
 **Branch**: v5.0
 
 **Planned Features:**
-- Defensive cards (Block Cash-In, Force Discard)
-- Passive effect cards (Genius, Lucky)
+- Passive effect cards (Genius, Lucky) integration
 - Enhanced player choice UI for card targets
-- Full online multiplayer testing
+- Full online multiplayer testing with all cards
+- Bug fixes and polish
+
+---
+
+## v5.0.4 - Defensive & Peek Cards (2025-10-07)
+**Tag**: `v5.0.4`
+**Status**: Stable - Ready for Testing
+
+### Features Added:
+✅ **Defensive Cards**
+- 🛡️ **Veto (Block Cash-In)**: Block opponent's next cash-in attempt
+  - Added to activeEffects when played
+  - Automatically checks and blocks in executeCashOut()
+  - Removes effect after blocking
+- 💣 **Sabotage (Force Discard)**: Force random opponent to discard 2 tokens
+  - Targets opponents with tokens
+  - Random token selection
+  - Updates player hands automatically
+
+✅ **Peek Card**
+- 👁️ **Foresight**: Look at top 3 tokens in draft pool
+  - Shows custom modal with token names
+  - Non-destructive (doesn't remove tokens)
+  - Beautiful gradient card display
+
+✅ **Integration**
+- All defensive/peek cards integrated into playCardFromHand()
+- Block check added to cash-in flow
+- Force discard affects random opponents
+- Peek shows modal overlay with token preview
+
+### Code Changes:
+- Added executeBlockCashout() function
+- Added executeForceDiscard() with opponent targeting
+- Added executePeekDeck() with custom modal
+- Modified executeCashOut() to check for active block effects
+- Updated playCardFromHand() switch statement
+
+### Testing:
+- ✅ Block card activates and shows in activeEffects
+- ✅ Block prevents cash-in and removes effect
+- ⏳ Force discard needs in-game testing
+- ⏳ Peek modal needs in-game testing
+- ⏳ Online multiplayer pending testing
+
+### Known Limitations:
+- Opponent targeting is random (no player selection UI)
+- Token selection for discard is random
+- Passive effects not yet implemented
 
 ---
 
