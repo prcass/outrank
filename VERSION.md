@@ -45,14 +45,41 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.0.6 (In Progress)
+## Current Development: v5.0.7 (In Progress)
 **Status**: Active Development
 **Branch**: v5.0
 
 **Planned Features:**
 - Enhanced player choice UI for card targets (not random)
 - Full online multiplayer testing with all cards
-- Bug fixes and balance tweaks
+- Additional balance tweaks
+
+---
+
+## v5.0.6 - Enhanced Veto Mechanic (2025-10-07)
+**Tag**: `v5.0.6`
+**Status**: Stable
+
+### Enhancement:
+✅ **Veto Card Now Punishes Blocked Cash-Ins**
+- When Veto blocks a cash-in, the attempted tokens are removed from game
+- Makes Veto much more impactful and risky to play against
+- Blocked player loses all tokens they tried to cash in
+- Notification shows how many tokens were lost
+- Firebase sync updates both players
+
+### Implementation:
+- Modified executeCashOut() to capture selected tokens before block check
+- Added token removal logic when block detected
+- Tokens removed from both hand and thisRound arrays
+- Enhanced notification: "X tokens lost!"
+- Added Firebase sync for both blocker and blocked player
+
+### Balance Impact:
+- Veto is now a high-impact defensive card
+- Players must be more strategic about when to cash in
+- Creates risk/reward tension around cash-in timing
+- Encourages holding Veto as deterrent
 
 ---
 

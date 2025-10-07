@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>4f4 V5.0.5 - Multiplayer + Bonus Cards (Complete System)</title>
+    <title>4f4 V5.0.6 - Multiplayer + Bonus Cards (Complete System)</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -759,7 +759,7 @@
         <!-- MODE SELECTION SCREEN -->
         <div id="modeSelectionScreen" class="screen active">
             <div class="header">
-                <h1>4f4 V5.0.5</h1>
+                <h1>4f4 V5.0.6</h1>
                 <p class="subtitle">Multiplayer</p>
             </div>
 
@@ -813,7 +813,7 @@
         <!-- ONLINE SETUP SCREEN -->
         <div id="onlineSetupScreen" class="screen">
             <div class="header">
-                <h1>4f4 V5.0.5 - Online</h1>
+                <h1>4f4 V5.0.6 - Online</h1>
                 <p class="subtitle">Connect with Friends</p>
             </div>
 
@@ -999,7 +999,7 @@
             </div>
 
             <div class="header">
-                <h1>4f4 V5.0.5</h1>
+                <h1>4f4 V5.0.6</h1>
                 <p class="subtitle" id="playerNameDisplay" style="font-weight: bold; color: #667eea; margin-bottom: 5px;">Loading...</p>
                 <p class="subtitle">Round <span id="roundNumber">1</span></p>
                 <button id="toggleDataBtn" class="btn btn-secondary" style="position: absolute; top: 20px; right: 20px; padding: 8px 15px; font-size: 0.9em;" onclick="toggleDataVisibility()">
@@ -1150,7 +1150,7 @@
             </div>
         </div>
 
-        <!-- V5.0.5: DISCARD CARD MODAL -->
+        <!-- V5.0.6: DISCARD CARD MODAL -->
         <div id="discardCardModal" class="modal">
             <div class="modal-content" style="max-width: 500px;">
                 <h2>⚠️ Hand Limit Reached</h2>
@@ -2281,7 +2281,7 @@
 
             console.log(`🎴 ${player.name} selected bonus card:`, card.name);
 
-            // V5.0.5: Check if player already has 4 cards (hand limit)
+            // V5.0.6: Check if player already has 4 cards (hand limit)
             if (player.bonusCards.length >= 4) {
                 // Show discard UI - player must choose which card to discard
                 showDiscardCardModal(player, card);
@@ -2328,7 +2328,7 @@
             }, 400);
         }
 
-        // V5.0.5: CARD HAND LIMIT - Discard Modal
+        // V5.0.6: CARD HAND LIMIT - Discard Modal
         function showDiscardCardModal(player, newCard) {
             const modal = document.getElementById('discardCardModal');
             const content = document.getElementById('discardCardContent');
@@ -2679,7 +2679,7 @@
             updateDraftPoolUI();
         }
 
-        // V5.0.5: DEFENSIVE CARD EFFECTS
+        // V5.0.6: DEFENSIVE CARD EFFECTS
         function executeBlockCashout(player, card) {
             // Add block effect to active effects - will be checked when ANY player tries to cash out
             player.activeEffects.push({...card, usesRemaining: 1, targetNextCashout: true});
@@ -3707,7 +3707,7 @@
             let pointsEarned = 1;
             player.correctGuesses += 1;
 
-            // V5.0.5: Check for Genius passive effect (+1 point per correct guess)
+            // V5.0.6: Check for Genius passive effect (+1 point per correct guess)
             const hasGenius = player.bonusCards && player.bonusCards.some(card => card.effect === 'guess_bonus');
             if (hasGenius) {
                 pointsEarned += 1;
@@ -3951,7 +3951,7 @@
                 });
             }
 
-            // V5.0.5: Check for Lucky passive effect (draw extra token at start of turn)
+            // V5.0.6: Check for Lucky passive effect (draw extra token at start of turn)
             const currentPlayer = getPlayerByIndex(gameState.currentPlayer);
             const hasLucky = currentPlayer.bonusCards && currentPlayer.bonusCards.some(card => card.effect === 'draw_bonus');
 
@@ -4113,7 +4113,10 @@
         function executeCashOut() {
             const player = getPlayerByIndex(gameState.currentPlayer);
 
-            // V5.0.5: Check if any opponent has an active block effect
+            // Get selected tokens (need this early for block effect)
+            const selectedBtns = document.querySelectorAll('.cash-token-btn.selected');
+
+            // V5.0.6: Check if any opponent has an active block effect
             const blockingPlayer = gameState.players.find((p, idx) =>
                 idx !== gameState.currentPlayer &&
                 p.activeEffects &&
@@ -4121,21 +4124,56 @@
             );
 
             if (blockingPlayer) {
+                // Get the tokens that were attempted to be cashed in
+                const selectedTokenIds = Array.from(selectedBtns).map(btn => btn.dataset.tokenId);
+
+                // Remove these tokens from player's hand and thisRound (LOST!)
+                const hand = Array.isArray(player.hand) ? player.hand : Object.values(player.hand || {});
+                const thisRound = Array.isArray(player.thisRound) ? player.thisRound : Object.values(player.thisRound || {});
+
+                selectedTokenIds.forEach(tokenId => {
+                    // Remove from hand
+                    const handIndex = hand.findIndex(t => t.id === tokenId);
+                    if (handIndex > -1) {
+                        player.hand.splice(handIndex, 1);
+                    }
+
+                    // Remove from thisRound
+                    const thisRoundIndex = thisRound.findIndex(t => t.id === tokenId);
+                    if (thisRoundIndex > -1) {
+                        player.thisRound.splice(thisRoundIndex, 1);
+                    }
+                });
+
                 // Find and remove the block effect
                 const blockEffect = blockingPlayer.activeEffects.find(e => e.effect === 'block' && e.targetNextCashout);
                 const effectIndex = blockingPlayer.activeEffects.indexOf(blockEffect);
                 blockingPlayer.activeEffects.splice(effectIndex, 1);
 
-                showNotification(`🛡️ ${blockingPlayer.name}'s Veto blocked the cash-in!`, 'error');
-                console.log(`🛡️ ${blockingPlayer.name} blocked ${player.name}'s cash-in attempt`);
+                showNotification(`🛡️ ${blockingPlayer.name}'s Veto blocked the cash-in! ${selectedTokenIds.length} tokens lost!`, 'error');
+                console.log(`🛡️ ${blockingPlayer.name} blocked ${player.name}'s cash-in - ${selectedTokenIds.length} tokens removed from game`);
 
                 closeCashOutModal();
                 renderPlayers();
+
+                // Sync to Firebase if online
+                if (GameModeManager.isOnline()) {
+                    const playerIds = Object.keys(gameState.players);
+                    const playerId = playerIds[gameState.currentPlayer];
+                    const blockerId = playerIds[gameState.players.indexOf(blockingPlayer)];
+
+                    GameModeManager.updatePlayer(playerId, {
+                        hand: player.hand,
+                        thisRound: player.thisRound
+                    });
+
+                    GameModeManager.updatePlayer(blockerId, {
+                        activeEffects: blockingPlayer.activeEffects
+                    });
+                }
+
                 return;
             }
-
-            // Get selected tokens
-            const selectedBtns = document.querySelectorAll('.cash-token-btn.selected');
 
             if (selectedBtns.length < 2) {
                 showNotification('Must select at least 2 tokens!', 'warning');
