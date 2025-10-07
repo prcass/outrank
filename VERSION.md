@@ -1,19 +1,29 @@
 # FourFor4 Multiplayer - Version History
 
 ## ⚠️ IMPORTANT: Version Number Update Protocol
-**ALWAYS update version numbers in BOTH locations when making changes:**
+**ALWAYS update version numbers in ALL 5 locations when making changes:**
 1. **VERSION.md** - Update "Current Development" section to next version
-2. **multiplayer.html** - Update `<title>` tag (line 6) to match
-3. **Git commit** - Tag release after committing
+2. **multiplayer.html** `<title>` tag (line 6) - Browser title
+3. **multiplayer.html** Mode Selection `<h1>` (line 762) - Main menu heading
+4. **multiplayer.html** Online Setup `<h1>` (line 816) - Online mode heading
+5. **multiplayer.html** Game Screen `<h1>` (line 1002) - In-game heading
 
 **Example workflow:**
 ```bash
-# 1. Update multiplayer.html title: "4f4 V5.0.X - Description"
+# 1. Search and replace all instances of version number:
+#    - <title>: "4f4 V5.0.X - Description"
+#    - <h1>: "4f4 V5.0.X" (appears 3 times)
 # 2. Update VERSION.md: Add new version section, bump "Current Development"
 # 3. Commit and tag:
 git add multiplayer.html VERSION.md
 git commit -m "vX.X.X: Description"
 git tag -a vX.X.X -m "Version X.X.X"
+```
+
+**Quick find/replace tip:**
+```bash
+# Find all version occurrences in multiplayer.html:
+grep -n "V5\.0\." multiplayer.html
 ```
 
 ## Versioning Strategy
