@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>4f4 V5.0.4 - Multiplayer + Bonus Cards (Defensive & Peek)</title>
+    <title>4f4 V5.0.5 - Multiplayer + Bonus Cards (Complete System)</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -759,7 +759,7 @@
         <!-- MODE SELECTION SCREEN -->
         <div id="modeSelectionScreen" class="screen active">
             <div class="header">
-                <h1>4f4 V5.0.4</h1>
+                <h1>4f4 V5.0.5</h1>
                 <p class="subtitle">Multiplayer</p>
             </div>
 
@@ -813,7 +813,7 @@
         <!-- ONLINE SETUP SCREEN -->
         <div id="onlineSetupScreen" class="screen">
             <div class="header">
-                <h1>4f4 V5.0.4 - Online</h1>
+                <h1>4f4 V5.0.5 - Online</h1>
                 <p class="subtitle">Connect with Friends</p>
             </div>
 
@@ -999,7 +999,7 @@
             </div>
 
             <div class="header">
-                <h1>4f4 V5.0.4</h1>
+                <h1>4f4 V5.0.5</h1>
                 <p class="subtitle" id="playerNameDisplay" style="font-weight: bold; color: #667eea; margin-bottom: 5px;">Loading...</p>
                 <p class="subtitle">Round <span id="roundNumber">1</span></p>
                 <button id="toggleDataBtn" class="btn btn-secondary" style="position: absolute; top: 20px; right: 20px; padding: 8px 15px; font-size: 0.9em;" onclick="toggleDataVisibility()">
@@ -1147,6 +1147,17 @@
                     <!-- Dynamically populated playable cards -->
                 </div>
                 <button class="btn btn-secondary" onclick="closePlayCardModal()" style="width: 100%; margin-top: 15px;">Cancel</button>
+            </div>
+        </div>
+
+        <!-- V5.0.5: DISCARD CARD MODAL -->
+        <div id="discardCardModal" class="modal">
+            <div class="modal-content" style="max-width: 500px;">
+                <h2>⚠️ Hand Limit Reached</h2>
+                <p style="margin-bottom: 15px; color: #666;">You have 4 cards (max). Choose a card to discard:</p>
+                <div id="discardCardContent">
+                    <!-- Dynamically populated cards to discard -->
+                </div>
             </div>
         </div>
 
@@ -2270,6 +2281,13 @@
 
             console.log(`🎴 ${player.name} selected bonus card:`, card.name);
 
+            // V5.0.5: Check if player already has 4 cards (hand limit)
+            if (player.bonusCards.length >= 4) {
+                // Show discard UI - player must choose which card to discard
+                showDiscardCardModal(player, card);
+                return;
+            }
+
             // Add card to player's hand
             player.bonusCards.push({...card});
             gameState.bonusCardsInPlay.push({...card, owner: player.name});
@@ -2304,6 +2322,88 @@
             showNotification(`🎴 ${player.name} gained: ${card.name}!`, 'success');
 
             // V5.0: After card is picked, update UI and advance turn (complete cash-in flow)
+            setTimeout(() => {
+                updateGameUI();
+                advanceTurn();
+            }, 400);
+        }
+
+        // V5.0.5: CARD HAND LIMIT - Discard Modal
+        function showDiscardCardModal(player, newCard) {
+            const modal = document.getElementById('discardCardModal');
+            const content = document.getElementById('discardCardContent');
+
+            // Show current hand + new card
+            const allCards = [...player.bonusCards, newCard];
+
+            content.innerHTML = allCards.map((card, index) => {
+                const isNew = index === player.bonusCards.length;
+                return `
+                    <div class="bonus-card-option" onclick="discardCardAndAddNew(${index}, ${isNew})" style="cursor: pointer; padding: 15px; margin: 10px 0; background: linear-gradient(135deg, ${isNew ? '#f59e0b 0%, #fbbf24' : '#667eea 0%, #764ba2'} 100%); color: white; border-radius: 8px; transition: transform 0.2s; position: relative;">
+                        ${isNew ? '<div style="position: absolute; top: 5px; right: 10px; background: white; color: #f59e0b; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold;">NEW</div>' : ''}
+                        <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 5px;">${card.name}</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">${card.description}</div>
+                        <div style="margin-top: 8px; font-size: 0.85em; opacity: 0.8;">Click to ${isNew ? 'discard (don\'t take)' : 'discard'}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Store the poolIndex and card for later use
+            modal.dataset.poolIndex = gameState.bonusCardPool.indexOf(newCard);
+            modal.dataset.newCardId = newCard.id;
+
+            modal.classList.add('active');
+        }
+
+        function discardCardAndAddNew(cardIndex, isNewCard) {
+            const player = getPlayerByIndex(gameState.currentPlayer);
+            const modal = document.getElementById('discardCardModal');
+            const poolIndex = parseInt(modal.dataset.poolIndex);
+            const newCard = gameState.bonusCardPool[poolIndex];
+
+            if (isNewCard) {
+                // Player chose to discard the new card (don't take it)
+                console.log(`🗑️ ${player.name} discarded new card: ${newCard.name}`);
+                showNotification(`Discarded ${newCard.name}`, 'success');
+            } else {
+                // Discard old card from hand
+                const discardedCard = player.bonusCards.splice(cardIndex, 1)[0];
+                console.log(`🗑️ ${player.name} discarded: ${discardedCard.name}`);
+
+                // Add new card to hand
+                player.bonusCards.push({...newCard});
+                gameState.bonusCardsInPlay.push({...newCard, owner: player.name});
+
+                // Apply immediate effects if new card is immediate
+                if (newCard.type === 'immediate') {
+                    applyCardEffect(player, newCard);
+                }
+
+                showNotification(`Discarded ${discardedCard.name}, gained ${newCard.name}!`, 'success');
+            }
+
+            // Remove card from pool
+            gameState.bonusCardPool.splice(poolIndex, 1);
+
+            // Replace card in pool from deck
+            if (gameState.bonusCardDeck.length > 0) {
+                gameState.bonusCardPool.push(gameState.bonusCardDeck.pop());
+            }
+
+            // Update UI
+            updateBonusCardPoolUI();
+            renderPlayers();
+
+            // Close modals
+            modal.classList.remove('active');
+            document.getElementById('bonusCardPickModal').classList.remove('active');
+
+            // Sync to Firebase if online
+            if (GameModeManager.isOnline()) {
+                syncBonusCardsToFirebase();
+            }
+
+            // Advance turn
             setTimeout(() => {
                 updateGameUI();
                 advanceTurn();
@@ -2579,7 +2679,7 @@
             updateDraftPoolUI();
         }
 
-        // V5.0.4: DEFENSIVE CARD EFFECTS
+        // V5.0.5: DEFENSIVE CARD EFFECTS
         function executeBlockCashout(player, card) {
             // Add block effect to active effects - will be checked when ANY player tries to cash out
             player.activeEffects.push({...card, usesRemaining: 1, targetNextCashout: true});
@@ -3604,8 +3704,17 @@
             const player = GameModeManager.getCurrentPlayer();
 
             // Award 1 point
-            player.score += 1;
+            let pointsEarned = 1;
             player.correctGuesses += 1;
+
+            // V5.0.5: Check for Genius passive effect (+1 point per correct guess)
+            const hasGenius = player.bonusCards && player.bonusCards.some(card => card.effect === 'guess_bonus');
+            if (hasGenius) {
+                pointsEarned += 1;
+                console.log(`🧠 ${player.name} has Genius: +1 bonus point`);
+            }
+
+            player.score += pointsEarned;
 
             // Collect center token to "this round" pile (Firebase stores arrays as objects)
             if (!Array.isArray(player.thisRound)) {
@@ -3633,10 +3742,11 @@
             setTimeout(() => centerEl.classList.remove('animate-correct-flash'), 600);
 
             // Floating points animation
-            showFloatingPoints('+1', centerEl);
+            showFloatingPoints(`+${pointsEarned}`, centerEl);
 
             // Show success notification (V4.97.8: broadcast to all players)
-            showNotification(`✅ Correct! ${player.name} earns 1 point!`, 'success', true);
+            const geniusText = hasGenius ? ' 🧠' : '';
+            showNotification(`✅ Correct! ${player.name} earns ${pointsEarned} point${pointsEarned > 1 ? 's' : ''}!${geniusText}`, 'success', true);
 
             // Clear selection
             const newSelectedDraftToken = null;
@@ -3841,6 +3951,39 @@
                 });
             }
 
+            // V5.0.5: Check for Lucky passive effect (draw extra token at start of turn)
+            const currentPlayer = getPlayerByIndex(gameState.currentPlayer);
+            const hasLucky = currentPlayer.bonusCards && currentPlayer.bonusCards.some(card => card.effect === 'draw_bonus');
+
+            if (hasLucky && gameState.draftPool.length > 0) {
+                // Draw 1 random token from draft pool to player's thisRound
+                const randomIndex = Math.floor(Math.random() * gameState.draftPool.length);
+                const luckyToken = gameState.draftPool.splice(randomIndex, 1)[0];
+
+                if (!Array.isArray(currentPlayer.thisRound)) {
+                    currentPlayer.thisRound = Object.values(currentPlayer.thisRound || {});
+                }
+                currentPlayer.thisRound.push(luckyToken);
+
+                console.log(`🍀 ${currentPlayer.name} has Lucky: drew ${luckyToken.name}`);
+                showNotification(`🍀 ${currentPlayer.name}'s Lucky card drew ${luckyToken.name}!`, 'success');
+
+                // Update draft pool UI
+                updateDraftPoolUI();
+
+                // Sync to Firebase if online
+                if (GameModeManager.isOnline()) {
+                    const playerIds = Object.keys(gameState.players);
+                    const playerId = playerIds[gameState.currentPlayer];
+                    GameModeManager.updatePlayer(playerId, {
+                        thisRound: currentPlayer.thisRound
+                    });
+                    GameModeManager.updateGameState({
+                        draftPool: gameState.draftPool
+                    });
+                }
+            }
+
             // Update UI
             updateGameUI();
         }
@@ -3970,7 +4113,7 @@
         function executeCashOut() {
             const player = getPlayerByIndex(gameState.currentPlayer);
 
-            // V5.0.4: Check if any opponent has an active block effect
+            // V5.0.5: Check if any opponent has an active block effect
             const blockingPlayer = gameState.players.find((p, idx) =>
                 idx !== gameState.currentPlayer &&
                 p.activeEffects &&

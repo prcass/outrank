@@ -45,15 +45,73 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.0.5 (In Progress)
+## Current Development: v5.0.6 (In Progress)
 **Status**: Active Development
 **Branch**: v5.0
 
 **Planned Features:**
-- Passive effect cards (Genius, Lucky) integration
-- Enhanced player choice UI for card targets
+- Enhanced player choice UI for card targets (not random)
 - Full online multiplayer testing with all cards
-- Bug fixes and polish
+- Bug fixes and balance tweaks
+
+---
+
+## v5.0.5 - Passive Effects + Card Hand Limit (2025-10-07)
+**Tag**: `v5.0.5`
+**Status**: Stable - Complete Bonus Card System
+
+### Features Added:
+✅ **Passive Effect Cards**
+- 🧠 **Genius**: +1 bonus point for every correct guess
+  - Integrated into handleCorrectGuess()
+  - Shows +2 points with 🧠 emoji in notifications
+  - Passive - always active once acquired
+- 🍀 **Lucky**: Draw 1 extra token at start of each turn
+  - Integrated into advanceTurn()
+  - Automatically draws random token from pool
+  - Updates thisRound pile
+  - Firebase sync support
+
+✅ **4-Card Hand Limit**
+- Players can only hold 4 bonus cards maximum
+- When at limit, must discard a card to pick new one
+- Beautiful discard modal shows all 5 cards (4 old + 1 new)
+- New card highlighted with orange gradient and "NEW" badge
+- Can discard new card (choose not to take it)
+- Smooth UI flow with proper modal management
+
+✅ **Complete Card System**
+- All 20 card types fully implemented and functional
+- Immediate points: Auto-activate on pick
+- Multipliers: Auto-apply on cash-in
+- Token manipulation: Steal, Draw, Swap, Return
+- Defensive: Block cash-in, Force discard
+- Peek: View top 3 tokens
+- Passive: Genius (+1/guess), Lucky (draw extra)
+- End-game bonuses: Token count, Cash-out count, Card count
+
+### Code Changes:
+- Modified handleCorrectGuess() to check for Genius
+- Modified advanceTurn() to check for Lucky
+- Added showDiscardCardModal() function
+- Added discardCardAndAddNew() function
+- Updated selectBonusCard() to check 4-card limit
+- Enhanced notifications to show passive effects
+- Added discard modal HTML structure
+
+### Game Balance:
+- 4-card hand limit creates strategic decisions
+- Passive cards are always active (no need to play)
+- Genius scales with correct guesses (high risk/reward)
+- Lucky gives consistent advantage each turn
+
+### Testing:
+- ✅ Genius bonus applies correctly (+2 total per guess)
+- ✅ Lucky draws extra token at turn start
+- ✅ 4-card limit enforces properly
+- ✅ Discard modal works correctly
+- ⏳ Full game testing with all card combinations
+- ⏳ Online multiplayer pending testing
 
 ---
 
