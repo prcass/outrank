@@ -2278,7 +2278,7 @@
 
             // Update UI
             updateBonusCardPoolUI();
-            updatePlayerCardsUI();
+            renderPlayers(); // V5.0: Update player panels to show new card
 
             // Close modal
             document.getElementById('bonusCardPickModal').classList.remove('active');
@@ -2318,33 +2318,6 @@
                 default:
                     console.log(`🎴 ${player.name} received ${card.name} (${card.type})`);
             }
-        }
-
-        function updatePlayerCardsUI() {
-            // Update each player's card display
-            const playerPanels = document.querySelectorAll('.player-info');
-
-            gameState.players.forEach((player, index) => {
-                const cardCount = player.bonusCards.length;
-                const panel = playerPanels[index];
-
-                if (!panel) return;
-
-                // Find or create card count indicator
-                let cardIndicator = panel.querySelector('.bonus-card-count');
-                if (!cardIndicator) {
-                    cardIndicator = document.createElement('div');
-                    cardIndicator.className = 'bonus-card-count';
-                    cardIndicator.style.cssText = `
-                        font-size: 0.9em;
-                        color: #764ba2;
-                        margin-top: 5px;
-                    `;
-                    panel.appendChild(cardIndicator);
-                }
-
-                cardIndicator.textContent = cardCount > 0 ? `🎴 ${cardCount}` : '';
-            });
         }
 
         function syncBonusCardsToFirebase() {
@@ -3133,6 +3106,8 @@
                 const isCurrent = index === gameState.currentPlayer;
                 const isFirstGuesser = index === gameState.firstGuesser;
                 const hasPassed = gameState.passedPlayers.has(index);
+                const isLockedOut = gameState.lockedOutPlayers.has(index);
+                const isOut = hasPassed || isLockedOut; // V5.0: Show (Out) for passed OR locked out players
                 const isLastStanding = index === gameState.lastToPass;
 
                 // Calculate tag counts for this player
@@ -3148,19 +3123,29 @@
                     })
                     .join(' ');
 
+                // V5.0: Display bonus cards (visible to all players)
+                const bonusCardsDisplay = player.bonusCards && player.bonusCards.length > 0
+                    ? player.bonusCards.map(card => `
+                        <div style="font-size: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3px 6px; border-radius: 4px; margin-bottom: 2px;">
+                            ${card.name}
+                        </div>
+                    `).join('')
+                    : '';
+
                 return `
                     <div class="player-info ${isCurrent ? 'current-player' : ''}">
                         <div class="player-name">
                             ${player.name}
                             ${isFirstGuesser ? '<span class="first-guesser-marker">1st</span>' : ''}
                             ${isLastStanding ? '<span class="last-standing-marker" title="Last Standing">🏆</span>' : ''}
-                            ${hasPassed ? '<span style="color: #999;"> (Out)</span>' : ''}
+                            ${isOut ? '<span style="color: #999;"> (Out)</span>' : ''}
                         </div>
                         <div class="player-score">${player.score || 0} pts</div>
                         <div class="player-stats">
                             Hand: ${player.hand?.length || 0} | This Round: ${player.thisRound?.length || 0}
                         </div>
                         ${tagDisplay ? `<div class="player-tags" style="font-size: 11px; margin-top: 5px; line-height: 1.4;">${tagDisplay}</div>` : ''}
+                        ${bonusCardsDisplay ? `<div class="player-bonus-cards" style="margin-top: 5px;">${bonusCardsDisplay}</div>` : ''}
                     </div>
                 `;
             }).join('');
