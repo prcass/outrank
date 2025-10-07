@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>4f4 V4.97.24 - Multiplayer</title>
+    <title>4f4 V5.0.0 - Multiplayer + Bonus Cards</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -679,6 +679,69 @@
                 width: 100%;
             }
         }
+
+        /* V5.0: Bonus Card Styles */
+        .bonus-card-pool {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .bonus-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .bonus-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .bonus-card .card-header {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .bonus-card .card-description {
+            font-size: 0.85em;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .bonus-card .card-type {
+            font-size: 0.75em;
+            background: rgba(255,255,255,0.2);
+            padding: 3px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+
+        .bonus-card-option {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        @media (max-width: 600px) {
+            .bonus-card-pool {
+                grid-template-columns: 1fr;
+            }
+
+            .bonus-card {
+                padding: 12px;
+            }
+
+            .bonus-card .card-header {
+                font-size: 1em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -696,7 +759,7 @@
         <!-- MODE SELECTION SCREEN -->
         <div id="modeSelectionScreen" class="screen active">
             <div class="header">
-                <h1>4f4 V4.97.24</h1>
+                <h1>4f4 V5.0.0</h1>
                 <p class="subtitle">Multiplayer</p>
             </div>
 
@@ -750,7 +813,7 @@
         <!-- ONLINE SETUP SCREEN -->
         <div id="onlineSetupScreen" class="screen">
             <div class="header">
-                <h1>4f4 V4.97 - Online</h1>
+                <h1>4f4 V5.0 - Online</h1>
                 <p class="subtitle">Connect with Friends</p>
             </div>
 
@@ -936,7 +999,7 @@
             </div>
 
             <div class="header">
-                <h1>4f4 V4.97.24</h1>
+                <h1>4f4 V5.0.0</h1>
                 <p class="subtitle" id="playerNameDisplay" style="font-weight: bold; color: #667eea; margin-bottom: 5px;">Loading...</p>
                 <p class="subtitle">Round <span id="roundNumber">1</span></p>
                 <button id="toggleDataBtn" class="btn btn-secondary" style="position: absolute; top: 20px; right: 20px; padding: 8px 15px; font-size: 0.9em;" onclick="toggleDataVisibility()">
@@ -991,6 +1054,15 @@
                     <div class="action-buttons">
                         <button id="cashOutBtn" class="btn btn-secondary" onclick="openCashOutModal()" disabled>💰 Cash Out</button>
                         <button id="passBtn" class="btn btn-secondary" onclick="passRound()">⏩ Pass</button>
+                    </div>
+
+                    <!-- V5.0: BONUS CARD POOL -->
+                    <div class="panel" style="margin-top: 20px;">
+                        <h2>🎴 Bonus Cards</h2>
+                        <p style="font-size: 0.9em; color: #666; margin-bottom: 10px;">Choose 1 card when you cash in tokens</p>
+                        <div id="bonusCardPool" class="bonus-card-pool">
+                            <!-- Dynamically populated cards -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1055,6 +1127,16 @@
             </div>
         </div>
 
+        <!-- V5.0: BONUS CARD PICK MODAL -->
+        <div id="bonusCardPickModal" class="modal">
+            <div class="modal-content" style="max-width: 500px;">
+                <h2>🎴 Choose Bonus Card</h2>
+                <div id="bonusCardPickContent">
+                    <!-- Dynamically populated cards -->
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -1084,13 +1166,57 @@
             lockedOutPlayers: new Set(), // V4.97: Players locked out this round (passed OR picked wrong)
             lastPlayerToAct: null, // V4.97: Track who took the last turn (for +1 bonus)
             currentChallenge: null,
-            selectedDraftToken: null
+            selectedDraftToken: null,
+            // V5.0: Bonus Card System
+            bonusCardDeck: [],        // Cards not yet in pool (shuffled at game start)
+            bonusCardPool: [],        // 3 cards visible to all players
+            bonusCardsInPlay: []      // All cards currently held by players
         };
 
         // ===== TOKEN DATABASE =====
         // Token data loaded from v4_token_datasets.js
         // MOVIES_TOKENS, COUNTRIES_TOKENS, COMPANIES_TOKENS, SPORTS_TOKENS are globally available
         // Total: 244 tokens across 4 categories
+
+        // ===== BONUS CARD DATABASE (V5.0) =====
+        const BONUS_CARDS = [
+            // IMMEDIATE POINTS - Activate instantly when picked
+            { id: 'INSTANT_3', name: '💰 Quick Cash', type: 'immediate', effect: 'points', value: 3, description: 'Gain 3 points immediately' },
+            { id: 'INSTANT_5', name: '💎 Jackpot', type: 'immediate', effect: 'points', value: 5, description: 'Gain 5 points immediately' },
+            { id: 'INSTANT_2', name: '🪙 Small Bonus', type: 'immediate', effect: 'points', value: 2, description: 'Gain 2 points immediately' },
+
+            // SCORE MULTIPLIERS - Play before cash-in to multiply points
+            { id: 'DOUBLE_NEXT', name: '✨ Double Down', type: 'playable', effect: 'multiplier', value: 2, description: 'Play before cash-in: Double the points earned' },
+            { id: 'TRIPLE_NEXT', name: '🌟 Triple Threat', type: 'playable', effect: 'multiplier', value: 3, description: 'Play before cash-in: Triple the points earned' },
+
+            // TOKEN MANIPULATION - Play on your turn
+            { id: 'STEAL_TOKEN', name: '🎯 Snatch', type: 'playable', effect: 'steal', description: 'Steal 1 token from draft pool to your hand' },
+            { id: 'EXTRA_DRAW', name: '🎴 Double Pick', type: 'playable', effect: 'draw', value: 2, description: 'Draw 2 extra tokens from draft pool' },
+            { id: 'RETURN_TOKEN', name: '♻️ Recycle', type: 'playable', effect: 'return', description: 'Return 1 token from hand to draft pool' },
+
+            // DEFENSIVE - Play to block opponents
+            { id: 'BLOCK_CASHOUT', name: '🛡️ Veto', type: 'playable', effect: 'block', description: 'Block the next opponent cash-in attempt' },
+            { id: 'FORCE_DISCARD', name: '💣 Sabotage', type: 'playable', effect: 'discard', description: 'Force target opponent to discard 2 tokens' },
+
+            // END-GAME BONUSES - Score at game end
+            { id: 'TOKEN_HOARDER', name: '🗃️ Collector', type: 'endgame', effect: 'token_count', value: 1, description: 'Endgame: +1 point per token in hand' },
+            { id: 'CASHOUT_MASTER', name: '🏆 Cash King', type: 'endgame', effect: 'cashout_count', value: 2, description: 'Endgame: +2 points per cash-in made' },
+            { id: 'CARD_COLLECTOR', name: '🃏 Card Shark', type: 'endgame', effect: 'card_count', value: 3, description: 'Endgame: +3 points per bonus card held' },
+
+            // WILDCARDS - Flexible tag matching
+            { id: 'TAG_WILD_1', name: '🌈 Wild Card', type: 'playable', effect: 'wildcard', uses: 1, description: 'Treat 1 token as any tag for one cash-in' },
+            { id: 'TAG_WILD_2', name: '🎨 Rainbow', type: 'playable', effect: 'wildcard', uses: 2, description: 'Treat 1 token as any tag (2 uses)' },
+
+            // PASSIVE EFFECTS - Always active once acquired
+            { id: 'BONUS_GUESS', name: '🧠 Genius', type: 'passive', effect: 'guess_bonus', value: 1, description: 'Passive: +1 point for every correct guess' },
+            { id: 'LUCKY_DRAW', name: '🍀 Lucky', type: 'passive', effect: 'draw_bonus', description: 'Passive: Draw 1 extra token each turn' },
+
+            // SPECIAL ACTIONS
+            { id: 'SWAP_TOKENS', name: '🔄 Trade', type: 'playable', effect: 'swap', description: 'Swap 1 of your tokens with 1 from draft pool' },
+            { id: 'PEEK_DECK', name: '👁️ Foresight', type: 'playable', effect: 'peek', value: 3, description: 'Look at top 3 tokens in draft pool' }
+        ];
+
+        console.log('🎴 Bonus card database loaded:', BONUS_CARDS.length, 'cards');
 
         // Fallback placeholder data (will be replaced by external file)
         const MOVIE_TOKENS_FALLBACK = [
@@ -1997,7 +2123,10 @@
                     hand: [],
                     thisRound: [],
                     correctGuesses: 0,
-                    cashOuts: 0
+                    cashOuts: 0,
+                    // V5.0: Bonus card properties
+                    bonusCards: [],           // Cards in player's hand (hidden from others)
+                    activeEffects: []         // Active card effects (multipliers, passive bonuses, etc.)
                 });
             }
 
@@ -2008,11 +2137,227 @@
             gameState.challengeMode = challengeMode;
             gameState.phase = 'challenge';
 
+            // V5.0: Initialize bonus card system
+            initializeBonusCards();
+
             // Switch to game screen
             showScreen('gameScreen');
 
             // Start first round
             startNewRound();
+        }
+
+        // ===== V5.0: BONUS CARD SYSTEM =====
+
+        function initializeBonusCards() {
+            // Shuffle the bonus card deck
+            gameState.bonusCardDeck = shuffleArray([...BONUS_CARDS]);
+
+            // Draw 3 cards for initial pool
+            gameState.bonusCardPool = [
+                gameState.bonusCardDeck.pop(),
+                gameState.bonusCardDeck.pop(),
+                gameState.bonusCardDeck.pop()
+            ];
+
+            gameState.bonusCardsInPlay = [];
+
+            console.log('🎴 Bonus cards initialized:', {
+                deck: gameState.bonusCardDeck.length,
+                pool: gameState.bonusCardPool.map(c => c.name)
+            });
+
+            // Update UI to show card pool
+            updateBonusCardPoolUI();
+        }
+
+        function updateBonusCardPoolUI() {
+            const poolContainer = document.getElementById('bonusCardPool');
+            if (!poolContainer) return;
+
+            poolContainer.innerHTML = '';
+
+            gameState.bonusCardPool.forEach((card, index) => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'bonus-card';
+                cardDiv.innerHTML = `
+                    <div class="card-header">${card.name}</div>
+                    <div class="card-description">${card.description}</div>
+                    <div class="card-type">${card.type}</div>
+                `;
+                poolContainer.appendChild(cardDiv);
+            });
+        }
+
+        function showBonusCardPickModal() {
+            const player = getPlayerByIndex(gameState.currentPlayer);
+            const modal = document.getElementById('bonusCardPickModal');
+            const content = document.getElementById('bonusCardPickContent');
+
+            content.innerHTML = `
+                <p style="margin-bottom: 20px; font-weight: bold; color: #764ba2;">
+                    ${player.name}, choose 1 bonus card as reward for your cash-in!
+                </p>
+            `;
+
+            gameState.bonusCardPool.forEach((card, index) => {
+                const cardBtn = document.createElement('div');
+                cardBtn.className = 'bonus-card-option';
+                cardBtn.style.cssText = `
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    padding: 20px;
+                    margin-bottom: 15px;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    transition: transform 0.2s, box-shadow 0.2s;
+                `;
+                cardBtn.innerHTML = `
+                    <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 8px;">${card.name}</div>
+                    <div style="opacity: 0.9; margin-bottom: 10px;">${card.description}</div>
+                    <div style="font-size: 0.85em; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 15px; display: inline-block;">
+                        ${card.type.toUpperCase()}
+                    </div>
+                `;
+
+                cardBtn.onmouseover = () => {
+                    cardBtn.style.transform = 'translateY(-3px)';
+                    cardBtn.style.boxShadow = '0 10px 25px rgba(0,0,0,0.3)';
+                };
+                cardBtn.onmouseout = () => {
+                    cardBtn.style.transform = '';
+                    cardBtn.style.boxShadow = '';
+                };
+
+                cardBtn.onclick = () => selectBonusCard(index);
+                content.appendChild(cardBtn);
+            });
+
+            modal.classList.add('active');
+        }
+
+        function selectBonusCard(poolIndex) {
+            const player = getPlayerByIndex(gameState.currentPlayer);
+            const card = gameState.bonusCardPool[poolIndex];
+
+            if (!card) {
+                console.error('❌ Invalid card selection');
+                return;
+            }
+
+            console.log(`🎴 ${player.name} selected bonus card:`, card.name);
+
+            // Add card to player's hand
+            player.bonusCards.push({...card});
+            gameState.bonusCardsInPlay.push({...card, owner: player.name});
+
+            // Apply immediate effects
+            if (card.type === 'immediate') {
+                applyCardEffect(player, card);
+            }
+
+            // Remove from pool
+            gameState.bonusCardPool.splice(poolIndex, 1);
+
+            // Replace card from deck (if deck has cards)
+            if (gameState.bonusCardDeck.length > 0) {
+                gameState.bonusCardPool.push(gameState.bonusCardDeck.pop());
+            } else {
+                console.log('⚠️ Bonus card deck is empty - no replacement');
+            }
+
+            // Update UI
+            updateBonusCardPoolUI();
+            updatePlayerCardsUI();
+
+            // Close modal
+            document.getElementById('bonusCardPickModal').classList.remove('active');
+
+            // Sync to Firebase if online
+            if (GameModeManager.isOnline()) {
+                syncBonusCardsToFirebase();
+            }
+
+            showNotification(`🎴 ${player.name} gained: ${card.name}!`, 'success');
+
+            // V5.0: After card is picked, update UI and advance turn (complete cash-in flow)
+            setTimeout(() => {
+                updateGameUI();
+                advanceTurn();
+            }, 400);
+        }
+
+        function applyCardEffect(player, card) {
+            switch(card.effect) {
+                case 'points':
+                    player.score += card.value;
+                    console.log(`💰 ${player.name} gained ${card.value} points from ${card.name}`);
+                    showNotification(`+${card.value} points!`, 'success');
+                    break;
+
+                case 'multiplier':
+                    player.activeEffects.push({...card, usesRemaining: 1});
+                    console.log(`✨ ${player.name} activated ${card.name} (${card.value}x multiplier)`);
+                    break;
+
+                case 'wildcard':
+                    player.activeEffects.push({...card, usesRemaining: card.uses || 1});
+                    console.log(`🌈 ${player.name} can use wildcard ${card.uses || 1} time(s)`);
+                    break;
+
+                default:
+                    console.log(`🎴 ${player.name} received ${card.name} (${card.type})`);
+            }
+        }
+
+        function updatePlayerCardsUI() {
+            // Update each player's card display
+            const playerPanels = document.querySelectorAll('.player-info');
+
+            gameState.players.forEach((player, index) => {
+                const cardCount = player.bonusCards.length;
+                const panel = playerPanels[index];
+
+                if (!panel) return;
+
+                // Find or create card count indicator
+                let cardIndicator = panel.querySelector('.bonus-card-count');
+                if (!cardIndicator) {
+                    cardIndicator = document.createElement('div');
+                    cardIndicator.className = 'bonus-card-count';
+                    cardIndicator.style.cssText = `
+                        font-size: 0.9em;
+                        color: #764ba2;
+                        margin-top: 5px;
+                    `;
+                    panel.appendChild(cardIndicator);
+                }
+
+                cardIndicator.textContent = cardCount > 0 ? `🎴 ${cardCount}` : '';
+            });
+        }
+
+        function syncBonusCardsToFirebase() {
+            if (!GameModeManager.isOnline()) return;
+
+            // Sync game state bonus cards
+            GameModeManager.updateGameState({
+                bonusCardDeck: gameState.bonusCardDeck.length, // Only send count for security
+                bonusCardPool: gameState.bonusCardPool,
+                bonusCardsInPlay: gameState.bonusCardsInPlay
+            });
+
+            // Sync each player's bonus cards (private to them)
+            const playerIds = Object.keys(gameState.players);
+            gameState.players.forEach((player, index) => {
+                const playerId = playerIds[index];
+                GameModeManager.updatePlayer(playerId, {
+                    bonusCards: player.bonusCards,
+                    activeEffects: player.activeEffects
+                });
+            });
+
+            console.log('✅ Bonus cards synced to Firebase');
         }
 
         function startNewRound() {
@@ -3375,8 +3720,13 @@
                 timestamp: Date.now()
             };
 
-            // Close modal first
+            // V5.0: Close cash out modal, then show bonus card pick modal
             closeCashOutModal();
+
+            // V5.0: MANDATORY - Player must pick a bonus card after cash-in
+            setTimeout(() => {
+                showBonusCardPickModal();
+            }, 300);
 
             // Show success animation on player panel
             const playerPanels = document.querySelectorAll('.player-info');
@@ -3418,11 +3768,8 @@
                 gameState.retiredTokens = [...gameState.retiredTokens, ...tokensToRemove];
             }
 
-            // Update UI after animation, then advance turn (which skips passed players)
-            setTimeout(() => {
-                updateGameUI();
-                advanceTurn(); // Use advanceTurn to skip passed players
-            }, 400);
+            // V5.0: DO NOT advance turn here - the bonus card pick modal will handle it
+            // The card pick is mandatory, so turn advancement happens after card selection
         }
 
         // ===== PASS =====
