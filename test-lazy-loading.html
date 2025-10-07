@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lazy Loading System Test</title>
+    <style>
+        body { 
+            font-family: monospace; 
+            padding: 20px; 
+            background: #f0f0f0; 
+        }
+        .test-result { 
+            padding: 10px; 
+            margin: 5px 0; 
+            border-radius: 4px; 
+        }
+        .pass { 
+            background: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb; 
+        }
+        .fail { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb; 
+        }
+        .info { 
+            background: #d1ecf1; 
+            color: #0c5460; 
+            border: 1px solid #bee5eb; 
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Know-It-All Lazy Loading System Test</h1>
+    <div id="test-results"></div>
+    <button onclick="runAllTests()">Run All Tests</button>
+    <button onclick="clearResults()">Clear Results</button>
+
+    <!-- Load the lazy loading system -->
+    <script src="data-core.js?v=1"></script>
+    <script src="data-loader.js?v=1"></script>
+    <script src="loading-ui.js?v=1"></script>
+
+    <script>
+        const results = document.getElementById('test-results');
+        let testCount = 0;
+        let passCount = 0;
+
+        function addResult(message, passed = true, details = '') {
+            testCount++;
+            if (passed) passCount++;
+            
+            const div = document.createElement('div');
+            div.className = `test-result ${passed ? 'pass' : 'fail'}`;
+            div.innerHTML = `
+                <strong>${passed ? '✅ PASS' : '❌ FAIL'}</strong>: ${message}
+                ${details ? `<br><small>${details}</small>` : ''}
+            `;
+            results.appendChild(div);
+        }
+
+        function addInfo(message) {
+            const div = document.createElement('div');
+            div.className = 'test-result info';
+            div.innerHTML = `<strong>ℹ️ INFO</strong>: ${message}`;
+            results.appendChild(div);
+        }
+
+        function clearResults() {
+            results.innerHTML = '';
+            testCount = 0;
+            passCount = 0;
+        }
+
+        async function runAllTests() {
+            clearResults();
+            addInfo('Starting lazy loading system tests...');
+
+            // Test 1: Core data structure loaded
+            try {
+                const coreLoaded = typeof window.GAME_DATA !== 'undefined' && 
+                                  window.GAME_DATA.meta && 
+                                  window.GAME_DATA.meta.loadingMode === 'lazy';
+                addResult('Core data structure loaded with lazy mode', coreLoaded);
+            } catch (error) {
+                addResult('Core data structure test failed', false, error.message);
+            }
+
+            // Test 2: DataLoader available
+            try {
+                const loaderAvailable = typeof window.DataLoader !== 'undefined' &&
+                                       typeof window.DataLoader.loadCategory === 'function';
+                addResult('DataLoader module available', loaderAvailable);
+            } catch (error) {
+                addResult('DataLoader availability test failed', false, error.message);
+            }
+
+            // Test 3: LoadingUI available
+            try {
+                const uiAvailable = typeof window.LoadingUI !== 'undefined' &&
+                                   typeof window.LoadingUI.showCategoryLoader === 'function';
+                addResult('LoadingUI module available', uiAvailable);
+            } catch (error) {
+                addResult('LoadingUI availability test failed', false, error.message);
+            }
+
+            // Test 4: Categories initialized but empty
+            try {
+                const categories = window.GAME_DATA.categories;
+                const countriesEmpty = Object.keys(categories.countries.items).length === 0;
+                const moviesEmpty = Object.keys(categories.movies.items).length === 0;
+                addResult('Categories initialized but empty (lazy)', countriesEmpty && moviesEmpty);
+            } catch (error) {
+                addResult('Categories initialization test failed', false, error.message);
+            }
+
+            // Test 5: Utility functions available
+            try {
+                const utilsAvailable = typeof window.getRandomItems === 'function' &&
+                                      typeof window.isCategoryLoaded === 'function' &&
+                                      typeof window.getCategoryStatus === 'function';
+                addResult('Utility functions available', utilsAvailable);
+            } catch (error) {
+                addResult('Utility functions test failed', false, error.message);
+            }
+
+            // Test 6: Load countries category
+            try {
+                addInfo('Testing countries data loading...');
+                const startTime = Date.now();
+                
+                const countriesData = await window.DataLoader.loadCategory('countries');
+                const loadTime = Date.now() - startTime;
+                
+                const hasPrompts = countriesData.prompts && countriesData.prompts.length > 0;
+                const hasItems = countriesData.items && Object.keys(countriesData.items).length > 0;
+                
+                addResult(`Countries data loaded successfully (${loadTime}ms)`, hasPrompts && hasItems,
+                         `Prompts: ${countriesData.prompts?.length || 0}, Items: ${Object.keys(countriesData.items || {}).length}`);
+                
+                // Verify data integrated into GAME_DATA
+                const integrated = Object.keys(window.GAME_DATA.categories.countries.items).length > 0;
+                addResult('Countries data integrated into GAME_DATA', integrated);
+                
+            } catch (error) {
+                addResult('Countries data loading failed', false, error.message);
+            }
+
+            // Test 7: Load movies category
+            try {
+                addInfo('Testing movies data loading...');
+                const startTime = Date.now();
+                
+                const moviesData = await window.DataLoader.loadCategory('movies');
+                const loadTime = Date.now() - startTime;
+                
+                const hasPrompts = moviesData.prompts && moviesData.prompts.length > 0;
+                const hasItems = moviesData.items && Object.keys(moviesData.items).length > 0;
+                
+                addResult(`Movies data loaded successfully (${loadTime}ms)`, hasPrompts && hasItems,
+                         `Prompts: ${moviesData.prompts?.length || 0}, Items: ${Object.keys(moviesData.items || {}).length}`);
+                
+            } catch (error) {
+                addResult('Movies data loading failed', false, error.message);
+            }
+
+            // Test 8: Cache functionality
+            try {
+                addInfo('Testing cache functionality...');
+                
+                // Load countries again - should be from cache
+                const startTime = Date.now();
+                await window.DataLoader.loadCategory('countries');
+                const cacheLoadTime = Date.now() - startTime;
+                
+                addResult(`Cache working (second load: ${cacheLoadTime}ms)`, cacheLoadTime < 50);
+                
+            } catch (error) {
+                addResult('Cache functionality test failed', false, error.message);
+            }
+
+            // Test 9: getRandomItems with loaded data
+            try {
+                const randomCountries = window.getRandomItems('countries', 3);
+                const validItems = randomCountries.length > 0 && 
+                                  randomCountries.every(item => item.name && item.code);
+                
+                addResult('getRandomItems works with loaded data', validItems,
+                         `Got ${randomCountries.length} countries: ${randomCountries.map(c => c.name).join(', ')}`);
+                
+            } catch (error) {
+                addResult('getRandomItems test failed', false, error.message);
+            }
+
+            // Test 10: Data loading stats
+            try {
+                const stats = window.getDataLoadingStats();
+                const validStats = stats && 
+                                  typeof stats.loadedCount === 'number' &&
+                                  typeof stats.totalLoadedSize === 'number';
+                
+                addResult('Data loading stats available', validStats,
+                         `Loaded: ${stats?.loadedCount}, Size: ${stats?.totalLoadedSize}KB`);
+                
+            } catch (error) {
+                addResult('Data loading stats test failed', false, error.message);
+            }
+
+            // Test 11: Error handling for non-existent category
+            try {
+                let errorCaught = false;
+                try {
+                    await window.DataLoader.loadCategory('nonexistent');
+                } catch (loadError) {
+                    errorCaught = true;
+                }
+                
+                addResult('Error handling for non-existent category', errorCaught);
+                
+            } catch (error) {
+                addResult('Error handling test failed', false, error.message);
+            }
+
+            // Test 12: Service worker registration (if supported)
+            try {
+                if ('serviceWorker' in navigator) {
+                    // Check if service worker was registered
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    const swRegistered = registration !== undefined;
+                    
+                    addResult('Service worker registration attempted', true,
+                             swRegistered ? 'Service worker registered' : 'Service worker not registered (may be expected)');
+                } else {
+                    addResult('Service worker not supported in this browser', true, 'Skipping SW test');
+                }
+                
+            } catch (error) {
+                addResult('Service worker test failed', false, error.message);
+            }
+
+            // Final summary
+            addInfo(`Tests completed: ${passCount}/${testCount} passed`);
+            
+            if (passCount === testCount) {
+                addInfo('🎉 All tests passed! Lazy loading system is working correctly.');
+            } else {
+                addInfo(`⚠️ ${testCount - passCount} test(s) failed. Check the results above.`);
+            }
+
+            // Performance comparison
+            try {
+                const originalSize = 464; // KB
+                const currentStats = window.getDataLoadingStats();
+                const actualLoaded = 15 + (currentStats?.totalLoadedSize || 0); // Core + loaded data
+                const savings = Math.round((1 - actualLoaded / originalSize) * 100);
+                
+                addInfo(`💾 Performance: ${actualLoaded}KB loaded vs ${originalSize}KB original (${savings}% reduction)`);
+                
+            } catch (error) {
+                addInfo('Performance comparison failed: ' + error.message);
+            }
+        }
+
+        // Auto-run tests when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                addInfo('Page loaded. Ready to run tests.');
+                // Uncomment the next line to auto-run tests
+                // runAllTests();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

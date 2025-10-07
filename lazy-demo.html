@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know-It-All Lazy Loading Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .demo-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        
+        .demo-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a73e8;
+            margin-bottom: 16px;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        
+        .category-card {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .category-card:hover {
+            border-color: #1a73e8;
+            transform: translateY(-2px);
+        }
+        
+        .category-card.loaded {
+            border-color: #388e3c;
+            background: #e8f5e8;
+        }
+        
+        .category-card.loading {
+            border-color: #ff9800;
+            background: #fff3e0;
+        }
+        
+        .category-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .category-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .category-status {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .status-indicator {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+        
+        .status-indicator.loaded {
+            background: #4caf50;
+        }
+        
+        .status-indicator.loading {
+            background: #ff9800;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a73e8;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 16px 0;
+        }
+        
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1557b0;
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .btn-secondary:hover {
+            background: #e8eaed;
+        }
+        
+        .log-container {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 16px;
+        }
+        
+        .log-entry {
+            margin-bottom: 4px;
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .savings-highlight {
+            background: linear-gradient(135deg, #4caf50, #81c784);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .savings-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-card">
+        <div class="demo-title">🚀 Know-It-All Lazy Loading System Demo</div>
+        <p>This demonstrates the new data lazy loading system that reduces initial load from 464KB to ~15KB.</p>
+        
+        <div class="savings-highlight">
+            <div class="savings-number" id="savings-percent">~97%</div>
+            <div>Initial Load Reduction</div>
+        </div>
+    </div>
+
+    <div class="demo-card">
+        <h3>📊 Loading Statistics</h3>
+        <div class="stats-grid" id="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="core-size">~15KB</div>
+                <div class="stat-label">Core Loaded</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="loaded-size">0KB</div>
+                <div class="stat-label">Data Loaded</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="loaded-count">0</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="cache-size">0</div>
+                <div class="stat-label">Cached Items</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo-card">
+        <h3>🎯 Categories (Click to Load)</h3>
+        <div class="category-grid" id="category-grid">
+            <div class="category-card" data-category="countries">
+                <span class="status-indicator"></span>
+                <span class="category-icon">🌍</span>
+                <div class="category-name">Countries</div>
+                <div class="category-status">40 items, ~72KB</div>
+            </div>
+            <div class="category-card" data-category="movies">
+                <span class="status-indicator"></span>
+                <span class="category-icon">🎬</span>
+                <div class="category-name">Movies</div>
+                <div class="category-status">40 items, ~78KB</div>
+            </div>
+            <div class="category-card" data-category="sports">
+                <span class="status-indicator"></span>
+                <span class="category-icon">🏈</span>
+                <div class="category-name">Sports</div>
+                <div class="category-status">124 items, ~161KB</div>
+            </div>
+            <div class="category-card" data-category="companies">
+                <span class="status-indicator"></span>
+                <span class="category-icon">🏢</span>
+                <div class="category-name">Companies</div>
+                <div class="category-status">40 items, ~140KB</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo-card">
+        <h3>🎮 Demo Actions</h3>
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="loadAllCategories()">
+                Load All Categories
+            </button>
+            <button class="btn btn-secondary" onclick="clearCache()">
+                Clear Cache
+            </button>
+            <button class="btn btn-secondary" onclick="showStats()">
+                Show Detailed Stats
+            </button>
+            <button class="btn btn-secondary" onclick="testOfflineMode()">
+                Test Offline Mode
+            </button>
+        </div>
+    </div>
+
+    <div class="demo-card">
+        <h3>📝 Real-time Log</h3>
+        <div class="log-container" id="log-container">
+            <div class="log-entry">🚀 Lazy loading demo initialized</div>
+        </div>
+    </div>
+
+    <!-- Load the lazy loading system -->
+    <script src="data-core.js?v=1"></script>
+    <script src="data-loader.js?v=1"></script>
+    <script src="loading-ui.js?v=1"></script>
+
+    <script>
+        // Demo script
+        let logContainer;
+        let updateInterval;
+
+        function log(message, type = 'info') {
+            if (!logContainer) {
+                logContainer = document.getElementById('log-container');
+            }
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const emoji = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'loading' ? '🔄' : '📝';
+            
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = `${timestamp} ${emoji} ${message}`;
+            
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            
+            // Keep only last 50 entries
+            while (logContainer.children.length > 50) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+        }
+
+        function updateStats() {
+            if (typeof window.getDataLoadingStats === 'function') {
+                const stats = window.getDataLoadingStats();
+                
+                document.getElementById('loaded-count').textContent = stats.loadedCount;
+                document.getElementById('loaded-size').textContent = `${stats.totalLoadedSize}KB`;
+                
+                if (window.DataLoader && typeof window.DataLoader.getStats === 'function') {
+                    const loaderStats = window.DataLoader.getStats();
+                    document.getElementById('cache-size').textContent = loaderStats.cached;
+                }
+                
+                // Update category cards
+                Object.keys(stats.categories).forEach(category => {
+                    const card = document.querySelector(`[data-category="${category}"]`);
+                    const indicator = card.querySelector('.status-indicator');
+                    
+                    if (stats.categories[category].loaded) {
+                        card.classList.add('loaded');
+                        card.classList.remove('loading');
+                        indicator.classList.add('loaded');
+                        indicator.classList.remove('loading');
+                    }
+                });
+                
+                // Update savings percentage
+                const savingsPercent = Math.max(0, Math.round((1 - (15 + stats.totalLoadedSize) / 464) * 100));
+                document.getElementById('savings-percent').textContent = `${savingsPercent}%`;
+            }
+        }
+
+        async function loadCategory(categoryName) {
+            const card = document.querySelector(`[data-category="${categoryName}"]`);
+            const indicator = card.querySelector('.status-indicator');
+            
+            card.classList.add('loading');
+            indicator.classList.add('loading');
+            
+            log(`Loading ${categoryName} data...`, 'loading');
+            
+            try {
+                if (window.smartLoadCategory) {
+                    await window.smartLoadCategory(categoryName);
+                    log(`Successfully loaded ${categoryName}`, 'success');
+                } else {
+                    throw new Error('Lazy loading system not available');
+                }
+            } catch (error) {
+                log(`Failed to load ${categoryName}: ${error.message}`, 'error');
+                card.classList.remove('loading');
+                indicator.classList.remove('loading');
+            }
+        }
+
+        async function loadAllCategories() {
+            log('Loading all categories...', 'loading');
+            
+            const categories = ['countries', 'movies', 'sports', 'companies'];
+            
+            for (const category of categories) {
+                await loadCategory(category);
+                // Small delay between loads for demo effect
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            log('All categories loaded!', 'success');
+        }
+
+        function clearCache() {
+            if (window.DataLoader && typeof window.DataLoader.clearCache === 'function') {
+                window.DataLoader.clearCache();
+                log('Cache cleared', 'info');
+                
+                // Reset UI
+                document.querySelectorAll('.category-card').forEach(card => {
+                    card.classList.remove('loaded', 'loading');
+                    card.querySelector('.status-indicator').classList.remove('loaded', 'loading');
+                });
+                
+                updateStats();
+            }
+        }
+
+        function showStats() {
+            if (typeof window.getDataLoadingStats === 'function') {
+                const stats = window.getDataLoadingStats();
+                log(`Detailed stats: ${JSON.stringify(stats, null, 2)}`, 'info');
+            }
+        }
+
+        function testOfflineMode() {
+            log('Testing offline mode (disconnect internet and retry loading)', 'info');
+            // This would need actual network disconnection to test properly
+        }
+
+        // Setup event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Category card click handlers
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    loadCategory(category);
+                });
+            });
+            
+            // Listen for data loader events
+            window.addEventListener('dataLoaderEvent', function(event) {
+                const { category, type, data } = event.detail;
+                
+                switch (type) {
+                    case 'loading':
+                        log(`Starting to load ${category}...`, 'loading');
+                        break;
+                    case 'progress':
+                        if (data.progress) {
+                            log(`Loading ${category}: ${data.progress}%`, 'loading');
+                        }
+                        break;
+                    case 'loaded':
+                        log(`Loaded ${category} successfully`, 'success');
+                        break;
+                    case 'error':
+                        log(`Error loading ${category}: ${data.error}`, 'error');
+                        break;
+                }
+                
+                updateStats();
+            });
+            
+            // Update stats periodically
+            updateInterval = setInterval(updateStats, 1000);
+            
+            log('Demo ready! Click categories to load data.', 'success');
+        });
+
+        // Cleanup
+        window.addEventListener('beforeunload', function() {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+        });
+        
+        // Initial stats update
+        setTimeout(updateStats, 500);
+    </script>
+</body>
+</html>

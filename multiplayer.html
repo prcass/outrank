@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>4f4 V4.96 - Multiplayer</title>
+    <title>4f4 V4.97.24 - Multiplayer</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -696,7 +696,7 @@
         <!-- MODE SELECTION SCREEN -->
         <div id="modeSelectionScreen" class="screen active">
             <div class="header">
-                <h1>4f4 V4.96</h1>
+                <h1>4f4 V4.97.24</h1>
                 <p class="subtitle">Multiplayer</p>
             </div>
 
@@ -711,7 +711,7 @@
                     </div>
                 </button>
 
-                <button class="btn btn-primary" onclick="window.open('multiplayer.html?mode=online&v=13', '_blank')"
+                <button class="btn btn-primary" onclick="window.open('multiplayer.html?mode=online&v=42', '_blank')"
                         style="width: 100%; margin: 15px 0; padding: 25px; font-size: 18px;">
                     🌐 Online Multiplayer
                     <div style="font-size: 14px; margin-top: 8px; opacity: 0.9; font-weight: normal;">
@@ -750,7 +750,7 @@
         <!-- ONLINE SETUP SCREEN -->
         <div id="onlineSetupScreen" class="screen">
             <div class="header">
-                <h1>4f4 V4.96 - Online</h1>
+                <h1>4f4 V4.97 - Online</h1>
                 <p class="subtitle">Connect with Friends</p>
             </div>
 
@@ -936,7 +936,7 @@
             </div>
 
             <div class="header">
-                <h1>4f4 V4.96</h1>
+                <h1>4f4 V4.97.24</h1>
                 <p class="subtitle" id="playerNameDisplay" style="font-weight: bold; color: #667eea; margin-bottom: 5px;">Loading...</p>
                 <p class="subtitle">Round <span id="roundNumber">1</span></p>
                 <button id="toggleDataBtn" class="btn btn-secondary" style="position: absolute; top: 20px; right: 20px; padding: 8px 15px; font-size: 0.9em;" onclick="toggleDataVisibility()">
@@ -1042,6 +1042,19 @@
             </div>
         </div>
 
+        <!-- LOCKED OUT MODAL -->
+        <div id="lockedOutModal" class="modal">
+            <div class="modal-content">
+                <h2>❌ Locked Out!</h2>
+                <p id="lockedOutMessage" style="text-align: center; font-size: 1.2em; margin: 20px 0;">
+                    You guessed incorrectly and are locked out for the rest of this round.
+                </p>
+                <p style="text-align: center; color: #666; font-size: 0.9em; margin-top: 20px;">
+                    This modal will close automatically...
+                </p>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -1067,7 +1080,9 @@
             previousCategory: null, // Track previous category for token persistence
             playedChallenges: [], // Track challenges that have been played this game
             retiredTokens: [],
-            passedPlayers: new Set(),
+            passedPlayers: new Set(), // Players who passed this round
+            lockedOutPlayers: new Set(), // V4.97: Players locked out this round (passed OR picked wrong)
+            lastPlayerToAct: null, // V4.97: Track who took the last turn (for +1 bonus)
             currentChallenge: null,
             selectedDraftToken: null
         };
@@ -1712,9 +1727,20 @@
                         console.log('📥 Firebase sync - draftPool size:', fbGameState.draftPool?.length || Object.keys(fbGameState.draftPool || {}).length);
                     }
 
-                    Object.assign(gameState, fbGameState);
+                    // V4.97.11: Exclude lockedOutPlayers from Object.assign (handled separately with timestamp check)
+                    const { lockedOutPlayers: fbLockedOut, ...fbGameStateWithoutLockedOut } = fbGameState;
+                    Object.assign(gameState, fbGameStateWithoutLockedOut);
                     gameState.categoryPools = categoryPools; // Restore pools
                     gameState.players = fbPlayers; // Restore players object (don't let fbGameState overwrite)
+
+                    // V4.97.3: Explicitly handle fields that Firebase may have deleted (set to null)
+                    // If these fields are missing from fbGameState, clear them locally
+                    if (!fbGameState.hasOwnProperty('currentChallenge')) {
+                        gameState.currentChallenge = null;
+                    }
+                    if (!fbGameState.hasOwnProperty('drawnChallengeCards')) {
+                        gameState.drawnChallengeCards = null;
+                    }
 
                     // Detect opponent actions and show detailed feedback
                     if (GameModeManager.isOnline() && fbGameState.lastAction) {
@@ -1816,6 +1842,31 @@
                         gameState.passedPlayers = new Set();
                     }
 
+                    // V4.97: Convert lockedOutPlayers from Firebase array to Set
+                    console.log('🔍 DEBUG: lockedOutPlayers from Firebase:', fbGameState.lockedOutPlayers);
+                    console.log('🔍 DEBUG: Firebase timestamp:', fbGameState.lockedOutPlayersTimestamp, 'Local timestamp:', window.lastLockedOutPlayersUpdate);
+
+                    // V4.97.10: Only update if Firebase data is newer than our local update
+                    // V4.97.19: Force number conversion to prevent string comparison issues
+                    const fbTimestamp = Number(fbGameState.lockedOutPlayersTimestamp) || 0;
+                    const localTimestamp = Number(window.lastLockedOutPlayersUpdate) || 0;
+
+                    if (fbTimestamp >= localTimestamp) {
+                        // Firebase has newer data, update from it
+                        const fbLockedOut = fbGameState.lockedOutPlayers;
+                        if (fbLockedOut && !Array.isArray(fbLockedOut)) {
+                            gameState.lockedOutPlayers = new Set(Object.values(fbLockedOut));
+                        } else if (Array.isArray(fbLockedOut)) {
+                            gameState.lockedOutPlayers = new Set(fbLockedOut);
+                        } else if (!fbLockedOut) {
+                            gameState.lockedOutPlayers = new Set();
+                        }
+                        console.log('🔍 DEBUG: Updated lockedOutPlayers from Firebase:', Array.from(gameState.lockedOutPlayers));
+                    } else {
+                        // Local data is newer, keep it
+                        console.log('🔍 DEBUG: Skipping stale Firebase update, keeping local:', Array.from(gameState.lockedOutPlayers));
+                    }
+
                     // drawnChallengeCards should come from Firebase in online mode
 
                     console.log('🔄 Synced state:', {
@@ -1824,8 +1875,28 @@
                         currentPlayer: gameState.currentPlayer,
                         playerCount: getPlayerCount(),
                         hasStartedGame: hasStartedGame,
-                        challengeMode: gameState.challengeMode
+                        challengeMode: gameState.challengeMode,
+                        gameEnding: gameState.gameEnding
                     });
+
+                    // V4.97.24: If gameEnding flag is received from Firebase, show end screen after delay
+                    if (fbGameState.gameEnding && !window.gameEndingTriggered) {
+                        window.gameEndingTriggered = true;
+                        gameState.gameEnding = true;
+                        console.log('🏁 Received gameEnding flag from Firebase - showing end screen in 1.5s');
+                        setTimeout(() => showGameEndScreen(), 1500);
+                    }
+
+                    // V4.97.8: Show broadcast notifications
+                    if (fbGameState.lastNotification) {
+                        const notification = fbGameState.lastNotification;
+                        // Only show if we haven't seen this notification yet (check timestamp)
+                        if (!window.lastNotificationTimestamp || notification.timestamp > window.lastNotificationTimestamp) {
+                            window.lastNotificationTimestamp = notification.timestamp;
+                            // Show notification locally (don't broadcast again to avoid loop)
+                            showNotification(notification.message, notification.type, false);
+                        }
+                    }
 
                     // Update UI based on phase
                     if (gameState.phase === 'challenge' && !hasStartedGame) {
@@ -1861,11 +1932,13 @@
                             return;
                         }
 
-                        // V4.89: Handle challenge phase - first guesser draws cards, others wait
+                        // V4.97: Handle challenge phase - first guesser draws cards, others wait
                         const modal = document.getElementById('categoryModal');
+                        console.log(`🔍 V4.97 Phase/Mode check: phase=${gameState.phase}, mode=${gameState.challengeMode}`);
+
                         if (gameState.phase === 'challenge' && gameState.challengeMode === 'cards') {
                             // If no challenge selected and no cards drawn, first guesser should draw cards
-                            console.log(`🔍 V4.89 Card check:`, {
+                            console.log(`🔍 V4.97 Card check:`, {
                                 currentChallenge: gameState.currentChallenge,
                                 currentChallengeType: typeof gameState.currentChallenge,
                                 currentChallengeIsNull: gameState.currentChallenge === null,
@@ -1874,17 +1947,19 @@
                                 round: gameState.round
                             });
 
-                            // V4.89: Check for null or empty array
+                            // V4.97: Check for null or empty array
                             const noCards = !gameState.drawnChallengeCards || gameState.drawnChallengeCards.length === 0;
-                            if (!gameState.currentChallenge && noCards) {
-                                const playerIds = window.playerIds || [];
-                                const firstGuesserId = playerIds[gameState.firstGuesser];
-                                const isFirstGuesser = firstGuesserId === window.currentUserId;
 
-                                console.log(`🔍 V4.89 Empty cards detected - isFirstGuesser=${isFirstGuesser}, drawingCards=${window.drawingCards}`);
+                            if (!gameState.currentChallenge && noCards) {
+                                // V4.97: Find my player index in the game
+                                const playerIds = Object.keys(gameState.players || {});
+                                const myPlayerIndex = playerIds.indexOf(window.currentUserId);
+                                const isFirstGuesser = myPlayerIndex === gameState.firstGuesser;
+
+                                console.log(`🔍 V4.97 Empty cards detected - myIndex=${myPlayerIndex}, firstGuesserIndex=${gameState.firstGuesser}, isFirstGuesser=${isFirstGuesser}, drawingCards=${window.drawingCards}`);
 
                                 if (isFirstGuesser && !window.drawingCards) {
-                                    console.log('🎴 First guesser drawing new challenge cards for round', gameState.round);
+                                    console.log('🎴 V4.97 First guesser (index ${myPlayerIndex}) drawing new challenge cards for round', gameState.round);
                                     window.drawingCards = true;
                                     setTimeout(() => {
                                         startNewRound();
@@ -1943,6 +2018,9 @@
         function startNewRound() {
             console.log(`🎲 startNewRound() called - firstGuesser index: ${gameState.firstGuesser}`);
 
+            // V4.97.15: Removed closeLockedOutModal() - no longer using popup modal system
+            // Using lockedOutOverlay managed by updateLockedOutState() instead
+
             // Reset current player to first guesser for the new round
             gameState.currentPlayer = gameState.firstGuesser;
             console.log(`🔄 Reset currentPlayer to firstGuesser: ${gameState.currentPlayer}`);
@@ -1968,7 +2046,8 @@
 
                 // V4.88: First round OR no previous category: draw all cards fresh
                 // Use previousCategory instead of selectedCategory (which is cleared by endRound)
-                if (gameState.round === 1 || !gameState.previousCategory || gameState.drawnChallengeCards.length === 0) {
+                // V4.97.4: Check if drawnChallengeCards is null or empty
+                if (gameState.round === 1 || !gameState.previousCategory || !gameState.drawnChallengeCards || gameState.drawnChallengeCards.length === 0) {
                     console.log(`🎴 Drawing fresh challenge cards (round ${gameState.round}, prevCat: ${gameState.previousCategory})`);
                     gameState.drawnChallengeCards = [];
                     categories.forEach(category => {
@@ -2048,6 +2127,10 @@
             if (gameState.challengeMode === 'cards') {
                 showCategorySelectionModal();
             }
+
+            // V4.97.13: Force update lockout state after new round starts
+            // This ensures lockout overlay is hidden now that lockedOutPlayers is cleared
+            updateLockedOutState();
         }
 
         function showCategorySelectionModal() {
@@ -2497,11 +2580,15 @@
                 if (GameModeManager.isOnline() && window.playerIds && window.currentUserId) {
                     const myPlayerIndex = window.playerIds.indexOf(window.currentUserId);
                     if (myPlayerIndex >= 0 && gameState.players[myPlayerIndex]) {
-                        playerNameDisplay.textContent = `Playing as: ${gameState.players[myPlayerIndex].name}`;
+                        const playerName = gameState.players[myPlayerIndex].name;
+                        const isLockedOut = gameState.lockedOutPlayers && gameState.lockedOutPlayers.has(myPlayerIndex);
+                        playerNameDisplay.textContent = `Playing as: ${playerName}${isLockedOut ? ' (OUT)' : ''}`;
                     }
                 } else if (gameState.players[gameState.currentPlayer]) {
                     // Local mode - show current turn player
-                    playerNameDisplay.textContent = `Current Turn: ${gameState.players[gameState.currentPlayer].name}`;
+                    const playerName = gameState.players[gameState.currentPlayer].name;
+                    const isLockedOut = gameState.lockedOutPlayers && gameState.lockedOutPlayers.has(gameState.currentPlayer);
+                    playerNameDisplay.textContent = `Current Turn: ${playerName}${isLockedOut ? ' (OUT)' : ''}`;
                 }
             }
 
@@ -2541,6 +2628,26 @@
         }
 
         function updateLockedOutState() {
+            // V4.97.23: NEVER show lockout overlay when game is ending or game end screen is active
+            if (window.gameEnding || gameState.gameEnding) {
+                const overlay = document.getElementById('lockedOutOverlay');
+                const gameScreen = document.getElementById('gameScreen');
+                if (overlay) overlay.classList.remove('active');
+                if (gameScreen) gameScreen.classList.remove('locked-out');
+                console.log('🔓 Game ending - lockout disabled for all players');
+                return;
+            }
+
+            const gameEndScreen = document.getElementById('gameEndScreen');
+            if (gameEndScreen && gameEndScreen.classList.contains('active')) {
+                const overlay = document.getElementById('lockedOutOverlay');
+                const gameScreen = document.getElementById('gameScreen');
+                if (overlay) overlay.classList.remove('active');
+                if (gameScreen) gameScreen.classList.remove('locked-out');
+                console.log('🔓 Game end screen active - lockout disabled for all players');
+                return;
+            }
+
             // V4.75: During roundEnd phase, NEVER show lockout overlay
             if (gameState.phase === 'roundEnd') {
                 const overlay = document.getElementById('lockedOutOverlay');
@@ -2587,16 +2694,19 @@
                 return; // Exit early
             }
 
+            // V4.97.13: Check BOTH passed and locked out status
             const hasPassed = gameState.passedPlayers.has(myPlayerIndex);
+            const isLockedOut = gameState.lockedOutPlayers.has(myPlayerIndex);
+            const shouldShowLockout = hasPassed || isLockedOut;
 
             const overlay = document.getElementById('lockedOutOverlay');
             const gameScreen = document.getElementById('gameScreen');
 
-            if (hasPassed) {
+            if (shouldShowLockout) {
                 // Show overlay and grey out screen
                 if (overlay) overlay.classList.add('active');
                 if (gameScreen) gameScreen.classList.add('locked-out');
-                console.log(`🔒 Player ${myPlayerIndex} locked out - showing overlay`);
+                console.log(`🔒 Player ${myPlayerIndex} locked out - hasPassed=${hasPassed}, isLockedOut=${isLockedOut}`);
             } else {
                 // Hide overlay and restore normal state
                 if (overlay) overlay.classList.remove('active');
@@ -2762,6 +2872,12 @@
         function makeGuess(direction) {
             console.log('🎯 makeGuess called:', direction, 'selectedToken:', gameState.selectedDraftToken?.name);
 
+            // V4.97.6: Check if current player is locked out
+            if (gameState.lockedOutPlayers && gameState.lockedOutPlayers.has(gameState.currentPlayer)) {
+                showNotification("You are locked out for this round!", 'warning');
+                return;
+            }
+
             // Check if current player has passed
             if (gameState.passedPlayers.has(gameState.currentPlayer)) {
                 showNotification("You have passed this round!", 'warning');
@@ -2835,17 +2951,13 @@
             // Floating points animation
             showFloatingPoints('+1', centerEl);
 
-            // Show success notification
-            showNotification(`✅ Correct! ${player.name} earns 1 point!`, 'success');
+            // Show success notification (V4.97.8: broadcast to all players)
+            showNotification(`✅ Correct! ${player.name} earns 1 point!`, 'success', true);
 
             // Clear selection
             const newSelectedDraftToken = null;
 
-            // Check if all other players are out (round should end)
-            const playerCount = GameModeManager.isLocal() ? getPlayerCount() : Object.keys(gameState.players).length;
-            const allOthersPassed = gameState.passedPlayers.size === playerCount - 1;
-
-            // Handle state update based on mode
+            // V4.97: Update state based on mode
             if (GameModeManager.isOnline()) {
                 // ONLINE MODE: Only send to Firebase, DO NOT update local state
                 // The Firebase sync listener will update our local state
@@ -2862,48 +2974,25 @@
                     thisRound: player.thisRound
                 });
 
-                // V4.96: Advance turn after correct guess
-                const playerCount = Object.keys(gameState.players).length;
-                let nextPlayerIndex = gameState.currentPlayer;
-                let attempts = 0;
-                do {
-                    nextPlayerIndex = (nextPlayerIndex + 1) % playerCount;
-                    attempts++;
-                    if (attempts > playerCount) break;
-                } while (gameState.passedPlayers.has(nextPlayerIndex));
-
                 GameModeManager.updateGameState({
                     centerToken: newCenterToken,
                     draftPool: newDraftPool,
                     selectedDraftToken: newSelectedDraftToken,
-                    passedPlayers: Array.from(gameState.passedPlayers),
-                    currentPlayer: nextPlayerIndex,
                     lastAction: actionData
                 });
-
-                console.log(`✅ Correct guess - turn advanced to Player ${nextPlayerIndex}`);
             } else {
-                // LOCAL MODE: Advance turn after correct guess
+                // LOCAL MODE: Update state directly
                 gameState.centerToken = newCenterToken;
                 gameState.draftPool = newDraftPool;
                 gameState.selectedDraftToken = newSelectedDraftToken;
-
-                const playerCount = getPlayerCount();
-                let nextPlayerIndex = gameState.currentPlayer;
-                let attempts = 0;
-                do {
-                    nextPlayerIndex = (nextPlayerIndex + 1) % playerCount;
-                    attempts++;
-                    if (attempts > playerCount) break;
-                } while (gameState.passedPlayers.has(nextPlayerIndex));
-
-                gameState.currentPlayer = nextPlayerIndex;
                 document.getElementById('guessArea').classList.remove('active');
             }
 
-            // Update UI after animation
+            // V4.97: Always call advanceTurn() after animation - it handles everything
             setTimeout(() => {
+                console.log('⏰ Correct guess timeout fired - calling advanceTurn');
                 updateGameUI();
+                advanceTurn();
             }, 400);
         }
 
@@ -2933,55 +3022,48 @@
                 timestamp: Date.now()
             };
 
-            // Player becomes first guesser next round (if no one else is first yet)
+            // V4.97: Player becomes first guesser next round if no one passed yet
             const becomesFirstGuesser = gameState.passedPlayers.size === 0;
-            const newFirstGuesser = becomesFirstGuesser ? gameState.currentPlayer : gameState.firstGuesser;
-
-            // Mark player as OUT for this round (they can't draft again)
-            const newPassedPlayers = new Set(gameState.passedPlayers);
-            newPassedPlayers.add(gameState.currentPlayer);
-
-            console.log('❌ Wrong guess by', player.name);
-            const playerCount = GameModeManager.isLocal() ? getPlayerCount() : Object.keys(gameState.players).length;
-            console.log('   Passed players now:', newPassedPlayers.size, '/', playerCount);
-
-            // Check if this leaves only 1 player standing
-            const nonPassedCount = playerCount - newPassedPlayers.size;
-            const isLastStanding = nonPassedCount === 1;
-
-            console.log('   Non-passed count:', nonPassedCount);
-            console.log('   Is last standing?', isLastStanding);
-
-            // Award last standing trophy when only 1 player remains active
-            let newLastToPass = gameState.lastToPass || 0;
-            if (isLastStanding) {
-                if (GameModeManager.isLocal()) {
-                    const lastStandingIndex = getPlayersArray().findIndex((p, idx) => !newPassedPlayers.has(idx));
-                    if (lastStandingIndex !== -1) {
-                        newLastToPass = lastStandingIndex;
-                        console.log('   🏆 Last standing trophy awarded to:', gameState.players[lastStandingIndex].name);
-                    }
-                } else {
-                    const playerIds = Object.keys(gameState.players);
-                    const lastStandingIndex = playerIds.findIndex((id, idx) => !newPassedPlayers.has(idx));
-                    if (lastStandingIndex !== -1) {
-                        newLastToPass = lastStandingIndex;
-                        console.log('   🏆 Last standing trophy awarded to:', gameState.players[playerIds[lastStandingIndex]].name);
-                    }
-                }
+            if (becomesFirstGuesser) {
+                gameState.firstGuesser = gameState.currentPlayer;
             }
 
-            // Show failure notification
-            const nextRoundMsg = becomesFirstGuesser ? ' Will go first next round!' : '';
-            showNotification(`❌ Wrong! ${player.name} loses tokens but keeps ${player.score} points. OUT for this round.${nextRoundMsg}`, 'error');
+            // V4.97: Lock out player for rest of round
+            gameState.lockedOutPlayers.add(gameState.currentPlayer);
 
-            // Handle state update based on mode
+            console.log('❌ Wrong guess by', player.name, '- locked out for rest of round');
+            console.log('🔍 DEBUG: lockedOutPlayers Set after add:', Array.from(gameState.lockedOutPlayers));
+
+            // V4.97.7: Sync lockedOutPlayers to Firebase immediately so other players see (OUT)
             if (GameModeManager.isOnline()) {
-                // ONLINE MODE: Only send to Firebase, DO NOT update local state
+                const lockedOutArray = Array.from(gameState.lockedOutPlayers);
+                console.log('🔍 DEBUG: Syncing to Firebase:', lockedOutArray);
+
+                // V4.97.10: Track timestamp to prevent Firebase listener from overwriting
+                window.lastLockedOutPlayersUpdate = Date.now();
+
+                GameModeManager.updateGameState({
+                    lockedOutPlayers: lockedOutArray,
+                    lockedOutPlayersTimestamp: window.lastLockedOutPlayersUpdate
+                });
+            }
+
+            // V4.97.7: Update UI immediately to show (OUT) indicator
+            updateGameUI();
+
+            // V4.97.15: Removed showLockedOutModal() call - it creates duplicate modal with lockedOutOverlay
+            // The lockedOutOverlay (managed by updateLockedOutState) is the correct UI element
+
+            // Show failure notification (V4.97.8: broadcast to all players)
+            const nextRoundMsg = becomesFirstGuesser ? ' Will go first next round!' : '';
+            showNotification(`❌ Wrong! ${player.name} loses tokens but keeps ${player.score} points. OUT for this round.${nextRoundMsg}`, 'error', true);
+
+            // V4.97.16: Update state based on mode - ALWAYS update draftPool with returned tokens
+            if (GameModeManager.isOnline()) {
                 const playerIds = Object.keys(gameState.players);
                 const currentPlayerId = playerIds[gameState.currentPlayer];
 
-                // Only send defined values to Firebase
+                // Update player data
                 const playerUpdates = {
                     thisRound: player.thisRound || []
                 };
@@ -2989,95 +3071,89 @@
                 if (player.hand !== undefined) playerUpdates.hand = player.hand;
 
                 GameModeManager.updatePlayer(currentPlayerId, playerUpdates);
+
+                // V4.97.16: CRITICAL FIX - Update draftPool in Firebase to include returned tokens
                 GameModeManager.updateGameState({
                     draftPool: newDraftPool,
-                    passedPlayers: Array.from(newPassedPlayers),
-                    firstGuesser: newFirstGuesser,
-                    lastToPass: newLastToPass,
-                    selectedDraftToken: null,
-                    lastAction: actionData
+                    selectedDraftToken: null
                 });
-
-                console.log('✅ Firebase update sent - waiting for sync');
+                console.log('🔍 DEBUG: Updated draftPool with returned tokens. New size:', newDraftPool.length);
             } else {
                 // LOCAL MODE: Update state directly
                 gameState.draftPool = newDraftPool;
-                gameState.passedPlayers = newPassedPlayers;
-                gameState.firstGuesser = newFirstGuesser;
-                gameState.lastToPass = newLastToPass;
                 gameState.selectedDraftToken = null;
                 document.getElementById('guessArea').classList.remove('active');
             }
 
-            // Check if all players are now out (round should end)
-            const allPassed = newPassedPlayers.size === playerCount;
-            console.log('   All passed?', allPassed, `(${newPassedPlayers.size} === ${getPlayerCount()})`);
-
-            // V4.84: If all passed after wrong guess, set allPassedFlag
-            if (allPassed && GameModeManager.isOnline()) {
-                console.log('🏁 All players passed (wrong guess) - setting allPassedFlag');
-                GameModeManager.updateGameState({
-                    allPassedFlag: true
-                });
-                return;
-            }
-
-            // Update UI and advance turn after animation
+            // V4.97: Always call advanceTurn() after animation - it handles round end if needed
             setTimeout(() => {
-                console.log('⏰ Wrong guess timeout fired');
+                console.log('⏰ Wrong guess timeout fired - calling advanceTurn');
+                console.log('🔍 DEBUG: lockedOutPlayers Set before advanceTurn:', Array.from(gameState.lockedOutPlayers));
                 updateGameUI();
-
-                // V4.88: In online mode, allPassedFlag is set above and Firebase listener will call endRound()
-                // Only handle turn advancement in local mode or when not all passed
-                if (GameModeManager.isOnline()) {
-                    console.log('✅ Online mode - Firebase listener will handle round end if needed');
-                    return;
-                }
-
-                // LOCAL MODE ONLY: Re-check if all players have passed
-                const allPassedNow = gameState.passedPlayers.size === getPlayerCount();
-
-                if (allPassedNow) {
-                    console.log('🔚 All players now passed (local mode) - ending round');
-                    endRound();
-                } else {
-                    console.log('➡️ Not all passed, calling advanceTurn');
-                    advanceTurn();
-                }
+                advanceTurn();
             }, 600);
         }
 
         function advanceTurn() {
-            console.log('🔄 advanceTurn called. Passed players:', gameState.passedPlayers.size, '/', getPlayerCount());
+            // V4.97: Track who just acted (for last player standing bonus)
+            gameState.lastPlayerToAct = gameState.currentPlayer;
 
-            // Check if all passed FIRST (before trying to advance)
-            if (gameState.passedPlayers.size === getPlayerCount()) {
-                console.log('✅ All players passed. Ending round...');
-                endRound();
+            console.log('🔄 advanceTurn called. Locked out players:', gameState.lockedOutPlayers.size, '/', getPlayerCount());
+
+            // V4.97: Check if all players locked out (passed or picked wrong)
+            const playerCount = GameModeManager.isLocal() ? getPlayerCount() : Object.keys(gameState.players).length;
+            if (gameState.lockedOutPlayers.size === playerCount) {
+                console.log('✅ All players locked out. Ending round... Last player to act:', gameState.lastPlayerToAct);
+
+                // V4.97: In online mode, only the last player to act calls endRound()
+                // Everyone else waits for Firebase sync to trigger the round transition
+                if (GameModeManager.isOnline()) {
+                    const playerIds = Object.keys(gameState.players);
+                    const lastPlayerId = playerIds[gameState.lastPlayerToAct];
+                    const isLastPlayer = lastPlayerId === window.currentUserId;
+
+                    console.log(`🎯 Last player check: isLastPlayer=${isLastPlayer}, lastPlayerId=${lastPlayerId}, currentUserId=${window.currentUserId}`);
+
+                    if (isLastPlayer) {
+                        console.log('🎯 This player is last to act - calling endRound()');
+                        endRound();
+                    } else {
+                        console.log('⏳ Not last player - waiting for Firebase sync');
+                    }
+                } else {
+                    // Local mode: always call endRound()
+                    endRound();
+                }
                 return;
             }
 
-            // Move to next non-passed player
+            // Move to next non-locked-out player
             let attempts = 0;
             do {
-                gameState.currentPlayer = (gameState.currentPlayer + 1) % getPlayerCount();
+                gameState.currentPlayer = (gameState.currentPlayer + 1) % playerCount;
                 attempts++;
 
                 // Safety check: prevent infinite loop
-                if (attempts > getPlayerCount()) {
+                if (attempts > playerCount) {
                     console.error('❌ INFINITE LOOP DETECTED in advanceTurn!');
                     endRound();
                     return;
                 }
-            } while (gameState.passedPlayers.has(gameState.currentPlayer));
+            } while (gameState.lockedOutPlayers.has(gameState.currentPlayer));
 
             console.log('👤 Next player:', getPlayerByIndex(gameState.currentPlayer).name);
 
             // Sync to Firebase if online mode
             if (GameModeManager.isOnline()) {
+                // V4.97.10: Track timestamp to prevent Firebase listener from overwriting
+                window.lastLockedOutPlayersUpdate = Date.now();
+
                 GameModeManager.updateGameState({
                     currentPlayer: gameState.currentPlayer,
-                    passedPlayers: Array.from(gameState.passedPlayers) // Preserve passed players
+                    lockedOutPlayers: Array.from(gameState.lockedOutPlayers),
+                    passedPlayers: Array.from(gameState.passedPlayers),
+                    lastPlayerToAct: gameState.lastPlayerToAct,
+                    lockedOutPlayersTimestamp: window.lastLockedOutPlayersUpdate
                 });
             }
 
@@ -3193,6 +3269,18 @@
 
         function closeCashOutModal() {
             document.getElementById('cashOutModal').classList.remove('active');
+        }
+
+        function showLockedOutModal(playerName) {
+            const modal = document.getElementById('lockedOutModal');
+            const message = document.getElementById('lockedOutMessage');
+            message.textContent = `${playerName}, you guessed incorrectly and are locked out for the rest of this round.`;
+            modal.classList.add('active');
+            // V4.97.8: Modal stays up until round ends (closed in endRound)
+        }
+
+        function closeLockedOutModal() {
+            document.getElementById('lockedOutModal').classList.remove('active');
         }
 
         function executeCashOut() {
@@ -3345,6 +3433,9 @@
                 return;
             }
 
+            // V4.97.15: Removed redundant locked-out check - advanceTurn() already prevents locked-out players from becoming currentPlayer
+            // The pass button is also disabled by updateActionButtons() for locked-out players
+
             // Check if current player has already passed
             if (gameState.passedPlayers.has(gameState.currentPlayer)) {
                 showNotification("You have already passed this round!", 'warning');
@@ -3365,120 +3456,80 @@
             player.hand.push(...player.thisRound);
             player.thisRound = [];
 
-            // Mark player as passed
+            // V4.97: Mark player as passed AND locked out
             gameState.passedPlayers.add(gameState.currentPlayer);
+            gameState.lockedOutPlayers.add(gameState.currentPlayer);
 
-            // Check if this player is now the last one standing (only 1 non-passed player remains)
-            const playerCount = GameModeManager.isLocal() ? getPlayerCount() : Object.keys(gameState.players).length;
-            const nonPassedCount = playerCount - gameState.passedPlayers.size;
-            const isLastStanding = nonPassedCount === 1;
-
-            // First to pass becomes first guesser next round
+            // V4.97: First to pass becomes first guesser next round
             const isFirstToPass = gameState.passedPlayers.size === 1;
             if (isFirstToPass) {
                 gameState.firstGuesser = gameState.currentPlayer;
+                console.log(`🎯 Player ${gameState.currentPlayer} is first to pass - will be first guesser next round`);
             }
 
-            // Track who was last to pass (for end-of-round bonus)
-            // If this is the last player to pass (all players have now passed), they get the bonus
-            const allPassed = gameState.passedPlayers.size === playerCount;
-            if (allPassed) {
-                gameState.lastToPass = gameState.currentPlayer;
-                console.log(`🏆 Last to pass: Player ${gameState.currentPlayer} (gets +1 bonus)`);
-            } else if (isLastStanding) {
-                // Award last standing when only 1 player remains active (hasn't passed yet)
-                // This is for games with 3+ players where one player is still playing
-                const lastStandingIndex = getPlayersArray().findIndex((p, idx) => !gameState.passedPlayers.has(idx));
-                if (lastStandingIndex !== -1) {
-                    gameState.lastToPass = lastStandingIndex;
-                    console.log(`🏆 Last standing: Player ${lastStandingIndex} (gets +1 bonus when round ends)`);
-                }
-            }
+            // V4.97.8: Show pass notification (broadcast to all players)
+            const firstPassMsg = isFirstToPass ? ' Will go first next round!' : '';
+            showNotification(`⏭️ ${player.name} passed. OUT for this round.${firstPassMsg}`, 'info', true);
 
             // Create action metadata for opponent feedback
             const actionData = {
                 type: 'pass',
                 playerName: player.name,
                 isFirstToPass: isFirstToPass,
-                isLastStanding: isLastStanding,
                 timestamp: Date.now()
             };
 
-            // Sync to Firebase if online mode
+            // V4.97.16: Sync lockedOutPlayers and passedPlayers to Firebase BEFORE calling advanceTurn
+            // This is critical - other players need to see updated locked out status to know if round should end
             if (GameModeManager.isOnline()) {
                 const playerIds = Object.keys(gameState.players);
                 const currentPlayerId = playerIds[gameState.currentPlayer];
 
-                // Update player data
+                // V4.97.16: Track timestamp to prevent Firebase listener from overwriting
+                window.lastLockedOutPlayersUpdate = Date.now();
+
+                // Update both player data AND game state in parallel
                 GameModeManager.updatePlayer(currentPlayerId, {
                     hand: player.hand,
                     thisRound: player.thisRound
                 });
 
-                // V4.84: When all players pass, just sync that fact - don't call endRound here
-                if (allPassed) {
-                    console.log('🏁 All players passed - syncing state');
-                    GameModeManager.updateGameState({
-                        passedPlayers: Array.from(gameState.passedPlayers),
-                        lastToPass: gameState.lastToPass,
-                        lastAction: actionData,
-                        allPassedFlag: true  // Flag so Firebase listener knows to advance round
-                    });
-                    return;
-                }
-
-                // If not all passed, advance turn to next non-passed player
-                // Find next non-passed player
-                let nextPlayerIndex = gameState.currentPlayer;
-                let attempts = 0;
-                const maxAttempts = playerCount;
-                do {
-                    nextPlayerIndex = (nextPlayerIndex + 1) % playerCount;
-                    attempts++;
-                    if (attempts > maxAttempts) {
-                        console.error('❌ INFINITE LOOP DETECTED in passRound!');
-                        break;
-                    }
-                } while (gameState.passedPlayers.has(nextPlayerIndex));
-
-                // Sync pass state AND advance turn to next active player
                 GameModeManager.updateGameState({
+                    lockedOutPlayers: Array.from(gameState.lockedOutPlayers),
                     passedPlayers: Array.from(gameState.passedPlayers),
-                    lastToPass: gameState.lastToPass,
-                    lastAction: actionData,
-                    currentPlayer: nextPlayerIndex
+                    lockedOutPlayersTimestamp: window.lastLockedOutPlayersUpdate
                 });
-                console.log(`✅ Pass synced - turn advanced to Player ${nextPlayerIndex}`);
-            } else {
-                // LOCAL MODE: Advance turn to next active player OR end round if all passed
-                if (allPassed) {
-                    console.log('🏁 All players passed (local mode) - calling endRound()');
-                    updateGameUI();
-                    endRound();
-                    return;
-                } else {
-                    let nextPlayerIndex = gameState.currentPlayer;
-                    let attempts = 0;
-                    do {
-                        nextPlayerIndex = (nextPlayerIndex + 1) % playerCount;
-                        attempts++;
-                        if (attempts > playerCount) {
-                            console.error('❌ INFINITE LOOP DETECTED!');
-                            break;
-                        }
-                    } while (gameState.passedPlayers.has(nextPlayerIndex));
-                    gameState.currentPlayer = nextPlayerIndex;
-                    console.log(`✅ Local pass - turn advanced to Player ${nextPlayerIndex}`);
-                }
+
+                console.log('🔍 DEBUG: Synced pass to Firebase - lockedOut:', Array.from(gameState.lockedOutPlayers), 'passed:', Array.from(gameState.passedPlayers));
             }
 
-            updateGameUI();
-
-            // V4.81: In online mode, endRound is triggered by 'roundEnd' phase change (line 1825-1829)
-            // In local mode, endRound is called directly above when all players pass
+            // V4.97: Always call advanceTurn() - it will handle round end if all players locked out
+            advanceTurn();
         }
 
         function endRound() {
+            // V4.97.8: Close locked-out modal when round ends
+            closeLockedOutModal();
+
+            // V4.97: Award +1 bonus to last player to act (last standing)
+            if (gameState.lastPlayerToAct !== null) {
+                const lastPlayer = getPlayerByIndex(gameState.lastPlayerToAct);
+                if (lastPlayer) {
+                    lastPlayer.score += 1;
+                    console.log(`🏆 Last standing bonus: +1 point to ${lastPlayer.name}`);
+                    showNotification(`🏆 ${lastPlayer.name} gets +1 bonus for being last standing!`, 'success');
+
+                    // Sync to Firebase if online mode
+                    if (GameModeManager.isOnline()) {
+                        const playerIds = Object.keys(gameState.players);
+                        const lastPlayerId = playerIds[gameState.lastPlayerToAct];
+                        GameModeManager.updatePlayer(lastPlayerId, {
+                            score: lastPlayer.score
+                        });
+                    }
+                }
+            }
+
             // Move all "thisRound" tokens to player hands (make them safe)
             getPlayersArray().forEach(player => {
                 // Convert to arrays if Firebase sent objects
@@ -3507,6 +3558,17 @@
 
             // Check if game is over
             if (gameState.round >= gameState.maxRounds) {
+                // V4.97.23: Set flag IMMEDIATELY and sync to Firebase to prevent lockout overlay for all players
+                window.gameEnding = true;
+                gameState.gameEnding = true;
+
+                // Sync gameEnding flag to Firebase so all players know
+                if (GameModeManager.isOnline()) {
+                    GameModeManager.updateGameState({
+                        gameEnding: true
+                    });
+                }
+
                 showNotification(`Round ${gameState.round} complete! Game Over!`, 'success');
                 setTimeout(() => showGameEndScreen(), 1500);
                 return;
@@ -3525,6 +3587,9 @@
             gameState.centerToken = null;
             gameState.draftPool = [];
             gameState.passedPlayers = new Set(); // Clear passed players for new round
+            gameState.lockedOutPlayers = new Set(); // V4.97: Clear locked-out players for new round
+            gameState.lastPlayerToAct = null; // V4.97: Reset last player to act
+            gameState.currentPlayer = gameState.firstGuesser; // V4.97: Reset current player to first guesser locally
             // NOTE: Don't clear drawnChallengeCards here in online mode - first guesser will handle it in startNewRound()
             if (GameModeManager.isLocal()) {
                 gameState.drawnChallengeCards = []; // Clear challenge cards so new ones will be drawn
@@ -3547,6 +3612,13 @@
                 gameState.drawnChallengeCards = [];
                 gameState.currentChallenge = null;
 
+                // V4.97.21: Update timestamp FIRST, then clear locally to prevent listener race condition
+                window.lastLockedOutPlayersUpdate = Date.now();
+
+                // V4.97.19: Clear locked out players locally BEFORE syncing to Firebase
+                gameState.lockedOutPlayers = new Set();
+                gameState.passedPlayers = new Set();
+
                 GameModeManager.updateGameState({
                     phase: 'challenge', // V4.75: Return to challenge phase
                     round: gameState.round,
@@ -3556,6 +3628,9 @@
                     centerToken: null,
                     draftPool: [],
                     passedPlayers: [], // Clear passed players in Firebase
+                    lockedOutPlayers: [], // V4.97: Clear locked-out players in Firebase
+                    lockedOutPlayersTimestamp: window.lastLockedOutPlayersUpdate, // V4.97.17: Update timestamp so clients accept the cleared array
+                    lastPlayerToAct: null, // V4.97: Reset last player to act in Firebase
                     currentPlayer: gameState.firstGuesser, // Reset to first guesser for new round
                     allPassedFlag: false, // V4.84: Clear the all-passed flag
                     drawnChallengeCards: null // V4.89: Use null instead of [] to force Firebase update
@@ -3572,6 +3647,13 @@
 
         // ===== GAME END =====
         function showGameEndScreen() {
+            // V4.97.18: Clear lockout overlay for all players when game ends
+            const overlay = document.getElementById('lockedOutOverlay');
+            const gameScreen = document.getElementById('gameScreen');
+            if (overlay) overlay.classList.remove('active');
+            if (gameScreen) gameScreen.classList.remove('locked-out');
+            console.log('🏁 Game ended - lockout overlay cleared for all players');
+
             // Sort players by score (descending), then by tokens in hand, then by correct guesses
             const sortedPlayers = Object.values(gameState.players).sort((a, b) => {
                 if (b.score !== a.score) return b.score - a.score;
@@ -3643,7 +3725,8 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        function showNotification(message, type = 'info') {
+        function showNotification(message, type = 'info', broadcastToAll = false) {
+            // Display notification locally
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
             notification.textContent = message;
@@ -3652,6 +3735,17 @@
             setTimeout(() => {
                 notification.remove();
             }, 3000);
+
+            // V4.97.8: Broadcast to all players in online mode
+            if (broadcastToAll && GameModeManager.isOnline()) {
+                GameModeManager.updateGameState({
+                    lastNotification: {
+                        message: message,
+                        type: type,
+                        timestamp: Date.now()
+                    }
+                });
+            }
         }
 
         function showFloatingPoints(text, parentElement) {
