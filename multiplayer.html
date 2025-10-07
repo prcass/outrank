@@ -4011,6 +4011,50 @@
             if (gameScreen) gameScreen.classList.remove('locked-out');
             console.log('🏁 Game ended - lockout overlay cleared for all players');
 
+            // V5.0: Apply end-game bonus card scoring
+            gameState.players.forEach(player => {
+                let bonusPoints = 0;
+                const bonusBreakdown = [];
+
+                player.bonusCards.forEach(card => {
+                    if (card.type === 'endgame') {
+                        let cardBonus = 0;
+
+                        switch(card.effect) {
+                            case 'token_count':
+                                // Points per token in hand
+                                cardBonus = player.hand.length * card.value;
+                                bonusBreakdown.push(`${card.name}: ${player.hand.length} tokens × ${card.value} = ${cardBonus} pts`);
+                                break;
+
+                            case 'cashout_count':
+                                // Points per cash-in made
+                                cardBonus = (player.cashOuts || 0) * card.value;
+                                bonusBreakdown.push(`${card.name}: ${player.cashOuts || 0} cash-outs × ${card.value} = ${cardBonus} pts`);
+                                break;
+
+                            case 'card_count':
+                                // Points per bonus card held
+                                cardBonus = player.bonusCards.length * card.value;
+                                bonusBreakdown.push(`${card.name}: ${player.bonusCards.length} cards × ${card.value} = ${cardBonus} pts`);
+                                break;
+                        }
+
+                        bonusPoints += cardBonus;
+                    }
+                });
+
+                if (bonusPoints > 0) {
+                    player.score += bonusPoints;
+                    console.log(`🎴 ${player.name} end-game bonus: +${bonusPoints} pts`);
+                    bonusBreakdown.forEach(line => console.log(`  → ${line}`));
+                }
+
+                // Store bonus breakdown for display
+                player.endGameBonus = bonusPoints;
+                player.endGameBonusBreakdown = bonusBreakdown;
+            });
+
             // Sort players by score (descending), then by tokens in hand, then by correct guesses
             const sortedPlayers = Object.values(gameState.players).sort((a, b) => {
                 if (b.score !== a.score) return b.score - a.score;
@@ -4065,8 +4109,28 @@
                         <div>✅ Correct Guesses: <strong>${player.correctGuesses || 0}</strong></div>
                         <div>💰 Cash Outs: <strong>${player.cashOuts || 0}</strong></div>
                         <div>🃏 Tokens in Hand: <strong>${player.hand?.length || 0}</strong></div>
-                        <div>🎯 Final Score: <strong>${player.score || 0} pts</strong></div>
+                        <div>🎴 Bonus Cards: <strong>${player.bonusCards?.length || 0}</strong></div>
+                        ${player.endGameBonus > 0 ? `<div style="grid-column: span 2; color: #f5576c; font-weight: bold;">🎁 End-Game Bonus: +${player.endGameBonus} pts</div>` : ''}
+                        <div style="grid-column: span 2; font-size: 16px; margin-top: 5px;">🎯 Final Score: <strong>${player.score || 0} pts</strong></div>
                     </div>
+                    ${player.bonusCards?.length > 0 ? `
+                        <div style="margin-top: 15px; padding: 10px; background: #f8f8f8; border-radius: 8px;">
+                            <div style="font-weight: bold; color: #764ba2; margin-bottom: 8px;">🎴 Bonus Cards Collected:</div>
+                            ${player.bonusCards.map(card => `
+                                <div style="font-size: 12px; margin-bottom: 4px; padding: 5px; background: white; border-radius: 4px;">
+                                    ${card.name} <span style="color: #666; font-size: 11px;">(${card.type})</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    ${player.endGameBonusBreakdown?.length > 0 ? `
+                        <div style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 8px;">
+                            <div style="font-weight: bold; color: #856404; margin-bottom: 5px;">🎁 Bonus Breakdown:</div>
+                            ${player.endGameBonusBreakdown.map(line => `
+                                <div style="font-size: 11px; color: #856404; margin-bottom: 2px;">• ${line}</div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
                 </div>
             `).join('');
 
