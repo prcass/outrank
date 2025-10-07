@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>4f4 V5.0.1 - Multiplayer + Bonus Cards</title>
+    <title>4f4 V5.0.2 - Multiplayer + Bonus Cards (Multipliers)</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -3132,6 +3132,15 @@
                     `).join('')
                     : '';
 
+                // V5.0.2: Display active effects (multipliers, etc.)
+                const activeEffectsDisplay = player.activeEffects && player.activeEffects.length > 0
+                    ? player.activeEffects.map(effect => `
+                        <div style="font-size: 10px; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: white; padding: 3px 6px; border-radius: 4px; margin-bottom: 2px; font-weight: bold;">
+                            ✨ ${effect.name} ACTIVE ${effect.usesRemaining ? `(${effect.usesRemaining} use${effect.usesRemaining > 1 ? 's' : ''})` : ''}
+                        </div>
+                    `).join('')
+                    : '';
+
                 return `
                     <div class="player-info ${isCurrent ? 'current-player' : ''}">
                         <div class="player-name">
@@ -3145,6 +3154,7 @@
                             Hand: ${player.hand?.length || 0} | This Round: ${player.thisRound?.length || 0}
                         </div>
                         ${tagDisplay ? `<div class="player-tags" style="font-size: 11px; margin-top: 5px; line-height: 1.4;">${tagDisplay}</div>` : ''}
+                        ${activeEffectsDisplay ? `<div class="player-active-effects" style="margin-top: 5px;">${activeEffectsDisplay}</div>` : ''}
                         ${bonusCardsDisplay ? `<div class="player-bonus-cards" style="margin-top: 5px;">${bonusCardsDisplay}</div>` : ''}
                     </div>
                 `;
@@ -3669,11 +3679,35 @@
                 return;
             }
 
-            // Calculate points
+            // Calculate base points
             let points = 0;
             if (count === 2) points = 2;
             else if (count === 3) points = 5;
             else if (count === 4) points = 8;
+
+            // V5.0.2: Check for active multiplier effects
+            let multiplier = 1;
+            let multiplierCard = null;
+            const multiplierEffect = player.activeEffects?.find(effect => effect.effect === 'multiplier' && effect.usesRemaining > 0);
+
+            if (multiplierEffect) {
+                multiplier = multiplierEffect.value;
+                multiplierCard = multiplierEffect;
+                points = points * multiplier;
+
+                // Decrement uses
+                multiplierEffect.usesRemaining--;
+
+                // Remove effect if no uses remaining
+                if (multiplierEffect.usesRemaining <= 0) {
+                    const index = player.activeEffects.indexOf(multiplierEffect);
+                    if (index > -1) {
+                        player.activeEffects.splice(index, 1);
+                    }
+                }
+
+                console.log(`✨ ${player.name} used ${multiplierCard.name}: ${points / multiplier} × ${multiplier} = ${points} pts`);
+            }
 
             // Find and remove tokens from player's hand/thisRound
             // Convert to arrays if needed (Firebase sends objects)
@@ -3735,7 +3769,10 @@
             }
 
             // Show success notification
-            showNotification(`💰 ${player.name} cashed out ${count} tokens for ${points} points!`, 'success');
+            const notificationMsg = multiplierCard
+                ? `💰 ${player.name} cashed out ${count} tokens ${multiplierCard.name} for ${points} points! ✨`
+                : `💰 ${player.name} cashed out ${count} tokens for ${points} points!`;
+            showNotification(notificationMsg, 'success');
 
             // Sync to Firebase if online mode
             if (GameModeManager.isOnline()) {

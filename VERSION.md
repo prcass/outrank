@@ -19,14 +19,55 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.0.1 (In Progress)
+## Current Development: v5.0.3 (In Progress)
 **Status**: Active Development
 **Branch**: v5.0
 
 **Planned Features:**
-- Playable card mechanics (multipliers, wildcards, actions)
+- Token manipulation cards (Steal, Extra Draw, Swap)
+- Defensive cards (Block, Force Discard)
+- Wildcard mechanics
 - Passive effect cards integration
 - Full online multiplayer testing
+
+---
+
+## v5.0.2 - Multiplier Card Auto-Application (2025-10-07)
+**Tag**: `v5.0.2`
+**Status**: Stable - Tested in Local Mode
+
+### Features Added:
+✅ **Multiplier Card Auto-Application**
+- Double Down (2x) and Triple Threat (3x) cards now auto-activate on cash-in
+- Players no longer need to manually play multipliers
+- When multiplier is in activeEffects, automatically applies to next cash-in points
+- Use counting system: multipliers consumed after 1 use
+- Enhanced notifications show when multiplier is applied
+
+✅ **Active Effects Visual Display**
+- Yellow gradient badges in player panels show active effects
+- Display format: "✨ CARD_NAME ACTIVE (X use)"
+- Visible to all players for transparency
+- Updates automatically as effects are consumed
+
+✅ **Enhanced Cash-In Notifications**
+- Shows original points, multiplier value, and final points
+- Example: "✨ Player used Double Down: 5 × 2 = 10 pts"
+- Clear feedback when multiplier auto-activates
+
+### Code Changes:
+- Modified executeCashOut() to check activeEffects for multipliers
+- Added auto-decrement of usesRemaining counter
+- Auto-removal of effects when uses exhausted
+- Updated renderPlayers() with active effects display section
+- Enhanced console logging for multiplier tracking
+
+### Testing:
+- ✅ Multipliers auto-apply on cash-in
+- ✅ Use counting works correctly
+- ✅ Visual indicators update properly
+- ✅ Effects removed after consumption
+- ⏳ Online multiplayer pending testing
 
 ---
 
