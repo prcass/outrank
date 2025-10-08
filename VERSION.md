@@ -45,7 +45,7 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.1.1 (In Progress)
+## Current Development: v5.1.9 (In Progress)
 **Status**: Active Development
 **Branch**: v5.1
 
@@ -53,6 +53,70 @@ git reset --hard HEAD~1
 - Full online multiplayer testing with all cards
 - Additional balance tweaks
 - Bug fixes and polish
+
+---
+
+## v5.1.8 - Automated QA Tests for Bonus Cards (2025-10-08)
+**Tag**: `v5.1.8`
+**Status**: Stable
+
+### Features:
+✅ **Comprehensive Bonus Card Testing**
+- Added 10 automated QA tests for all card types
+- Tests immediate points cards (Jackpot)
+- Tests multiplier card storage
+- Tests wildcard functionality (Rainbow)
+- Tests passive effects (Genius, Lucky)
+- Tests defensive cards (Veto)
+- Tests end-game bonus cards
+- Tests 4-card hand limit enforcement
+- Tests bonus card pool replenishment
+- Tests all token manipulation cards
+
+### Implementation:
+- New test group "Bonus Card System (V5.1)" in qa-tests.js
+- Tests run via `runQATests()` in browser console
+- All tests check card storage, effects, and state management
+- Integrated with existing QA test suite
+
+---
+
+## v5.1.7 - Token Selection Modal Bug Fixes (2025-10-08)
+**Tag**: `v5.1.7`
+**Status**: Stable
+
+### Bug Fixes:
+✅ **Fixed Recycle Card Errors**
+- Replaced non-existent `updateDraftPoolUI()` with `renderDraftPool()`
+- Fixed all 5 instances: Snatch, Double Pick, Trade, Recycle, Lucky
+
+✅ **Fixed Double-Click Issue**
+- Modal now closes BEFORE executing callback
+- Callback cleared before execution to prevent re-entry
+- Prevents tokens from being selected twice
+- User reported: "token was able to be returned twice"
+
+### Technical:
+- Updated `selectToken()` function (lines 2609-2620)
+- Close modal and clear `tokenSelectionCallback` before executing
+- All token selection modals now work correctly
+
+---
+
+## v5.1.6 - Enhanced Sabotage Card (2025-10-08)
+**Tag**: `v5.1.6`
+**Status**: Stable
+
+### Features:
+✅ **Sabotage Two-Step Selection**
+- Attacker chooses which player to sabotage (player selection modal)
+- Target player chooses which 2 tokens to discard (sequential selection)
+- Comprehensive debug logging with 💣 emoji
+- Recursive token selection for multi-token discard
+- Proper array/object handling for hand/thisRound state
+
+### User Request:
+"Sabotage you should be able to pick the player you target and they should be able to pick the 2 tokens they return"
 
 ---
 
