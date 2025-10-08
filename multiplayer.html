@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Four4More V5.1.0 - Multiplayer + Bonus Cards (Player Choice UI)</title>
+    <title>Four4More V5.1.8 - Multiplayer + Bonus Cards (Player Choice UI)</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -759,7 +759,7 @@
         <!-- MODE SELECTION SCREEN -->
         <div id="modeSelectionScreen" class="screen active">
             <div class="header">
-                <h1>Four4More V5.1.0</h1>
+                <h1>Four4More V5.1.8</h1>
                 <p class="subtitle">Multiplayer</p>
             </div>
 
@@ -813,7 +813,7 @@
         <!-- ONLINE SETUP SCREEN -->
         <div id="onlineSetupScreen" class="screen">
             <div class="header">
-                <h1>Four4More V5.1.0 - Online</h1>
+                <h1>Four4More V5.1.8 - Online</h1>
                 <p class="subtitle">Connect with Friends</p>
             </div>
 
@@ -999,7 +999,7 @@
             </div>
 
             <div class="header">
-                <h1>Four4More V5.1.0</h1>
+                <h1>Four4More V5.1.8</h1>
                 <p class="subtitle" id="playerNameDisplay" style="font-weight: bold; color: #667eea; margin-bottom: 5px;">Loading...</p>
                 <p class="subtitle">Round <span id="roundNumber">1</span></p>
                 <button id="toggleDataBtn" class="btn btn-secondary" style="position: absolute; top: 20px; right: 20px; padding: 8px 15px; font-size: 0.9em;" onclick="toggleDataVisibility()">
@@ -2510,6 +2510,7 @@
             }
 
             console.log(`🎴 ${player.name} is playing card:`, card.name);
+            console.log(`🎴 Card effect:`, card.effect, `| Card data:`, card);
 
             // Handle different card effects
             switch(card.effect) {
@@ -2538,7 +2539,9 @@
 
                 case 'wildcard':
                     // Add to active effects for next cash-in
+                    console.log(`🌈 Wildcard case hit! Card uses: ${card.uses}, usesRemaining will be: ${card.uses || 1}`);
                     player.activeEffects.push({...card, usesRemaining: card.uses || 1});
+                    console.log(`🌈 Added to activeEffects. Total effects: ${player.activeEffects.length}`);
                     showNotification(`🌈 ${card.name} active! Can treat token as any tag`, 'success');
                     removeCardFromHand(player, card);
                     break;
