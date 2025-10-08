@@ -2607,10 +2607,16 @@
         }
 
         function selectToken(tokenIndex) {
-            if (tokenSelectionCallback) {
-                tokenSelectionCallback(tokenIndex);
+            // V5.1.7: Close modal and clear callback BEFORE executing to prevent double-clicks
+            const modal = document.getElementById('tokenSelectionModal');
+            modal.classList.remove('active');
+
+            const callback = tokenSelectionCallback;
+            tokenSelectionCallback = null;
+
+            if (callback) {
+                callback(tokenIndex);
             }
-            closeTokenSelectionModal();
         }
 
         function closeTokenSelectionModal() {
@@ -2649,7 +2655,7 @@
                     showNotification(`🎯 ${player.name} stole ${stolenToken.name}!`, 'success');
 
                     removeCardFromHand(player, card);
-                    updateDraftPoolUI();
+                    renderDraftPool();
                     updateGameUI();
                 }
             );
@@ -2677,7 +2683,7 @@
                     showNotification(`🎴 ${player.name} drew ${drawnTokens.length} tokens: ${drawnTokens.map(t => t.name).join(', ')}!`, 'success');
 
                     removeCardFromHand(player, card);
-                    updateDraftPoolUI();
+                    renderDraftPool();
                     updateGameUI();
                     return;
                 }
@@ -2781,7 +2787,7 @@
                             showNotification(`🔄 Swapped ${playerToken.name} for ${poolToken.name}!`, 'success');
 
                             removeCardFromHand(player, card);
-                            updateDraftPoolUI();
+                            renderDraftPool();
                             updateGameUI();
                         }
                     );
@@ -2846,7 +2852,7 @@
                     showNotification(`♻️ ${player.name} returned ${returnedToken.name} to pool`, 'success');
 
                     removeCardFromHand(player, card);
-                    updateDraftPoolUI();
+                    renderDraftPool();
                     updateGameUI();
                 }
             );
@@ -4180,7 +4186,7 @@
                         showNotification(`🍀 ${currentPlayer.name}'s Lucky card drew ${luckyToken.name}!`, 'success');
 
                         // Update draft pool UI
-                        updateDraftPoolUI();
+                        renderDraftPool();
 
                         // Sync to Firebase if online
                         if (GameModeManager.isOnline()) {
