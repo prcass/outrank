@@ -4291,13 +4291,36 @@
                 selectedTokenObjects.every(token => token.tags.includes(tag))
             );
 
+            // V5.1.2: Check for wildcard if no common tags
+            let usedWildcard = false;
             if (commonTags.length === 0) {
-                showNotification('All selected tokens must share at least one common tag!', 'warning');
-                return;
+                // Check if player has a wildcard active effect
+                const wildcardEffect = player.activeEffects && player.activeEffects.find(e =>
+                    e.effect === 'wildcard' && e.usesRemaining > 0
+                );
+
+                if (wildcardEffect) {
+                    // Use wildcard to allow cash-in
+                    usedWildcard = true;
+                    wildcardEffect.usesRemaining--;
+
+                    // Remove wildcard if no uses left
+                    if (wildcardEffect.usesRemaining === 0) {
+                        const effectIndex = player.activeEffects.indexOf(wildcardEffect);
+                        player.activeEffects.splice(effectIndex, 1);
+                        console.log(`🌈 ${player.name}'s wildcard exhausted and removed`);
+                    }
+
+                    showNotification(`🌈 Used ${wildcardEffect.name}! (${wildcardEffect.usesRemaining} uses left)`, 'success');
+                    console.log(`🌈 ${player.name} used wildcard (${wildcardEffect.usesRemaining} uses remaining)`);
+                } else {
+                    showNotification('All selected tokens must share at least one common tag! (Or use a Wildcard card)', 'warning');
+                    return;
+                }
             }
 
-            // Use the first common tag for scoring
-            const selectedTag = commonTags[0];
+            // Use the first common tag for scoring (or just use first token's first tag if wildcard was used)
+            const selectedTag = commonTags.length > 0 ? commonTags[0] : selectedTokenObjects[0].tags[0];
 
             // Verify count (2, 3, or 4 only)
             const count = selectedTokenIds.length;
