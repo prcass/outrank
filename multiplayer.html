@@ -2621,6 +2621,10 @@
 
         // V5.1.0: TOKEN MANIPULATION CARD EFFECTS (now with player choice)
         function executeStealToken(player, card) {
+            console.log(`🎯 Snatch: Starting for ${player.name}`);
+            console.log(`🎯 Draft pool length:`, gameState.draftPool.length);
+            console.log(`🎯 Player thisRound before:`, player.thisRound);
+
             if (gameState.draftPool.length === 0) {
                 showNotification('No tokens in draft pool to steal!', 'error');
                 return;
@@ -2632,11 +2636,17 @@
                 '🎯 Snatch - Choose Token',
                 'Select a token to steal from the draft pool:',
                 (tokenIndex) => {
+                    console.log(`🎯 Snatch: Selected index ${tokenIndex}`);
                     const stolenToken = gameState.draftPool.splice(tokenIndex, 1)[0];
+                    console.log(`🎯 Stolen token:`, stolenToken);
+
+                    if (!Array.isArray(player.thisRound)) {
+                        player.thisRound = Object.values(player.thisRound || {});
+                    }
                     player.thisRound.push(stolenToken);
+                    console.log(`🎯 Player thisRound after:`, player.thisRound);
 
                     showNotification(`🎯 ${player.name} stole ${stolenToken.name}!`, 'success');
-                    console.log(`🎯 ${player.name} stole token:`, stolenToken.name);
 
                     removeCardFromHand(player, card);
                     updateDraftPoolUI();
@@ -2647,6 +2657,9 @@
 
         function executeExtraDraw(player, card) {
             const drawCount = card.value || 2;
+            console.log(`🎴 Double Pick: Starting for ${player.name}, drawing ${drawCount} tokens`);
+            console.log(`🎴 Draft pool length:`, gameState.draftPool.length);
+            console.log(`🎴 Player thisRound before:`, player.thisRound);
 
             if (gameState.draftPool.length === 0) {
                 showNotification('No tokens in draft pool to draw!', 'error');
@@ -2659,8 +2672,9 @@
 
             function drawNextToken() {
                 if (remainingDraws === 0) {
+                    console.log(`🎴 Double Pick: Complete! Drew ${drawnTokens.length} tokens:`, drawnTokens);
+                    console.log(`🎴 Player thisRound after:`, player.thisRound);
                     showNotification(`🎴 ${player.name} drew ${drawnTokens.length} tokens: ${drawnTokens.map(t => t.name).join(', ')}!`, 'success');
-                    console.log(`🎴 ${player.name} drew tokens:`, drawnTokens.map(t => t.name).join(', '));
 
                     removeCardFromHand(player, card);
                     updateDraftPoolUI();
@@ -2668,15 +2682,23 @@
                     return;
                 }
 
+                console.log(`🎴 Double Pick: Showing modal for token ${drawnTokens.length + 1}/${drawCount}`);
                 showTokenSelectionModal(
                     gameState.draftPool,
                     `🎴 Double Pick - Choose Token (${drawnTokens.length + 1}/${drawCount})`,
                     `Select token ${drawnTokens.length + 1} of ${drawCount}:`,
                     (tokenIndex) => {
+                        console.log(`🎴 Double Pick: Selected index ${tokenIndex}`);
                         const token = gameState.draftPool.splice(tokenIndex, 1)[0];
+                        console.log(`🎴 Drew token:`, token);
+
+                        if (!Array.isArray(player.thisRound)) {
+                            player.thisRound = Object.values(player.thisRound || {});
+                        }
                         player.thisRound.push(token);
                         drawnTokens.push(token);
                         remainingDraws--;
+                        console.log(`🎴 Remaining draws: ${remainingDraws}`);
                         drawNextToken();
                     }
                 );
@@ -2768,10 +2790,15 @@
         }
 
         function executeReturnToken(player, card) {
+            console.log(`♻️ Recycle: Starting for ${player.name}`);
             // V5.1.0: Ensure arrays (hand/thisRound might be objects in FourFor4)
             const hand = Array.isArray(player.hand) ? player.hand : Object.values(player.hand || {});
             const thisRound = Array.isArray(player.thisRound) ? player.thisRound : Object.values(player.thisRound || {});
             const playerTokens = [...hand, ...thisRound];
+
+            console.log(`♻️ Player hand:`, player.hand);
+            console.log(`♻️ Player thisRound:`, player.thisRound);
+            console.log(`♻️ Combined playerTokens:`, playerTokens);
 
             if (playerTokens.length === 0) {
                 showNotification('No tokens to return!', 'error');
@@ -2784,7 +2811,9 @@
                 '♻️ Recycle - Choose Token',
                 'Select a token from your hand to return to pool:',
                 (tokenIndex) => {
+                    console.log(`♻️ Recycle: Selected index ${tokenIndex}`);
                     const returnedToken = playerTokens[tokenIndex];
+                    console.log(`♻️ Returning token:`, returnedToken);
 
                     // Ensure hand and thisRound are arrays before using array methods
                     if (!Array.isArray(player.hand)) {
@@ -2795,20 +2824,26 @@
                     }
 
                     // Remove from player's hand/thisRound
-                    const handIndex = player.hand.findIndex(t => t.id === returnedToken.id);
-                    const thisRoundIndex = player.thisRound.findIndex(t => t.id === returnedToken.id);
+                    const handIndex = player.hand.findIndex(t => t && t.id === returnedToken.id);
+                    const thisRoundIndex = player.thisRound.findIndex(t => t && t.id === returnedToken.id);
+
+                    console.log(`♻️ Found in hand at index: ${handIndex}, in thisRound at index: ${thisRoundIndex}`);
 
                     if (handIndex > -1) {
                         player.hand.splice(handIndex, 1);
+                        console.log(`♻️ Removed from hand`);
                     } else if (thisRoundIndex > -1) {
                         player.thisRound.splice(thisRoundIndex, 1);
+                        console.log(`♻️ Removed from thisRound`);
+                    } else {
+                        console.error(`♻️ ERROR: Could not find token in hand or thisRound!`);
                     }
 
                     // Return to draft pool
                     gameState.draftPool.push(returnedToken);
+                    console.log(`♻️ Added to draft pool. Draft pool now has ${gameState.draftPool.length} tokens`);
 
                     showNotification(`♻️ ${player.name} returned ${returnedToken.name} to pool`, 'success');
-                    console.log(`♻️ ${player.name} returned token:`, returnedToken.name);
 
                     removeCardFromHand(player, card);
                     updateDraftPoolUI();
