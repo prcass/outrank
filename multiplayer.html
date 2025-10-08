@@ -2864,46 +2864,115 @@
         }
 
         function executeForceDiscard(player, card) {
+            console.log(`💣 Sabotage: Starting for ${player.name}`);
+
             // Get all other players with tokens
             const eligibleTargets = gameState.players.filter((p, idx) => {
-                const tokens = [...(p.hand || []), ...(p.thisRound || [])];
+                const hand = Array.isArray(p.hand) ? p.hand : Object.values(p.hand || {});
+                const thisRound = Array.isArray(p.thisRound) ? p.thisRound : Object.values(p.thisRound || {});
+                const tokens = [...hand, ...thisRound];
                 return idx !== gameState.currentPlayer && tokens.length > 0;
             });
+
+            console.log(`💣 Eligible targets:`, eligibleTargets.map(p => p.name));
 
             if (eligibleTargets.length === 0) {
                 showNotification('No opponents with tokens to target!', 'error');
                 return;
             }
 
-            // For now, target random opponent (can be enhanced with player selection UI)
-            const targetPlayer = eligibleTargets[Math.floor(Math.random() * eligibleTargets.length)];
-            const targetTokens = [...(targetPlayer.hand || []), ...(targetPlayer.thisRound || [])];
+            // V5.1.6: Show player selection modal
+            const playerOptions = eligibleTargets.map((p, idx) => {
+                const hand = Array.isArray(p.hand) ? p.hand : Object.values(p.hand || {});
+                const thisRound = Array.isArray(p.thisRound) ? p.thisRound : Object.values(p.thisRound || {});
+                const tokenCount = hand.length + thisRound.length;
+                return {
+                    name: `${p.name} (${tokenCount} tokens)`,
+                    player: p,
+                    originalIndex: gameState.players.indexOf(p)
+                };
+            });
 
-            // Discard up to 2 random tokens
-            const discardCount = Math.min(2, targetTokens.length);
-            const discardedTokens = [];
+            // Create mock tokens for player selection (using player names as tokens)
+            const playerTokens = playerOptions.map((opt, idx) => ({
+                id: `player_${idx}`,
+                name: opt.name,
+                player: opt.player,
+                originalIndex: opt.originalIndex
+            }));
 
-            for (let i = 0; i < discardCount; i++) {
-                const randomIndex = Math.floor(Math.random() * targetTokens.length);
-                const discardedToken = targetTokens.splice(randomIndex, 1)[0];
+            console.log(`💣 Showing player selection modal`);
+            showTokenSelectionModal(
+                playerTokens,
+                '💣 Sabotage - Choose Target',
+                'Select a player to sabotage:',
+                (playerIndex) => {
+                    const targetPlayer = playerOptions[playerIndex].player;
+                    console.log(`💣 Selected target: ${targetPlayer.name}`);
 
-                // Remove from player's hand or thisRound
-                const handIndex = targetPlayer.hand.findIndex(t => t.id === discardedToken.id);
-                const thisRoundIndex = targetPlayer.thisRound.findIndex(t => t.id === discardedToken.id);
+                    // Ensure arrays
+                    const hand = Array.isArray(targetPlayer.hand) ? targetPlayer.hand : Object.values(targetPlayer.hand || {});
+                    const thisRound = Array.isArray(targetPlayer.thisRound) ? targetPlayer.thisRound : Object.values(targetPlayer.thisRound || {});
+                    const targetTokens = [...hand, ...thisRound];
 
-                if (handIndex > -1) {
-                    targetPlayer.hand.splice(handIndex, 1);
-                } else if (thisRoundIndex > -1) {
-                    targetPlayer.thisRound.splice(thisRoundIndex, 1);
+                    console.log(`💣 Target has ${targetTokens.length} tokens:`, targetTokens);
+
+                    const discardCount = Math.min(2, targetTokens.length);
+                    const discardedTokens = [];
+
+                    // V5.1.6: Let target choose which tokens to discard
+                    function chooseNextDiscard() {
+                        if (discardedTokens.length >= discardCount) {
+                            console.log(`💣 Sabotage complete! ${targetPlayer.name} discarded:`, discardedTokens);
+                            showNotification(`💣 ${player.name} sabotaged ${targetPlayer.name}! Discarded ${discardCount} token(s)`, 'success');
+                            removeCardFromHand(player, card);
+                            updateGameUI();
+                            return;
+                        }
+
+                        // Get current tokens (after previous discards)
+                        const currentHand = Array.isArray(targetPlayer.hand) ? targetPlayer.hand : Object.values(targetPlayer.hand || {});
+                        const currentThisRound = Array.isArray(targetPlayer.thisRound) ? targetPlayer.thisRound : Object.values(targetPlayer.thisRound || {});
+                        const currentTokens = [...currentHand, ...currentThisRound];
+
+                        console.log(`💣 ${targetPlayer.name} choosing discard ${discardedTokens.length + 1}/${discardCount}`);
+                        showTokenSelectionModal(
+                            currentTokens,
+                            `💣 ${targetPlayer.name} - Discard Token (${discardedTokens.length + 1}/${discardCount})`,
+                            `${player.name} sabotaged you! Choose token ${discardedTokens.length + 1} to discard:`,
+                            (tokenIndex) => {
+                                const discardedToken = currentTokens[tokenIndex];
+                                console.log(`💣 ${targetPlayer.name} discarding:`, discardedToken);
+
+                                // Ensure arrays before removal
+                                if (!Array.isArray(targetPlayer.hand)) {
+                                    targetPlayer.hand = Object.values(targetPlayer.hand || {});
+                                }
+                                if (!Array.isArray(targetPlayer.thisRound)) {
+                                    targetPlayer.thisRound = Object.values(targetPlayer.thisRound || {});
+                                }
+
+                                // Remove from player's hand or thisRound
+                                const handIndex = targetPlayer.hand.findIndex(t => t && t.id === discardedToken.id);
+                                const thisRoundIndex = targetPlayer.thisRound.findIndex(t => t && t.id === discardedToken.id);
+
+                                if (handIndex > -1) {
+                                    targetPlayer.hand.splice(handIndex, 1);
+                                    console.log(`💣 Removed from hand`);
+                                } else if (thisRoundIndex > -1) {
+                                    targetPlayer.thisRound.splice(thisRoundIndex, 1);
+                                    console.log(`💣 Removed from thisRound`);
+                                }
+
+                                discardedTokens.push(discardedToken);
+                                chooseNextDiscard();
+                            }
+                        );
+                    }
+
+                    chooseNextDiscard();
                 }
-
-                discardedTokens.push(discardedToken);
-            }
-
-            showNotification(`💣 ${player.name} sabotaged ${targetPlayer.name}! Discarded ${discardCount} token(s)`, 'success');
-            console.log(`💣 ${player.name} forced ${targetPlayer.name} to discard:`, discardedTokens.map(t => t.name).join(', '));
-
-            removeCardFromHand(player, card);
+            );
         }
 
         function startNewRound() {
