@@ -2717,6 +2717,10 @@
                         (poolTokenIndex) => {
                             const poolToken = gameState.draftPool[poolTokenIndex];
 
+                            console.log(`🔄 Trade: Player selected token ${playerToken.name}, pool token ${poolToken.name}`);
+                            console.log(`🔄 Player hand before:`, player.hand);
+                            console.log(`🔄 Player thisRound before:`, player.thisRound);
+
                             // Ensure hand and thisRound are arrays before using array methods
                             if (!Array.isArray(player.hand)) {
                                 player.hand = Object.values(player.hand || {});
@@ -2726,23 +2730,33 @@
                             }
 
                             // Remove from player's hand/thisRound
-                            const handIndex = player.hand.findIndex(t => t.id === playerToken.id);
-                            const thisRoundIndex = player.thisRound.findIndex(t => t.id === playerToken.id);
+                            const handIndex = player.hand.findIndex(t => t && t.id === playerToken.id);
+                            const thisRoundIndex = player.thisRound.findIndex(t => t && t.id === playerToken.id);
+
+                            console.log(`🔄 Found in hand at index: ${handIndex}, in thisRound at index: ${thisRoundIndex}`);
 
                             if (handIndex > -1) {
                                 player.hand.splice(handIndex, 1);
+                                console.log(`🔄 Removed from hand`);
                             } else if (thisRoundIndex > -1) {
                                 player.thisRound.splice(thisRoundIndex, 1);
+                                console.log(`🔄 Removed from thisRound`);
+                            } else {
+                                console.error(`🔄 ERROR: Could not find token ${playerToken.name} in player's hand or thisRound!`);
                             }
 
                             // Add pool token to player's thisRound
                             player.thisRound.push(poolToken);
+                            console.log(`🔄 Added ${poolToken.name} to player's thisRound`);
 
                             // Replace pool token with player's token
                             gameState.draftPool[poolTokenIndex] = playerToken;
+                            console.log(`🔄 Put ${playerToken.name} into draft pool at index ${poolTokenIndex}`);
+
+                            console.log(`🔄 Player hand after:`, player.hand);
+                            console.log(`🔄 Player thisRound after:`, player.thisRound);
 
                             showNotification(`🔄 Swapped ${playerToken.name} for ${poolToken.name}!`, 'success');
-                            console.log(`🔄 ${player.name} swapped ${playerToken.name} ↔️ ${poolToken.name}`);
 
                             removeCardFromHand(player, card);
                             updateDraftPoolUI();
