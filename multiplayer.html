@@ -4262,7 +4262,12 @@
             // Filter to only tags with 2+ tokens
             const validSets = Object.entries(tagGroups).filter(([tag, tokens]) => tokens.length >= 2);
 
-            if (validSets.length === 0) {
+            // V5.1.9: Check if player has wildcard - allows ANY token combination
+            const hasWildcard = player.activeEffects && player.activeEffects.some(e =>
+                e.effect === 'wildcard' && e.usesRemaining > 0
+            );
+
+            if (validSets.length === 0 && !hasWildcard) {
                 showNotification('No sets available to cash out!', 'warning');
                 return;
             }
@@ -4270,8 +4275,54 @@
             // Build modal content
             const modal = document.getElementById('cashOutModal');
             const content = document.getElementById('cashOutContent');
-            content.innerHTML = '<p style="margin-bottom: 15px; font-weight: bold;">💰 Cash Out Rules: 2 tokens = 2pts | 3 tokens = 5pts | 4 tokens = 8pts (max)</p><p style="margin-bottom: 15px;">Click to select 2, 3, or 4 tokens sharing the same tag:</p>';
+            const wildcardNote = hasWildcard ? '<p style="color: #f59e0b; font-weight: bold; margin-bottom: 10px;">🌈 Wildcard Active! You can select ANY tokens (mismatched tags allowed)</p>' : '';
+            content.innerHTML = `<p style="margin-bottom: 15px; font-weight: bold;">💰 Cash Out Rules: 2 tokens = 2pts | 3 tokens = 5pts | 4 tokens = 8pts (max)</p>${wildcardNote}<p style="margin-bottom: 15px;">Click to select 2, 3, or 4 tokens${hasWildcard ? '' : ' sharing the same tag'}:</p>`;
 
+            // V5.1.9: If player has wildcard, show ALL tokens in one section
+            if (hasWildcard && allTokens.length >= 2) {
+                const setDiv = document.createElement('div');
+                setDiv.className = 'cash-out-set';
+                setDiv.style.cssText = 'background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1)); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #f59e0b;';
+
+                const setHeader = document.createElement('div');
+                setHeader.style.cssText = 'font-weight: bold; margin-bottom: 10px; color: #f59e0b;';
+                const maxSelect = Math.min(allTokens.length, 4);
+                const selectRange = allTokens.length === 2 ? '2' : `2-${maxSelect}`;
+                setHeader.textContent = `🌈 All Tokens (Wildcard) — You have ${allTokens.length} token${allTokens.length > 1 ? 's' : ''} (select ${selectRange})`;
+                setDiv.appendChild(setHeader);
+
+                const tokenList = document.createElement('div');
+                tokenList.style.cssText = 'display: flex; gap: 8px; flex-wrap: wrap;';
+
+                allTokens.forEach(token => {
+                    const tokenBtn = document.createElement('button');
+                    tokenBtn.className = 'cash-token-btn';
+                    tokenBtn.textContent = `${token.name} [${token.tags.join(', ')}]`;
+                    tokenBtn.style.cssText = 'padding: 8px 12px; border: 2px solid #f59e0b; background: white; border-radius: 8px; cursor: pointer; font-size: 13px;';
+                    tokenBtn.dataset.tokenId = token.id;
+                    tokenBtn.dataset.tag = 'wildcard'; // Special tag for wildcard selection
+
+                    tokenBtn.onclick = function() {
+                        this.classList.toggle('selected');
+                        if (this.classList.contains('selected')) {
+                            this.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
+                            this.style.color = 'white';
+                            this.style.borderColor = '#f59e0b';
+                        } else {
+                            this.style.background = 'white';
+                            this.style.color = '#333';
+                            this.style.borderColor = '#f59e0b';
+                        }
+                    };
+
+                    tokenList.appendChild(tokenBtn);
+                });
+
+                setDiv.appendChild(tokenList);
+                content.appendChild(setDiv);
+            }
+
+            // Show regular tag-matched sets
             validSets.forEach(([tag, tokens]) => {
                 const setDiv = document.createElement('div');
                 setDiv.className = 'cash-out-set';
