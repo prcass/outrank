@@ -140,12 +140,12 @@ The round ends when all players are locked out (wrong guess) or have passed.
 
 ### Tag Matching System
 
-Each token has 4 tags (e.g., A1, B3, C2, D4):
+Each token has 2-4 tags (e.g., A1, B3, C2, D4):
 - **Letter (A-D)**: Category/family (shown by hue color)
 - **Number (1-5)**: Rarity/strength (shown by lightness)
 
 Tags are used for:
-- Set matching when cashing in
+- Set matching when cashing in (match any common tag across tokens)
 - Bonus card effects (e.g., 🎴 Tag Trader swap requirements)
 
 ### Category Persistence
