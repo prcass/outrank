@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Four4More V5.1.16 - Multiplayer + Bonus Cards (Draft Pool Persistence)</title>
+    <title>Four4More V5.1.17 - Multiplayer + Bonus Cards (Draft Pool Persistence)</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -759,7 +759,7 @@
         <!-- MODE SELECTION SCREEN -->
         <div id="modeSelectionScreen" class="screen active">
             <div class="header">
-                <h1>Four4More V5.1.16</h1>
+                <h1>Four4More V5.1.17</h1>
                 <p class="subtitle">Multiplayer</p>
             </div>
 
@@ -813,7 +813,7 @@
         <!-- ONLINE SETUP SCREEN -->
         <div id="onlineSetupScreen" class="screen">
             <div class="header">
-                <h1>Four4More V5.1.16 - Online</h1>
+                <h1>Four4More V5.1.17 - Online</h1>
                 <p class="subtitle">Connect with Friends</p>
             </div>
 
@@ -1208,8 +1208,21 @@
             currentPlayer: 0,
             firstGuesser: 0,
             players: [],
-            centerToken: null,
-            draftPool: [],
+            // V5.1.17: Per-category draft pools and center tokens (persist across rounds)
+            centerToken: null, // DEPRECATED - use categoryCenterTokens instead
+            draftPool: [], // DEPRECATED - use categoryDraftPools instead
+            categoryCenterTokens: {
+                movies: null,
+                countries: null,
+                companies: null,
+                sports: null
+            },
+            categoryDraftPools: {
+                movies: [],
+                countries: [],
+                companies: [],
+                sports: []
+            },
             categoryPools: {
                 movies: [],
                 countries: [],
@@ -1230,6 +1243,34 @@
             bonusCardPool: [],        // 3 cards visible to all players
             bonusCardsInPlay: []      // All cards currently held by players
         };
+
+        // V5.1.17: Helper functions for category-specific draft pools/center tokens
+        // These maintain backwards compatibility while allowing per-category persistence
+        function getCurrentCenterToken() {
+            const category = gameState.selectedCategory || gameState.previousCategory;
+            return category ? gameState.categoryCenterTokens[category] : gameState.centerToken;
+        }
+
+        function setCurrentCenterToken(token) {
+            const category = gameState.selectedCategory || gameState.previousCategory;
+            if (category) {
+                gameState.categoryCenterTokens[category] = token;
+            }
+            gameState.centerToken = token; // Keep legacy field updated for compatibility
+        }
+
+        function getCurrentDraftPool() {
+            const category = gameState.selectedCategory || gameState.previousCategory;
+            return category ? gameState.categoryDraftPools[category] : gameState.draftPool;
+        }
+
+        function setCurrentDraftPool(tokens) {
+            const category = gameState.selectedCategory || gameState.previousCategory;
+            if (category) {
+                gameState.categoryDraftPools[category] = tokens;
+            }
+            gameState.draftPool = tokens; // Keep legacy field updated for compatibility
+        }
 
         // ===== TOKEN DATABASE =====
         // Token data loaded from v4_token_datasets.js
@@ -3378,10 +3419,21 @@
                                     </div>
                                     <div style="font-size: 16px; color: #333; margin-bottom: 5px;">${challenge.name}</div>
                                     <div style="font-size: 12px; color: ${canSelect ? '#666' : '#999'};">
-                                        ${wasPreviousCategory ?
-                                            `🔄 Same as last round<br>${available} tokens available` :
-                                            canSelect ? `${available} tokens available` : '⚠️ Not enough tokens'
-                                        }
+                                        ${(() => {
+                                            // V5.1.17: Check THIS category's persistent tokens (not just previous round)
+                                            const centerToken = gameState.categoryCenterTokens[challenge.category];
+                                            const draftCount = gameState.categoryDraftPools[challenge.category]?.length || 0;
+                                            const hasPersistentTokens = centerToken || draftCount > 0;
+
+                                            if (hasPersistentTokens && centerToken) {
+                                                // Show center token name and draft pool count
+                                                return `🔄 Has persistent tokens<br>Center: <strong>${centerToken.name}</strong><br>${draftCount} in draft pool (${available} total available)`;
+                                            } else if (hasPersistentTokens) {
+                                                return `🔄 Has persistent tokens<br>${draftCount} in draft pool (${available} total available)`;
+                                            } else {
+                                                return canSelect ? `${available} tokens available` : '⚠️ Not enough tokens';
+                                            }
+                                        })()}
                                     </div>
                                 </div>
                             `;
@@ -3500,49 +3552,65 @@
             // Close modal
             document.getElementById('categoryModal').classList.remove('active');
 
-            // Handle token drawing based on category persistence
+            // V5.1.17: Handle token drawing with per-category persistence
             let carryoverMessage = '';
+            const category = challenge.category;
 
-            if (sameCategoryAsPrevious && gameState.draftPool.length > 0) {
-                // Same category - keep existing tokens and only draw what's needed
-                const existingTokenCount = 1 + gameState.draftPool.length; // 1 center + draft pool
+            // Check existing tokens for THIS category (any category can have persistent tokens)
+            const existingCenter = gameState.categoryCenterTokens[category];
+            const existingDraft = gameState.categoryDraftPools[category];
+            const existingTokenCount = (existingCenter ? 1 : 0) + existingDraft.length;
+
+            if (existingTokenCount > 0) {
+                // This category has persistent tokens: top up to 13
                 const tokensNeeded = 13 - existingTokenCount;
 
                 if (tokensNeeded > 0) {
-                    const newTokens = drawTokens(tokensNeeded, challenge.category);
+                    const newTokens = drawTokens(tokensNeeded, category);
 
-                    if (newTokens.length < tokensNeeded && gameState.categoryPools[challenge.category].length === 0) {
-                        showNotification(`Only ${existingTokenCount} tokens available (${existingTokenCount - 1} carried over). Continuing with reduced pool.`, 'warning');
+                    if (newTokens.length < tokensNeeded && gameState.categoryPools[category].length === 0) {
+                        showNotification(`Only ${existingTokenCount} tokens available (${existingTokenCount} carried over). Continuing with reduced pool.`, 'warning');
+                    }
+
+                    // If no center token, first new token becomes center
+                    if (!existingCenter && newTokens.length > 0) {
+                        gameState.categoryCenterTokens[category] = newTokens.shift();
                     }
 
                     // Add new tokens to draft pool
-                    gameState.draftPool.push(...newTokens);
+                    gameState.categoryDraftPools[category].push(...newTokens);
 
                     carryoverMessage = `🔄 ${existingTokenCount} tokens carried over + ${newTokens.length} new tokens drawn`;
-                    showNotification(`Round ${gameState.round} started! Category: ${challenge.category.toUpperCase()} - ${challenge.name}\n${existingTokenCount} tokens carried over from previous round, ${newTokens.length} new tokens added.`, 'success');
+                    showNotification(`Round ${gameState.round} started! Category: ${category.toUpperCase()} - ${challenge.name}\n${existingTokenCount} tokens carried over, ${newTokens.length} new tokens added.`, 'success');
                 } else {
-                    // We already have enough tokens from previous round
-                    carryoverMessage = `🔄 All ${existingTokenCount} tokens carried over from previous round`;
-                    showNotification(`Round ${gameState.round} started! Category: ${challenge.category.toUpperCase()} - ${challenge.name}\nAll ${existingTokenCount} tokens carried over from previous round.`, 'success');
+                    // We already have enough tokens from previous time this category was played
+                    carryoverMessage = `🔄 All ${existingTokenCount} tokens carried over`;
+                    showNotification(`Round ${gameState.round} started! Category: ${category.toUpperCase()} - ${challenge.name}\nAll ${existingTokenCount} tokens carried over.`, 'success');
                 }
 
-                // Center token stays the same, draft pool was updated above
+                // Update legacy fields for compatibility
+                gameState.centerToken = gameState.categoryCenterTokens[category];
+                gameState.draftPool = gameState.categoryDraftPools[category];
             } else {
-                // Different category or first time - draw fresh 13 tokens
-                const tokens = drawTokens(13, challenge.category);
+                // First time playing this category: draw 13 fresh tokens
+                const tokens = drawTokens(13, category);
 
                 if (tokens.length < 13) {
                     showNotification(`Only ${tokens.length} tokens available in this category! Continuing with reduced pool.`, 'warning');
                 }
 
                 // 1 goes to center
-                gameState.centerToken = tokens[0];
+                gameState.categoryCenterTokens[category] = tokens[0];
 
                 // 12 go to draft pool (or less if not enough tokens)
+                gameState.categoryDraftPools[category] = tokens.slice(1);
+
+                // Update legacy fields for compatibility
+                gameState.centerToken = tokens[0];
                 gameState.draftPool = tokens.slice(1);
 
-                carryoverMessage = ''; // No carryover for new category
-                showNotification(`Round ${gameState.round} started! Category: ${challenge.category.toUpperCase()} - ${challenge.name}`, 'success');
+                carryoverMessage = ''; // No carryover for first time
+                showNotification(`Round ${gameState.round} started! Category: ${category.toUpperCase()} - ${challenge.name}`, 'success');
             }
 
             // Update carryover info display
@@ -3622,20 +3690,20 @@
         }
 
         function getAvailableTokensForCategory(category) {
-            // V5.1.16: Track tokens not yet dealt to draft pool + tokens persisting in draft pool
-            // Draft pool tokens remain when category is replayed and get topped up to 12-13
+            // V5.1.17: Track tokens not yet dealt + tokens persisting in category-specific draft pool + center token
+            // Each category has its own persistent draft pool that remains when replayed
 
             // Count tokens still in category pool (not yet drawn)
             const poolSize = gameState.categoryPools[category]?.length || 0;
 
-            // Count tokens in draft pool from this category (persist across rounds)
-            let draftPoolSize = 0;
-            if (Array.isArray(gameState.draftPool)) {
-                draftPoolSize = gameState.draftPool.filter(t => t && t.category === category).length;
-            }
+            // Count tokens in THIS category's draft pool (persist across rounds)
+            const draftPoolSize = gameState.categoryDraftPools[category]?.length || 0;
 
-            const available = poolSize + draftPoolSize;
-            console.log(`📊 Category ${category}: ${poolSize} in pool + ${draftPoolSize} in draft = ${available} available`);
+            // Count center token for THIS category
+            const centerSize = gameState.categoryCenterTokens[category] ? 1 : 0;
+
+            const available = poolSize + draftPoolSize + centerSize;
+            console.log(`📊 Category ${category}: ${poolSize} in pool + ${draftPoolSize} in draft + ${centerSize} center = ${available} available`);
             return Math.max(0, available);
         }
 
@@ -3656,19 +3724,53 @@
             // Close modal
             document.getElementById('categoryModal').classList.remove('active');
 
-            // Draw 13 tokens from selected category
-            const tokens = drawTokens(13, category);
+            // V5.1.17: Check existing tokens for THIS category (not just previous round)
+            const existingCenter = gameState.categoryCenterTokens[category];
+            const existingDraft = gameState.categoryDraftPools[category];
+            const existingTokens = (existingCenter ? 1 : 0) + existingDraft.length;
 
-            if (tokens.length < 13) {
-                showNotification('Not enough tokens in this category!', 'error');
-                return;
+            if (existingTokens > 0) {
+                // This category has persistent tokens: top up to 13
+                const tokensNeeded = 13 - existingTokens;
+
+                console.log(`🔄 Category ${category} has ${existingTokens} persistent tokens, drawing ${tokensNeeded} more to reach 13`);
+
+                if (tokensNeeded > 0) {
+                    const newTokens = drawTokens(tokensNeeded, category);
+
+                    // If no center token, first new token becomes center
+                    if (!existingCenter && newTokens.length > 0) {
+                        gameState.categoryCenterTokens[category] = newTokens.shift();
+                    }
+
+                    // Rest go to draft pool
+                    gameState.categoryDraftPools[category].push(...newTokens);
+                }
+
+                // Update legacy fields for compatibility
+                gameState.centerToken = gameState.categoryCenterTokens[category];
+                gameState.draftPool = gameState.categoryDraftPools[category];
+            } else {
+                // First time playing this category: draw 13 fresh
+                console.log(`🆕 First time playing ${category}: drawing 13 fresh tokens`);
+
+                const tokens = drawTokens(13, category);
+
+                if (tokens.length < 13) {
+                    showNotification('Not enough tokens in this category!', 'error');
+                    return;
+                }
+
+                // 1 goes to center
+                gameState.categoryCenterTokens[category] = tokens[0];
+
+                // 12 go to draft pool
+                gameState.categoryDraftPools[category] = tokens.slice(1);
+
+                // Update legacy fields for compatibility
+                gameState.centerToken = tokens[0];
+                gameState.draftPool = tokens.slice(1);
             }
-
-            // 1 goes to center
-            gameState.centerToken = tokens[0];
-
-            // 12 go to draft pool
-            gameState.draftPool = tokens.slice(1);
 
             // Reset round state
             gameState.passedPlayers = new Set();
@@ -5024,8 +5126,9 @@
             gameState.selectedCategory = null;
             // V4.87: Keep previousCategory - it's used to track carryover between rounds
             // gameState.previousCategory stays for carryover tracking
-            gameState.centerToken = null;
-            gameState.draftPool = [];
+            // V5.1.17: DON'T clear centerToken and draftPool here - they persist until new category selected
+            // gameState.centerToken = null;
+            // gameState.draftPool = [];
             gameState.passedPlayers = new Set(); // Clear passed players for new round
             gameState.lockedOutPlayers = new Set(); // V4.97: Clear locked-out players for new round
             gameState.lastPlayerToAct = null; // V4.97: Reset last player to act

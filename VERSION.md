@@ -45,7 +45,7 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.1.17 (In Progress)
+## Current Development: v5.1.18 (In Progress)
 **Status**: Active Development
 **Branch**: v5.1
 
@@ -53,6 +53,33 @@ git reset --hard HEAD~1
 - Full online multiplayer testing with all cards
 - Additional balance tweaks
 - Bug fixes and polish
+
+---
+
+## v5.1.17 - Per-Category Draft Pool Persistence (2025-10-11)
+**Tag**: `v5.1.17`
+**Status**: Stable
+
+### Major Feature:
+✅ **Draft Pools Now Persist Per-Category Across Entire Game**
+- Each category (movies, countries, companies, sports) has its own persistent draft pool
+- Tokens remain available when category is replayed, even after multiple other rounds
+- Example: Movies in R1 → Countries in R2 → Sports in R3 → Movies in R4 shows same tokens from R1
+- Challenge card selection modal shows center token name and draft pool count for categories with persistent tokens
+
+### Technical Implementation:
+- Added `categoryCenterTokens` object with per-category center tokens (line 1214)
+- Added `categoryDraftPools` object with per-category draft pools (line 1220)
+- Updated `confirmCategorySelection()` to check category-specific pools (line 3697)
+- Updated `selectChallengeCard()` to use per-category persistence (line 3552)
+- Updated `getAvailableTokensForCategory()` to track category-specific tokens (line 3689)
+- Challenge modal displays: "Center: **Iron Man 3**" with draft pool count
+- Console logs: `📊 Category movies: 27 in pool + 11 in draft + 1 center = 39 available`
+
+### Backwards Compatibility:
+- Legacy `centerToken` and `draftPool` fields maintained for compatibility
+- Existing render functions work unchanged (renderCenterToken, renderDraftPool)
+- All bonus card interactions remain functional
 
 ---
 
