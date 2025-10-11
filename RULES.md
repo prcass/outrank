@@ -230,10 +230,10 @@ After 5 rounds, add bonus points:
 
 ### Set Collection Bonuses (Play on Your Turn)
 Cash in these cards when you have the matching pattern in your hand:
-- 🅰️ **A-Straight**: +8 pts if you hold 4 'A' tokens in sequence (A1,A2,A3,A4 or A2,A3,A4,A5)
-- 🅱️ **B-Straight**: +8 pts if you hold 4 'B' tokens in sequence (B1,B2,B3,B4 or B2,B3,B4,B5)
-- 🅲️ **C-Straight**: +8 pts if you hold 4 'C' tokens in sequence (C1,C2,C3,C4 or C2,C3,C4,C5)
-- 🅳️ **D-Straight**: +8 pts if you hold 4 'D' tokens in sequence (D1,D2,D3,D4 or D2,D3,D4,D5)
+- 🅰 **A-Straight**: +8 pts if you hold 4 'A' tokens in sequence (A1,A2,A3,A4 or A2,A3,A4,A5)
+- 🅱 **B-Straight**: +8 pts if you hold 4 'B' tokens in sequence (B1,B2,B3,B4 or B2,B3,B4,B5)
+- 🅲 **C-Straight**: +8 pts if you hold 4 'C' tokens in sequence (C1,C2,C3,C4 or C2,C3,C4,C5)
+- 🅳 **D-Straight**: +8 pts if you hold 4 'D' tokens in sequence (D1,D2,D3,D4 or D2,D3,D4,D5)
 - 🔢 **Any Straight**: +6 pts if you hold any 4 tokens in same-letter sequence
 - 🍀 **Four Leaf Clover**: +12 pts if you hold 4 different letters all same number (A3,B3,C3,D3)
 
