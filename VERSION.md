@@ -45,7 +45,7 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.1.16 (In Progress)
+## Current Development: v5.1.17 (In Progress)
 **Status**: Active Development
 **Branch**: v5.1
 
@@ -53,6 +53,27 @@ git reset --hard HEAD~1
 - Full online multiplayer testing with all cards
 - Additional balance tweaks
 - Bug fixes and polish
+
+---
+
+## v5.1.16 - Token Counter: Draft Pool Persistence (2025-10-11)
+**Tag**: `v5.1.16`
+**Status**: Stable
+
+### Bug Fixes:
+✅ **Token Counter Now Tracks Draft Pool Persistence**
+- Challenge card selection now correctly shows tokens available from:
+  - Category pool (tokens not yet drawn)
+  - Draft pool (tokens persisting from last time category was played)
+- Simplified logic: `poolSize + draftPoolSize` instead of tracking all player hands
+- Draft pool tokens remain when category is replayed, topped up to 12-13
+
+### Technical Details:
+- Complete rewrite of `getAvailableTokensForCategory()` (line 3624)
+- Removed complex player hand/thisRound tracking
+- Now focuses on pool management: `categoryPools[category].length + draftPool.filter()`
+- Console logs `📊 Category X: Y in pool + Z in draft = W available`
+- Matches game mechanics: draft pool persists across rounds for same category
 
 ---
 
