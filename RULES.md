@@ -83,12 +83,12 @@ On your turn, you can **play bonus cards** as actions BEFORE choosing your main 
 
 **A. Cash In Tokens**
 - Trade 2-4 tokens from your hand with matching tags for points
-- 2 matching tags = 3 pts, 3 matching = 7 pts, 4 matching = 15 pts
+- 2 matching tags = 2 pts, 3 matching = 5 pts, 4 matching = 10 pts
 - Use multiplier cards BEFORE cashing in (2x or 3x points)
 - After cashing in, you MUST take a bonus card from the pool
 - Choose one of the 3 visible bonus cards
 - Pool refills to 3 cards from the deck
-- Your turn ends (cannot guess this turn)
+- Your turn ends immediately (you cannot guess this turn)
 
 **B. Make a Guess**
 1. Select a token from the 12-token draft pool (only names and tags visible, NO values)
@@ -174,9 +174,9 @@ Tags are used for:
 At the start of your turn (before guessing), you can cash in tokens from your hand:
 
 **Set Sizes & Points**:
-- **2 matching tags**: 3 points
-- **3 matching tags**: 7 points
-- **4 matching tags**: 15 points
+- **2 matching tags**: 2 points
+- **3 matching tags**: 5 points
+- **4 matching tags**: 10 points
 
 **Multipliers**:
 - Play ✨ Double Down card BEFORE cashing in: 2x points
@@ -188,12 +188,10 @@ At the start of your turn (before guessing), you can cash in tokens from your ha
 
 After 5 rounds, add bonus points:
 
-**End-Game Bonus Cards**:
-- 🏆 **Champion** (5 pts): Most correct guesses
-- 📊 **Statistician** (5 pts): Most tokens cashed in
-- 🎯 **Sharpshooter** (5 pts): Highest guess accuracy %
-- 🎖️ **Veteran** (3 pts): Most rounds participated
-- 💎 **Collector** (3 pts): Most tokens in hand
+**End-Game Bonus Cards** (if you hold them):
+- These bonus cards award points at game end based on YOUR stats (not competitive)
+- If you hold the card, you get the points listed
+- See "End-Game Bonuses" section in Bonus Card Reference for details
 
 **Tokens in Hand**: 1 point per token still held
 
@@ -223,11 +221,12 @@ After 5 rounds, add bonus points:
 - 🛡️ **Insurance**: Next wrong guess doesn't lock you out (one-time use)
 
 ### End-Game Bonuses (Points at Game End)
-- 🏆 **Champion**: +5 pts if most correct guesses
-- 📊 **Statistician**: +5 pts if most tokens cashed in
-- 🎯 **Sharpshooter**: +5 pts if highest guess accuracy
-- 🎖️ **Veteran**: +3 pts if most rounds participated
-- 💎 **Collector**: +3 pts if most tokens in hand
+These cards award points based on YOUR individual stats (not competitive with other players):
+- 🏆 **Champion**: +5 pts based on your correct guesses
+- 📊 **Statistician**: +5 pts based on your tokens cashed in
+- 🎯 **Sharpshooter**: +5 pts based on your guess accuracy
+- 🎖️ **Veteran**: +3 pts based on your rounds participated
+- 💎 **Collector**: +3 pts based on your tokens in hand
 
 ---
 
@@ -304,9 +303,9 @@ If players are tied at game end:
 |--------|--------|
 | Correct Guess | 1 pt (+1 w/ Genius) |
 | Last Standing | 1 pt |
-| 2-token set | 3 pts (6 w/ Double, 9 w/ Triple) |
-| 3-token set | 7 pts (14 w/ Double, 21 w/ Triple) |
-| 4-token set | 15 pts (30 w/ Double, 45 w/ Triple) |
+| 2-token set | 2 pts (4 w/ Double, 6 w/ Triple) |
+| 3-token set | 5 pts (10 w/ Double, 15 w/ Triple) |
+| 4-token set | 10 pts (20 w/ Double, 30 w/ Triple) |
 | Token in hand (end) | 1 pt |
 
 ### Token Set Matching
