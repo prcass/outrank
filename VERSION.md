@@ -45,7 +45,7 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.1.15 (In Progress)
+## Current Development: v5.1.16 (In Progress)
 **Status**: Active Development
 **Branch**: v5.1
 
@@ -53,6 +53,25 @@ git reset --hard HEAD~1
 - Full online multiplayer testing with all cards
 - Additional balance tweaks
 - Bug fixes and polish
+
+---
+
+## v5.1.15 - Fixed Token Availability Counter (2025-10-11)
+**Tag**: `v5.1.15`
+**Status**: Stable
+
+### Bug Fixes:
+✅ **Token Availability Counter Now Works**
+- Challenge card selection screen now shows accurate token counts
+- Tokens drawn from pool now have `.category` property assigned
+- `getAvailableTokensForCategory()` can now properly count tokens in use
+- Previously always showed "40 available" because category wasn't set
+
+### Technical Details:
+- Modified `drawTokens()` function (line 3725)
+- Added `token.category = category` when drawing from pool
+- Tokens in player hands/thisRound arrays now trackable by category
+- Console logs `📊 Category X: Y total - Z in use = W available` now accurate
 
 ---
 

@@ -3720,7 +3720,10 @@
 
             for (let i = 0; i < count && pool.length > 0; i++) {
                 const randomIndex = Math.floor(Math.random() * pool.length);
-                drawn.push(pool.splice(randomIndex, 1)[0]);
+                const token = pool.splice(randomIndex, 1)[0];
+                // V5.1.15: Add category property for token tracking
+                token.category = category;
+                drawn.push(token);
             }
 
             return drawn;
