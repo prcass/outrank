@@ -71,9 +71,26 @@ X in draft pool (Y total available)
 ```
 
 #### 2. Guessing Phase
-On your turn, you can:
+On your turn, you can **play bonus cards** as actions BEFORE choosing your main turn action:
 
-**A. Make a Guess**
+**Playing Bonus Cards** (Optional, before main action):
+- Use any playable cards from your hand
+- Can play multiple bonus cards before your main action
+- Follow each card's effect
+- Cards are discarded after use (unless passive/end-game)
+
+**Then choose ONE main turn action:**
+
+**A. Cash In Tokens**
+- Trade 2-4 tokens from your hand with matching tags for points
+- 2 matching tags = 3 pts, 3 matching = 7 pts, 4 matching = 15 pts
+- Use multiplier cards BEFORE cashing in (2x or 3x points)
+- After cashing in, you MUST take a bonus card from the pool
+- Choose one of the 3 visible bonus cards
+- Pool refills to 3 cards from the deck
+- Your turn ends (cannot guess this turn)
+
+**B. Make a Guess**
 1. Select a token from the 12-token draft pool
 2. View the token's name and tags (but NOT the statistic value)
 3. Choose: **📉 LOWER** or **📈 HIGHER** than center token
@@ -81,25 +98,14 @@ On your turn, you can:
    - Earn 1 point (+1 bonus with 🧠 Genius card)
    - Collect center token to your "This Round" pile
    - Your selected token becomes new center token
-   - Continue your turn
+   - Continue your turn (repeat from bonus card step)
 5. If **WRONG**:
    - You are locked out for the rest of the round
    - Your turn ends
 
-**B. Take Bonus Card**
-- Pick one of the 3 visible bonus cards from the pool
-- Immediate effect cards activate instantly
-- Playable cards go to your hand for later use
-- Pool refills to 3 cards from the deck
-
-**C. Play Bonus Card**
-- Use a card from your hand (if you have playable cards)
-- Follow the card's effect
-- Card is discarded after use (unless passive/end-game)
-
-**D. Pass**
+**C. Pass**
 - End your participation in this round
-- Become the first guesser for the next round
+- Become eligible to be first guesser next round (if first to pass)
 - Cannot make any more actions this round
 
 #### 3. Round End
@@ -249,10 +255,11 @@ After 5 rounds, add bonus points:
 
 ## Special Rules
 
-### First Guesser Rotation
-- Round 1: Random or chosen by group
-- Round 2+: First player to pass previous round
-- Selects the challenge card for the round
+### First Guesser Assignment
+- **Round 1**: Random or chosen by group
+- **Round 2+**: First player who passed in the previous round
+- **If no one passed**: Same player who was first guesser in previous round
+- First guesser selects the challenge card for the round
 
 ### Locked Out Players
 - Cannot make any actions for rest of round
@@ -283,11 +290,13 @@ If players are tied at game end:
 ## Quick Reference Card
 
 ### Your Turn Options
-1. **Guess**: Select draft token → Choose Higher/Lower
-2. **Take Card**: Pick 1 bonus card from pool
-3. **Play Card**: Use a bonus card from hand
-4. **Cash In**: Trade 2-4 matching tokens for points
-5. **Pass**: End round participation, become first guesser
+**Before main action** (optional):
+- **Play Bonus Cards**: Use cards from your hand
+
+**Main action** (choose one):
+1. **Cash In**: Trade 2-4 matching tokens for points → MUST take bonus card
+2. **Guess**: Select draft token → Choose Higher/Lower
+3. **Pass**: End round participation
 
 ### Scoring Quick Reference
 | Action | Points |
@@ -341,7 +350,7 @@ A: No. You only see the name and tags, not the statistic value.
 A: They move to your hand. You can cash them in later or keep for end-game points.
 
 **Q: Can I cash in tokens during the round?**
-A: No, only at the START of your turn, before making any other action.
+A: Yes, cashing in is one of your main turn actions. After cashing in, you MUST take a bonus card, then your turn ends.
 
 **Q: Do multiplier cards stack?**
 A: No. Only one multiplier can be used per cash-in.
@@ -353,7 +362,7 @@ A: Yes, but you can still only make ONE guess per turn.
 A: The game prevents this - you cannot select a challenge card if fewer than 13 tokens are available.
 
 **Q: Does the first guesser have an advantage?**
-A: It rotates each round, and they get to choose the category, but go first (more risk).
+A: They choose the category, but don't necessarily go first. Turn order is separate from first guesser assignment.
 
 **Q: Can I pass and then take an action later that round?**
 A: No. Passing ends your participation for the entire round.
