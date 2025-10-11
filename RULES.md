@@ -23,12 +23,14 @@ Four4More is a competitive trivia guessing game where 2-6 players compete to sco
 Each category has multiple challenge cards that specify which statistic to compare (e.g., "Box Office Gross", "Population", "Annual Revenue").
 
 ### Bonus Cards
-18 special ability cards that provide strategic advantages:
-- **Immediate Points**: Gain 2-5 points instantly
-- **Score Multipliers**: Double or triple your next cash-in
-- **Token Manipulation**: Steal, swap, or return tokens
-- **Passive Effects**: Ongoing bonuses throughout the game
-- **End-Game Bonuses**: Points at game end
+33 special ability cards that provide strategic advantages:
+- **Immediate Points**: Gain 2-5 points instantly (3 cards)
+- **Score Multipliers**: Double or triple your next cash-in (2 cards)
+- **Token Manipulation**: Steal, swap, or return tokens (4 cards)
+- **Passive Effects**: Ongoing bonuses throughout the game (2 cards)
+- **Defensive Cards**: Protect your tokens and counter opponents (4 cards)
+- **Set Collection Bonuses**: Reward specific tag patterns at game end (6 cards)
+- **End-Game Bonuses**: Points based on holdings at game end (5 cards)
 
 ---
 
@@ -40,7 +42,7 @@ Each category has multiple challenge cards that specify which statistic to compa
 4. **Challenge Card Mode**: Cards mode (recommended) or Manual selection
 
 The game automatically:
-- Shuffles bonus cards (15 in deck, 3 visible in pool)
+- Shuffles bonus cards (33 in deck, 3 visible in pool)
 - Prepares token pools for all categories
 - Draws 4 challenge cards (one per category)
 
@@ -219,6 +221,21 @@ After 5 rounds, add bonus points:
 ### Passive Effects (Ongoing)
 - 🧠 **Genius**: +1 point per correct guess (permanent)
 - 🛡️ **Insurance**: Next wrong guess doesn't lock you out (one-time use)
+
+### Defensive Cards (Play on Your Turn)
+- 🔒 **Lockdown**: Prevent all players from using Snatch/Saboteur this round
+- 🛡️ **Guardian**: Block one opponent's card play targeting you (one-time use)
+- 🔐 **Vault**: Your tokens can't be affected by Saboteur for rest of game (passive)
+- 🚫 **Veto**: Cancel one bonus card just played by any player (instant)
+
+### Set Collection Bonuses (Points at Game End)
+These cards reward specific tag patterns in your hand at game end:
+- 🅰️ **A-Team**: +8 pts if you hold 4+ tokens with 'A' letter tag
+- 🅱️ **B-Squad**: +8 pts if you hold 4+ tokens with 'B' letter tag
+- 🅲 **C-Club**: +8 pts if you hold 4+ tokens with 'C' letter tag
+- 🅳 **D-Division**: +8 pts if you hold 4+ tokens with 'D' letter tag
+- 🔢 **Straight Flush**: +12 pts if you hold tokens with same letter in sequence (e.g., A1, A2, A3, A4)
+- 🌈 **Rainbow**: +10 pts if you hold 4 tokens with all different letters (A, B, C, D)
 
 ### End-Game Bonuses (Points at Game End)
 These cards award points based on what you have at game end:
