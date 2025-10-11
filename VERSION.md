@@ -45,7 +45,7 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.1.14 (In Progress)
+## Current Development: v5.1.15 (In Progress)
 **Status**: Active Development
 **Branch**: v5.1
 
@@ -53,6 +53,33 @@ git reset --hard HEAD~1
 - Full online multiplayer testing with all cards
 - Additional balance tweaks
 - Bug fixes and polish
+
+---
+
+## v5.1.14 - Saboteur Card & Guess Button UI (2025-10-11)
+**Tag**: `v5.1.14`
+**Status**: Stable
+
+### New Features:
+✅ **Redesigned Recycle Card → Saboteur**
+- Renamed: `♻️ Recycle` → `♻️ Saboteur`
+- New effect: "Return 1 token from any opponent's hand to draft pool"
+- Old effect was useless (returning your own tokens)
+- Two-step selection: Choose opponent → Choose their token to return
+- Uses new `showPlayerSelectionModal()` for opponent selection
+- Implementation: `executeReturnOpponentToken()` (lines 2933-3003)
+
+### UI Improvements:
+✅ **Guess Button Layout Redesign**
+- Buttons positioned at vertical center of challenge card (not below)
+- Token name displays above each button (1.3em, bold)
+- Larger buttons: 18px/28px padding, 1.2em font size
+- Auto-hide after selection for cleaner UI
+- Left: LOWER (red) | Right: HIGHER (green)
+
+### User Request:
+- "Let's redesign [Recycle] but make it so that you can return any token from any of your opponent's hands to the draft pool"
+- "The buttons should go up in the Challenge card window... make the buttons bigger... name of token above button... disappear once choice is made"
 
 ---
 
