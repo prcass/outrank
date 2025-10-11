@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Four4More V5.1.18 - Multiplayer + Bonus Cards (Draft Pool Persistence)</title>
+    <title>Four4More V5.1.19 - Multiplayer + Bonus Cards (Draft Pool Persistence)</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -759,7 +759,7 @@
         <!-- MODE SELECTION SCREEN -->
         <div id="modeSelectionScreen" class="screen active">
             <div class="header">
-                <h1>Four4More V5.1.18</h1>
+                <h1>Four4More V5.1.19</h1>
                 <p class="subtitle">Multiplayer</p>
             </div>
 
@@ -813,7 +813,7 @@
         <!-- ONLINE SETUP SCREEN -->
         <div id="onlineSetupScreen" class="screen">
             <div class="header">
-                <h1>Four4More V5.1.18 - Online</h1>
+                <h1>Four4More V5.1.19 - Online</h1>
                 <p class="subtitle">Connect with Friends</p>
             </div>
 
@@ -1208,7 +1208,7 @@
             currentPlayer: 0,
             firstGuesser: 0,
             players: [],
-            // V5.1.18: Per-category draft pools and center tokens (persist across rounds)
+            // V5.1.19: Per-category draft pools and center tokens (persist across rounds)
             centerToken: null, // DEPRECATED - use categoryCenterTokens instead
             draftPool: [], // DEPRECATED - use categoryDraftPools instead
             categoryCenterTokens: {
@@ -1244,7 +1244,7 @@
             bonusCardsInPlay: []      // All cards currently held by players
         };
 
-        // V5.1.18: Helper functions for category-specific draft pools/center tokens
+        // V5.1.19: Helper functions for category-specific draft pools/center tokens
         // These maintain backwards compatibility while allowing per-category persistence
         function getCurrentCenterToken() {
             const category = gameState.selectedCategory || gameState.previousCategory;
@@ -3420,7 +3420,7 @@
                                     <div style="font-size: 16px; color: #333; margin-bottom: 5px;">${challenge.name}</div>
                                     <div style="font-size: 12px; color: ${canSelect ? '#666' : '#999'};">
                                         ${(() => {
-                                            // V5.1.18: Check THIS category's persistent tokens (not just previous round)
+                                            // V5.1.19: Check THIS category's persistent tokens (not just previous round)
                                             const centerToken = gameState.categoryCenterTokens[challenge.category];
                                             const draftCount = gameState.categoryDraftPools[challenge.category]?.length || 0;
                                             const hasPersistentTokens = centerToken || draftCount > 0;
@@ -3557,7 +3557,7 @@
             // Close modal
             document.getElementById('categoryModal').classList.remove('active');
 
-            // V5.1.18: Handle token drawing with per-category persistence
+            // V5.1.19: Handle token drawing with per-category persistence
             let carryoverMessage = '';
             const category = challenge.category;
 
@@ -3695,7 +3695,7 @@
         }
 
         function getAvailableTokensForCategory(category) {
-            // V5.1.18: Track tokens not yet dealt + tokens persisting in category-specific draft pool + center token
+            // V5.1.19: Track tokens not yet dealt + tokens persisting in category-specific draft pool + center token
             // Each category has its own persistent draft pool that remains when replayed
 
             // Count tokens still in category pool (not yet drawn)
@@ -3729,7 +3729,7 @@
             // Close modal
             document.getElementById('categoryModal').classList.remove('active');
 
-            // V5.1.18: Check existing tokens for THIS category (not just previous round)
+            // V5.1.19: Check existing tokens for THIS category (not just previous round)
             const existingCenter = gameState.categoryCenterTokens[category];
             const existingDraft = gameState.categoryDraftPools[category];
             const existingTokens = (existingCenter ? 1 : 0) + existingDraft.length;
@@ -4293,7 +4293,7 @@
                     thisRound: player.thisRound
                 });
 
-                // V5.1.18: Update both legacy and category-specific fields for Firebase
+                // V5.1.19: Update both legacy and category-specific fields for Firebase
                 const category = gameState.selectedCategory;
                 const updateData = {
                     centerToken: newCenterToken,
@@ -4315,7 +4315,7 @@
                 gameState.draftPool = newDraftPool;
                 gameState.selectedDraftToken = newSelectedDraftToken;
 
-                // V5.1.18: Also update category-specific center token
+                // V5.1.19: Also update category-specific center token
                 const category = gameState.selectedCategory;
                 if (category) {
                     gameState.categoryCenterTokens[category] = newCenterToken;
@@ -5149,17 +5149,15 @@
             gameState.selectedCategory = null;
             // V4.87: Keep previousCategory - it's used to track carryover between rounds
             // gameState.previousCategory stays for carryover tracking
-            // V5.1.18: DON'T clear centerToken and draftPool here - they persist until new category selected
+            // V5.1.19: DON'T clear centerToken and draftPool here - they persist until new category selected
             // gameState.centerToken = null;
             // gameState.draftPool = [];
             gameState.passedPlayers = new Set(); // Clear passed players for new round
             gameState.lockedOutPlayers = new Set(); // V4.97: Clear locked-out players for new round
             gameState.lastPlayerToAct = null; // V4.97: Reset last player to act
             gameState.currentPlayer = gameState.firstGuesser; // V4.97: Reset current player to first guesser locally
-            // NOTE: Don't clear drawnChallengeCards here in online mode - first guesser will handle it in startNewRound()
-            if (GameModeManager.isLocal()) {
-                gameState.drawnChallengeCards = []; // Clear challenge cards so new ones will be drawn
-            }
+            // V5.1.19: DON'T clear drawnChallengeCards - they should persist between rounds
+            // startNewRound() will handle updating them (replace selected, keep others)
 
             // V4.75: Change phase back to 'challenge' after round ends
             // Reset the endRound flag so it can be called again next round
@@ -5174,8 +5172,8 @@
                     drawnChallengeCards: null
                 });
 
-                // V4.89: Clear local state immediately
-                gameState.drawnChallengeCards = [];
+                // V5.1.19: DON'T clear drawnChallengeCards - they should persist
+                // V4.89: Clear current challenge only
                 gameState.currentChallenge = null;
 
                 // V4.97.21: Update timestamp FIRST, then clear locally to prevent listener race condition

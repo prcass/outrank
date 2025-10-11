@@ -45,7 +45,7 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.1.19 (In Progress)
+## Current Development: v5.1.20 (In Progress)
 **Status**: Active Development
 **Branch**: v5.1
 
@@ -53,6 +53,32 @@ git reset --hard HEAD~1
 - Full online multiplayer testing with all cards
 - Additional balance tweaks
 - Bug fixes and polish
+
+---
+
+## v5.1.19 - Challenge Card Persistence (2025-10-11)
+**Tag**: `v5.1.19`
+**Status**: Stable
+
+### Feature Fix:
+✅ **Challenge Cards Now Persist Between Rounds**
+- Unselected challenge cards remain available in subsequent rounds
+- Cards show "Round 2", "Round 3", etc. orange badge in top-right
+- Only the selected category's card is replaced each round
+- Console shows: `🔄 Replacing challenge card for category: movies`
+- Console shows: `⏩ Keeping countries card: "..." (round 2)`
+
+### Technical Details:
+- Removed `gameState.drawnChallengeCards = []` from `endRound()` (lines 5161, 5178)
+- Cards now persist and `startNewRound()` handles selective replacement
+- Strategy: Older cards may have better token availability
+
+### Example Flow:
+- **Round 1**: Movies, Countries, Companies, Sports all fresh
+- Select **Movies**
+- **Round 2**: NEW Movies + SAME Countries/Companies/Sports (Round 2 badge)
+- Select **Countries**
+- **Round 3**: SAME Movies (Round 2) + NEW Countries + SAME Companies/Sports (Round 3)
 
 ---
 
