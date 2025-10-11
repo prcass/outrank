@@ -189,11 +189,11 @@ At the start of your turn (before guessing), you can cash in tokens from your ha
 After 5 rounds, add bonus points:
 
 **End-Game Bonus Cards** (if you hold them):
-- These bonus cards award points at game end based on YOUR stats (not competitive)
-- If you hold the card, you get the points listed
-- See "End-Game Bonuses" section in Bonus Card Reference for details
+- Award points based on what you have at game end
+- Examples: Tokens in hand, bonus cards held, 3+ token cash-ins made, multipliers played
+- See "End-Game Bonuses" section in Bonus Card Reference for full list
 
-**Tokens in Hand**: 1 point per token still held
+**Tokens in Hand**: 1 point per token still held (stacks with Token Hoarder card)
 
 **Highest score wins!**
 
@@ -221,12 +221,12 @@ After 5 rounds, add bonus points:
 - 🛡️ **Insurance**: Next wrong guess doesn't lock you out (one-time use)
 
 ### End-Game Bonuses (Points at Game End)
-These cards award points based on YOUR individual stats (not competitive with other players):
-- 🏆 **Champion**: +5 pts based on your correct guesses
-- 📊 **Statistician**: +5 pts based on your tokens cashed in
-- 🎯 **Sharpshooter**: +5 pts based on your guess accuracy
-- 🎖️ **Veteran**: +3 pts based on your rounds participated
-- 💎 **Collector**: +3 pts based on your tokens in hand
+These cards award points based on what you have at game end:
+- 💎 **Token Hoarder**: +1 pt per token in your hand (stacks with base 1pt/token)
+- 🎴 **Card Collector**: +2 pts per bonus card in your hand
+- 🏆 **Big Spender**: +3 pts per cash-in you made with 3+ tokens
+- 📊 **Set Master**: +5 pts if you cashed in a 4-token set
+- 🎯 **Risk Taker**: +2 pts per multiplier card you played during the game
 
 ---
 
