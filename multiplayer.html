@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Four4More V5.1.8 - Multiplayer + Bonus Cards (Player Choice UI)</title>
+    <title>Four4More V5.1.13 - Multiplayer + Bonus Cards (Trade Category Fix)</title>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -759,7 +759,7 @@
         <!-- MODE SELECTION SCREEN -->
         <div id="modeSelectionScreen" class="screen active">
             <div class="header">
-                <h1>Four4More V5.1.8</h1>
+                <h1>Four4More V5.1.13</h1>
                 <p class="subtitle">Multiplayer</p>
             </div>
 
@@ -813,7 +813,7 @@
         <!-- ONLINE SETUP SCREEN -->
         <div id="onlineSetupScreen" class="screen">
             <div class="header">
-                <h1>Four4More V5.1.8 - Online</h1>
+                <h1>Four4More V5.1.13 - Online</h1>
                 <p class="subtitle">Connect with Friends</p>
             </div>
 
@@ -998,13 +998,65 @@
                 </div>
             </div>
 
-            <div class="header">
-                <h1>Four4More V5.1.8</h1>
-                <p class="subtitle" id="playerNameDisplay" style="font-weight: bold; color: #667eea; margin-bottom: 5px;">Loading...</p>
-                <p class="subtitle">Round <span id="roundNumber">1</span></p>
-                <button id="toggleDataBtn" class="btn btn-secondary" style="position: absolute; top: 20px; right: 20px; padding: 8px 15px; font-size: 0.9em;" onclick="toggleDataVisibility()">
-                    👁️ Hide Data
-                </button>
+            <!-- V5.1.14: Top row with banner + challenge info side by side -->
+            <div style="display: grid; grid-template-columns: 250px 1fr; gap: 20px; margin-bottom: 20px;">
+                <!-- BANNER (same width as player column) -->
+                <div class="header panel" style="margin: 0; padding: 15px;">
+                    <h1 style="font-size: 1.5em; margin-bottom: 15px;">Four4More V5.1.13</h1>
+
+                    <!-- V5.1.14: Round info at top -->
+                    <p class="subtitle" style="font-size: 1em; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0;">Round <span id="roundNumber">1</span></p>
+
+                    <!-- V5.1.14: Current turn display -->
+                    <p style="font-weight: bold; color: #764ba2; margin-bottom: 10px; font-size: 0.95em;">Current Turn:</p>
+                    <p id="playerNameDisplay" style="font-weight: bold; color: #667eea; margin-bottom: 15px; font-size: 1em;">Loading...</p>
+
+                    <!-- V5.1.14: Action buttons (moved from bottom) -->
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <button id="cashOutBtn" class="btn btn-secondary" onclick="openCashOutModal()" disabled style="width: 100%; padding: 10px; font-size: 0.9em;">💰 Cash Out</button>
+                        <button id="playCardBtn" class="btn btn-secondary" onclick="openPlayCardModal()" disabled style="width: 100%; padding: 10px; font-size: 0.9em;">🎴 Play Card</button>
+                        <button id="passBtn" class="btn btn-secondary" onclick="passRound()" style="width: 100%; padding: 10px; font-size: 0.9em;">⏩ Pass</button>
+                    </div>
+                </div>
+
+                <!-- CHALLENGE INFO (same level as banner) -->
+                <div id="challengeInfo" class="panel" style="display: none; margin: 0; position: relative; padding: 15px 100px; padding-bottom: 70px;">
+                    <h2 id="challengeName" style="margin-bottom: 5px; font-size: 1.3em;">Movies - Box Office</h2>
+                    <p class="stat-name" id="statName" style="margin: 0; font-size: 1em; color: #764ba2;">Higher or Lower</p>
+                    <p class="token-carryover-info" id="tokenCarryoverInfo" style="display: none; font-size: 0.9em; color: #ffd700; margin-top: 5px; font-weight: bold;"></p>
+
+                    <!-- V5.1.14: CENTER TOKEN (moved inside challenge panel) -->
+                    <div id="centerTokenArea" class="center-token-area" style="display: none; margin-top: 15px;">
+                        <h3 style="font-size: 1.1em; margin-bottom: 10px;">Center Token</h3>
+                        <div id="centerToken" class="center-token">
+                            <!-- Token content -->
+                        </div>
+                    </div>
+
+                    <!-- V5.1.14: GUESS BUTTONS (positioned at vertical center of card) -->
+                    <!-- LOWER section (left side) -->
+                    <div id="guessArea" style="display: none;">
+                        <div style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                            <strong id="draftedTokenName" style="font-size: 1.3em; color: #764ba2; white-space: nowrap; font-weight: bold;">Select token</strong>
+                            <button class="btn btn-danger" onclick="makeGuess('lower')" style="padding: 18px 28px; font-size: 1.2em; font-weight: bold; white-space: nowrap;">
+                                📉 LOWER
+                            </button>
+                        </div>
+
+                        <!-- HIGHER section (right side) -->
+                        <div style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                            <strong id="draftedTokenName2" style="font-size: 1.3em; color: #764ba2; white-space: nowrap; font-weight: bold;">Select token</strong>
+                            <button class="btn btn-success" onclick="makeGuess('higher')" style="padding: 18px 28px; font-size: 1.2em; font-weight: bold; white-space: nowrap;">
+                                📈 HIGHER
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- V5.1.14: Toggle Data Button (moved inside challenge panel) -->
+                    <button id="toggleDataBtn" class="btn btn-secondary" style="position: absolute; bottom: 15px; right: 15px; padding: 8px 15px; font-size: 0.9em;" onclick="toggleDataVisibility()">
+                        👁️ Hide Data
+                    </button>
+                </div>
             </div>
 
             <div class="game-layout">
@@ -1018,27 +1070,13 @@
 
                 <!-- MAIN GAME AREA -->
                 <div>
-                    <!-- CHALLENGE INFO -->
-                    <div id="challengeInfo" class="challenge-info" style="display: none;">
-                        <h3 id="challengeName">Movies - Box Office</h3>
-                        <p class="stat-name" id="statName">Higher or Lower</p>
-                        <p class="token-carryover-info" id="tokenCarryoverInfo" style="display: none; font-size: 0.9em; color: #ffd700; margin-top: 5px; font-weight: bold;"></p>
-                    </div>
 
-                    <!-- CENTER TOKEN -->
-                    <div id="centerTokenArea" class="center-token-area" style="display: none;">
-                        <h3>Center Token</h3>
-                        <div id="centerToken" class="center-token">
-                            <!-- Token content -->
-                        </div>
-                    </div>
-
-                    <!-- GUESS AREA -->
-                    <div id="guessArea" class="guess-area">
-                        <p class="guess-prompt">Is <strong id="draftedTokenName">Titanic</strong> HIGHER or LOWER than <strong id="centerTokenName">Avatar</strong>?</p>
-                        <div class="guess-buttons">
-                            <button class="btn btn-success" onclick="makeGuess('higher')">📈 HIGHER</button>
-                            <button class="btn btn-danger" onclick="makeGuess('lower')">📉 LOWER</button>
+                    <!-- V5.1.14: BONUS CARD POOL (moved to top) -->
+                    <div class="panel" style="margin-top: 0; margin-bottom: 15px;">
+                        <h2>🎴 Bonus Cards</h2>
+                        <p style="font-size: 0.9em; color: #666; margin-bottom: 10px;">Choose 1 card when you cash in tokens</p>
+                        <div id="bonusCardPool" class="bonus-card-pool">
+                            <!-- Dynamically populated cards -->
                         </div>
                     </div>
 
@@ -1047,22 +1085,6 @@
                         <h2>Draft Pool (<span id="poolCount">12</span> tokens)</h2>
                         <div id="draftPool" class="draft-pool">
                             <!-- Dynamically populated tokens -->
-                        </div>
-                    </div>
-
-                    <!-- ACTION BUTTONS -->
-                    <div class="action-buttons">
-                        <button id="cashOutBtn" class="btn btn-secondary" onclick="openCashOutModal()" disabled>💰 Cash Out</button>
-                        <button id="playCardBtn" class="btn btn-secondary" onclick="openPlayCardModal()" disabled>🎴 Play Card</button>
-                        <button id="passBtn" class="btn btn-secondary" onclick="passRound()">⏩ Pass</button>
-                    </div>
-
-                    <!-- V5.0: BONUS CARD POOL -->
-                    <div class="panel" style="margin-top: 20px;">
-                        <h2>🎴 Bonus Cards</h2>
-                        <p style="font-size: 0.9em; color: #666; margin-bottom: 10px;">Choose 1 card when you cash in tokens</p>
-                        <div id="bonusCardPool" class="bonus-card-pool">
-                            <!-- Dynamically populated cards -->
                         </div>
                     </div>
                 </div>
@@ -2216,6 +2238,43 @@
             updateBonusCardPoolUI();
         }
 
+        // V5.1.14: Get color for card based on ID prefix and number
+        function getCardColor(cardId) {
+            // Extract prefix (e.g., "INSTANT" from "INSTANT_3")
+            const parts = cardId.split('_');
+            const prefix = parts[0];
+            const number = parts[1] ? parseInt(parts[1]) : 0;
+
+            // Base colors for each prefix
+            const baseColors = {
+                'INSTANT': { h: 200, s: 70 },      // Blue family
+                'DOUBLE': { h: 280, s: 70 },       // Purple family
+                'TRIPLE': { h: 280, s: 70 },       // Purple family
+                'STEAL': { h: 0, s: 70 },          // Red family
+                'EXTRA': { h: 120, s: 70 },        // Green family
+                'RETURN': { h: 40, s: 70 },        // Orange family
+                'BLOCK': { h: 220, s: 70 },        // Blue-purple family
+                'FORCE': { h: 340, s: 70 },        // Pink family
+                'TOKEN': { h: 180, s: 70 },        // Cyan family
+                'CASHOUT': { h: 300, s: 70 },      // Magenta family
+                'CARD': { h: 260, s: 70 },         // Violet family
+                'TAG': { h: 60, s: 70 },           // Yellow family
+                'BONUS': { h: 160, s: 70 },        // Teal family
+                'LUCKY': { h: 140, s: 70 },        // Lime family
+                'SWAP': { h: 20, s: 70 }           // Red-orange family
+            };
+
+            const colorData = baseColors[prefix] || { h: 240, s: 50 };
+
+            // Adjust lightness based on number (higher number = lighter shade)
+            // Numbers typically range from 1-5
+            const baseLightness = 45;
+            const lightnessStep = 8; // Each number adds 8% lightness
+            const lightness = baseLightness + (number * lightnessStep);
+
+            return `hsl(${colorData.h}, ${colorData.s}%, ${lightness}%)`;
+        }
+
         function updateBonusCardPoolUI() {
             const poolContainer = document.getElementById('bonusCardPool');
             if (!poolContainer) return;
@@ -2225,6 +2284,7 @@
             gameState.bonusCardPool.forEach((card, index) => {
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'bonus-card';
+
                 cardDiv.innerHTML = `
                     <div class="card-header">${card.name}</div>
                     <div class="card-description">${card.description}</div>
@@ -2740,13 +2800,22 @@
                 (playerTokenIndex) => {
                     const playerToken = playerTokens[playerTokenIndex];
 
-                    // Now select pool token
+                    // V5.1.13: Filter pool to only show same category tokens
+                    const sameCategory = gameState.draftPool.filter(t => t.category === playerToken.category);
+
+                    if (sameCategory.length === 0) {
+                        showNotification(`No ${playerToken.category} tokens in draft pool to swap with!`, 'warning');
+                        return;
+                    }
+
+                    // Now select pool token (same category only)
                     showTokenSelectionModal(
-                        gameState.draftPool,
+                        sameCategory,
                         '🔄 Trade - Choose Pool Token',
-                        `Trading away ${playerToken.name}. Select token from pool:`,
-                        (poolTokenIndex) => {
-                            const poolToken = gameState.draftPool[poolTokenIndex];
+                        `Trading away ${playerToken.name} (${playerToken.category}). Select ${playerToken.category} token from pool:`,
+                        (filteredIndex) => {
+                            const poolToken = sameCategory[filteredIndex];
+                            const poolTokenIndex = gameState.draftPool.findIndex(t => t.id === poolToken.id);
 
                             console.log(`🔄 Trade: Player selected token ${playerToken.name}, pool token ${poolToken.name}`);
                             console.log(`🔄 Player hand before:`, player.hand);
@@ -3700,9 +3769,37 @@
                 <div class="token-name">${token.name}</div>
                 <div class="token-value">${formatNumber(statValue)}</div>
                 <div class="token-tags">
-                    ${token.tags.map(tag => `<span class="token-tag">${tag}</span>`).join('')}
+                    ${token.tags.map(tag => {
+                        const color = getTagColor(tag);
+                        return `<span class="token-tag" style="background-color: ${color}; color: white; font-weight: bold;">${tag}</span>`;
+                    }).join('')}
                 </div>
             `;
+        }
+
+        // V5.1.14: Get color for tag based on letter+number format (A1-A5, B1-B5, etc.)
+        function getTagColor(tag) {
+            // Extract letter and number from tag (e.g., "A1" -> letter="A", number=1)
+            const match = tag.match(/^([A-Z])(\d+)$/);
+            if (!match) {
+                // Fallback for non-standard tags
+                return 'hsl(240, 50%, 50%)';
+            }
+
+            const letter = match[1];
+            const number = parseInt(match[2]);
+
+            // Assign base hue based on letter (A=0°, B=30°, C=60°, etc.)
+            // Each letter gets a distinct color family
+            const letterIndex = letter.charCodeAt(0) - 65; // A=0, B=1, C=2, etc.
+            const baseHue = (letterIndex * 30) % 360; // 30° steps around color wheel
+
+            // Vary lightness based on number (1=darkest, 5=lightest)
+            const baseLightness = 35;
+            const lightnessStep = 10; // Each number adds 10% lightness
+            const lightness = baseLightness + ((number - 1) * lightnessStep);
+
+            return `hsl(${baseHue}, 75%, ${lightness}%)`;
         }
 
         function renderDraftPool() {
@@ -3732,7 +3829,10 @@
                         <div class="token-name">${token.name}</div>
                         <div class="token-value">${formatNumber(statValue)}</div>
                         <div class="token-tags">
-                            ${tags.map(tag => `<span class="token-tag">${tag}</span>`).join('')}
+                            ${tags.map(tag => {
+                                const color = getTagColor(tag);
+                                return `<span class="token-tag" style="background-color: ${color}; color: white; font-weight: bold;">${tag}</span>`;
+                            }).join('')}
                         </div>
                     </div>
                 `;
@@ -3765,9 +3865,10 @@
                     .join(' ');
 
                 // V5.0: Display bonus cards (visible to all players)
+                // V5.1.14: Added title attribute for hover tooltips
                 const bonusCardsDisplay = player.bonusCards && player.bonusCards.length > 0
                     ? player.bonusCards.map(card => `
-                        <div style="font-size: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3px 6px; border-radius: 4px; margin-bottom: 2px;">
+                        <div style="font-size: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3px 6px; border-radius: 4px; margin-bottom: 2px; cursor: help;" title="${card.description || card.name}">
                             ${card.name}
                         </div>
                     `).join('')
@@ -3863,14 +3964,22 @@
             gameState.selectedDraftToken = token;
             renderDraftPool();
 
-            // Show guess area
-            document.getElementById('guessArea').classList.add('active');
+            // V5.1.14: Show guess area with new layout
+            const guessArea = document.getElementById('guessArea');
+            guessArea.style.display = 'block';
+            guessArea.classList.add('active');
             document.getElementById('draftedTokenName').textContent = token.name;
-            document.getElementById('centerTokenName').textContent = gameState.centerToken.name;
+            document.getElementById('draftedTokenName2').textContent = token.name;
         }
 
         function makeGuess(direction) {
             console.log('🎯 makeGuess called:', direction, 'selectedToken:', gameState.selectedDraftToken?.name);
+
+            // V5.1.14: Hide guess area once choice is made
+            const guessArea = document.getElementById('guessArea');
+            if (guessArea) {
+                guessArea.style.display = 'none';
+            }
 
             // V4.97.6: Check if current player is locked out
             if (gameState.lockedOutPlayers && gameState.lockedOutPlayers.has(gameState.currentPlayer)) {
@@ -4259,15 +4368,17 @@
                 });
             });
 
-            // Filter to only tags with 2+ tokens
-            const validSets = Object.entries(tagGroups).filter(([tag, tokens]) => tokens.length >= 2);
-
-            // V5.1.9: Check if player has wildcard - allows ANY token combination
+            // V5.1.12: Check if player has wildcard
             const hasWildcard = player.activeEffects && player.activeEffects.some(e =>
                 e.effect === 'wildcard' && e.usesRemaining > 0
             );
 
-            if (validSets.length === 0 && !hasWildcard) {
+            // V5.1.12: Also allow sets with 1+ token if wildcard active (can add wildcard slot)
+            const validSets = Object.entries(tagGroups).filter(([tag, tokens]) =>
+                hasWildcard ? tokens.length >= 1 : tokens.length >= 2
+            );
+
+            if (validSets.length === 0) {
                 showNotification('No sets available to cash out!', 'warning');
                 return;
             }
@@ -4275,52 +4386,8 @@
             // Build modal content
             const modal = document.getElementById('cashOutModal');
             const content = document.getElementById('cashOutContent');
-            const wildcardNote = hasWildcard ? '<p style="color: #f59e0b; font-weight: bold; margin-bottom: 10px;">🌈 Wildcard Active! You can select ANY tokens (mismatched tags allowed)</p>' : '';
-            content.innerHTML = `<p style="margin-bottom: 15px; font-weight: bold;">💰 Cash Out Rules: 2 tokens = 2pts | 3 tokens = 5pts | 4 tokens = 8pts (max)</p>${wildcardNote}<p style="margin-bottom: 15px;">Click to select 2, 3, or 4 tokens${hasWildcard ? '' : ' sharing the same tag'}:</p>`;
-
-            // V5.1.9: If player has wildcard, show ALL tokens in one section
-            if (hasWildcard && allTokens.length >= 2) {
-                const setDiv = document.createElement('div');
-                setDiv.className = 'cash-out-set';
-                setDiv.style.cssText = 'background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1)); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #f59e0b;';
-
-                const setHeader = document.createElement('div');
-                setHeader.style.cssText = 'font-weight: bold; margin-bottom: 10px; color: #f59e0b;';
-                const maxSelect = Math.min(allTokens.length, 4);
-                const selectRange = allTokens.length === 2 ? '2' : `2-${maxSelect}`;
-                setHeader.textContent = `🌈 All Tokens (Wildcard) — You have ${allTokens.length} token${allTokens.length > 1 ? 's' : ''} (select ${selectRange})`;
-                setDiv.appendChild(setHeader);
-
-                const tokenList = document.createElement('div');
-                tokenList.style.cssText = 'display: flex; gap: 8px; flex-wrap: wrap;';
-
-                allTokens.forEach(token => {
-                    const tokenBtn = document.createElement('button');
-                    tokenBtn.className = 'cash-token-btn';
-                    tokenBtn.textContent = `${token.name} [${token.tags.join(', ')}]`;
-                    tokenBtn.style.cssText = 'padding: 8px 12px; border: 2px solid #f59e0b; background: white; border-radius: 8px; cursor: pointer; font-size: 13px;';
-                    tokenBtn.dataset.tokenId = token.id;
-                    tokenBtn.dataset.tag = 'wildcard'; // Special tag for wildcard selection
-
-                    tokenBtn.onclick = function() {
-                        this.classList.toggle('selected');
-                        if (this.classList.contains('selected')) {
-                            this.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
-                            this.style.color = 'white';
-                            this.style.borderColor = '#f59e0b';
-                        } else {
-                            this.style.background = 'white';
-                            this.style.color = '#333';
-                            this.style.borderColor = '#f59e0b';
-                        }
-                    };
-
-                    tokenList.appendChild(tokenBtn);
-                });
-
-                setDiv.appendChild(tokenList);
-                content.appendChild(setDiv);
-            }
+            const wildcardNote = hasWildcard ? '<p style="color: #f59e0b; font-weight: bold; margin-bottom: 10px;">🌈 Wildcard Active! Click "Add Wildcard Slot" to add 1 extra token to any set</p>' : '';
+            content.innerHTML = `<p style="margin-bottom: 15px; font-weight: bold;">💰 Cash Out Rules: 2 tokens = 2pts | 3 tokens = 5pts | 4 tokens = 8pts (max)</p>${wildcardNote}<p style="margin-bottom: 15px;">Select tokens from one set${hasWildcard ? ' (can add 1 wildcard)' : ''}:</p>`;
 
             // Show regular tag-matched sets
             validSets.forEach(([tag, tokens]) => {
@@ -4339,6 +4406,7 @@
                 const tokenList = document.createElement('div');
                 tokenList.style.cssText = 'display: flex; gap: 8px; flex-wrap: wrap;';
 
+                // V5.1.12: Render regular tokens
                 tokens.forEach((token, idx) => {
                     const tokenBtn = document.createElement('button');
                     tokenBtn.className = 'cash-token-btn';
@@ -4363,6 +4431,70 @@
 
                     tokenList.appendChild(tokenBtn);
                 });
+
+                // V5.1.12: Add wildcard slot button if wildcard active
+                if (hasWildcard && tokens.length < 4) {
+                    const wildcardSlotBtn = document.createElement('button');
+                    wildcardSlotBtn.className = 'cash-token-btn wildcard-slot-btn';
+                    wildcardSlotBtn.textContent = '🌈 Add Wildcard Slot';
+                    wildcardSlotBtn.style.cssText = 'padding: 8px 12px; border: 2px dashed #f59e0b; background: rgba(251, 191, 36, 0.1); border-radius: 8px; cursor: pointer; font-size: 13px; color: #f59e0b; font-weight: bold;';
+                    wildcardSlotBtn.dataset.isWildcardSlot = 'true';
+                    wildcardSlotBtn.dataset.tag = tag;
+
+                    wildcardSlotBtn.onclick = function() {
+                        // V5.1.12: Open modal to select which token to use as wildcard
+                        console.log('🌈 Opening wildcard token selection modal');
+
+                        // Get all tokens NOT in this tag group (available for wildcard)
+                        const selectedTokenIds = Array.from(document.querySelectorAll('.cash-token-btn.selected'))
+                            .map(btn => btn.dataset.tokenId);
+                        const availableForWildcard = allTokens.filter(t =>
+                            !t.tags.includes(tag) && !selectedTokenIds.includes(t.id)
+                        );
+
+                        if (availableForWildcard.length === 0) {
+                            showNotification('No tokens available for wildcard slot!', 'warning');
+                            return;
+                        }
+
+                        // Show token selection modal
+                        showTokenSelectionModal(
+                            availableForWildcard,
+                            'Select Wildcard Token',
+                            '🌈 Choose any token to add to this set:',
+                            (selectedIndex) => {
+                                const wildcardToken = availableForWildcard[selectedIndex];
+                                console.log(`🌈 Player selected wildcard token: ${wildcardToken.name}`);
+
+                                // Create a token button for the wildcard choice
+                                const wildcardBtn = document.createElement('button');
+                                wildcardBtn.className = 'cash-token-btn selected'; // Auto-selected
+                                wildcardBtn.textContent = `${wildcardToken.name} 🌈`;
+                                wildcardBtn.style.cssText = 'padding: 8px 12px; border: 2px solid #f59e0b; background: linear-gradient(135deg, #fbbf24, #f59e0b); border-radius: 8px; cursor: pointer; font-size: 13px; color: white; font-weight: bold;';
+                                wildcardBtn.dataset.tokenId = wildcardToken.id;
+                                wildcardBtn.dataset.tag = tag;
+                                wildcardBtn.dataset.isWildcard = 'true';
+
+                                wildcardBtn.onclick = function() {
+                                    // Allow deselection
+                                    this.classList.toggle('selected');
+                                    if (this.classList.contains('selected')) {
+                                        this.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
+                                        this.style.borderColor = '#f59e0b';
+                                    } else {
+                                        this.style.background = 'rgba(251, 191, 36, 0.1)';
+                                        this.style.borderColor = '#f59e0b';
+                                    }
+                                };
+
+                                // Replace the "Add Wildcard Slot" button with the selected token
+                                tokenList.replaceChild(wildcardBtn, wildcardSlotBtn);
+                            }
+                        );
+                    };
+
+                    tokenList.appendChild(wildcardSlotBtn);
+                }
 
                 setDiv.appendChild(tokenList);
                 content.appendChild(setDiv);

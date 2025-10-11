@@ -45,7 +45,7 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.1.9 (In Progress)
+## Current Development: v5.1.14 (In Progress)
 **Status**: Active Development
 **Branch**: v5.1
 
@@ -53,6 +53,92 @@ git reset --hard HEAD~1
 - Full online multiplayer testing with all cards
 - Additional balance tweaks
 - Bug fixes and polish
+
+---
+
+## v5.1.13 - Trade Card Category Restriction (2025-10-08)
+**Tag**: `v5.1.13`
+**Status**: Stable
+
+### Bug Fixes:
+✅ **Trade Card Now Restricted to Same Category**
+- Trade card can only swap tokens within same category
+- Movies swap with movies, countries with countries, etc.
+- After selecting your token, pool filtered to show only matching category
+- Shows helpful message: "Trading away [Token] (category). Select category token from pool"
+- Prevents cross-category swaps
+
+### User Request:
+"Swap a token from your hand with one in the draft pool can only be played on tokens that are in the same category"
+
+### Implementation:
+- Modified `executeSwapTokens()` (lines 2743-2758)
+- Added category filter: `sameCategory = draftPool.filter(t => t.category === playerToken.category)`
+- Shows warning if no same-category tokens available in pool
+- Uses `findIndex()` to map filtered selection back to full draft pool
+
+---
+
+## v5.1.12 - Fixed Wildcard Slot Mechanic (2025-10-08)
+**Tag**: `v5.1.12`
+**Status**: Stable
+
+### Bug Fixes:
+✅ **Wildcard Now Works as Extra Slot, Not Tag Matching**
+- Wildcard adds ONE extra slot to any existing set, not tag matching
+- Shows "🌈 Add Wildcard Slot" button in each set (if < 4 tokens)
+- Clicking opens modal to select ANY unused token
+- Selected wildcard token appears in gold with 🌈 emoji
+- Can turn 2-set into 3-set, or 3-set into 4-set
+
+### User Clarification:
+"The wildcard should be shown as an additional token on any set you already have but then the player should be asked to choose which of their unused tokens (not in the set being cashed in) they want to use as the wildcard token"
+
+### Example:
+**Tokens:** A, B (both Action), C (Comedy)
+- **Action set shows:** A, B, 🌈 Add Wildcard Slot
+- **Click wildcard button** → Modal shows C
+- **Select C** → Now have A, B, C🌈 (3 tokens = 5 points)
+
+### Implementation:
+- Modified `openCashOutModal()` (lines 4262-4392)
+- Removed tag expansion logic from v5.1.11
+- Added "🌈 Add Wildcard Slot" button to each set
+- Button opens `showTokenSelectionModal()` with non-matching tokens
+- Selected token replaces button with gold-highlighted token button
+- Wildcard tokens auto-selected and marked with 🌈
+
+---
+
+## v5.1.11 - Fixed Wildcard Joker Mechanic (2025-10-08)
+**Tag**: `v5.1.11`
+**Status**: Stable
+
+### Bug Fixes:
+✅ **Wildcard Now Works Like a Joker**
+- Fixed wildcard to allow ONE mismatched token, not all tokens
+- Tag sets now expand to show "Tag 🌈" with wildcard candidates
+- Wildcard candidates highlighted in gold with 🌈 emoji
+- Matching tokens shown normally (purple)
+- Tags displayed on wildcard candidates: `Token Name 🌈 [Tags]`
+
+### User Request:
+"But the wildcard should only allow ONE token to be different than it's tags...not all tokens"
+
+### Example:
+- Token A: `[Action, Thriller]`
+- Token B: `[Action, Drama]`
+- Token C: `[Comedy, Romance]`
+
+**Without wildcard:** Can only cash in A+B (both have Action)
+**With wildcard:** Can cash in A+B+C - wildcard makes C count as "Action"
+
+### Implementation:
+- Modified `openCashOutModal()` (lines 4270-4293)
+- Expands tag groups to include non-matching tokens as `isWildcardCandidate`
+- Gold highlighting for wildcard tokens (lines 4330-4369)
+- Tag sections labeled "Tag 🌈" when wildcard active
+- Validation in `executeCashOut()` already handles wildcard logic correctly
 
 ---
 
