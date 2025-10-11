@@ -91,10 +91,9 @@ On your turn, you can **play bonus cards** as actions BEFORE choosing your main 
 - Your turn ends (cannot guess this turn)
 
 **B. Make a Guess**
-1. Select a token from the 12-token draft pool
-2. View the token's name and tags (but NOT the statistic value)
-3. Choose: **📉 LOWER** or **📈 HIGHER** than center token
-4. If **CORRECT**:
+1. Select a token from the 12-token draft pool (only names and tags visible, NO values)
+2. Choose: **📉 LOWER** or **📈 HIGHER** than center token
+3. If **CORRECT**:
    - Earn 1 point (+1 bonus with 🧠 Genius card)
    - Collect center token to your "This Round" pile
    - Your selected token becomes new center token
@@ -340,11 +339,8 @@ Must have **same tags** across tokens:
 
 ## Frequently Asked Questions
 
-**Q: Can I see the center token's value before guessing?**
-A: Yes! The center token's value is always visible.
-
-**Q: Can I see my selected draft token's value before guessing?**
-A: No. You only see the name and tags, not the statistic value.
+**Q: Can I see any token values during the game?**
+A: Only the center token shows its statistic value. All draft pool tokens and tokens in your hand only show names and tags - NO values are visible until they become the center token.
 
 **Q: What happens to tokens in my "This Round" pile at round end?**
 A: They move to your hand. You can cash them in later or keep for end-game points.
