@@ -45,7 +45,7 @@ git reset --hard HEAD~1
 
 ---
 
-## Current Development: v5.1.18 (In Progress)
+## Current Development: v5.1.19 (In Progress)
 **Status**: Active Development
 **Branch**: v5.1
 
@@ -53,6 +53,24 @@ git reset --hard HEAD~1
 - Full online multiplayer testing with all cards
 - Additional balance tweaks
 - Bug fixes and polish
+
+---
+
+## v5.1.18 - Fixed Center Token Persistence Bug (2025-10-11)
+**Tag**: `v5.1.18`
+**Status**: Stable
+
+### Bug Fix:
+✅ **Center Token Now Updates Correctly During Gameplay**
+- Fixed issue where center token wasn't updating category-specific storage during guesses
+- When player makes correct guess, both legacy and category-specific fields now update
+- Modal now displays correct center token name for persistent categories
+
+### Technical Details:
+- Updated `handleCorrectGuess()` to sync category-specific center token (line 4311)
+- Online mode Firebase updates now include `categoryCenterTokens/${category}` path
+- Added debug logging to modal rendering for troubleshooting
+- Issue: "Toy Story 4" was being replaced with "Furious 7" in storage
 
 ---
 
