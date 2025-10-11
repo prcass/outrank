@@ -151,12 +151,14 @@ Tags are used for:
 ### Category Persistence
 
 **Key Feature**: Each category maintains its own persistent state:
-- **Draft Pool**: Tokens remain when category is replayed
+- **Draft Pool**: Unused tokens remain when category is replayed
 - **Center Token**: Stays the same when category returns
-- **Example**: Play Movies R1 → Countries R2 → Movies R3
-  - Movies R3 uses the same 12 draft pool tokens from R1
-  - Center token from R1 is still there
-  - Only newly drawn tokens top up the pool to 12
+- **Top-Up System**: When replaying a category, new tokens are drawn to bring the total (draft pool + center) back to 13
+
+**Example**: Play Movies R1 → Countries R2 → Movies R3
+- **Movies R1**: Start with 13 tokens (1 center + 12 draft), end with 5 tokens left (1 center + 4 draft)
+- **Countries R2**: Play different category
+- **Movies R3**: Keep the 5 remaining tokens (1 center + 4 draft), draw 8 new tokens to reach 13 total
 
 ---
 
